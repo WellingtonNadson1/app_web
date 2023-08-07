@@ -1,4 +1,4 @@
-// File: /home/wellington-nadson/www/AppIBB/web/src/app/(login)/login/layout.tsx
+// File: /home/wellington-nadson/www/AppIBB/app_web/src/app/(login)/login/layout.tsx
 import * as entry from '../../../../../src/app/(login)/login/layout.js'
 import type { ResolvingMetadata } from 'next/dist/lib/metadata/types/metadata-interface.js'
 
