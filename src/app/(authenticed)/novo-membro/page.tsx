@@ -50,7 +50,7 @@ export interface SupervisaoData {
 }
 
 export default function NovoMembro() {
-  const hostname = 'back-ibb.vercel.app'
+  const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/supervisoes`
   const { data: session } = useSession()
   const { register, handleSubmit } = useForm<Inputs>()

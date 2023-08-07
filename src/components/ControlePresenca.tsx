@@ -51,7 +51,7 @@ interface User {
 export default function ControlePresenca() {
   const { data: session } = useSession()
 
-  const hostname = 'back-ibb.vercel.app'
+  const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/users`
 
   function fetchWithToken(url: string, token: string) {

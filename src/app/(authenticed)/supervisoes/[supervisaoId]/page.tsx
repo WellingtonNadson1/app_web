@@ -33,7 +33,7 @@ export default function Supervisao({
   console.log('Id da Supervisao aqui', supervisaoId)
   const { data: session } = useSession()
 
-  const hostname = 'back-ibb.vercel.app'
+  const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/supervisoes/${supervisaoId}`
 
   function fetchWithToken(url: string, token: string) {

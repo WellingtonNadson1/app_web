@@ -15,7 +15,7 @@ export default function ControleCelulaSupervision({
 }) {
   const { data: session } = useSession()
   console.log(useParams())
-  const hostname = 'back-ibb.vercel.app'
+  const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${celulaId}`
 
   function fetchWithToken(url: string, token: string) {

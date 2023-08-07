@@ -60,7 +60,7 @@ export interface SupervisaoData {
 }
 
 export default function Celulas() {
-  const hostname = 'https://back-ibb.vercel.app/'
+  const hostname = 'app-ibb.onrender.com'
   const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLCelulas = `https://${hostname}/celulas`
 
