@@ -1,7 +1,7 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
 import { useSession } from 'next-auth/react'
-import React, { useEffect, useState, useCallback } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -40,10 +40,6 @@ interface FetchError extends Error {
 interface User {
   id: string
   first_name?: string
-}
-
-interface IMember {
-  id: string
 }
 
 export interface SupervisaoData {
@@ -98,16 +94,17 @@ export default function Celulas() {
     try {
       setIsLoadingSubmitForm(true)
 
-      const memberArray = data.membros?.map((membro) => {
-        return { id: membro }
-      }) as IMember[] | undefined
+      const memberArray =
+        data.membros?.map((membro) => {
+          return { id: membro }
+        }) ?? []
+
+      data.membros = memberArray.map((membro) => membro.id)
 
       const formatDatatoISO8601 = (dataString: string) => {
         const dataObj = new Date(dataString)
         return dataObj.toISOString()
       }
-
-      data.membros = memberArray
 
       data.date_inicio = formatDatatoISO8601(data.date_inicio)
       data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
