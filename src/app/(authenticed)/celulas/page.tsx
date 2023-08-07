@@ -1,7 +1,7 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
 import { useSession } from 'next-auth/react'
-import React, { useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -14,18 +14,10 @@ const schemaFormCelula = z.object({
   date_multipicar: z.string().datetime(),
   endereco: z.string(),
   estado: z.string(),
-  lider: z.object({
-    id: z.string().uuid(),
-  }),
   numero: z.string(),
-  supervisao: z.object({
-    id: z.string().uuid(),
-  }),
-  membros: z
-    .object({
-      id: z.string().uuid(),
-    })
-    .array(),
+  lider: z.string().uuid(),
+  supervisao: z.string().uuid(),
+  membros: z.string().uuid().array(),
 })
 
 type FormCelula = z.infer<typeof schemaFormCelula>
@@ -48,15 +40,15 @@ interface User {
   first_name?: string
 }
 
-// interface IMember {
-//   id: string
-// }
+interface IMember {
+  id: string
+}
 
 export interface SupervisaoData {
   id: string
   nome: string
   celulas: Celula[]
-  User: User[]
+  membros: User[]
 }
 
 export default function Celulas() {
@@ -66,15 +58,14 @@ export default function Celulas() {
 
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const { register, handleSubmit, setValue } = useForm<FormCelula>()
-
-  const handleLiderChange = (selectedLiderId: string) => {
-    // Update the form value for lider.id using setValue
-    setValue('lider.id', selectedLiderId)
-  }
-
   const [formSuccess, setFormSuccess] = useState(false)
   const [formError, setFormError] = useState(false)
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
+    User[]
+  >([])
+  const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
+  const { register, handleSubmit, reset } = useForm<FormCelula>()
 
   // Função para fechar as mensagens de sucesso ou erro
   const closeMessage = () => {
@@ -84,36 +75,29 @@ export default function Celulas() {
 
   const onSubmit: SubmitHandler<FormCelula> = async (data) => {
     try {
-      data.lider = { id: data.lider.id }
-      data.supervisao = { id: data.supervisao.id }
-      // const memberArray = data.membros?.map((membro) => {
-      //   return { id: membro.id }
-      // }) as IMember[] | undefined
-      // data.membros = memberArray
+      setIsLoadingSubmitForm(true)
+
+      const memberArray = data.membros?.map((membro) => {
+        return { id: membro }
+      }) as IMember[] | undefined
 
       const formatDatatoISO8601 = (dataString: string) => {
         const dataObj = new Date(dataString)
         return dataObj.toISOString()
       }
 
+      data.membros = memberArray
+
       data.date_inicio = formatDatatoISO8601(data.date_inicio)
       data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
 
-      console.log('Lider: ', data.lider)
-      console.log('Data: ', data)
-      console.log('Data Membros New: ', data.membros)
-
-      setIsLoadingSubmitForm(true)
-      const URL = `https://${hostname}/celulas`
-      const response = await fetch(URL, {
+      const response = await fetch(URLCelulas, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session?.user.token}`,
         },
-        body: JSON.stringify({
-          data,
-        }),
+        body: JSON.stringify(data),
       })
       setIsLoadingSubmitForm(false)
 
@@ -126,9 +110,8 @@ export default function Celulas() {
       console.log(error)
       setFormError(true)
     }
+    reset()
   }
-
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
 
   async function fetchWithToken(url: string, token: string) {
     try {
@@ -137,13 +120,11 @@ export default function Celulas() {
           Authorization: `Bearer ${token}`,
         },
       })
-
       if (!response.ok) {
         const error: FetchError = new Error('Failed to fetch data with token.')
         error.status = response.status
         throw error
       }
-
       const data = await response.json()
       return data
     } catch (error) {
@@ -167,36 +148,36 @@ export default function Celulas() {
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
-  const { data: celulas } = useSWR<ICelula[]>(
-    [URLCelulas, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+  const fetchCelulas = useCallback(async () => {
+    try {
+      const response = await fetch(URLCelulas, {
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      })
+      if (!response.ok) {
+        const error: FetchError = new Error('Failed to fetch get Celulas.')
+        error.status = response.status
+        throw error
+      }
+      const celulas = await response.json()
+      setDataCelulas(celulas)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [URLCelulas, session?.user.token])
 
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-  }
+  // UseEffect para buscar as células quando a página é carregada
+  useEffect(() => {
+    fetchCelulas()
+  }, [fetchCelulas])
 
-  if (error)
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
-          <div>failed to load</div>
-        </div>
-      </div>
-    )
-
-  if (isLoading)
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
-        </div>
-      </div>
-    )
-
-  if (!isLoading) {
-    console.log('Seguem as Supervisões do Cadastro', supervisoes)
-  }
+  // UseEffect para buscar as células após o envio do formulário
+  useEffect(() => {
+    if (formSuccess) {
+      fetchCelulas()
+    }
+  }, [formSuccess, fetchCelulas])
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -204,9 +185,45 @@ export default function Celulas() {
     setSupervisaoSelecionada(event.target.value)
   }
 
-  const usersFiltrados = supervisoes?.find(
-    (supervisao) => supervisao.id === supervisaoSelecionada,
-  )?.User
+  useEffect(() => {
+    if (supervisaoSelecionada) {
+      // Use the selected supervision ID to filter the list of users
+      const selectedSupervisao = supervisoes?.find(
+        (supervisao) => supervisao.id === supervisaoSelecionada,
+      )
+      if (selectedSupervisao) {
+        setUsersSupervisaoSelecionada(selectedSupervisao.membros)
+      } else {
+        setUsersSupervisaoSelecionada([])
+      }
+    }
+  }, [supervisaoSelecionada, supervisoes])
+
+  if (isValidating) {
+    console.log('Is Validating', isValidating)
+  }
+
+  if (error)
+    return (
+      <div className="z-50 mx-auto w-full px-2 py-2">
+        <div className="mx-auto w-full">
+          <div className="text-white">failed to load</div>
+        </div>
+      </div>
+    )
+
+  if (isLoading)
+    return (
+      <div className="z-50 mx-auto w-full px-2 py-2">
+        <div className="mx-auto flex w-full items-center gap-2">
+          <div className="text-white">carregando...</div>
+        </div>
+      </div>
+    )
+
+  if (!isLoading) {
+    console.log('Carregando')
+  }
 
   return (
     <>
@@ -214,11 +231,11 @@ export default function Celulas() {
         <div className="relative mx-auto w-full px-2 py-2">
           <div className="flex justify-between">
             <div className="relative mx-auto px-2 py-7">
-              <div className="mx-auto rounded-lg bg-white p-6">
+              <div className="absolute left-1/2 top-1/2 mx-auto -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6">
                 <div>
                   <p>Formulário enviado com sucesso!</p>
                   <button
-                    className="rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white"
+                    className="mt-2 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white"
                     onClick={closeMessage}
                   >
                     Fechar
@@ -324,50 +341,53 @@ export default function Celulas() {
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label
-                        htmlFor="supervisao.id"
+                        htmlFor="supervisao"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Supervisão
                       </label>
                       <div className="mt-3">
                         <select
-                          {...register('supervisao.id')}
-                          id="supervisao.id"
-                          name="supervisao.id"
+                          {...register('supervisao')}
+                          id="supervisao"
+                          name="supervisao"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           onChange={handleSupervisaoSelecionada}
                         >
-                          <option value="">Selecione</option>
-                          {supervisoes ? (
+                          {!supervisoes ? (
+                            <option value="">Carregando supervisões...</option>
+                          ) : (
+                            <option value="">Selecione</option>
+                          )}
+                          {supervisoes &&
                             supervisoes?.map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
                               </option>
-                            ))
-                          ) : (
-                            <option value="">Carregando supervisões...</option>
-                          )}
+                            ))}
                         </select>
                       </div>
                     </div>
 
                     <div className="sm:col-span-3">
                       <label
-                        htmlFor="lider.id"
+                        htmlFor="lider"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Líder
                       </label>
                       <div className="mt-3">
                         <select
-                          {...register('lider.id')}
-                          id="lider.id"
-                          name="lider.id"
-                          onChange={(e) => handleLiderChange(e.target.value)}
+                          {...register('lider')}
+                          id="lider"
+                          name="lider"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option disabled={true} value="">
+                            Selecione
+                          </option>
                           {supervisaoSelecionada &&
-                            usersFiltrados?.map((lider) => (
+                            usersSupervisaoSelecionada?.map((lider) => (
                               <option key={lider.id} value={lider.id}>
                                 {lider.first_name}
                               </option>
@@ -395,8 +415,11 @@ export default function Celulas() {
                             name="membros"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            {supervisoes &&
-                              usersFiltrados?.map((membro) => (
+                            <option disabled={true} value="">
+                              Selecione
+                            </option>
+                            {supervisaoSelecionada &&
+                              usersSupervisaoSelecionada?.map((membro) => (
                                 <option key={membro.id} value={membro.id}>
                                   {membro.first_name}
                                 </option>
@@ -538,7 +561,7 @@ export default function Celulas() {
         {isLoading ? (
           <pre>Loading...</pre>
         ) : (
-          celulas && <ListCelulas data={celulas} />
+          dataCelulas && <ListCelulas data={dataCelulas} />
         )}
       </div>
     </>
