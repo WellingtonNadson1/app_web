@@ -3,6 +3,8 @@ import ListCelulas, { ICelula } from '@/components/ListCelulas'
 import { useSession } from 'next-auth/react'
 import React, { useEffect, useState, useCallback } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import useSWR from 'swr'
 import { z } from 'zod'
 
@@ -67,11 +69,30 @@ export default function Celulas() {
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
   const { register, handleSubmit, reset } = useForm<FormCelula>()
 
-  // Função para fechar as mensagens de sucesso ou erro
-  const closeMessage = () => {
-    setFormSuccess(false)
-    setFormError(false)
-  }
+  // Notification sucsses or error Submit Forms
+  const success = () =>
+    toast.success('Célula Cadastrada!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
+
+  const errorCadastro = () =>
+    toast.error('Error no Cadastro!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
 
   const onSubmit: SubmitHandler<FormCelula> = async (data) => {
     try {
@@ -227,44 +248,21 @@ export default function Celulas() {
 
   return (
     <>
-      {formSuccess && (
-        <div className="relative mx-auto w-full px-2 py-2">
-          <div className="flex justify-between">
-            <div className="relative mx-auto px-2 py-7">
-              <div className="absolute left-1/2 top-1/2 mx-auto -translate-x-1/2 -translate-y-1/2 rounded-lg bg-white p-6">
-                <div>
-                  <p>Formulário enviado com sucesso!</p>
-                  <button
-                    className="mt-2 rounded-md bg-green-600 px-3 py-2 text-sm font-semibold text-white"
-                    onClick={closeMessage}
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
-      {formError && (
-        <div className="relative mx-auto w-full px-2 py-2">
-          <div className="flex justify-between">
-            <div className="relative mx-auto px-2 py-7">
-              <div className="mx-auto rounded-lg bg-white p-6">
-                <div>
-                  <p>Ocorreu um erro ao enviar o formulário.</p>
-                  <button
-                    className="rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white"
-                    onClick={closeMessage}
-                  >
-                    Fechar
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {formSuccess && success()}
+      {formError && errorCadastro()}
+
+      <ToastContainer
+        position="top-right"
+        autoClose={5000}
+        hideProgressBar={false}
+        newestOnTop={false}
+        closeOnClick
+        rtl={false}
+        pauseOnFocusLoss
+        draggable
+        pauseOnHover={false}
+        theme="light"
+      />
 
       {/* Cadastrar Nova Célula */}
       <div className="relative mx-auto w-full px-2 py-2">
