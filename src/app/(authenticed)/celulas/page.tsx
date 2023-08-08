@@ -94,13 +94,6 @@ export default function Celulas() {
     try {
       setIsLoadingSubmitForm(true)
 
-      const memberArray =
-        data.membros?.map((membro) => {
-          return { id: membro }
-        }) ?? []
-
-      data.membros = memberArray.map((membro) => membro.id)
-
       const formatDatatoISO8601 = (dataString: string) => {
         const dataObj = new Date(dataString)
         return dataObj.toISOString()
@@ -240,7 +233,7 @@ export default function Celulas() {
     )
 
   if (!isLoading) {
-    console.log('Carregando')
+    console.log('Carregando...')
   }
 
   return (
