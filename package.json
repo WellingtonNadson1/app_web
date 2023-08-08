@@ -24,6 +24,7 @@
     "lucide-react": "^0.244.0",
     "next": "^13.4.12",
     "next-auth": "^4.22.1",
+    "nextjs-toploader": "^1.4.2",
     "postcss": "8.4.23",
     "react": "^18.2.0",
     "react-day-picker": "^8.7.1",
@@ -34,6 +35,7 @@
     "tailwind-merge": "^1.13.1",
     "tailwindcss": "3.3.2",
     "tailwindcss-animate": "^1.0.6",
+    "valibot": "^0.11.1",
     "zod": "^3.21.4"
   },
   "devDependencies": {

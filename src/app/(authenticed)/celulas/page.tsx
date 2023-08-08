@@ -3,7 +3,7 @@ import ListCelulas, { ICelula } from '@/components/ListCelulas'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify'
+import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -57,7 +57,6 @@ export default function Celulas() {
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
-  const [formError, setFormError] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
@@ -110,16 +109,17 @@ export default function Celulas() {
         },
         body: JSON.stringify(data),
       })
-      setIsLoadingSubmitForm(false)
 
       if (response.ok) {
+        setIsLoadingSubmitForm(false)
         setFormSuccess(true)
+        success()
       } else {
-        setFormError(true)
+        errorCadastro()
       }
     } catch (error) {
       console.log(error)
-      setFormError(true)
+      errorCadastro()
     }
     reset()
   }
@@ -238,22 +238,6 @@ export default function Celulas() {
 
   return (
     <>
-      {formSuccess && success()}
-      {formError && errorCadastro()}
-
-      <ToastContainer
-        position="top-right"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover={false}
-        theme="light"
-      />
-
       {/* Cadastrar Nova Célula */}
       <div className="relative mx-auto w-full px-2 py-2">
         <div className="flex justify-between">
@@ -530,13 +514,42 @@ export default function Celulas() {
                     >
                       Cancelar
                     </button>
-                    <button
-                      type="submit"
-                      disabled={isLoadingSubmitForm}
-                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                    >
-                      {isLoadingSubmitForm ? 'Cadastrando...' : 'Cadastrar'}
-                    </button>
+                    {isLoadingSubmitForm ? (
+                      <button
+                        type="submit"
+                        disabled={isLoadingSubmitForm}
+                        className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      >
+                        <svg
+                          className="mr-3 h-5 w-5 animate-spin text-white"
+                          xmlns="http://www.w3.org/2000/svg"
+                          fill="none"
+                          viewBox="0 0 24 24"
+                        >
+                          <circle
+                            className="opacity-25"
+                            cx="12"
+                            cy="12"
+                            r="10"
+                            stroke="currentColor"
+                            strokeWidth="4"
+                          ></circle>
+                          <path
+                            className="opacity-75"
+                            fill="currentColor"
+                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                          ></path>
+                        </svg>
+                        <span>Cadastrando...</span>
+                      </button>
+                    ) : (
+                      <button
+                        type="submit"
+                        className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      >
+                        <span>Cadastrar</span>
+                      </button>
+                    )}
                   </div>
                 </div>
               </form>

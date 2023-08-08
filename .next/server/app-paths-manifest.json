@@ -1,5 +1,9 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js",
   "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
-  "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js"
+  "/(authenticed)/financeiro/page": "app/(authenticed)/financeiro/page.js",
+  "/(authenticed)/eventos/page": "app/(authenticed)/eventos/page.js",
+  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
+  "/(authenticed)/escolas/page": "app/(authenticed)/escolas/page.js",
+  "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }
