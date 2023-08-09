@@ -1,15 +1,20 @@
 {
   "pages": {
+    "/(authenticed)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/page.js"
+    ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(authenticed)/layout.css",
       "static/chunks/app/(authenticed)/layout.js"
     ],
-    "/(authenticed)/dashboard/page": [
+    "/(login)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
+      "static/chunks/app/(login)/login/page.js"
     ],
     "/(login)/login/layout": [
       "static/chunks/webpack.js",
@@ -17,36 +22,15 @@
       "static/css/app/(login)/login/layout.css",
       "static/chunks/app/(login)/login/layout.js"
     ],
-    "/(login)/login/page": [
+    "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(login)/login/page.js"
+      "static/chunks/app/(authenticed)/dashboard/page.js"
     ],
-    "/(authenticed)/financeiro/page": [
+    "/(authenticed)/novo-membro/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/financeiro/page.js"
-    ],
-    "/(authenticed)/eventos/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/eventos/page.js"
-    ],
-    "/(authenticed)/relatorios/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/relatorios/page.js"
-    ],
-    "/(authenticed)/escolas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/escolas/page.js"
-    ],
-    "/(authenticed)/celulas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/celulas/page.css",
-      "static/chunks/app/(authenticed)/celulas/page.js"
+      "static/chunks/app/(authenticed)/novo-membro/page.js"
     ]
   }
 }

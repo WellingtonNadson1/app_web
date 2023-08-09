@@ -118,7 +118,7 @@ export default function ControlePresenca() {
                     Status
                   </th>
                   <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
-                    Tipo
+                    Cargo
                   </th>
                   <th className="border-b-2 border-green-300 py-2 text-gray-800">
                     P
@@ -165,7 +165,8 @@ export default function ControlePresenca() {
                       <td className="mr-1 text-center">
                         <input
                           id="presente"
-                          name={`presenca-${user.first_name}`}
+                          name={user.first_name}
+                          value={user.id}
                           type="radio"
                           className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
                         />
@@ -173,7 +174,8 @@ export default function ControlePresenca() {
                       <td className="ml-1 text-center">
                         <input
                           id="faltou"
-                          name={`presenca-${user.first_name}`}
+                          name={user.first_name}
+                          value={user.id}
                           type="radio"
                           className="h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
                         />

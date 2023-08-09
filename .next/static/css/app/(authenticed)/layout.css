@@ -1000,9 +1000,6 @@ select {
 .items-center {
   align-items: center;
 }
-.justify-normal {
-  justify-content: normal;
-}
 .justify-start {
   justify-content: flex-start;
 }
@@ -1014,6 +1011,9 @@ select {
 }
 .justify-between {
   justify-content: space-between;
+}
+.justify-around {
+  justify-content: space-around;
 }
 .gap-1 {
   gap: 0.25rem;
@@ -1865,6 +1865,10 @@ select {
 
   .sm\:col-span-6 {
     grid-column: span 6 / span 6;
+  }
+
+  .sm\:mr-2 {
+    margin-right: 0.5rem;
   }
 
   .sm\:block {

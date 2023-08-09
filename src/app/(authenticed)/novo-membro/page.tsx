@@ -4,7 +4,16 @@ import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
-import { Input, date, email, number, object, string } from 'valibot'
+import {
+  Input,
+  array,
+  boolean,
+  date,
+  email,
+  number,
+  object,
+  string,
+} from 'valibot'
 
 const MemberSchema = object({
   first_name: string(),
@@ -16,22 +25,20 @@ const MemberSchema = object({
   telefone: string(),
   escolaridade: string(),
   profissao: string(),
-  batizado: string(),
+  batizado: boolean(),
   date_batizado: date(),
-  is_discipulado: string(),
+  is_discipulado: boolean(),
   discipulador: string(),
-  supervisao: string(),
+  supervisao_pertence: string(),
+  situacao_no_reino: string(),
   celula: string(),
-  escola_principios: string(),
-  escola_fundamentos: string(),
-  escola_disicipulos: string(),
-  escola_oracao: string(),
-  encontro_deus: string(),
-  encontroDD: string(),
+  escolas: array(string()),
+  encontros: array(string()),
   estado_civil: string(),
   nome_conjuge: string(),
   date_casamento: date(),
-  has_filho: string(),
+  date_decisao: date(),
+  has_filho: boolean(),
   quantidade_de_filho: number(),
   cep: string(),
   cidade: string(),
@@ -53,12 +60,34 @@ export interface SupervisaoData {
   celulas: Celula[]
 }
 
+const EscolasSchema = array(
+  object({
+    id: string(),
+    nome: string(),
+  }),
+)
+
+type Escolas = Input<typeof EscolasSchema>
+
+const EncontrosSchema = array(
+  object({
+    id: string(),
+    nome: string(),
+  }),
+)
+
+type Encontros = Input<typeof EncontrosSchema>
+
 export default function NovoMembro() {
   const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/supervisoes`
+  const URLSupervisoes = `https://${hostname}/supervisoes`
+  const URLUsers = `https://${hostname}/users`
+  const URLEscolas = `https://${hostname}/escolas`
+  const URLEncontros = `https://${hostname}/encontros`
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const { register, handleSubmit } = useForm<Member>()
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const { register, handleSubmit, reset } = useForm<Member>()
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
@@ -85,11 +114,12 @@ export default function NovoMembro() {
       theme: 'light',
     })
 
+  // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
+      console.log('Data Form: ', data)
       setIsLoadingSubmitForm(true)
-      const URL = `https://${hostname}/users`
-      const response = await fetch(URL, {
+      const response = await fetch(URLUsers, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -100,6 +130,7 @@ export default function NovoMembro() {
       if (response.ok) {
         setIsLoadingSubmitForm(false)
         successCadastroMembro()
+        reset()
       } else {
         errorCadastroMembro()
       }
@@ -107,8 +138,6 @@ export default function NovoMembro() {
       errorCadastroMembro()
     }
   }
-
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
 
   function fetchWithToken(url: string, token: string) {
     return fetch(url, {
@@ -126,13 +155,24 @@ export default function NovoMembro() {
   //   console.log('Resultado do FetchWithToken: ', data)
   // })
 
+  // GET Supervisoes
   const {
     data: supervisoes,
     error,
     isValidating,
     isLoading,
   } = useSWR<SupervisaoData[]>(
-    [URL, `${session?.user.token}`],
+    [URLSupervisoes, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
+  // GET Escolas
+  const { data: escolas } = useSWR<Escolas>(
+    [URLEscolas, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
+  // GET Encontro
+  const { data: encontros } = useSWR<Encontros>(
+    [URLEncontros, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
@@ -400,18 +440,17 @@ export default function NovoMembro() {
                         <select
                           {...register('batizado')}
                           id="batizado"
-                          name="batizado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={'Sim'}>Sim</option>
-                          <option value={'Nao'}>Não</option>
+                          <option value={'true'}>Sim</option>
+                          <option value={'false'}>Não</option>
                         </select>
                       </div>
                     </div>
 
                     <div className="sm:col-span-3">
                       <label
-                        htmlFor="dateBatizado"
+                        htmlFor="date_batizado"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Dt. Batismo
@@ -419,8 +458,7 @@ export default function NovoMembro() {
                       <div className="mt-2">
                         <input
                           {...register('date_batizado')}
-                          id="dateBatizado"
-                          name="dateBatizado"
+                          id="date_batizado"
                           type="date"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -434,16 +472,29 @@ export default function NovoMembro() {
                       >
                         Discipulado
                       </label>
-                      <div className="mt-3">
-                        <select
-                          {...register('is_discipulado')}
-                          id="is-discipulado"
-                          name="is-discipulado"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        >
-                          <option value={'Sim'}>Sim</option>
-                          <option value={'Nao'}>Não</option>
-                        </select>
+                      <div className="mt-3 flex items-center justify-around">
+                        <div className="flex items-center justify-between gap-2">
+                          <input
+                            {...register('is_discipulado')}
+                            value="Sim"
+                            type="radio"
+                            className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
+                          />
+                          <span className="text-sm font-medium leading-6 text-slate-700">
+                            SIM
+                          </span>
+                        </div>
+                        <div className="flex items-center justify-between gap-2 sm:mr-2">
+                          <input
+                            {...register('is_discipulado')}
+                            value="Não"
+                            type="radio"
+                            className="h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
+                          />
+                          <span className="text-sm font-medium leading-6 text-slate-700">
+                            NÃO
+                          </span>
+                        </div>
                       </div>
                     </div>
 
@@ -458,7 +509,6 @@ export default function NovoMembro() {
                         <input
                           {...register('discipulador')}
                           id="discipulador"
-                          name="discipulador"
                           type="text"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -467,25 +517,28 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-3">
                       <label
-                        htmlFor="supervisao"
+                        htmlFor="supervisao_pertence"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Supervisão
                       </label>
                       <div className="mt-3">
                         <select
-                          {...register('supervisao')}
-                          id="supervisao"
-                          name="supervisao"
+                          {...register('supervisao_pertence')}
+                          id="supervisao_pertence"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           onChange={handleSupervisaoSelecionada}
                         >
-                          {supervisoes &&
+                          <option value={''}>Selecione</option>
+                          {supervisoes ? (
                             supervisoes?.map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
                               </option>
-                            ))}
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
                         </select>
                       </div>
                     </div>
@@ -501,15 +554,18 @@ export default function NovoMembro() {
                         <select
                           {...register('celula')}
                           id="celula"
-                          name="celula"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          {supervisoes &&
+                          <option value={''}>Selecione</option>
+                          {supervisoes ? (
                             celulasFiltradas?.map((celula) => (
                               <option key={celula.id} value={celula.id}>
                                 {celula.nome}
                               </option>
-                            ))}
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
                         </select>
                       </div>
                     </div>
@@ -523,82 +579,33 @@ export default function NovoMembro() {
                           Escolas Feitas
                         </legend>
                         <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('escola_principios')}
-                                id="escolaPrincipios"
-                                name="escolaPrincipios"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="escolaPrincipios"
-                                className="font-medium text-slate-700"
+                          {supervisoes ? (
+                            escolas?.map((escola) => (
+                              <div
+                                key={escola.id}
+                                className="relative flex gap-x-3"
                               >
-                                Princípios
-                              </label>
-                            </div>
-                          </div>
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('escola_fundamentos')}
-                                id="escolaFundamentos"
-                                name="escolaFundamentos"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="escolaFundamentos"
-                                className="font-medium text-slate-700"
-                              >
-                                Fundamentos
-                              </label>
-                            </div>
-                          </div>
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('escola_disicipulos')}
-                                id="escolaDisicipulos"
-                                name="escolaDisicipulos"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="escolaDisicipulos"
-                                className="font-medium text-slate-700"
-                              >
-                                Discípulos
-                              </label>
-                            </div>
-                          </div>
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('escola_oracao')}
-                                id="escolaOracao"
-                                name="escolaOracao"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="escolaOracao"
-                                className="font-medium text-slate-700"
-                              >
-                                Oração
-                              </label>
-                            </div>
-                          </div>
+                                <div className="flex h-6 items-center">
+                                  <input
+                                    {...register('escolas')}
+                                    id={escola.id}
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                                  />
+                                </div>
+                                <div className="text-sm leading-6">
+                                  <label
+                                    htmlFor="escolas"
+                                    className="font-medium text-slate-700"
+                                  >
+                                    {escola.nome}
+                                  </label>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p>Carregando...</p>
+                          )}
                         </div>
                       </fieldset>
                     </div>
@@ -609,47 +616,36 @@ export default function NovoMembro() {
                     <div className="mt-2 sm:col-span-6">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
-                          Encontros Realizados
+                          Encontros Participados
                         </legend>
-                        <div className="mt-4 flex flex-wrap items-center justify-normal gap-x-8">
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('encontro_deus')}
-                                id="encontroDeus"
-                                name="encontroDeus"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="encontroDeus"
-                                className="font-medium text-slate-700"
+                        <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
+                          {supervisoes ? (
+                            encontros?.map((encontro) => (
+                              <div
+                                key={encontro.id}
+                                className="relative flex gap-x-3"
                               >
-                                Encontro com Deus
-                              </label>
-                            </div>
-                          </div>
-                          <div className="relative flex gap-x-3">
-                            <div className="flex h-6 items-center">
-                              <input
-                                {...register('encontroDD')}
-                                id="encontroDD"
-                                name="encontroDD"
-                                type="checkbox"
-                                className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
-                              />
-                            </div>
-                            <div className="text-sm leading-6">
-                              <label
-                                htmlFor="encontroDD"
-                                className="font-medium text-slate-700"
-                              >
-                                Econtro de Disc. c/ Deus
-                              </label>
-                            </div>
-                          </div>
+                                <div className="flex h-6 items-center">
+                                  <input
+                                    {...register('encontros')}
+                                    id={encontro.id}
+                                    type="checkbox"
+                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
+                                  />
+                                </div>
+                                <div className="text-sm leading-6">
+                                  <label
+                                    htmlFor="encontros"
+                                    className="font-medium text-slate-700"
+                                  >
+                                    {encontro.nome}
+                                  </label>
+                                </div>
+                              </div>
+                            ))
+                          ) : (
+                            <p>Carregando...</p>
+                          )}
                         </div>
                       </fieldset>
                     </div>
@@ -675,7 +671,6 @@ export default function NovoMembro() {
                         <select
                           {...register('estado_civil')}
                           id="estadoCivil"
-                          name="estadoCivil"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'Casado'}>Casado(a)</option>
@@ -715,7 +710,6 @@ export default function NovoMembro() {
                         <input
                           {...register('date_casamento')}
                           type="date"
-                          name="dateCasamento"
                           id="dateCasamento"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -733,7 +727,6 @@ export default function NovoMembro() {
                         <select
                           {...register('has_filho')}
                           id="hasFilho"
-                          name="hasFilho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'Sim'}>Sim</option>
@@ -753,7 +746,6 @@ export default function NovoMembro() {
                         <input
                           {...register('quantidade_de_filho')}
                           type="text"
-                          name="quantidadeFilho"
                           id="quantidadeFilho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -783,7 +775,6 @@ export default function NovoMembro() {
                         <input
                           {...register('cep')}
                           type="text"
-                          name="cep"
                           id="cep"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -801,7 +792,6 @@ export default function NovoMembro() {
                         <input
                           {...register('cidade')}
                           type="text"
-                          name="cidade"
                           id="cidade"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -819,7 +809,6 @@ export default function NovoMembro() {
                         <input
                           {...register('estado')}
                           type="text"
-                          name="estado"
                           id="estado"
                           autoComplete="address-level1"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -840,7 +829,6 @@ export default function NovoMembro() {
                         <input
                           {...register('endereco')}
                           type="text"
-                          name="endereco"
                           id="endereco"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -855,9 +843,8 @@ export default function NovoMembro() {
                       </label>
                       <div className="mt-2">
                         <input
-                          {...register('estado')}
+                          {...register('numberHouse')}
                           type="text"
-                          name="numberHouse"
                           id="numberHouse"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -878,7 +865,7 @@ export default function NovoMembro() {
                     <button
                       type="submit"
                       disabled={isLoadingSubmitForm}
-                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
                         className="mr-3 h-5 w-5 animate-spin text-white"
