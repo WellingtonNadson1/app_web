@@ -97,7 +97,24 @@ export default function NovoMembro() {
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const { register, handleSubmit, reset } = useForm<Member>()
+  const { register, handleSubmit, setValue, reset } = useForm<Member>()
+
+  const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === 'true'
+    setValue(`batizado`, value)
+  }
+
+  const handleCahngeIsDiscipulado = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+  ) => {
+    const value = e.target.value === 'true'
+    setValue(`is_discipulado`, value)
+  }
+
+  const handleCahngeHasFilho = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === 'true'
+    setValue(`has_filho`, value)
+  }
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
@@ -215,8 +232,14 @@ export default function NovoMembro() {
 
   console.log('Token User: ', `${session?.user?.token}`)
 
-  if (!isLoading) {
-    console.log('Carregando Page Novo Membro')
+  if (!supervisoes) {
+    return (
+      <div className="z-50 mx-auto w-full px-2 py-2">
+        <div className="mx-auto flex w-full items-center gap-2">
+          <div className="text-white">carregando...</div>
+        </div>
+      </div>
+    )
   }
 
   const handleSupervisaoSelecionada = (
@@ -242,7 +265,7 @@ export default function NovoMembro() {
                     Informações Pessoais
                   </h2>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label
                         htmlFor="first_name"
@@ -250,7 +273,7 @@ export default function NovoMembro() {
                       >
                         Primeiro Nome
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('first_name')}
                           type="text"
@@ -269,7 +292,7 @@ export default function NovoMembro() {
                       >
                         Sobrenome
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('last_name')}
                           type="text"
@@ -288,7 +311,7 @@ export default function NovoMembro() {
                       >
                         CPF
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('cpf')}
                           type="text"
@@ -307,7 +330,7 @@ export default function NovoMembro() {
                       >
                         Dt. Nasc.
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('dateNasc')}
                           type="date"
@@ -326,7 +349,7 @@ export default function NovoMembro() {
                       >
                         Sexo
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <select
                           {...register('sexo')}
                           id="sexo"
@@ -346,7 +369,7 @@ export default function NovoMembro() {
                       >
                         Endereço de Email
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('email')}
                           id="email"
@@ -365,7 +388,7 @@ export default function NovoMembro() {
                       >
                         Telefone
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('telefone')}
                           id="telefone"
@@ -423,7 +446,7 @@ export default function NovoMembro() {
                       >
                         Profissão
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('profissao')}
                           id="profissao"
@@ -436,7 +459,7 @@ export default function NovoMembro() {
                   </div>
 
                   {/* INFORMAÇÕES DO REINO */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
                       <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
@@ -454,6 +477,7 @@ export default function NovoMembro() {
                       <div className="mt-3">
                         <select
                           {...register('batizado')}
+                          onChange={handleCahngeIsBatizado}
                           id="batizado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
@@ -470,7 +494,7 @@ export default function NovoMembro() {
                       >
                         Dt. Batismo
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('date_batizado')}
                           id="date_batizado"
@@ -482,34 +506,21 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-2">
                       <label
-                        htmlFor="is-discipulado"
+                        htmlFor="is_discipulado"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Discipulado
                       </label>
-                      <div className="mt-3 flex items-center justify-around">
-                        <div className="flex items-center justify-between gap-2">
-                          <input
-                            {...register('is_discipulado')}
-                            value="Sim"
-                            type="radio"
-                            className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
-                          />
-                          <span className="text-sm font-medium leading-6 text-slate-700">
-                            SIM
-                          </span>
-                        </div>
-                        <div className="flex items-center justify-between gap-2 sm:mr-2">
-                          <input
-                            {...register('is_discipulado')}
-                            value="Não"
-                            type="radio"
-                            className="h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
-                          />
-                          <span className="text-sm font-medium leading-6 text-slate-700">
-                            NÃO
-                          </span>
-                        </div>
+                      <div className="mt-3">
+                        <select
+                          {...register('is_discipulado')}
+                          onChange={handleCahngeIsDiscipulado}
+                          id="is_discipulado"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        >
+                          <option value={'true'}>Sim</option>
+                          <option value={'false'}>Não</option>
+                        </select>
                       </div>
                     </div>
 
@@ -520,7 +531,7 @@ export default function NovoMembro() {
                       >
                         Discipulador
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('discipulador')}
                           id="discipulador"
@@ -545,7 +556,7 @@ export default function NovoMembro() {
                           onChange={handleSupervisaoSelecionada}
                         >
                           <option value={''}>Selecione</option>
-                          {supervisoes ? (
+                          {!isLoading ? (
                             supervisoes?.map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
@@ -572,7 +583,7 @@ export default function NovoMembro() {
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={''}>Selecione</option>
-                          {supervisoes ? (
+                          {!isLoading ? (
                             celulasFiltradas?.map((celula) => (
                               <option key={celula.id} value={celula.id}>
                                 {celula.nome}
@@ -587,14 +598,14 @@ export default function NovoMembro() {
                   </div>
 
                   {/* Escolas Realizadas */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="mt-2 sm:col-span-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="mt-3 sm:col-span-6">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
                           Escolas Feitas
                         </legend>
                         <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
-                          {supervisoes ? (
+                          {!isLoading ? (
                             escolas?.map((escola) => (
                               <div
                                 key={escola.id}
@@ -627,8 +638,8 @@ export default function NovoMembro() {
                   </div>
 
                   {/* Econtros Realizados */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="mt-2 sm:col-span-3">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="mt-3 sm:col-span-3">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
                           Encontros Participados
@@ -665,7 +676,7 @@ export default function NovoMembro() {
                       </fieldset>
                     </div>
                     {/* Situação No reino */}
-                    <div className="mt-2 sm:col-span-3">
+                    <div className="mt-3 sm:col-span-3">
                       <label
                         htmlFor="situacao_no_reino"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -679,7 +690,7 @@ export default function NovoMembro() {
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={''}>Selecione</option>
-                          {supervisoes ? (
+                          {!isLoading ? (
                             situacoesNoReino?.map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
@@ -694,7 +705,7 @@ export default function NovoMembro() {
                   </div>
 
                   {/* INFORMAÇÕES CONJUGAIS */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
                       <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
@@ -709,7 +720,7 @@ export default function NovoMembro() {
                       >
                         Estado Civil
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <select
                           {...register('estado_civil')}
                           id="estadoCivil"
@@ -730,7 +741,7 @@ export default function NovoMembro() {
                       >
                         Nome Conjuge
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('nome_conjuge')}
                           type="text"
@@ -748,7 +759,7 @@ export default function NovoMembro() {
                       >
                         Data/Casamento
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('date_casamento')}
                           type="date"
@@ -760,19 +771,20 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-2">
                       <label
-                        htmlFor="hasFilho"
+                        htmlFor="has_filho"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Tem Filho?
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <select
                           {...register('has_filho')}
-                          id="hasFilho"
+                          onChange={handleCahngeHasFilho}
+                          id="has_filho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={'Sim'}>Sim</option>
-                          <option value={'Nao'}>Não</option>
+                          <option value={'true'}>Sim</option>
+                          <option value={'false'}>Não</option>
                         </select>
                       </div>
                     </div>
@@ -784,7 +796,7 @@ export default function NovoMembro() {
                       >
                         Qntd. Filho(s)
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('quantidade_de_filho')}
                           type="text"
@@ -796,7 +808,7 @@ export default function NovoMembro() {
                   </div>
 
                   {/* Informações para Visita */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
                       <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
@@ -805,7 +817,7 @@ export default function NovoMembro() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="cep"
@@ -813,7 +825,7 @@ export default function NovoMembro() {
                       >
                         Cep
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('cep')}
                           type="text"
@@ -830,7 +842,7 @@ export default function NovoMembro() {
                       >
                         Cidade
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('cidade')}
                           type="text"
@@ -847,7 +859,7 @@ export default function NovoMembro() {
                       >
                         Estado
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('estado')}
                           type="text"
@@ -859,7 +871,7 @@ export default function NovoMembro() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="col-span-5">
                       <label
                         htmlFor="endereco"
@@ -867,7 +879,7 @@ export default function NovoMembro() {
                       >
                         Endereço
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('endereco')}
                           type="text"
@@ -883,7 +895,7 @@ export default function NovoMembro() {
                       >
                         Nº
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('numberHouse')}
                           type="text"
