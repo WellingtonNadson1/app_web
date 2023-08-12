@@ -78,12 +78,22 @@ const EncontrosSchema = array(
 
 type Encontros = Input<typeof EncontrosSchema>
 
+const SituacoesNoReinoSchema = array(
+  object({
+    id: string(),
+    nome: string(),
+  }),
+)
+
+type SituacoesNoReino = Input<typeof SituacoesNoReinoSchema>
+
 export default function NovoMembro() {
   const hostname = 'app-ibb.onrender.com'
   const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLUsers = `https://${hostname}/users`
   const URLEscolas = `https://${hostname}/escolas`
   const URLEncontros = `https://${hostname}/encontros`
+  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
@@ -173,6 +183,11 @@ export default function NovoMembro() {
   // GET Encontro
   const { data: encontros } = useSWR<Encontros>(
     [URLEncontros, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
+  // GET Situacoes no Reino
+  const { data: situacoesNoReino } = useSWR<SituacoesNoReino>(
+    [URLSituacoesNoReino, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
@@ -613,7 +628,7 @@ export default function NovoMembro() {
 
                   {/* Econtros Realizados */}
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="mt-2 sm:col-span-6">
+                    <div className="mt-2 sm:col-span-3">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
                           Encontros Participados
@@ -648,6 +663,33 @@ export default function NovoMembro() {
                           )}
                         </div>
                       </fieldset>
+                    </div>
+                    {/* Situação No reino */}
+                    <div className="mt-2 sm:col-span-3">
+                      <label
+                        htmlFor="situacao_no_reino"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Situação no Reino
+                      </label>
+                      <div className="mt-3">
+                        <select
+                          {...register('situacao_no_reino')}
+                          id="situacao_no_reino"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        >
+                          <option value={''}>Selecione</option>
+                          {supervisoes ? (
+                            situacoesNoReino?.map((situacao) => (
+                              <option key={situacao.id} value={situacao.id}>
+                                {situacao.nome}
+                              </option>
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
+                        </select>
+                      </div>
                     </div>
                   </div>
 
