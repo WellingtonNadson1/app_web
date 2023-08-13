@@ -33,7 +33,7 @@ export default function Supervisao({
   console.log('Id da Supervisao aqui', supervisaoId)
   const { data: session } = useSession()
 
-  const hostname = 'app-ibb.onrender.com'
+  const hostname = 'backibb-w7ri-dev.fl0.io'
   const URL = `https://${hostname}/supervisoes/${supervisaoId}`
 
   function fetchWithToken(url: string, token: string) {

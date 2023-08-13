@@ -15,7 +15,7 @@ export default function ControleCelulaSupervision({
 }) {
   const { data: session } = useSession()
   console.log(useParams())
-  const hostname = 'app-ibb.onrender.com'
+  const hostname = 'backibb-w7ri-dev.fl0.io'
   const URL = `https://${hostname}/celulas/${celulaId}`
 
   function fetchWithToken(url: string, token: string) {

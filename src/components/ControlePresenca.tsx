@@ -51,7 +51,7 @@ interface User {
 export default function ControlePresenca() {
   const { data: session } = useSession()
 
-  const hostname = 'app-ibb.onrender.com'
+  const hostname = 'backibb-w7ri-dev.fl0.io'
   const URL = `https://${hostname}/users`
 
   function fetchWithToken(url: string, token: string) {

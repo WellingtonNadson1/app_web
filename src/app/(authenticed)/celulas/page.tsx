@@ -50,7 +50,8 @@ export interface SupervisaoData {
 }
 
 export default function Celulas() {
-  const hostname = 'app-ibb.onrender.com'
+  const hostname = 'backibb-w7ri-dev.fl0.io'
+  // const hostname = 'app-ibb.onrender.com'
   const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLCelulas = `https://${hostname}/celulas`
 

@@ -125,7 +125,7 @@ const SituacoesNoReinoSchema = z
 type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>;
 
 export default function NovoMembro() {
-  const hostname = 'app-ibb.onrender.com';
+  const hostname = 'backibb-w7ri-dev.fl0.io';
   const URLSupervisoes = `https://${hostname}/supervisoes`;
   const URLUsers = `https://${hostname}/users`;
   const URLEscolas = `https://${hostname}/escolas`;
@@ -226,18 +226,21 @@ export default function NovoMembro() {
       theme: 'light'
     });
 
+    console.log('Observando o input Nascimento', watch("dateNasc"))
+
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
-      data.dateNasc = formatDatatoISO8601(data.dateNasc)
-      data.date_batizado = formatDatatoISO8601(data.date_batizado)
-      data.date_casamento = formatDatatoISO8601(data.date_casamento)
-      data.date_decisao = formatDatatoISO8601(data.date_decisao)
+      data.dateNasc = formatDatatoISO8601(data.dateNasc);
+      data.date_batizado = formatDatatoISO8601(data.date_batizado);
+      data.date_casamento = formatDatatoISO8601(data.date_casamento);
+      data.date_decisao = formatDatatoISO8601(data.date_decisao);
+
       console.log('Data Form: ', data);
       const response = await fetch(URLUsers, {
         method: 'POST',
@@ -432,9 +435,7 @@ export default function NovoMembro() {
                         <input
                           {...register('dateNasc')}
                           type="datetime-local"
-                          name="dateNasc"
                           id="dateNasc"
-                          autoComplete="family-name"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -907,7 +908,7 @@ export default function NovoMembro() {
                     </div>
                   </div>
                   <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                  <div className="col-span-6">
+                    <div className="col-span-6">
                       <label
                         htmlFor="cargo_lideranca"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -933,7 +934,7 @@ export default function NovoMembro() {
                         </select>
                       </div>
                     </div>
-                    </div>
+                  </div>
 
                   {/* Informações para Visita */}
                   <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
