@@ -1,53 +1,87 @@
 'use client'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { useSession } from 'next-auth/react'
-import React, { useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
-import {
-  Input,
-  array,
-  boolean,
-  date,
-  email,
-  number,
-  object,
-  string,
-} from 'valibot'
+import { z } from 'zod'
 
-const MemberSchema = object({
-  first_name: string(),
-  last_name: string(),
-  cpf: string(),
-  dateNasc: date(),
-  sexo: string(),
-  email: string([email()]),
-  telefone: string(),
-  escolaridade: string(),
-  profissao: string(),
-  batizado: boolean(),
-  date_batizado: date(),
-  is_discipulado: boolean(),
-  discipulador: string(),
-  supervisao_pertence: string(),
-  situacao_no_reino: string(),
-  celula: string(),
-  escolas: array(string()),
-  encontros: array(string()),
-  estado_civil: string(),
-  nome_conjuge: string(),
-  date_casamento: date(),
-  date_decisao: date(),
-  has_filho: boolean(),
-  quantidade_de_filho: number(),
-  cep: string(),
-  cidade: string(),
-  estado: string(),
-  endereco: string(),
-  numberHouse: string(),
-})
+const MemberSchema = z
+  .object({
+    first_name: z.string(),
+    last_name: z.string(),
+    cpf: z.string(),
+    dateNasc: z.date(),
+    sexo: z.string(),
+    email: z.string().email(),
+    telefone: z.string(),
+    escolaridade: z.string(),
+    profissao: z.string(),
+    batizado: z.boolean(),
+    date_batizado: z.date(),
+    is_discipulado: z.boolean(),
+    discipulador: z.string(),
+    supervisao_pertence: z.string(),
+    situacao_no_reino: z.string(),
+    celula: z.string(),
+    escolas: z.string(),
+    encontros: z.string().array(),
+    estado_civil: z.string().array(),
+    nome_conjuge: z.string(),
+    date_casamento: z.date(),
+    date_decisao: z.date(),
+    has_filho: z.boolean(),
+    quantidade_de_filho: z.number(),
+    cep: z.string().min(9, 'Preencha o CEP com no mínimo 9 caracteres'),
+    estado: z.string(),
+    cidade: z.string(),
+    bairro: z.string(),
+    endereco: z.string(),
+    numberHouse: z.string(),
+  })
+  .transform((obj) => ({
+    first_name: obj.first_name,
+    last_name: obj.last_name,
+    cpf: obj.cpf,
+    dateNasc: obj.dateNasc,
+    sexo: obj.sexo,
+    email: obj.email,
+    telefone: obj.telefone,
+    escolaridade: obj.escolaridade,
+    profissao: obj.profissao,
+    batizado: obj.batizado,
+    date_batizado: obj.date_batizado,
+    is_discipulado: obj.is_discipulado,
+    discipulador: obj.discipulador,
+    supervisao_pertence: obj.supervisao_pertence,
+    situacao_no_reino: obj.situacao_no_reino,
+    celula: obj.celula,
+    escolas: obj.escolas,
+    encontros: obj.encontros,
+    estado_civil: obj.estado_civil,
+    nome_conjuge: obj.nome_conjuge,
+    date_casamento: obj.date_casamento,
+    date_decisao: obj.date_decisao,
+    has_filho: obj.has_filho,
+    quantidade_de_filho: obj.quantidade_de_filho,
+    cep: obj.cep,
+    estado: obj.estado,
+    cidade: obj.cidade,
+    bairro: obj.bairro,
+    endereco: obj.endereco,
+    numberHouse: obj.numberHouse,
+  }))
 
-type Member = Input<typeof MemberSchema>
+type Member = z.infer<typeof MemberSchema>
+
+type AddressProps = {
+  uf: string
+  bairro: string
+  logradouro: string
+  complemento: string
+  localidade: string
+}
 
 interface Celula {
   id: string
@@ -60,32 +94,32 @@ export interface SupervisaoData {
   celulas: Celula[]
 }
 
-const EscolasSchema = array(
-  object({
-    id: string(),
-    nome: string(),
-  }),
-)
+const EscolasSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+  })
+  .array()
 
-type Escolas = Input<typeof EscolasSchema>
+type Escolas = z.infer<typeof EscolasSchema>
 
-const EncontrosSchema = array(
-  object({
-    id: string(),
-    nome: string(),
-  }),
-)
+const EncontrosSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+  })
+  .array()
 
-type Encontros = Input<typeof EncontrosSchema>
+type Encontros = z.infer<typeof EncontrosSchema>
 
-const SituacoesNoReinoSchema = array(
-  object({
-    id: string(),
-    nome: string(),
-  }),
-)
+const SituacoesNoReinoSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+  })
+  .array()
 
-type SituacoesNoReino = Input<typeof SituacoesNoReinoSchema>
+type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
 
 export default function NovoMembro() {
   const hostname = 'app-ibb.onrender.com'
@@ -95,9 +129,55 @@ export default function NovoMembro() {
   const URLEncontros = `https://${hostname}/encontros`
   const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`
   const { data: session } = useSession()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const { register, handleSubmit, setValue, reset } = useForm<Member>()
+  const { register, handleSubmit, setValue, reset, formState, watch } =
+    useForm<Member>({
+      resolver: zodResolver(MemberSchema),
+    })
+
+  const { isSubmitting } = formState
+
+  const zipCode = watch('cep')
+
+  const handleSetDataAddress = useCallback(
+    (data: AddressProps) => {
+      setValue('cidade', data.localidade)
+      setValue('endereco', data.logradouro)
+      setValue('estado', data.uf)
+      setValue('bairro', data.bairro)
+    },
+    [setValue],
+  )
+
+  const handleFetchCep = useCallback(
+    async (zipCode: string) => {
+      const response = await fetch(`httpa://viacep.com.br/ws/${zipCode}/json/`)
+      const result = await response.json()
+
+      handleSetDataAddress(result)
+    },
+    [handleSetDataAddress],
+  )
+
+  useEffect(() => {
+    // Usa um valor padrão vazio se zipCode for undefined
+    setValue('cep', zipCodeMask(zipCode ?? ''))
+    function zipCodeMask(cep: string): string {
+      // Extrai os dígitos do cep usando uma expressão regular
+      const digits = cep.match(/\d/g)
+      // Verifica se o cep tem 9 caracteres
+      if (digits && digits.length === 9) {
+        // Formata os dígitos com a máscara 00000-000
+        return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
+      } else {
+        // Retorna uma mensagem de erro se o cep for inválido
+        return 'Cep inválido'
+      }
+    }
+    // Usa um valor padrão 0 se zipCode for undefined
+    if ((zipCode ?? '').length !== 9) return
+    handleFetchCep(zipCode)
+  }, [handleFetchCep, zipCode, setValue])
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -145,7 +225,6 @@ export default function NovoMembro() {
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
       console.log('Data Form: ', data)
-      setIsLoadingSubmitForm(true)
       const response = await fetch(URLUsers, {
         method: 'POST',
         headers: {
@@ -155,7 +234,6 @@ export default function NovoMembro() {
         body: JSON.stringify(data),
       })
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
         successCadastroMembro()
         reset()
       } else {
@@ -166,8 +244,8 @@ export default function NovoMembro() {
     }
   }
 
-  function fetchWithToken(url: string, token: string) {
-    return fetch(url, {
+  async function fetchWithToken(url: string, token: string) {
+    return await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
@@ -248,7 +326,7 @@ export default function NovoMembro() {
     setSupervisaoSelecionada(event.target.value)
   }
 
-  const celulasFiltradas = supervisoes?.find(
+  const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao) => supervisao.id === supervisaoSelecionada,
   )?.celulas
 
@@ -557,7 +635,7 @@ export default function NovoMembro() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            supervisoes?.map((supervisao) => (
+                            (supervisoes ?? []).map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
                               </option>
@@ -584,7 +662,7 @@ export default function NovoMembro() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            celulasFiltradas?.map((celula) => (
+                            (celulasFiltradas ?? []).map((celula) => (
                               <option key={celula.id} value={celula.id}>
                                 {celula.nome}
                               </option>
@@ -606,7 +684,7 @@ export default function NovoMembro() {
                         </legend>
                         <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
                           {!isLoading ? (
-                            escolas?.map((escola) => (
+                            (escolas ?? []).map((escola) => (
                               <div
                                 key={escola.id}
                                 className="relative flex gap-x-3"
@@ -646,7 +724,7 @@ export default function NovoMembro() {
                         </legend>
                         <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
                           {supervisoes ? (
-                            encontros?.map((encontro) => (
+                            (encontros ?? []).map((encontro, index) => (
                               <div
                                 key={encontro.id}
                                 className="relative flex gap-x-3"
@@ -654,6 +732,7 @@ export default function NovoMembro() {
                                 <div className="flex h-6 items-center">
                                   <input
                                     {...register('encontros')}
+                                    name={`encontros.${index}.nome`}
                                     id={encontro.id}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
@@ -664,7 +743,7 @@ export default function NovoMembro() {
                                     htmlFor="encontros"
                                     className="font-medium text-slate-700"
                                   >
-                                    {encontro.nome}
+                                    {`encontros.${index}.nome`}
                                   </label>
                                 </div>
                               </div>
@@ -691,7 +770,7 @@ export default function NovoMembro() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            situacoesNoReino?.map((situacao) => (
+                            (situacoesNoReino ?? []).map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
                               </option>
@@ -817,7 +896,7 @@ export default function NovoMembro() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="cep"
@@ -830,6 +909,7 @@ export default function NovoMembro() {
                           {...register('cep')}
                           type="text"
                           id="cep"
+                          maxLength={9}
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -871,8 +951,24 @@ export default function NovoMembro() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                    <div className="col-span-5">
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="col-span-2">
+                      <label
+                        htmlFor="bairro"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Bairro
+                      </label>
+                      <div className="mt-3">
+                        <input
+                          {...register('bairro')}
+                          type="text"
+                          id="bairro"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-3">
                       <label
                         htmlFor="endereco"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -915,10 +1011,10 @@ export default function NovoMembro() {
                   >
                     Cancelar
                   </button>
-                  {isLoadingSubmitForm ? (
+                  {isSubmitting ? (
                     <button
                       type="submit"
-                      disabled={isLoadingSubmitForm}
+                      disabled={isSubmitting}
                       className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
