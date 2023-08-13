@@ -25,6 +25,7 @@ const MemberSchema = z
     discipulador: z.string(),
     supervisao_pertence: z.string(),
     situacao_no_reino: z.string(),
+    cargo_lideranca: z.string(),
     celula: z.string(),
     escolas: z.string(),
     encontros: z.string().array(),
@@ -57,6 +58,7 @@ const MemberSchema = z
     discipulador: obj.discipulador,
     supervisao_pertence: obj.supervisao_pertence,
     situacao_no_reino: obj.situacao_no_reino,
+    cargo_lideranca: obj.cargo_lideranca,
     celula: obj.celula,
     escolas: obj.escolas,
     encontros: obj.encontros,
@@ -129,6 +131,8 @@ export default function NovoMembro() {
   const URLEscolas = `https://${hostname}/escolas`;
   const URLEncontros = `https://${hostname}/encontros`;
   const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`;
+  const URLCagosLideranca = `https://${hostname}/cargoslideranca`;
+
   const { data: session } = useSession();
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const { register, handleSubmit, setValue, reset, formState, watch } =
@@ -293,6 +297,12 @@ export default function NovoMembro() {
   // GET Situacoes no Reino
   const { data: situacoesNoReino } = useSWR<SituacoesNoReino>(
     [URLSituacoesNoReino, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token)
+  );
+
+  // GET Cargos de Lideranca
+  const { data: cargoLideranca } = useSWR<SituacoesNoReino>(
+    [URLCagosLideranca, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token)
   );
 
@@ -1008,6 +1018,32 @@ export default function NovoMembro() {
                           id="numberHouse"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
+                      </div>
+                    </div>
+                    <div className="col-span-6">
+                      <label
+                        htmlFor="cargo_lideranca"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Cargo de Liderança
+                      </label>
+                      <div className="mt-3">
+                        <select
+                          {...register('cargo_lideranca')}
+                          id="cargo_lideranca"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        >
+                          <option value={''}>Selecione</option>
+                          {!isLoading ? (
+                            (cargoLideranca ?? []).map((cargo) => (
+                              <option key={cargo.id} value={cargo.id}>
+                                {cargo.nome}
+                              </option>
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
+                        </select>
                       </div>
                     </div>
                   </div>
