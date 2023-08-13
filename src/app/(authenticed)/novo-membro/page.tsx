@@ -431,7 +431,7 @@ export default function NovoMembro() {
                       <div className="mt-3">
                         <input
                           {...register('dateNasc')}
-                          type="date"
+                          type="datetime-local"
                           name="dateNasc"
                           id="dateNasc"
                           autoComplete="family-name"
@@ -596,7 +596,7 @@ export default function NovoMembro() {
                         <input
                           {...register('date_batizado')}
                           id="date_batizado"
-                          type="date"
+                          type="datetime-local"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -713,6 +713,7 @@ export default function NovoMembro() {
                                   <input
                                     {...register('escolas')}
                                     id={escola.id}
+                                    value={escola.id}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
                                   />
@@ -744,7 +745,7 @@ export default function NovoMembro() {
                         </legend>
                         <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
                           {supervisoes ? (
-                            (encontros ?? []).map((encontro, index) => (
+                            (encontros ?? []).map((encontro) => (
                               <div
                                 key={encontro.id}
                                 className="relative flex gap-x-3"
@@ -752,7 +753,7 @@ export default function NovoMembro() {
                                 <div className="flex h-6 items-center">
                                   <input
                                     {...register('encontros')}
-                                    name={`encontros.${index}.nome`}
+                                    value={encontro.id}
                                     id={encontro.id}
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-blue-600 focus:ring-blue-600"
@@ -763,7 +764,7 @@ export default function NovoMembro() {
                                     htmlFor="encontros"
                                     className="font-medium text-slate-700"
                                   >
-                                    {`encontros.${index}.nome`}
+                                    {encontro.nome}
                                   </label>
                                 </div>
                               </div>
@@ -861,7 +862,7 @@ export default function NovoMembro() {
                       <div className="mt-3">
                         <input
                           {...register('date_casamento')}
-                          type="date"
+                          type="datetime-local"
                           id="dateCasamento"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -905,6 +906,34 @@ export default function NovoMembro() {
                       </div>
                     </div>
                   </div>
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="col-span-6">
+                      <label
+                        htmlFor="cargo_lideranca"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Cargo de Liderança
+                      </label>
+                      <div className="mt-3">
+                        <select
+                          {...register('cargo_lideranca')}
+                          id="cargo_lideranca"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        >
+                          <option value={''}>Selecione</option>
+                          {!isLoading ? (
+                            (cargoLideranca ?? []).map((cargo) => (
+                              <option key={cargo.id} value={cargo.id}>
+                                {cargo.nome}
+                              </option>
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                    </div>
 
                   {/* Informações para Visita */}
                   <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
@@ -1018,32 +1047,6 @@ export default function NovoMembro() {
                           id="numberHouse"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
-                      </div>
-                    </div>
-                    <div className="col-span-6">
-                      <label
-                        htmlFor="cargo_lideranca"
-                        className="block text-sm font-medium leading-6 text-slate-700"
-                      >
-                        Cargo de Liderança
-                      </label>
-                      <div className="mt-3">
-                        <select
-                          {...register('cargo_lideranca')}
-                          id="cargo_lideranca"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        >
-                          <option value={''}>Selecione</option>
-                          {!isLoading ? (
-                            (cargoLideranca ?? []).map((cargo) => (
-                              <option key={cargo.id} value={cargo.id}>
-                                {cargo.nome}
-                              </option>
-                            ))
-                          ) : (
-                            <option value={''}>Carregando...</option>
-                          )}
-                        </select>
                       </div>
                     </div>
                   </div>

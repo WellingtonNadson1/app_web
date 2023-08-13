@@ -6,10 +6,10 @@
       "static/css/app/(authenticed)/layout.css",
       "static/chunks/app/(authenticed)/layout.js"
     ],
-    "/(authenticed)/novo-membro/page": [
+    "/(authenticed)/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/novo-membro/page.js"
+      "static/chunks/app/(authenticed)/page.js"
     ],
     "/(login)/login/page": [
       "static/chunks/webpack.js",
@@ -26,6 +26,11 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/dashboard/page.js"
+    ],
+    "/(authenticed)/novo-membro/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/novo-membro/page.js"
     ]
   }
 }
