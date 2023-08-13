@@ -160,24 +160,24 @@ export default function NovoMembro() {
   )
 
   useEffect(() => {
-    // Usa um valor padrão vazio se zipCode for undefined
-    setValue('cep', zipCodeMask(zipCode ?? ''))
-    function zipCodeMask(cep: string): string {
-      // Extrai os dígitos do cep usando uma expressão regular
-      const digits = cep.match(/\d/g)
-      // Verifica se o cep tem 9 caracteres
-      if (digits && digits.length === 9) {
-        // Formata os dígitos com a máscara 00000-000
-        return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
-      } else {
-        // Retorna uma mensagem de erro se o cep for inválido
-        return 'Cep inválido'
-      }
+    if (!zipCode || zipCode.length !== 9) {
+      return
     }
-    // Usa um valor padrão 0 se zipCode for undefined
-    if ((zipCode ?? '').length !== 9) return
+
+    const formattedCep = zipCodeMask(zipCode)
+    setValue('cep', formattedCep)
+
     handleFetchCep(zipCode)
-  }, [handleFetchCep, zipCode, setValue])
+  }, [zipCode, setValue, handleFetchCep])
+
+  function zipCodeMask(cep: string): string {
+    const digits = cep.match(/\d/g)
+    if (digits && digits.length === 9) {
+      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
+    } else {
+      return cep // Mantém o valor original se for inválido
+    }
+  }
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
