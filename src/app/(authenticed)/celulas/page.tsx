@@ -10,15 +10,17 @@ import { z } from 'zod'
 
 const schemaFormCelula = z.object({
   nome: z.string(),
-  cep: z.string(),
-  cidade: z.string(),
-  date_inicio: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
-  endereco: z.string(),
-  estado: z.string(),
-  numero: z.string(),
   lider: z.string().uuid(),
   supervisao: z.string().uuid(),
+  cep: z.string(),
+  cidade: z.string(),
+  estado: z.string(),
+  bairro: z.string(),
+  endereco: z.string(),
+  numero_casa: z.string(),
+  date_inicio: z.string().datetime(),
+  date_multipicar: z.string().datetime(),
+  date_que_ocorre: z.string().datetime(),
   membros: z.string().uuid().array(),
 })
 
@@ -100,6 +102,7 @@ export default function Celulas() {
       }
 
       data.date_inicio = formatDatatoISO8601(data.date_inicio)
+      data.date_que_ocorre = formatDatatoISO8601(data.date_que_ocorre)
       data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
 
       const response = await fetch(URLCelulas, {
@@ -252,7 +255,7 @@ export default function Celulas() {
                   </h2>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
-                    <div className="sm:col-span-4">
+                    <div className="sm:col-span-3">
                       <label
                         htmlFor="nome"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -271,7 +274,26 @@ export default function Celulas() {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
+                      <label
+                        htmlFor="date_que_ocorre"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Dia que Ocorre
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          {...register('date_que_ocorre')}
+                          type="datetime-local"
+                          name="date_que_ocorre"
+                          id="date_que_ocorre"
+                          autoComplete="family-name"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="sm:col-span-1">
                       <label
                         htmlFor="date_inicio"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -290,7 +312,7 @@ export default function Celulas() {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-2">
+                    <div className="sm:col-span-1">
                       <label
                         htmlFor="date_multipicar"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -471,7 +493,25 @@ export default function Celulas() {
                   </div>
 
                   <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
-                    <div className="col-span-5">
+                    <div className="sm:col-span-2">
+                      <label
+                        htmlFor="bairro"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        bairro
+                      </label>
+                      <div className="mt-2">
+                        <input
+                          {...register('bairro')}
+                          type="text"
+                          name="bairro"
+                          id="bairro"
+                          autoComplete="address-level1"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        />
+                      </div>
+                    </div>
+                    <div className="col-span-3">
                       <label
                         htmlFor="endereco"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -490,17 +530,17 @@ export default function Celulas() {
                     </div>
                     <div className="col-span-1">
                       <label
-                        htmlFor="numero"
+                        htmlFor="numero_casa"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Nº
                       </label>
                       <div className="mt-2">
                         <input
-                          {...register('numero')}
+                          {...register('numero_casa')}
                           type="text"
-                          name="numero"
-                          id="numero"
+                          name="numero_casa"
+                          id="numero_casa"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
