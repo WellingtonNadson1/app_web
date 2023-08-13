@@ -151,7 +151,7 @@ export default function NovoMembro() {
 
   const handleFetchCep = useCallback(
     async (zipCode: string) => {
-      const response = await fetch(`httpa://viacep.com.br/ws/${zipCode}/json/`)
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
       const result = await response.json()
 
       handleSetDataAddress(result)
