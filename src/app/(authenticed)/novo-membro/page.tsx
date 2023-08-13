@@ -1,11 +1,12 @@
-'use client'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useSession } from 'next-auth/react'
-import React, { useCallback, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
-import useSWR from 'swr'
-import { z } from 'zod'
+/* eslint-disable prettier/prettier */
+'use client';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'react-toastify';
+import useSWR from 'swr';
+import { z } from 'zod';
 
 const MemberSchema = z
   .object({
@@ -38,7 +39,7 @@ const MemberSchema = z
     cidade: z.string(),
     bairro: z.string(),
     endereco: z.string(),
-    numberHouse: z.string(),
+    numberHouse: z.string()
   })
   .transform((obj) => ({
     first_name: obj.first_name,
@@ -70,131 +71,131 @@ const MemberSchema = z
     cidade: obj.cidade,
     bairro: obj.bairro,
     endereco: obj.endereco,
-    numberHouse: obj.numberHouse,
-  }))
+    numberHouse: obj.numberHouse
+  }));
 
-type Member = z.infer<typeof MemberSchema>
+type Member = z.infer<typeof MemberSchema>;
 
 type AddressProps = {
-  uf: string
-  bairro: string
-  logradouro: string
-  complemento: string
-  localidade: string
-}
+  uf: string;
+  bairro: string;
+  logradouro: string;
+  complemento: string;
+  localidade: string;
+};
 
 interface Celula {
-  id: string
-  nome: string
+  id: string;
+  nome: string;
 }
 
 export interface SupervisaoData {
-  id: string
-  nome: string
-  celulas: Celula[]
+  id: string;
+  nome: string;
+  celulas: Celula[];
 }
 
 const EscolasSchema = z
   .object({
     id: z.string(),
-    nome: z.string(),
+    nome: z.string()
   })
-  .array()
+  .array();
 
-type Escolas = z.infer<typeof EscolasSchema>
+type Escolas = z.infer<typeof EscolasSchema>;
 
 const EncontrosSchema = z
   .object({
     id: z.string(),
-    nome: z.string(),
+    nome: z.string()
   })
-  .array()
+  .array();
 
-type Encontros = z.infer<typeof EncontrosSchema>
+type Encontros = z.infer<typeof EncontrosSchema>;
 
 const SituacoesNoReinoSchema = z
   .object({
     id: z.string(),
-    nome: z.string(),
+    nome: z.string()
   })
-  .array()
+  .array();
 
-type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
+type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>;
 
 export default function NovoMembro() {
-  const hostname = 'app-ibb.onrender.com'
-  const URLSupervisoes = `https://${hostname}/supervisoes`
-  const URLUsers = `https://${hostname}/users`
-  const URLEscolas = `https://${hostname}/escolas`
-  const URLEncontros = `https://${hostname}/encontros`
-  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`
-  const { data: session } = useSession()
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const hostname = 'app-ibb.onrender.com';
+  const URLSupervisoes = `https://${hostname}/supervisoes`;
+  const URLUsers = `https://${hostname}/users`;
+  const URLEscolas = `https://${hostname}/escolas`;
+  const URLEncontros = `https://${hostname}/encontros`;
+  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`;
+  const { data: session } = useSession();
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const { register, handleSubmit, setValue, reset, formState, watch } =
     useForm<Member>({
-      resolver: zodResolver(MemberSchema),
-    })
+      resolver: zodResolver(MemberSchema)
+    });
 
-  const { isSubmitting } = formState
+  const { isSubmitting } = formState;
 
-  const zipCode = watch('cep')
+  const zipCode = watch('cep');
 
   const handleSetDataAddress = useCallback(
     (data: AddressProps) => {
-      setValue('cidade', data.localidade)
-      setValue('endereco', data.logradouro)
-      setValue('estado', data.uf)
-      setValue('bairro', data.bairro)
+      setValue('cidade', data.localidade);
+      setValue('endereco', data.logradouro);
+      setValue('estado', data.uf);
+      setValue('bairro', data.bairro);
     },
-    [setValue],
-  )
+    [setValue]
+  );
 
   const handleFetchCep = useCallback(
     async (zipCode: string) => {
-      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
-      const result = await response.json()
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+      const result = await response.json();
 
-      handleSetDataAddress(result)
+      handleSetDataAddress(result);
     },
-    [handleSetDataAddress],
-  )
+    [handleSetDataAddress]
+  );
 
   useEffect(() => {
     if (!zipCode || zipCode.length !== 9) {
-      return
+      return;
     }
 
-    const formattedCep = zipCodeMask(zipCode)
-    setValue('cep', formattedCep)
+    const formattedCep = zipCodeMask(zipCode);
+    setValue('cep', formattedCep);
 
-    handleFetchCep(zipCode)
-  }, [zipCode, setValue, handleFetchCep])
+    handleFetchCep(zipCode);
+  }, [zipCode, setValue, handleFetchCep]);
 
   function zipCodeMask(cep: string): string {
-    const digits = cep.match(/\d/g)
+    const digits = cep.match(/\d/g);
     if (digits && digits.length === 9) {
-      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
+      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`;
     } else {
-      return cep // Mantém o valor original se for inválido
+      return cep; // Mantém o valor original se for inválido
     }
   }
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true'
-    setValue(`batizado`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`batizado`, value);
+  };
 
   const handleCahngeIsDiscipulado = (
-    e: React.ChangeEvent<HTMLSelectElement>,
+    e: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    const value = e.target.value === 'true'
-    setValue(`is_discipulado`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`is_discipulado`, value);
+  };
 
   const handleCahngeHasFilho = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true'
-    setValue(`has_filho`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`has_filho`, value);
+  };
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
@@ -206,8 +207,8 @@ export default function NovoMembro() {
       pauseOnHover: false,
       draggable: true,
       progress: undefined,
-      theme: 'light',
-    })
+      theme: 'light'
+    });
 
   const errorCadastroMembro = () =>
     toast.error('Error no Cadastro!', {
@@ -218,42 +219,42 @@ export default function NovoMembro() {
       pauseOnHover: false,
       draggable: true,
       progress: undefined,
-      theme: 'light',
-    })
+      theme: 'light'
+    });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
-      console.log('Data Form: ', data)
+      console.log('Data Form: ', data);
       const response = await fetch(URLUsers, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user.token}`
         },
-        body: JSON.stringify(data),
-      })
+        body: JSON.stringify(data)
+      });
       if (response.ok) {
-        successCadastroMembro()
-        reset()
+        successCadastroMembro();
+        reset();
       } else {
-        errorCadastroMembro()
+        errorCadastroMembro();
       }
     } catch (error) {
-      errorCadastroMembro()
+      errorCadastroMembro();
     }
-  }
+  };
 
   async function fetchWithToken(url: string, token: string) {
     return await fetch(url, {
       headers: {
-        Authorization: `Bearer ${token}`,
-      },
+        Authorization: `Bearer ${token}`
+      }
     })
       .then((response) => response.json())
       .then((data) => {
-        return data
-      })
+        return data;
+      });
   }
 
   // fetchWithToken(URL, `${session?.user.token}`).then((data) => {
@@ -265,29 +266,29 @@ export default function NovoMembro() {
     data: supervisoes,
     error,
     isValidating,
-    isLoading,
+    isLoading
   } = useSWR<SupervisaoData[]>(
     [URLSupervisoes, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+    ([url, token]: [string, string]) => fetchWithToken(url, token)
+  );
   // GET Escolas
   const { data: escolas } = useSWR<Escolas>(
     [URLEscolas, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+    ([url, token]: [string, string]) => fetchWithToken(url, token)
+  );
   // GET Encontro
   const { data: encontros } = useSWR<Encontros>(
     [URLEncontros, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+    ([url, token]: [string, string]) => fetchWithToken(url, token)
+  );
   // GET Situacoes no Reino
   const { data: situacoesNoReino } = useSWR<SituacoesNoReino>(
     [URLSituacoesNoReino, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+    ([url, token]: [string, string]) => fetchWithToken(url, token)
+  );
 
   if (isValidating) {
-    console.log('Is Validating', isValidating)
+    console.log('Is Validating', isValidating);
   }
 
   if (error)
@@ -297,7 +298,7 @@ export default function NovoMembro() {
           <div>failed to load</div>
         </div>
       </div>
-    )
+    );
 
   if (isLoading)
     return (
@@ -306,9 +307,9 @@ export default function NovoMembro() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    )
+    );
 
-  console.log('Token User: ', `${session?.user?.token}`)
+  console.log('Token User: ', `${session?.user?.token}`);
 
   if (!supervisoes) {
     return (
@@ -317,18 +318,18 @@ export default function NovoMembro() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    )
+    );
   }
 
   const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>,
+    event: React.ChangeEvent<HTMLSelectElement>
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   const celulasFiltradas = (supervisoes ?? []).find(
-    (supervisao) => supervisao.id === supervisaoSelecionada,
-  )?.celulas
+    (supervisao) => supervisao.id === supervisaoSelecionada
+  )?.celulas;
 
   return (
     <>
@@ -1054,5 +1055,5 @@ export default function NovoMembro() {
         </div>
       </div>
     </>
-  )
+  );
 }
