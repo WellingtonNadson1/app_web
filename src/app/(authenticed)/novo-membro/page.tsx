@@ -13,14 +13,14 @@ const MemberSchema = z
     first_name: z.string(),
     last_name: z.string(),
     cpf: z.string(),
-    dateNasc: z.date(),
+    dateNasc: z.string().datetime(),
     sexo: z.string(),
     email: z.string().email(),
     telefone: z.string(),
     escolaridade: z.string(),
     profissao: z.string(),
     batizado: z.boolean(),
-    date_batizado: z.date(),
+    date_batizado: z.string().datetime(),
     is_discipulado: z.boolean(),
     discipulador: z.string(),
     supervisao_pertence: z.string(),
@@ -30,8 +30,8 @@ const MemberSchema = z
     encontros: z.string().array(),
     estado_civil: z.string().array(),
     nome_conjuge: z.string(),
-    date_casamento: z.date(),
-    date_decisao: z.date(),
+    date_casamento: z.string().datetime(),
+    date_decisao: z.string().datetime(),
     has_filho: z.boolean(),
     quantidade_de_filho: z.number(),
     cep: z.string().min(9, 'Preencha o CEP com no mínimo 9 caracteres'),
@@ -225,6 +225,15 @@ export default function NovoMembro() {
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
+      const formatDatatoISO8601 = (dataString: string) => {
+        const dataObj = new Date(dataString)
+        return dataObj.toISOString()
+      }
+
+      data.dateNasc = formatDatatoISO8601(data.dateNasc)
+      data.date_batizado = formatDatatoISO8601(data.date_batizado)
+      data.date_casamento = formatDatatoISO8601(data.date_casamento)
+      data.date_decisao = formatDatatoISO8601(data.date_decisao)
       console.log('Data Form: ', data);
       const response = await fetch(URLUsers, {
         method: 'POST',
