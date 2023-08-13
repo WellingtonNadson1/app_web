@@ -42,39 +42,6 @@ const MemberSchema = z
     endereco: z.string(),
     numberHouse: z.string()
   })
-  .transform((obj) => ({
-    first_name: obj.first_name,
-    last_name: obj.last_name,
-    cpf: obj.cpf,
-    dateNasc: obj.dateNasc,
-    sexo: obj.sexo,
-    email: obj.email,
-    telefone: obj.telefone,
-    escolaridade: obj.escolaridade,
-    profissao: obj.profissao,
-    batizado: obj.batizado,
-    date_batizado: obj.date_batizado,
-    is_discipulado: obj.is_discipulado,
-    discipulador: obj.discipulador,
-    supervisao_pertence: obj.supervisao_pertence,
-    situacao_no_reino: obj.situacao_no_reino,
-    cargo_lideranca: obj.cargo_lideranca,
-    celula: obj.celula,
-    escolas: obj.escolas,
-    encontros: obj.encontros,
-    estado_civil: obj.estado_civil,
-    nome_conjuge: obj.nome_conjuge,
-    date_casamento: obj.date_casamento,
-    date_decisao: obj.date_decisao,
-    has_filho: obj.has_filho,
-    quantidade_de_filho: obj.quantidade_de_filho,
-    cep: obj.cep,
-    estado: obj.estado,
-    cidade: obj.cidade,
-    bairro: obj.bairro,
-    endereco: obj.endereco,
-    numberHouse: obj.numberHouse
-  }));
 
 type Member = z.infer<typeof MemberSchema>;
 
