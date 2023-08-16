@@ -52,8 +52,8 @@ export interface SupervisaoData {
 }
 
 export default function Celulas() {
-  const hostname = 'backibb-w7ri-dev.fl0.io'
-  // const hostname = 'app-ibb.onrender.com'
+  // const hostname = 'backibb-w7ri-dev.fl0.io'
+  const hostname = 'app-ibb.onrender.com'
   const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLCelulas = `https://${hostname}/celulas`
 
@@ -254,7 +254,7 @@ export default function Celulas() {
                     Cadastro de Célula
                   </h2>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
+                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-9">
                     <div className="sm:col-span-3">
                       <label
                         htmlFor="nome"
@@ -274,7 +274,7 @@ export default function Celulas() {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-2">
                       <label
                         htmlFor="date_que_ocorre"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -293,7 +293,7 @@ export default function Celulas() {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-2">
                       <label
                         htmlFor="date_inicio"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -312,7 +312,7 @@ export default function Celulas() {
                       </div>
                     </div>
 
-                    <div className="sm:col-span-1">
+                    <div className="sm:col-span-2">
                       <label
                         htmlFor="date_multipicar"
                         className="block text-sm font-medium leading-6 text-slate-700"

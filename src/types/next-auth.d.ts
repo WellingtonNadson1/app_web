@@ -12,7 +12,7 @@ declare module 'next-auth' {
       first_name: string
       last_name: string
       cpf: string
-      dateNasc: string | Date
+      date_nascimento: string | Date
       sexo: string
       telefone: string
       escolaridade: string

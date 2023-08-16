@@ -20,7 +20,7 @@ interface User {
   first_name: string
   last_name: string
   cpf: string
-  dateNasc: string | Date
+  date_nascimento: string | Date
   sexo: string
   telefone: string
   escolaridade: string
@@ -51,7 +51,7 @@ interface User {
 export default function ControlePresenca() {
   const { data: session } = useSession()
 
-  const hostname = 'backibb-w7ri-dev.fl0.io'
+  const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/users`
 
   function fetchWithToken(url: string, token: string) {

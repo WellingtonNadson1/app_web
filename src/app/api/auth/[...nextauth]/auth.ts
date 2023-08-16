@@ -18,7 +18,7 @@ export const authOptions: NextAuthOptions = {
         if (!credentials!.email || !credentials!.password) {
           return null
         }
-        const hostname = 'backibb-w7ri-dev.fl0.io'
+        const hostname = 'app-ibb.onrender.com'
         const URL = `https://${hostname}/login`
         const response = await fetch(URL, {
           method: 'POST',

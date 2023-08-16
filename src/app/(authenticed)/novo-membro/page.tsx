@@ -1,172 +1,170 @@
-/* eslint-disable prettier/prettier */
-'use client';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { useSession } from 'next-auth/react';
-import React, { useCallback, useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-toastify';
-import useSWR from 'swr';
-import { z } from 'zod';
+'use client'
+import { useSession } from 'next-auth/react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { toast } from 'react-toastify'
+import useSWR from 'swr'
+import { z } from 'zod'
 
-const MemberSchema = z
-  .object({
-    first_name: z.string(),
-    last_name: z.string(),
-    cpf: z.string(),
-    dateNasc: z.string().datetime(),
-    sexo: z.string(),
-    email: z.string().email(),
-    telefone: z.string(),
-    escolaridade: z.string(),
-    profissao: z.string(),
-    batizado: z.boolean(),
-    date_batizado: z.string().datetime(),
-    is_discipulado: z.boolean(),
-    discipulador: z.string(),
-    supervisao_pertence: z.string(),
-    situacao_no_reino: z.string(),
-    cargo_lideranca: z.string(),
-    celula: z.string(),
-    escolas: z.string(),
-    encontros: z.string().array(),
-    estado_civil: z.string().array(),
-    nome_conjuge: z.string(),
-    date_casamento: z.string().datetime(),
-    date_decisao: z.string().datetime(),
-    has_filho: z.boolean(),
-    quantidade_de_filho: z.number(),
-    cep: z.string().min(9, 'Preencha o CEP com no mínimo 9 caracteres'),
-    estado: z.string(),
-    cidade: z.string(),
-    bairro: z.string(),
-    endereco: z.string(),
-    numberHouse: z.string()
-  })
+const MemberSchema = z.object({
+  supervisao_pertence: z.string().optional(),
+  celula: z.string().optional(),
+  escolas: z.string().array().optional(),
+  encontros: z.string().array().optional(),
+  email: z.string().email(),
+  password: z.string(),
+  first_name: z.string(),
+  last_name: z.string(),
+  cpf: z.string().optional(),
+  date_nascimento: z.string().datetime(),
+  sexo: z.string(),
+  telefone: z.string(),
+  escolaridade: z.string(),
+  profissao: z.string().optional(),
+  batizado: z.boolean(),
+  date_batizado: z.string().datetime().optional(),
+  is_discipulado: z.boolean(),
+  discipulador: z.string().optional(),
+  estado_civil: z.string(),
+  nome_conjuge: z.string().optional(),
+  date_casamento: z.string().datetime().optional(),
+  has_filho: z.boolean(),
+  quantidade_de_filho: z.number().optional(),
+  cep: z.string(),
+  cidade: z.string(),
+  estado: z.string(),
+  bairro: z.string(),
+  endereco: z.string(),
+  numero_casa: z.string(),
+  date_decisao: z.string().datetime().optional(),
+  situacao_no_reino: z.string().optional(),
+  cargo_de_lideranca: z.string().optional(),
+})
 
-type Member = z.infer<typeof MemberSchema>;
+type Member = z.infer<typeof MemberSchema>
 
 type AddressProps = {
-  uf: string;
-  bairro: string;
-  logradouro: string;
-  complemento: string;
-  localidade: string;
-};
+  uf: string
+  bairro: string
+  logradouro: string
+  complemento: string
+  localidade: string
+}
 
 interface Celula {
-  id: string;
-  nome: string;
+  id: string
+  nome: string
 }
 
 export interface SupervisaoData {
-  id: string;
-  nome: string;
-  celulas: Celula[];
+  id: string
+  nome: string
+  celulas: Celula[]
 }
 
 const EscolasSchema = z
   .object({
     id: z.string(),
-    nome: z.string()
+    nome: z.string(),
   })
-  .array();
+  .array()
 
-type Escolas = z.infer<typeof EscolasSchema>;
+type Escolas = z.infer<typeof EscolasSchema>
 
 const EncontrosSchema = z
   .object({
     id: z.string(),
-    nome: z.string()
+    nome: z.string(),
   })
-  .array();
+  .array()
 
-type Encontros = z.infer<typeof EncontrosSchema>;
+type Encontros = z.infer<typeof EncontrosSchema>
 
 const SituacoesNoReinoSchema = z
   .object({
     id: z.string(),
-    nome: z.string()
+    nome: z.string(),
   })
-  .array();
+  .array()
 
-type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>;
+type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
+
+interface FetchError extends Error {
+  status?: number
+}
 
 export default function NovoMembro() {
-  const hostname = 'backibb-w7ri-dev.fl0.io';
-  const URLSupervisoes = `https://${hostname}/supervisoes`;
-  const URLUsers = `https://${hostname}/users`;
-  const URLEscolas = `https://${hostname}/escolas`;
-  const URLEncontros = `https://${hostname}/encontros`;
-  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`;
-  const URLCagosLideranca = `https://${hostname}/cargoslideranca`;
+  const hostname = 'app-ibb.onrender.com'
+  const URLSupervisoes = `https://${hostname}/supervisoes`
+  const URLUsers = `https://${hostname}/users`
+  const URLEscolas = `https://${hostname}/escolas`
+  const URLEncontros = `https://${hostname}/encontros`
+  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`
+  const URLCagosLideranca = `https://${hostname}/cargoslideranca`
 
-  const { data: session } = useSession();
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
-  const { register, handleSubmit, setValue, reset, formState, watch } =
-    useForm<Member>({
-      resolver: zodResolver(MemberSchema)
-    });
+  const { data: session } = useSession()
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const { register, handleSubmit, setValue, reset, watch } = useForm<Member>()
 
-  const { isSubmitting } = formState;
-
-  const zipCode = watch('cep');
+  const zipCode = watch('cep')
 
   const handleSetDataAddress = useCallback(
     (data: AddressProps) => {
-      setValue('cidade', data.localidade);
-      setValue('endereco', data.logradouro);
-      setValue('estado', data.uf);
-      setValue('bairro', data.bairro);
+      setValue('cidade', data.localidade)
+      setValue('endereco', data.logradouro)
+      setValue('estado', data.uf)
+      setValue('bairro', data.bairro)
     },
-    [setValue]
-  );
+    [setValue],
+  )
 
   const handleFetchCep = useCallback(
     async (zipCode: string) => {
-      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
-      const result = await response.json();
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
+      const result = await response.json()
 
-      handleSetDataAddress(result);
+      handleSetDataAddress(result)
     },
-    [handleSetDataAddress]
-  );
+    [handleSetDataAddress],
+  )
 
   useEffect(() => {
     if (!zipCode || zipCode.length !== 9) {
-      return;
+      return
     }
 
-    const formattedCep = zipCodeMask(zipCode);
-    setValue('cep', formattedCep);
+    const formattedCep = zipCodeMask(zipCode)
+    setValue('cep', formattedCep)
 
-    handleFetchCep(zipCode);
-  }, [zipCode, setValue, handleFetchCep]);
+    handleFetchCep(zipCode)
+  }, [zipCode, setValue, handleFetchCep])
 
   function zipCodeMask(cep: string): string {
-    const digits = cep.match(/\d/g);
+    const digits = cep.match(/\d/g)
     if (digits && digits.length === 9) {
-      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`;
+      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
     } else {
-      return cep; // Mantém o valor original se for inválido
+      return cep // Mantém o valor original se for inválido
     }
   }
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true';
-    setValue(`batizado`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`batizado`, value)
+  }
 
   const handleCahngeIsDiscipulado = (
-    e: React.ChangeEvent<HTMLSelectElement>
+    e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    const value = e.target.value === 'true';
-    setValue(`is_discipulado`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`is_discipulado`, value)
+  }
 
   const handleCahngeHasFilho = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true';
-    setValue(`has_filho`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`has_filho`, value)
+  }
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
@@ -178,8 +176,8 @@ export default function NovoMembro() {
       pauseOnHover: false,
       draggable: true,
       progress: undefined,
-      theme: 'light'
-    });
+      theme: 'light',
+    })
 
   const errorCadastroMembro = () =>
     toast.error('Error no Cadastro!', {
@@ -190,54 +188,88 @@ export default function NovoMembro() {
       pauseOnHover: false,
       draggable: true,
       progress: undefined,
-      theme: 'light'
-    });
-
-    console.log('Observando o input Nascimento', watch("dateNasc"))
+      theme: 'light',
+    })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
-      const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString);
-        return dataObj.toISOString();
-      };
+      console.log('Data Form has_filho: ', data.has_filho)
+      if (typeof data.has_filho === 'string') {
+        console.log('data.has_filho é uma string.')
+      } else if (typeof data.has_filho === 'boolean') {
+        console.log('data.has_filho é um boolean.')
+      } else {
+        console.log('data.has_filho não é uma string nem um boolean.')
+      }
 
-      data.dateNasc = formatDatatoISO8601(data.dateNasc);
-      data.date_batizado = formatDatatoISO8601(data.date_batizado);
-      data.date_casamento = formatDatatoISO8601(data.date_casamento);
-      data.date_decisao = formatDatatoISO8601(data.date_decisao);
+      console.log(data.is_discipulado)
 
-      console.log('Data Form: ', data);
+      const selectedEncontros = data?.encontros?.filter((id) => id !== '')
+      const selectedEscolas = data?.escolas?.filter((id) => id !== '')
+
+      // Verifica se não há encontros selecionados e define o valor como nulo
+      const encontrosToSend =
+        selectedEncontros && selectedEncontros.length === 0
+          ? null
+          : selectedEncontros
+
+      const escolasToSend =
+        selectedEscolas && selectedEscolas.length === 0 ? null : selectedEscolas
+
+      const dataToSend = {
+        ...data,
+        encontros: encontrosToSend,
+        escolas: escolasToSend,
+      }
+
+      setIsLoadingSubmitForm(true)
+
+      console.log('Data Form2: ', dataToSend)
+
       const response = await fetch(URLUsers, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`
+          Authorization: `Bearer ${session?.user.token}`,
         },
-        body: JSON.stringify(data)
-      });
+        body: JSON.stringify(dataToSend),
+      })
       if (response.ok) {
-        successCadastroMembro();
-        reset();
+        setIsLoadingSubmitForm(false)
+        successCadastroMembro()
+        reset()
       } else {
-        errorCadastroMembro();
+        errorCadastroMembro()
       }
     } catch (error) {
-      errorCadastroMembro();
+      errorCadastroMembro()
     }
-  };
+  }
 
   async function fetchWithToken(url: string, token: string) {
-    return await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (!response.ok) {
+        const error: FetchError = new Error('Failed to fetch data with token.')
+        error.status = response.status
+        throw error
       }
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return data;
-      });
+      const data = await response.json()
+      return data
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error while fetching data with token:', error.message)
+        throw error
+      } else {
+        console.error('Unknown error occurred:', error)
+        throw new Error('Unknown error occurred.')
+      }
+    }
   }
 
   // fetchWithToken(URL, `${session?.user.token}`).then((data) => {
@@ -249,35 +281,35 @@ export default function NovoMembro() {
     data: supervisoes,
     error,
     isValidating,
-    isLoading
+    isLoading,
   } = useSWR<SupervisaoData[]>(
     [URLSupervisoes, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token)
-  );
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
   // GET Escolas
   const { data: escolas } = useSWR<Escolas>(
     [URLEscolas, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token)
-  );
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
   // GET Encontro
   const { data: encontros } = useSWR<Encontros>(
     [URLEncontros, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token)
-  );
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
   // GET Situacoes no Reino
   const { data: situacoesNoReino } = useSWR<SituacoesNoReino>(
     [URLSituacoesNoReino, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token)
-  );
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
 
   // GET Cargos de Lideranca
   const { data: cargoLideranca } = useSWR<SituacoesNoReino>(
     [URLCagosLideranca, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token)
-  );
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
 
   if (isValidating) {
-    console.log('Is Validating', isValidating);
+    console.log('Is Validating', isValidating)
   }
 
   if (error)
@@ -287,7 +319,7 @@ export default function NovoMembro() {
           <div>failed to load</div>
         </div>
       </div>
-    );
+    )
 
   if (isLoading)
     return (
@@ -296,9 +328,7 @@ export default function NovoMembro() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    );
-
-  console.log('Token User: ', `${session?.user?.token}`);
+    )
 
   if (!supervisoes) {
     return (
@@ -307,18 +337,18 @@ export default function NovoMembro() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    );
+    )
   }
 
   const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>
+    event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value);
-  };
+    setSupervisaoSelecionada(event.target.value)
+  }
 
   const celulasFiltradas = (supervisoes ?? []).find(
-    (supervisao) => supervisao.id === supervisaoSelecionada
-  )?.celulas;
+    (supervisao) => supervisao.id === supervisaoSelecionada,
+  )?.celulas
 
   return (
     <>
@@ -393,16 +423,16 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-2">
                       <label
-                        htmlFor="dateNasc"
+                        htmlFor="date_nascimento"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Dt. Nasc.
                       </label>
                       <div className="mt-3">
                         <input
-                          {...register('dateNasc')}
+                          {...register('date_nascimento')}
                           type="datetime-local"
-                          id="dateNasc"
+                          id="date_nascimento"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -584,8 +614,8 @@ export default function NovoMembro() {
                           id="is_discipulado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={'true'}>Sim</option>
-                          <option value={'false'}>Não</option>
+                          <option value="true">Sim</option>
+                          <option value="false">Não</option>
                         </select>
                       </div>
                     </div>
@@ -688,7 +718,7 @@ export default function NovoMembro() {
                                 </div>
                                 <div className="text-sm leading-6">
                                   <label
-                                    htmlFor="escolas"
+                                    htmlFor={escola.id}
                                     className="font-medium text-slate-700"
                                   >
                                     {escola.nome}
@@ -729,7 +759,7 @@ export default function NovoMembro() {
                                 </div>
                                 <div className="text-sm leading-6">
                                   <label
-                                    htmlFor="encontros"
+                                    htmlFor={encontro.id}
                                     className="font-medium text-slate-700"
                                   >
                                     {encontro.nome}
@@ -762,6 +792,34 @@ export default function NovoMembro() {
                             (situacoesNoReino ?? []).map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
+                              </option>
+                            ))
+                          ) : (
+                            <option value={''}>Carregando...</option>
+                          )}
+                        </select>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="col-span-6">
+                      <label
+                        htmlFor="cargo_de_lideranca"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Cargo de Liderança
+                      </label>
+                      <div className="mt-3">
+                        <select
+                          {...register('cargo_de_lideranca')}
+                          id="cargo_de_lideranca"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        >
+                          <option value={''}>Selecione</option>
+                          {!isLoading ? (
+                            (cargoLideranca ?? []).map((cargo) => (
+                              <option key={cargo.id} value={cargo.id}>
+                                {cargo.nome}
                               </option>
                             ))
                           ) : (
@@ -874,34 +932,6 @@ export default function NovoMembro() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
-                    <div className="col-span-6">
-                      <label
-                        htmlFor="cargo_lideranca"
-                        className="block text-sm font-medium leading-6 text-slate-700"
-                      >
-                        Cargo de Liderança
-                      </label>
-                      <div className="mt-3">
-                        <select
-                          {...register('cargo_lideranca')}
-                          id="cargo_lideranca"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        >
-                          <option value={''}>Selecione</option>
-                          {!isLoading ? (
-                            (cargoLideranca ?? []).map((cargo) => (
-                              <option key={cargo.id} value={cargo.id}>
-                                {cargo.nome}
-                              </option>
-                            ))
-                          ) : (
-                            <option value={''}>Carregando...</option>
-                          )}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
 
                   {/* Informações para Visita */}
                   <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
@@ -1003,16 +1033,16 @@ export default function NovoMembro() {
                     </div>
                     <div className="col-span-1">
                       <label
-                        htmlFor="numberHouse"
+                        htmlFor="numero_casa"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Nº
                       </label>
                       <div className="mt-3">
                         <input
-                          {...register('numberHouse')}
+                          {...register('numero_casa')}
                           type="text"
-                          id="numberHouse"
+                          id="numero_casa"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -1024,14 +1054,15 @@ export default function NovoMembro() {
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                   <button
                     type="button"
+                    onClick={() => reset()}
                     className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
                   >
                     Cancelar
                   </button>
-                  {isSubmitting ? (
+                  {isLoadingSubmitForm ? (
                     <button
                       type="submit"
-                      disabled={isSubmitting}
+                      disabled={isLoadingSubmitForm}
                       className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
@@ -1071,5 +1102,5 @@ export default function NovoMembro() {
         </div>
       </div>
     </>
-  );
+  )
 }
