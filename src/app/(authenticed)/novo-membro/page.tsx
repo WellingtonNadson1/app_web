@@ -192,7 +192,7 @@ export default function NovoMembro() {
       const selectedIsDiscipulado = Boolean(data.is_discipulado)
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
-      const passwordDefault = process.env.PASSWORD_DEFAULT_USER
+      const passwordDefault = 'JesusCristoReina'
 
       console.log(data.is_discipulado)
 
