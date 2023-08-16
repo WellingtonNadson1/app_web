@@ -1,6 +1,6 @@
 'use client'
 import { useSession } from 'next-auth/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
@@ -105,9 +105,19 @@ export default function NovoMembro() {
   const { data: session } = useSession()
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const { register, handleSubmit, setValue, reset, watch } = useForm<Member>()
+  const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
-  const zipCode = watch('cep')
+  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
+    e.currentTarget.maxLength = 9
+    let value = e.currentTarget.value
+    value = value.replace(/\D/g, '')
+    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
+    e.currentTarget.value = value
+
+    if (value.length === 9) {
+      await handleFetchCep(value)
+    }
+  }
 
   const handleSetDataAddress = useCallback(
     (data: AddressProps) => {
@@ -121,33 +131,18 @@ export default function NovoMembro() {
 
   const handleFetchCep = useCallback(
     async (zipCode: string) => {
-      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
-      const result = await response.json()
-
-      handleSetDataAddress(result)
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${zipCode}/json/`,
+        )
+        const result = await response.json()
+        handleSetDataAddress(result)
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error)
+      }
     },
     [handleSetDataAddress],
   )
-
-  useEffect(() => {
-    if (!zipCode || zipCode.length !== 9) {
-      return
-    }
-
-    const formattedCep = zipCodeMask(zipCode)
-    setValue('cep', formattedCep)
-
-    handleFetchCep(zipCode)
-  }, [zipCode, setValue, handleFetchCep])
-
-  function zipCodeMask(cep: string): string {
-    const digits = cep.match(/\d/g)
-    if (digits && digits.length === 9) {
-      return `${digits.slice(0, 5).join('')}-${digits.slice(5).join('')}`
-    } else {
-      return cep // Mantém o valor original se for inválido
-    }
-  }
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -194,14 +189,9 @@ export default function NovoMembro() {
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
-      console.log('Data Form has_filho: ', data.has_filho)
-      if (typeof data.has_filho === 'string') {
-        console.log('data.has_filho é uma string.')
-      } else if (typeof data.has_filho === 'boolean') {
-        console.log('data.has_filho é um boolean.')
-      } else {
-        console.log('data.has_filho não é uma string nem um boolean.')
-      }
+      const selectedIsDiscipulado = Boolean(data.is_discipulado)
+      const selectedHasFilho = Boolean(data.has_filho)
+      const selectedBatizado = Boolean(data.batizado)
 
       console.log(data.is_discipulado)
 
@@ -221,6 +211,9 @@ export default function NovoMembro() {
         ...data,
         encontros: encontrosToSend,
         escolas: escolasToSend,
+        is_discipulado: selectedIsDiscipulado,
+        has_filho: selectedHasFilho,
+        batizado: selectedBatizado,
       }
 
       setIsLoadingSubmitForm(true)
@@ -378,7 +371,7 @@ export default function NovoMembro() {
                           name="first_name"
                           id="first_name"
                           autoComplete="given-name"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -397,7 +390,7 @@ export default function NovoMembro() {
                           name="last_name"
                           id="last_name"
                           autoComplete="family-name"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -416,7 +409,7 @@ export default function NovoMembro() {
                           name="cpf"
                           id="cpf"
                           autoComplete="family-name"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -433,7 +426,7 @@ export default function NovoMembro() {
                           {...register('date_nascimento')}
                           type="datetime-local"
                           id="date_nascimento"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -450,7 +443,7 @@ export default function NovoMembro() {
                           {...register('sexo')}
                           id="sexo"
                           name="sexo"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'M'}>M</option>
                           <option value={'F'}>F</option>
@@ -472,7 +465,7 @@ export default function NovoMembro() {
                           name="email"
                           type="email"
                           autoComplete="email"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -490,7 +483,7 @@ export default function NovoMembro() {
                           id="telefone"
                           name="telefone"
                           type="text"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -507,7 +500,7 @@ export default function NovoMembro() {
                           {...register('escolaridade')}
                           id="escolaridade"
                           name="escolaridade"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'Sem Escolaridade'}>
                             Sem Escolaridade
@@ -548,7 +541,7 @@ export default function NovoMembro() {
                           id="profissao"
                           name="profissao"
                           type="text"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -575,7 +568,7 @@ export default function NovoMembro() {
                           {...register('batizado')}
                           onChange={handleCahngeIsBatizado}
                           id="batizado"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
@@ -595,7 +588,7 @@ export default function NovoMembro() {
                           {...register('date_batizado')}
                           id="date_batizado"
                           type="datetime-local"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -612,7 +605,7 @@ export default function NovoMembro() {
                           {...register('is_discipulado')}
                           onChange={handleCahngeIsDiscipulado}
                           id="is_discipulado"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value="true">Sim</option>
                           <option value="false">Não</option>
@@ -632,7 +625,7 @@ export default function NovoMembro() {
                           {...register('discipulador')}
                           id="discipulador"
                           type="text"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -648,7 +641,7 @@ export default function NovoMembro() {
                         <select
                           {...register('supervisao_pertence')}
                           id="supervisao_pertence"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           onChange={handleSupervisaoSelecionada}
                         >
                           <option value={''}>Selecione</option>
@@ -676,7 +669,7 @@ export default function NovoMembro() {
                         <select
                           {...register('celula')}
                           id="celula"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
@@ -785,7 +778,7 @@ export default function NovoMembro() {
                         <select
                           {...register('situacao_no_reino')}
                           id="situacao_no_reino"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
@@ -813,7 +806,7 @@ export default function NovoMembro() {
                         <select
                           {...register('cargo_de_lideranca')}
                           id="cargo_de_lideranca"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
@@ -850,7 +843,7 @@ export default function NovoMembro() {
                         <select
                           {...register('estado_civil')}
                           id="estadoCivil"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'Casado'}>Casado(a)</option>
                           <option value={'Solteiro'}>Solteiro(a)</option>
@@ -873,7 +866,7 @@ export default function NovoMembro() {
                           type="text"
                           name="nomeConjuge"
                           id="nomeConjuge"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -890,7 +883,7 @@ export default function NovoMembro() {
                           {...register('date_casamento')}
                           type="datetime-local"
                           id="dateCasamento"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -907,7 +900,7 @@ export default function NovoMembro() {
                           {...register('has_filho')}
                           onChange={handleCahngeHasFilho}
                           id="has_filho"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
@@ -927,7 +920,7 @@ export default function NovoMembro() {
                           {...register('quantidade_de_filho')}
                           type="text"
                           id="quantidadeFilho"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -956,8 +949,9 @@ export default function NovoMembro() {
                           {...register('cep')}
                           type="text"
                           id="cep"
+                          onKeyUp={handleZipCode}
                           maxLength={9}
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -974,7 +968,7 @@ export default function NovoMembro() {
                           {...register('cidade')}
                           type="text"
                           id="cidade"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -992,7 +986,7 @@ export default function NovoMembro() {
                           type="text"
                           id="estado"
                           autoComplete="address-level1"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -1011,7 +1005,7 @@ export default function NovoMembro() {
                           {...register('bairro')}
                           type="text"
                           id="bairro"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -1027,7 +1021,7 @@ export default function NovoMembro() {
                           {...register('endereco')}
                           type="text"
                           id="endereco"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
@@ -1043,7 +1037,7 @@ export default function NovoMembro() {
                           {...register('numero_casa')}
                           type="text"
                           id="numero_casa"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
                     </div>
