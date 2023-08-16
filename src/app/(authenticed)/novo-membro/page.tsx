@@ -192,6 +192,7 @@ export default function NovoMembro() {
       const selectedIsDiscipulado = Boolean(data.is_discipulado)
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
+      const passwordDefault = process.env.PASSWORD_DEFAULT_USER
 
       console.log(data.is_discipulado)
 
@@ -214,6 +215,7 @@ export default function NovoMembro() {
         is_discipulado: selectedIsDiscipulado,
         has_filho: selectedHasFilho,
         batizado: selectedBatizado,
+        password: passwordDefault,
       }
 
       setIsLoadingSubmitForm(true)
