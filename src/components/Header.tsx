@@ -65,9 +65,10 @@ export default function Header() {
               ) : (
                 <UserCircle2
                   size={24}
-                  width={10}
-                  height={10}
-                  className={`cursor-pointer rounded-full shadow`}
+                  width={40}
+                  height={40}
+                  strokeWidth={0.75}
+                  className={`cursor-pointer rounded-full text-zinc-500 shadow`}
                 />
               )}
             </div>
