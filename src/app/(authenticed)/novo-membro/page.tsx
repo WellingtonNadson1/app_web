@@ -4,94 +4,16 @@ import React, { useCallback, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
-import { z } from 'zod'
-
-const MemberSchema = z.object({
-  supervisao_pertence: z.string().optional(),
-  celula: z.string().optional(),
-  escolas: z.string().array().optional(),
-  encontros: z.string().array().optional(),
-  email: z.string().email(),
-  password: z.string(),
-  first_name: z.string(),
-  last_name: z.string(),
-  cpf: z.string().optional(),
-  date_nascimento: z.string().datetime(),
-  sexo: z.string(),
-  telefone: z.string(),
-  escolaridade: z.string(),
-  profissao: z.string().optional(),
-  batizado: z.boolean(),
-  date_batizado: z.string().datetime().optional(),
-  is_discipulado: z.boolean(),
-  discipulador: z.string().optional(),
-  estado_civil: z.string(),
-  nome_conjuge: z.string().optional(),
-  date_casamento: z.string().datetime().optional(),
-  has_filho: z.boolean(),
-  quantidade_de_filho: z.number().optional(),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_decisao: z.string().datetime().optional(),
-  situacao_no_reino: z.string().optional(),
-  cargo_de_lideranca: z.string().optional(),
-})
-
-type Member = z.infer<typeof MemberSchema>
-
-type AddressProps = {
-  uf: string
-  bairro: string
-  logradouro: string
-  complemento: string
-  localidade: string
-}
-
-interface Celula {
-  id: string
-  nome: string
-}
-
-export interface SupervisaoData {
-  id: string
-  nome: string
-  celulas: Celula[]
-}
-
-const EscolasSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
-  .array()
-
-type Escolas = z.infer<typeof EscolasSchema>
-
-const EncontrosSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
-  .array()
-
-type Encontros = z.infer<typeof EncontrosSchema>
-
-const SituacoesNoReinoSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
-  .array()
-
-type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
-
-interface FetchError extends Error {
-  status?: number
-}
+import {
+  AddressProps,
+  Encontros,
+  Escolas,
+  FetchError,
+  Member,
+  SituacoesNoReino,
+  SupervisaoData,
+} from './schema'
+import { handleCPFNumber, handlePhoneNumber } from './utils'
 
 export default function NovoMembro() {
   const hostname = 'app-ibb.onrender.com'
@@ -108,7 +30,7 @@ export default function NovoMembro() {
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
+    e.currentTarget.maxLength = 14
     let value = e.currentTarget.value
     value = value.replace(/\D/g, '')
     value = value.replace(/^(\d{5})(\d)/, '$1-$2')
@@ -163,7 +85,7 @@ export default function NovoMembro() {
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
-    toast.success('Célula Cadastrada!', {
+    toast.success('Membro Cadastrado!', {
       position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
@@ -193,7 +115,6 @@ export default function NovoMembro() {
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
       const passwordDefault = 'JesusCristoReina'
-
       console.log(data.is_discipulado)
 
       const selectedEncontros = data?.encontros?.filter((id) => id !== '')
@@ -236,9 +157,11 @@ export default function NovoMembro() {
         reset()
       } else {
         errorCadastroMembro()
+        setIsLoadingSubmitForm(false)
       }
     } catch (error) {
       errorCadastroMembro()
+      setIsLoadingSubmitForm(false)
     }
   }
 
@@ -408,6 +331,7 @@ export default function NovoMembro() {
                         <input
                           {...register('cpf')}
                           type="text"
+                          onKeyUp={handleCPFNumber}
                           name="cpf"
                           id="cpf"
                           autoComplete="family-name"
@@ -447,6 +371,7 @@ export default function NovoMembro() {
                           name="sexo"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value={'M'}>M</option>
                           <option value={'F'}>F</option>
                         </select>
@@ -483,6 +408,7 @@ export default function NovoMembro() {
                         <input
                           {...register('telefone')}
                           id="telefone"
+                          onKeyUp={handlePhoneNumber}
                           name="telefone"
                           type="text"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -504,6 +430,7 @@ export default function NovoMembro() {
                           name="escolaridade"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value={'Sem Escolaridade'}>
                             Sem Escolaridade
                           </option>
@@ -572,6 +499,7 @@ export default function NovoMembro() {
                           id="batizado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
                         </select>
@@ -609,6 +537,7 @@ export default function NovoMembro() {
                           id="is_discipulado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value="true">Sim</option>
                           <option value="false">Não</option>
                         </select>
@@ -769,7 +698,7 @@ export default function NovoMembro() {
                       </fieldset>
                     </div>
                     {/* Situação No reino */}
-                    <div className="mt-3 sm:col-span-3">
+                    <div className="ml-2 mt-3 sm:col-span-3">
                       <label
                         htmlFor="situacao_no_reino"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -804,7 +733,7 @@ export default function NovoMembro() {
                       >
                         Cargo de Liderança
                       </label>
-                      <div className="mt-3">
+                      <div className="mt-4">
                         <select
                           {...register('cargo_de_lideranca')}
                           id="cargo_de_lideranca"
@@ -847,17 +776,19 @@ export default function NovoMembro() {
                           id="estadoCivil"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value={'Casado'}>Casado(a)</option>
                           <option value={'Solteiro'}>Solteiro(a)</option>
                           <option value={'Viuvo'}>Viúvo(a)</option>
-                          <option value={'Divorciado'}>Divórciado(a)</option>
+                          <option value={'Divorciado'}>Divorciado(a)</option>
+                          <option value={'Uniao_Estável'}>União Estável</option>
                         </select>
                       </div>
                     </div>
 
                     <div className="sm:col-span-4">
                       <label
-                        htmlFor="nomeConjuge"
+                        htmlFor="nome_conjuge"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Nome Conjuge
@@ -866,8 +797,8 @@ export default function NovoMembro() {
                         <input
                           {...register('nome_conjuge')}
                           type="text"
-                          name="nomeConjuge"
-                          id="nomeConjuge"
+                          name="nome_conjuge"
+                          id="nome_conjuge"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -875,7 +806,7 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-2">
                       <label
-                        htmlFor="dateCasamento"
+                        htmlFor="date_casamento"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Data/Casamento
@@ -884,7 +815,7 @@ export default function NovoMembro() {
                         <input
                           {...register('date_casamento')}
                           type="datetime-local"
-                          id="dateCasamento"
+                          id="date_casamento"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -904,6 +835,7 @@ export default function NovoMembro() {
                           id="has_filho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
+                          <option value={''}>Selecione</option>
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
                         </select>
@@ -912,7 +844,7 @@ export default function NovoMembro() {
 
                     <div className="sm:col-span-2">
                       <label
-                        htmlFor="quantidadeFilho"
+                        htmlFor="quantidade_de_filho"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Qntd. Filho(s)
@@ -920,8 +852,8 @@ export default function NovoMembro() {
                       <div className="mt-3">
                         <input
                           {...register('quantidade_de_filho')}
-                          type="text"
-                          id="quantidadeFilho"
+                          type="number"
+                          id="quantidade_de_filho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
