@@ -1,7 +1,9 @@
 'use client'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
+import { UserCircle2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
@@ -32,8 +34,6 @@ export default function Header() {
     )
   }
 
-  console.log('Token Session User: ', `${session?.user.token}`)
-
   return (
     <>
       <nav className="relative z-10 mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
@@ -54,13 +54,20 @@ export default function Header() {
               <p className="hidden text-xs text-gray-700 sm:block">{toDay}</p>
             </div>
             <div className="h-10 w-10 rounded-full bg-gray-50">
-              {/* <Image
-                  src={session.user.image}
+              {session?.user?.photoPerfil ? (
+                <Image
+                  src={session?.user?.photoPerfil}
                   width={58}
                   height={58}
                   alt="Wellington"
                   className={`cursor-pointer rounded-full shadow`}
-                /> */}
+                />
+              ) : (
+                <UserCircle2
+                  size={58}
+                  className={`cursor-pointer rounded-full shadow`}
+                />
+              )}
             </div>
           </>
           {/* ) : (

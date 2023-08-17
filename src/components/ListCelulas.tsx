@@ -61,7 +61,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
-                            className="block rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white shadow-sm ring-1 ring-slate-700/10 duration-150 hover:bg-green-600"
+                            className="block rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white  ring-1 ring-slate-700/10 duration-150 hover:bg-green-600"
                           >
                             Acessar
                           </button>

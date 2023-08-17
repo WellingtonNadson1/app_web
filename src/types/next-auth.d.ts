@@ -18,20 +18,20 @@ declare module 'next-auth' {
       escolaridade: string
       profissao: string
       batizado: string
-      dateBatizado: string | Date
-      isDiscipulado: string
+      date_batizado: string | Date
+      is_discipulado: string
       discipulador: string
       supervisao: string
       celula: string | undefined
       escolas: [id: string, nome: string]
       encontros: [id: string, nome: string]
       estadoCivil: string
-      nomeConjuge: string
-      dateCasamento: string | Date
-      hasFilho: string
-      quantidadeFilho: number
+      nome_conjuge: string
+      date_casamento: string | Date
+      has_filho: string
+      quantida_de_filho: number
       endereco_id: string | undefined
-      dateDecisao: string | Date
+      date_decisao: string | Date
       situacao_no_reino: string
       cargo_de_lideranca: string
       token: string
