@@ -332,6 +332,7 @@ export default function NovoMembro() {
                           {...register('cpf')}
                           type="text"
                           onKeyUp={handleCPFNumber}
+                          maxLength={15}
                           name="cpf"
                           id="cpf"
                           autoComplete="family-name"
@@ -409,6 +410,7 @@ export default function NovoMembro() {
                           {...register('telefone')}
                           id="telefone"
                           onKeyUp={handlePhoneNumber}
+                          maxLength={14}
                           name="telefone"
                           type="text"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
