@@ -64,7 +64,9 @@ export default function Header() {
                 />
               ) : (
                 <UserCircle2
-                  size={58}
+                  size={24}
+                  width={10}
+                  height={10}
                   className={`cursor-pointer rounded-full shadow`}
                 />
               )}
