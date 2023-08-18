@@ -2,57 +2,46 @@
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
+import { z } from 'zod'
 // import { useEffect, useState } from 'react'
 
-interface SitacaoNoReino {
-  id: String
-  nome: String
-}
+const UserSchema = z.object({
+  id: z.string(),
+  first_name: z.string(),
+  situacao_no_reino: z.object({
+    nome: z.string(),
+  }),
+  cargo_de_lideranca: z.object({
+    nome: z.string(),
+  }),
+})
 
-interface CargoDeLideranca {
-  id: String
-  nome: String
-}
+const CelulaSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  lider: z.string(),
+  supervisao: z.string(),
+  cep: z.string(),
+  cidade: z.string(),
+  estado: z.string(),
+  bairro: z.string(),
+  endereco: z.string(),
+  numero_casa: z.string(),
+  date_inicio: z.string().datetime(),
+  date_que_ocorre: z.string().datetime(),
+  date_multipicar: z.string().datetime(),
+  supervisaoId: z.string(),
+  membros: z.array(UserSchema),
+  userId: z.string(),
+})
 
-interface User {
-  id: string
-  email: string
-  first_name: string
-  last_name: string
-  cpf: string
-  date_nascimento: string | Date
-  sexo: string
-  telefone: string
-  escolaridade: string
-  profissao: string
-  batizado: string
-  dateBatizado: string | Date
-  isDiscipulado: string
-  discipulador: string
-  supervisao: string
-  celula: string | undefined
-  escolaPrincipios: string | undefined
-  escolaFundamentos: string | undefined
-  escolaDisicipulos: string | undefined
-  escolaOracao: string | undefined
-  encontroComDeus: string | undefined
-  encontroDD: string | undefined
-  estadoCivil: string
-  nomeConjuge: string
-  dateCasamento: string | Date
-  hasFilho: string
-  quantidadeFilho: number
-  endereco_id: string | undefined
-  dateDecisao: string | Date
-  situacao_no_reino: SitacaoNoReino
-  cargo_de_lideranca: CargoDeLideranca
-}
+type Celula = z.infer<typeof CelulaSchema>
 
 export default function ControlePresenca() {
   const { data: session } = useSession()
 
   const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/users`
+  const URL = `https://${hostname}/celulas/${session?.user.celula}`
 
   function fetchWithToken(url: string, token: string) {
     return fetch(url, {
@@ -67,11 +56,11 @@ export default function ControlePresenca() {
   }
 
   const {
-    data: users,
+    data: celula,
     error,
     isValidating,
     isLoading,
-  } = useSWR<User[]>(
+  } = useSWR<Celula>(
     [URL, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
@@ -130,7 +119,7 @@ export default function ControlePresenca() {
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
                 {!isLoading ? (
-                  users?.map((user) => (
+                  celula?.membros?.map((user) => (
                     <tr
                       className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
                       key={user.id}
