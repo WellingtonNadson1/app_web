@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(login)/login/page": [
+    "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(login)/login/page.js"
+      "static/chunks/app/(authenticed)/dashboard/page.js"
     ],
     "/(login)/login/layout": [
       "static/chunks/webpack.js",
@@ -11,21 +11,22 @@
       "static/css/app/(login)/login/layout.css",
       "static/chunks/app/(login)/login/layout.js"
     ],
-    "/(authenticed)/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
-    ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(authenticed)/layout.css",
       "static/chunks/app/(authenticed)/layout.js"
     ],
-    "/(authenticed)/novo-membro/page": [
+    "/(login)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/novo-membro/page.js"
+      "static/chunks/app/(login)/login/page.js"
+    ],
+    "/(authenticed)/celulas/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/celulas/page.css",
+      "static/chunks/app/(authenticed)/celulas/page.js"
     ]
   }
 }
