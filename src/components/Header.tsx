@@ -54,9 +54,9 @@ export default function Header() {
               <p className="hidden text-xs text-gray-700 sm:block">{toDay}</p>
             </div>
             <div className="h-10 w-10 rounded-full bg-gray-50">
-              {session?.user?.photoPerfil ? (
+              {session?.user?.image_url ? (
                 <Image
-                  src={session?.user?.photoPerfil}
+                  src={session?.user?.image_url}
                   width={58}
                   height={58}
                   alt="Wellington"

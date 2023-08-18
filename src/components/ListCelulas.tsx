@@ -56,8 +56,8 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                       <td className="mt-2 hidden text-start text-gray-700 sm:block">
                         {celula.lider?.first_name}
                       </td>
-                      <td className="p-2">
-                        <div>
+                      <td className="w-full p-2">
+                        <div className="flex w-3/4 items-center justify-center">
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}

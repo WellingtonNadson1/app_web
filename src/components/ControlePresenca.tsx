@@ -1,4 +1,5 @@
 'use client'
+import { FetchError } from '@/app/(authenticed)/novo-membro/schema'
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
@@ -45,16 +46,29 @@ export default function ControlePresenca() {
 
   console.log('Celula que Lidera', URL)
 
-  function fetchWithToken(url: string, token: string) {
-    return fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return data
+  async function fetchWithToken(url: string, token: string) {
+    try {
+      const response = await fetch(url, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
       })
+      if (!response.ok) {
+        const error: FetchError = new Error('Failed to fetch data with token.')
+        error.status = response.status
+        throw error
+      }
+      const data = await response.json()
+      return data
+    } catch (error) {
+      if (error instanceof Error) {
+        console.error('Error while fetching data with token:', error.message)
+        throw error
+      } else {
+        console.error('Unknown error occurred:', error)
+        throw new Error('Unknown error occurred.')
+      }
+    }
   }
 
   const {
