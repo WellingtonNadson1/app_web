@@ -30,7 +30,7 @@ export default function NovoMembro() {
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 14
+    e.currentTarget.maxLength = 9
     let value = e.currentTarget.value
     value = value.replace(/\D/g, '')
     value = value.replace(/^(\d{5})(\d)/, '$1-$2')
@@ -332,7 +332,7 @@ export default function NovoMembro() {
                           {...register('cpf')}
                           type="text"
                           onKeyUp={handleCPFNumber}
-                          maxLength={15}
+                          maxLength={14}
                           name="cpf"
                           id="cpf"
                           autoComplete="family-name"
