@@ -13,6 +13,7 @@ export default function Sidebar() {
   const route = useRouter()
   const pathName = usePathname().split('/')[1]
   const { data: session, status } = useSession()
+  console.log('Session', session)
   console.log('Session User Sidebar', session?.user)
   console.log('Session User Cargo de Lider', session?.user.cargo_de_lideranca)
   return (
