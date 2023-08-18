@@ -13,6 +13,7 @@ export default function Sidebar() {
   const route = useRouter()
   const pathName = usePathname().split('/')[1]
   const { data: session, status } = useSession()
+  console.log('Session User Sidebar', session?.user)
   return (
     <div className="shadow">
       <aside
