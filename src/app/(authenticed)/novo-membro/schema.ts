@@ -1,8 +1,9 @@
 import { z } from 'zod'
 
-const MemberSchema = z.object({
+export const MemberSchema = z.object({
   supervisao_pertence: z.string().optional(),
   celula: z.string().optional(),
+  celula_lidera: z.string().optional(),
   escolas: z.string().array().optional(),
   encontros: z.string().array().optional(),
   email: z.string().email(),
@@ -33,6 +34,7 @@ const MemberSchema = z.object({
   date_decisao: z.string().datetime().optional(),
   situacao_no_reino: z.string().optional(),
   cargo_de_lideranca: z.string().optional(),
+  token: z.string(),
 })
 
 export type Member = z.infer<typeof MemberSchema>
