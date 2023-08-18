@@ -60,6 +60,7 @@ export const authOptions: NextAuthOptions = {
         token.first_name = user.first_name
         token.celula_lidera = user.celula_lidera
         token.supervisao_pertence = user.supervisao_pertence
+        token.cargo_de_lideranca = user.cargo_de_lideranca
       }
       return token
     },
