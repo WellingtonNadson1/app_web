@@ -6,6 +6,7 @@ declare module 'next-auth' {
   // eslint-disable-next-line no-unused-vars
   interface User extends DefaultUser {
     id: string
+    role: string
     first_name: string
     last_name: string
     email: string
@@ -38,7 +39,9 @@ declare module 'next-auth' {
     endereco: string
     numero_casa: string
     situacao_no_reino: string
-    cargo_de_lideranca: string
+    cargo_de_lideranca: {
+      nome: string
+    }
     celula_lidera: string
     escola_lidera: string
     supervisoes_lidera: string
@@ -51,6 +54,7 @@ declare module 'next-auth' {
   interface Session {
     user: {
       id: string
+      role: string
       first_name: string
       last_name: string
       email: string
@@ -83,7 +87,9 @@ declare module 'next-auth' {
       endereco: string
       numero_casa: string
       situacao_no_reino: string
-      cargo_de_lideranca: string
+      cargo_de_lideranca: {
+        nome: string
+      }
       celula_lidera: string
       escola_lidera: string
       supervisoes_lidera: string
@@ -99,6 +105,7 @@ declare module 'next-auth/jwt' {
   // eslint-disable-next-line no-unused-vars
   interface JWT extends DefaultJWT {
     id: string
+    role: string
     first_name: string
     last_name: string
     email: string
@@ -131,7 +138,9 @@ declare module 'next-auth/jwt' {
     endereco: string
     numero_casa: string
     situacao_no_reino: string
-    cargo_de_lideranca: string
+    cargo_de_lideranca: {
+      nome: string
+    }
     celula_lidera: string
     escola_lidera: string
     supervisoes_lidera: string
