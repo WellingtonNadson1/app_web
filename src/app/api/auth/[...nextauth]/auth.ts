@@ -33,6 +33,7 @@ export const authOptions: NextAuthOptions = {
         const user = await response.json()
 
         if (user && response.ok) {
+          console.log(JSON.stringify(user))
           return user
         }
         return null
@@ -65,7 +66,14 @@ export const authOptions: NextAuthOptions = {
       return token
     },
     async session({ session, token }) {
-      session.user = token.user as any
+      if (session?.user) {
+        session.user.id = token.id
+        session.user.email = token.email
+        session.user.first_name = token.first_name
+        session.user.celula_lidera = token.celula_lidera
+        session.user.supervisao_pertence = token.supervisao_pertence
+        session.user.cargo_de_lideranca = token.cargo_de_lideranca
+      }
       return session
     },
   },
