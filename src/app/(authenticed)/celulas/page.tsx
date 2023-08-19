@@ -236,10 +236,6 @@ export default function Celulas() {
       </div>
     )
 
-  if (!isLoading) {
-    console.log('Carregando...')
-  }
-
   return (
     <>
       {/* Cadastrar Nova Célula */}
@@ -254,7 +250,7 @@ export default function Celulas() {
                     Cadastro de Célula
                   </h2>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-9">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-9">
                     <div className="sm:col-span-3">
                       <label
                         htmlFor="nome"
@@ -262,7 +258,7 @@ export default function Celulas() {
                       >
                         Nome da Célula
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('nome')}
                           type="text"
@@ -281,15 +277,22 @@ export default function Celulas() {
                       >
                         Dia que Ocorre
                       </label>
-                      <div className="mt-2">
-                        <input
+                      <div className="mt-3">
+                        <select
                           {...register('date_que_ocorre')}
-                          type="datetime-local"
                           name="date_que_ocorre"
                           id="date_que_ocorre"
-                          autoComplete="family-name"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        />
+                        >
+                          <option value="">Selecione</option>
+                          <option value="">Domingo</option>
+                          <option value="">Segunda</option>
+                          <option value="">Terça</option>
+                          <option value="">Quarta</option>
+                          <option value="">Quinta</option>
+                          <option value="">Sexta</option>
+                          <option value="">Sábado</option>
+                        </select>
                       </div>
                     </div>
 
@@ -300,13 +303,12 @@ export default function Celulas() {
                       >
                         Dt. Início
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('date_inicio')}
                           type="datetime-local"
                           name="date_inicio"
                           id="date_inicio"
-                          autoComplete="family-name"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -317,15 +319,14 @@ export default function Celulas() {
                         htmlFor="date_multipicar"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
-                        Dt. para Multiplicação
+                        Dt. Multipli.
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('date_multipicar')}
                           type="datetime-local"
                           name="date_multipicar"
                           id="date_multipicar"
-                          autoComplete="family-name"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
                       </div>
@@ -333,7 +334,7 @@ export default function Celulas() {
                   </div>
 
                   {/* INFORMAÇÕES DO REINO */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label
                         htmlFor="supervisao"
@@ -393,7 +394,7 @@ export default function Celulas() {
                   </div>
 
                   {/* Escolha dos Membros da Celula */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-8">
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-8">
                     <div className="sm:col-span-4">
                       <div className="sm:col-span-3">
                         <label
@@ -426,7 +427,7 @@ export default function Celulas() {
                   </div>
 
                   {/* Informações para Localização */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
                       <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
                       <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
@@ -435,7 +436,7 @@ export default function Celulas() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="cep"
@@ -443,7 +444,7 @@ export default function Celulas() {
                       >
                         Cep
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('cep')}
                           type="text"
@@ -461,7 +462,7 @@ export default function Celulas() {
                       >
                         Cidade
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('cidade')}
                           type="text"
@@ -479,7 +480,7 @@ export default function Celulas() {
                       >
                         Estado
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('estado')}
                           type="text"
@@ -492,7 +493,7 @@ export default function Celulas() {
                     </div>
                   </div>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-6 gap-y-8 sm:grid-cols-6">
+                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="bairro"
@@ -500,7 +501,7 @@ export default function Celulas() {
                       >
                         bairro
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('bairro')}
                           type="text"
@@ -518,7 +519,7 @@ export default function Celulas() {
                       >
                         Endereço
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('endereco')}
                           type="text"
@@ -535,7 +536,7 @@ export default function Celulas() {
                       >
                         Nº
                       </label>
-                      <div className="mt-2">
+                      <div className="mt-3">
                         <input
                           {...register('numero_casa')}
                           type="text"
