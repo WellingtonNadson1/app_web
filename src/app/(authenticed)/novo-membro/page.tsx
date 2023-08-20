@@ -448,11 +448,11 @@ export default function NovoMembro() {
                           <option value={'Médio Completo'}>
                             Médio Completo
                           </option>
-                          <option value={'Superio Incompleto'}>
-                            Superio Incompleto
+                          <option value={'Superior Incompleto'}>
+                            Superior Incompleto
                           </option>
-                          <option value={'Superio Completo'}>
-                            Superio Completo
+                          <option value={'Superior Completo'}>
+                            Superior Completo
                           </option>
                           <option value={'Pós Graduado'}>Pós Graduado</option>
                         </select>

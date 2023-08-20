@@ -1,15 +1,10 @@
-import { NextRequestWithAuth, withAuth } from 'next-auth/middleware'
+import type { NextRequest } from 'next/server'
+import { NextResponse } from 'next/server'
 
-export default withAuth(
-  function middleware(request: NextRequestWithAuth) {
-    console.log(request.nextUrl.pathname)
-    console.log(request.nextauth.token)
-  },
-  {
-    callbacks: {
-      authorized: ({ token }) => token?.role === 'MEMBER',
-    },
-  },
-)
+// This function can be marked `async` if using `await` inside
+export function middleware(request: NextRequest) {
+  return NextResponse.redirect(new URL('/login', request.url))
+}
 
-export const config = { matcher: ['/celulas', '/relatorios'] }
+// See "Matching Paths" below to learn more
+export const config = { matcher: ['/celulas/:path*', '/relatorios/:path*'] }
