@@ -6,7 +6,7 @@ import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
-import { sidebarLiderCelula } from './LinksSidebar'
+import { sidebarCentral } from './LinksSidebar'
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -49,7 +49,7 @@ export default function Sidebar() {
         <hr className="mt-7 h-px bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
         {status === 'authenticated' ? (
           <ul className="relative flex flex-col gap-y-2 pt-4">
-            {sidebarLiderCelula.map((item) => (
+            {sidebarCentral.map((item) => (
               <li
                 key={item.name}
                 onClick={() => route.push(item.href)}
