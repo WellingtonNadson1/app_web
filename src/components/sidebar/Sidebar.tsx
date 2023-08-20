@@ -15,7 +15,6 @@ export default function Sidebar() {
   const { data: session, status } = useSession()
   console.log(JSON.stringify(session))
   console.log(JSON.stringify(session?.user))
-  console.log(JSON.stringify(session?.user?.cargo_de_lideranca))
   return (
     <div className="shadow">
       <aside

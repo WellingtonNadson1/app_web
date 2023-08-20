@@ -38,16 +38,8 @@ declare module 'next-auth' {
     bairro: string
     endereco: string
     numero_casa: string
-    situacao_no_reino: string
-    cargo_de_lideranca: {
-      nome: string
-    }
-    celula_lidera: string
-    escola_lidera: string
-    supervisoes_lidera: string
     presencas_aulas_escolas: string
     presencas_cultos: string
-    TurmaEscola: string
   }
 
   // eslint-disable-next-line no-unused-vars
@@ -86,16 +78,8 @@ declare module 'next-auth' {
       bairro: string
       endereco: string
       numero_casa: string
-      situacao_no_reino: string
-      cargo_de_lideranca: {
-        nome: string
-      }
-      celula_lidera: string
-      escola_lidera: string
-      supervisoes_lidera: string
       presencas_aulas_escolas: string
       presencas_cultos: string
-      TurmaEscola: string
       token: string
     } & DefaultSession
   }
@@ -137,15 +121,7 @@ declare module 'next-auth/jwt' {
     bairro: string
     endereco: string
     numero_casa: string
-    situacao_no_reino: string
-    cargo_de_lideranca: {
-      nome: string
-    }
-    celula_lidera: string
-    escola_lidera: string
-    supervisoes_lidera: string
     presencas_aulas_escolas: string
     presencas_cultos: string
-    TurmaEscola: string
   }
 }
