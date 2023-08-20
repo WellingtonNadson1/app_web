@@ -14,7 +14,7 @@ export default function Sidebar() {
   const pathName = usePathname().split('/')[1]
   const { data: session, status } = useSession()
   console.log(JSON.stringify(session))
-  console.log(JSON.stringify(session?.user))
+  console.log(JSON.stringify(session?.user.token))
   return (
     <div className="shadow">
       <aside

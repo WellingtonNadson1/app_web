@@ -40,6 +40,7 @@ declare module 'next-auth' {
     numero_casa: string
     presencas_aulas_escolas: string
     presencas_cultos: string
+    token: string
   }
 
   // eslint-disable-next-line no-unused-vars
