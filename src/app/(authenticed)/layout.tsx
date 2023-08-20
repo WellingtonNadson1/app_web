@@ -1,12 +1,12 @@
 import Header from '@/components/Header'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers } from '@/providers/providers'
-// import { getServerSession } from 'next-auth'
-// import { RedirectType } from 'next/dist/client/components/redirect'
-// import { redirect } from 'next/navigation'
-// import { authOptions } from '../api/auth/[...nextauth]/auth'
+import { getServerSession } from 'next-auth'
+import { RedirectType } from 'next/dist/client/components/redirect'
+import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
+import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
 
 export const metadata = {
@@ -19,13 +19,13 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
 
-  // if (!session) {
-  //   // Signed in
-  //   console.log(session)
-  //   return redirect('/login', RedirectType.replace)
-  // }
+  if (!session) {
+    // Signed in
+    console.log(session)
+    return redirect('/login', RedirectType.replace)
+  }
 
   return (
     <html lang="pt">

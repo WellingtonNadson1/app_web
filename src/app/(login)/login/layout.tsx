@@ -1,8 +1,8 @@
-// import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { Providers } from '@/providers/providers'
-// import { getServerSession } from 'next-auth'
-// import { RedirectType } from 'next/dist/client/components/redirect'
-// import { redirect } from 'next/navigation'
+import { getServerSession } from 'next-auth'
+import { RedirectType } from 'next/dist/client/components/redirect'
+import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import '../globals.css'
@@ -17,13 +17,13 @@ export default async function LoginLayout({
 }: {
   children: React.ReactNode
 }) {
-  // const session = await getServerSession(authOptions)
+  const session = await getServerSession(authOptions)
 
-  // if (session) {
-  //   // Signed in
-  //   console.log(session)
-  //   return redirect('/dashboard', RedirectType.replace)
-  // }
+  if (session) {
+    // Signed in
+    console.log(session)
+    return redirect('/dashboard', RedirectType.replace)
+  }
   return (
     <html lang="pt">
       <body>
