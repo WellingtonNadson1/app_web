@@ -37,7 +37,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              `Célula {headerCelula}`
+              Célula {headerCelula}
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">
