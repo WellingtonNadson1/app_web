@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
 interface HeaderCelulaProps {
-  headerCelula: string
+  headerCelula: string | undefined
 }
 
 export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {

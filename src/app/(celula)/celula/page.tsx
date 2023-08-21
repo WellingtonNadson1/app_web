@@ -50,7 +50,7 @@ export default function ControleCelulaSupervision() {
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
-        {dataCelula && <HeaderCelula headerCelula={dataCelula?.nome} />}
+        {<HeaderCelula headerCelula={dataCelula?.nome} />}
       </div>
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
@@ -60,7 +60,7 @@ export default function ControleCelulaSupervision() {
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
         {dataCelula ? (
-          dataCelula && <ControlePresencaCelula celula={dataCelula} />
+          <ControlePresencaCelula celula={dataCelula} />
         ) : (
           <SpinnerButton />
         )}
