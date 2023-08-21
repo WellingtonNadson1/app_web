@@ -2,46 +2,53 @@
 import Calendar from '@/components/Calendar'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { fetchWithToken } from '@/functions/functions'
+import { FetchError } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
-import useSWR from 'swr'
+import { useCallback, useEffect, useState } from 'react'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import HeaderCelula from './HeaderCelula'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
+  const [dataCelula, setDataCelula] = useState<CelulaProps>()
   const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const token = session?.user?.token // Safely access token
 
-  const URL = `https://${hostname}/celulas/${celulaId}`
+  const URLCelula = `https://${hostname}/celulas/${celulaId}`
 
-  const { data: celula, error } = useSWR<CelulaProps>(
-    [URL, `${token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+  const fetchCelula = useCallback(async () => {
+    try {
+      const response = await fetch(URLCelula, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      })
+      if (!response.ok) {
+        const error: FetchError = new Error('Failed to fetch get Celula Lider.')
+        error.status = response.status
+        throw error
+      }
+      const celula = await response.json()
+      setDataCelula(celula)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [URLCelula, token])
+
+  // UseEffect para buscar as células quando a página é carregada
+  useEffect(() => {
+    fetchCelula()
+  }, [fetchCelula])
 
   if (!session) {
     return <SpinnerButton />
-  }
-  console.log(
-    celula ? JSON.stringify(celula.nome) : 'Célula não carregou ainda',
-  )
-
-  if (error) {
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
-          <div>failed to load</div>
-        </div>
-      </div>
-    )
   }
 
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
-        {celula && <HeaderCelula headerCelula={celula?.nome} />}
+        {dataCelula && <HeaderCelula headerCelula={dataCelula?.nome} />}
       </div>
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
@@ -50,8 +57,8 @@ export default function ControleCelulaSupervision() {
         <LicoesCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        {celula ? (
-          <ControlePresencaCelula celula={celula} />
+        {dataCelula ? (
+          dataCelula && <ControlePresencaCelula celula={dataCelula} />
         ) : (
           <SpinnerButton />
         )}
