@@ -2,9 +2,9 @@
 // import Header from '@/components/Header'
 import { ICelula } from '@/components/ListCelulas'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
+import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
-import { fetchWithToken } from '../../novo-membro/page'
 
 interface IUser {
   id: string

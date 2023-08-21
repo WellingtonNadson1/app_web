@@ -91,7 +91,3 @@ const SituacoesNoReinoSchema = z
   .array()
 
 export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
-
-export interface FetchError extends Error {
-  status?: number
-}

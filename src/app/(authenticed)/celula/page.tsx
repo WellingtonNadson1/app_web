@@ -2,10 +2,10 @@
 import Calendar from '@/components/Calendar'
 // import Header from '@/components/Header'
 import LicoesCelula from '@/components/LicoesCelula'
+import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
-import { fetchWithToken } from '../novo-membro/page'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 
 export default function ControleCelulaSupervision() {
