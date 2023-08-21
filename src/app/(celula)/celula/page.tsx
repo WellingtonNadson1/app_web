@@ -14,7 +14,7 @@ export default function ControleCelulaSupervision() {
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const token = session?.user?.token // Safely access token
 
-  const URL = celulaId ? `https://${hostname}/celulas/${celulaId}` : null
+  const URL = `https://${hostname}/celulas/${celulaId}`
 
   const { data: celula, error } = useSWR<CelulaProps>(
     [URL, `${token}`],
