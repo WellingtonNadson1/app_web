@@ -14,6 +14,7 @@ interface HeaderCelulaProps {
 
 export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
   const { data: session, status } = useSession()
+  console.log('Title header component: ', headerCelula)
 
   const toDay = format(new Date(), 'PP', { locale: pt })
 
