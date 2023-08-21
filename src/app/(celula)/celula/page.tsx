@@ -12,7 +12,7 @@ export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${session?.user.celula}`
+  const URL = `https://${hostname}/celulas/${session?.user.celulaId}`
 
   const {
     data: celula,

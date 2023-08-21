@@ -21,7 +21,7 @@ interface Celula {
 
 export default function HeaderCelula() {
   const { data: session, status } = useSession()
-  const URLCelula = `https://${hostname}/celulas/${session?.user.celula}`
+  const URLCelula = `https://${hostname}/celulas/${session?.user.celulaId}`
 
   const toDay = format(new Date(), 'PP', { locale: pt })
 

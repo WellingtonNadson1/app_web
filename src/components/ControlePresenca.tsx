@@ -42,7 +42,7 @@ export default function ControlePresenca() {
   const { data: session } = useSession()
 
   const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${session?.user?.celula}`
+  const URL = `https://${hostname}/celulas/${session?.user?.celulaId}`
 
   console.log('Celula que Lidera', URL)
 
