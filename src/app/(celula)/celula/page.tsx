@@ -13,7 +13,6 @@ export default function ControleCelulaSupervision() {
   const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const token = session?.user?.token // Safely access token
-  console.log(`Use session CelulaID: ${celulaId}`)
 
   const URL = celulaId ? `https://${hostname}/celulas/${celulaId}` : null
 
@@ -29,6 +28,7 @@ export default function ControleCelulaSupervision() {
     return <SpinnerButton />
   }
   console.log(`Celula DATA PAGE: ${celula}`)
+  console.log(JSON.stringify(celula))
 
   if (error) {
     return (
