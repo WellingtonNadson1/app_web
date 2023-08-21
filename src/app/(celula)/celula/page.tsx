@@ -16,19 +16,16 @@ export default function ControleCelulaSupervision() {
 
   const URL = celulaId ? `https://${hostname}/celulas/${celulaId}` : null
 
-  const {
-    data: celula,
-    error,
-    isLoading,
-  } = useSWR<CelulaProps>([URL, `${token}`], ([url, token]: [string, string]) =>
-    fetchWithToken(url, token),
+  const { data: celula, error } = useSWR<CelulaProps>(
+    [URL, `${token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
   if (!session) {
     return <SpinnerButton />
   }
   console.log(`Celula DATA PAGE: ${celula}`)
-  console.log(JSON.stringify(celula))
+  console.log(JSON.stringify(celula?.nome))
 
   if (error) {
     return (
@@ -52,8 +49,8 @@ export default function ControleCelulaSupervision() {
         <LicoesCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        {!isLoading ? (
-          celula && <ControlePresencaCelula celula={celula} />
+        {celula ? (
+          <ControlePresencaCelula celula={celula} />
         ) : (
           <SpinnerButton />
         )}
