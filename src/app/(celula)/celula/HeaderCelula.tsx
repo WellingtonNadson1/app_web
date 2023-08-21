@@ -44,14 +44,9 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
         <div className="mx-auto flex w-full flex-wrap items-center justify-between">
           {/* Titile Page */}
           {session ? (
-            <div className="flex, items-center justify-center gap-1">
-              <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-                {NamePage}
-              </h1>
-              <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-                {headerCelula}
-              </h1>
-            </div>
+            <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
+              `${NamePage} ${headerCelula}`
+            </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">
               <svg
