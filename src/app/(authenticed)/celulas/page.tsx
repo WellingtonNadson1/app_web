@@ -1,5 +1,6 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
+import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -126,31 +127,6 @@ export default function Celulas() {
       errorCadastro()
     }
     reset()
-  }
-
-  async function fetchWithToken(url: string, token: string) {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch data with token.')
-        error.status = response.status
-        throw error
-      }
-      const data = await response.json()
-      return data
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Error while fetching data with token:', error.message)
-        throw error
-      } else {
-        console.error('Unknown error occurred:', error)
-        throw new Error('Unknown error occurred.')
-      }
-    }
   }
 
   const {
@@ -558,7 +534,7 @@ export default function Celulas() {
                         className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                       >
                         <svg
-                          className="mr-3 h-5 w-5 animate-spin text-white"
+                          className="mr-3 h-5 w-5 animate-spin text-gray-400"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
