@@ -5,7 +5,6 @@ import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
-import { usePathname } from 'next/navigation'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
 interface HeaderCelulaProps {
@@ -16,13 +15,6 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
   const { data: session, status } = useSession()
 
   const toDay = format(new Date(), 'PP', { locale: pt })
-
-  const pathName = usePathname().split('/')[1]
-  function captitalizeTheFirstLetter(word: string) {
-    return word.charAt(0).toUpperCase() + word.slice(1)
-  }
-
-  const NamePage = captitalizeTheFirstLetter(pathName)
 
   if (status === 'loading') {
     return <SpinnerButton />
@@ -45,7 +37,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              `${NamePage} ${headerCelula}`
+              `Célula {headerCelula}`
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">
