@@ -71,8 +71,8 @@ export default function ControlePresencaCelula({
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {celula ? (
-                  celula?.membros?.map((user) => (
+                {celula && celula.membros ? (
+                  celula.membros.map((user) => (
                     <tr
                       className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
                       key={user.id}
