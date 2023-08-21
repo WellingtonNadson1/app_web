@@ -4,14 +4,13 @@ import Calendar from '@/components/Calendar'
 import LicoesCelula from '@/components/LicoesCelula'
 import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
 import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
-  console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
+  console.log(`Use session CelulaID: ${session?.user.celulaId}`)
   const URL = `https://${hostname}/celulas/${session?.user.celulaId}`
 
   const {
