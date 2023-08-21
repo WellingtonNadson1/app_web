@@ -1,7 +1,7 @@
 'use client'
+import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import { UserCircle2 } from 'lucide-react'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
@@ -63,11 +63,11 @@ export default function Header() {
                   className={`cursor-pointer rounded-full shadow`}
                 />
               ) : (
-                <UserCircle2
-                  size={24}
+                <UserCircle
+                  size={32}
                   width={40}
                   height={40}
-                  strokeWidth={0.75}
+                  weight="thin"
                   className={`cursor-pointer rounded-full text-zinc-500 shadow`}
                 />
               )}

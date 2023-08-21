@@ -23,7 +23,6 @@ export default async function RootLayout({
 
   if (!session) {
     // Signed in
-    console.log(session)
     return redirect('/login', RedirectType.replace)
   }
 

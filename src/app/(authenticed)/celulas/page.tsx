@@ -156,7 +156,6 @@ export default function Celulas() {
   const {
     data: supervisoes,
     error,
-    isValidating,
     isLoading,
   } = useSWR<SupervisaoData[]>(
     [URLSupervisoes, `${session?.user.token}`],
@@ -213,10 +212,6 @@ export default function Celulas() {
       }
     }
   }, [supervisaoSelecionada, supervisoes])
-
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-  }
 
   if (error)
     return (

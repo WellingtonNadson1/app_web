@@ -11,7 +11,7 @@ import { LayoutDashboard } from 'lucide-react'
 
 export const sidebarCentral = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'Novo Memb.', icon: Baby, href: '/novo-membro' },
+  { name: 'Cadastro Memb.', icon: Baby, href: '/novo-membro' },
   { name: 'Supervisões', icon: UsersFour, href: '/supervisoes' },
   { name: 'Células', icon: Users, href: '/celulas' },
   { name: 'Escolas', icon: Student, href: '/escolas' },
@@ -22,6 +22,6 @@ export const sidebarCentral = [
 
 export const sidebarLiderCelula = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
-  { name: 'Células', icon: Users, href: '/celulas' },
+  { name: 'Célula', icon: Users, href: '/celula' },
   { name: 'Eventos', icon: Calendar, href: '/eventos' },
 ]

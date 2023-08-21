@@ -1,8 +1,6 @@
 'use client'
-import { FetchError } from '@/app/(authenticed)/novo-membro/schema'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { UserFocus } from '@phosphor-icons/react'
-import { useSession } from 'next-auth/react'
-import useSWR from 'swr'
 import { z } from 'zod'
 // import { useEffect, useState } from 'react'
 
@@ -36,77 +34,15 @@ const CelulaSchema = z.object({
   userId: z.string(),
 })
 
-type Celula = z.infer<typeof CelulaSchema>
+export type CelulaProps = z.infer<typeof CelulaSchema>
 
-export default function ControlePresenca() {
-  const { data: session } = useSession()
+interface ControlePresencaCelulaProps {
+  celula: CelulaProps
+}
 
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${session?.user.celulaId}`
-
-  console.log('Celula que Lidera', URL)
-
-  async function fetchWithToken(url: string, token: string) {
-    try {
-      const response = await fetch(url, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      })
-      if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch data with token.')
-        error.status = response.status
-        throw error
-      }
-      const data = await response.json()
-      return data
-    } catch (error) {
-      if (error instanceof Error) {
-        console.error('Error while fetching data with token:', error.message)
-        throw error
-      } else {
-        console.error('Unknown error occurred:', error)
-        throw new Error('Unknown error occurred.')
-      }
-    }
-  }
-
-  const {
-    data: celula,
-    error,
-    isValidating,
-    isLoading,
-  } = useSWR<Celula>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
-
-  console.log('Celula dados Controle Presenca', celula)
-
-  if (error) {
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
-          <div>failed to load</div>
-        </div>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
-        </div>
-      </div>
-    )
-  }
-
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-  }
-
+export default function ControlePresencaCelula({
+  celula,
+}: ControlePresencaCelulaProps) {
   return (
     <>
       <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
@@ -136,7 +72,7 @@ export default function ControlePresenca() {
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {!isLoading ? (
+                {celula ? (
                   celula?.membros?.map((user) => (
                     <tr
                       className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
@@ -192,7 +128,10 @@ export default function ControlePresenca() {
                 ) : (
                   <tr>
                     <td>
-                      <p>Carregando...</p>
+                      <p className="flex items-center justify-center">
+                        <SpinnerButton />
+                        Carregando...
+                      </p>
                     </td>
                   </tr>
                 )}

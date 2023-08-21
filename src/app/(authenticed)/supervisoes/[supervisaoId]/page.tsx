@@ -4,6 +4,7 @@ import { ICelula } from '@/components/ListCelulas'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
+import { fetchWithToken } from '../../novo-membro/page'
 
 interface IUser {
   id: string
@@ -35,18 +36,6 @@ export default function Supervisao({
 
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/supervisoes/${supervisaoId}`
-
-  function fetchWithToken(url: string, token: string) {
-    return fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        return data
-      })
-  }
 
   const {
     data: supervisao,

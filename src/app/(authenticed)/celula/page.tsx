@@ -1,30 +1,24 @@
 'use client'
-import { fetchWithToken } from '@/app/(authenticed)/novo-membro/page'
 import Calendar from '@/components/Calendar'
-import ControlePresenca from '@/components/ControlePresenca'
 // import Header from '@/components/Header'
 import LicoesCelula from '@/components/LicoesCelula'
-import { ICelula } from '@/components/ListCelulas'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 import useSWR from 'swr'
+import { fetchWithToken } from '../novo-membro/page'
+import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 
-export default function ControleCelulaSupervision({
-  params: { celulaId },
-}: {
-  params: { celulaId: string }
-}) {
+export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${celulaId}`
+  const URL = `https://${hostname}/celulas/${session?.user.celulaId}`
 
   const {
     data: celula,
     error,
-    isValidating,
     isLoading,
-  } = useSWR<ICelula>(
+  } = useSWR<CelulaProps>(
     [URL, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
@@ -49,11 +43,6 @@ export default function ControleCelulaSupervision({
     )
   }
 
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-    console.log('Celulal Data: ', celula)
-  }
-
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
@@ -66,7 +55,7 @@ export default function ControleCelulaSupervision({
         <LicoesCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        <ControlePresenca />
+        {celula && <ControlePresencaCelula celula={celula} />}
       </div>
     </div>
   )

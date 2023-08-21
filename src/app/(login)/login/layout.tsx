@@ -21,7 +21,6 @@ export default async function LoginLayout({
 
   if (session) {
     // Signed in
-    console.log(session)
     return redirect('/dashboard', RedirectType.replace)
   }
   return (
