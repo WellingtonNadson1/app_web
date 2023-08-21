@@ -13,15 +13,17 @@ export default function ControleCelulaSupervision() {
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
   const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
-  const token = session?.user?.token // Safely access token
 
   const URLCelula = `https://${hostname}/celulas/${celulaId}`
 
   const fetchCelula = useCallback(async () => {
     try {
+      if (!session) {
+        return
+      }
       const response = await fetch(URLCelula, {
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${session?.user?.token}`,
         },
       })
       if (!response.ok) {
@@ -34,7 +36,7 @@ export default function ControleCelulaSupervision() {
     } catch (error) {
       console.log(error)
     }
-  }, [URLCelula, token])
+  }, [URLCelula, session])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
