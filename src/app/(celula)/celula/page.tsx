@@ -24,8 +24,9 @@ export default function ControleCelulaSupervision() {
   if (!session) {
     return <SpinnerButton />
   }
-  console.log(`Celula DATA PAGE: ${celula}`)
-  console.log(JSON.stringify(celula?.nome))
+  console.log(
+    celula ? JSON.stringify(celula.nome) : 'Célula não carregou ainda',
+  )
 
   if (error) {
     return (
