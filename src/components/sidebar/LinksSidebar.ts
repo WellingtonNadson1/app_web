@@ -23,5 +23,5 @@ export const sidebarCentral = [
 export const sidebarLiderCelula = [
   { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Célula', icon: Users, href: '/celula' },
-  { name: 'Eventos', icon: Calendar, href: '/eventos' },
+  // { name: 'Eventos', icon: Calendar, href: '/eventos' },
 ]
