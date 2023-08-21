@@ -28,6 +28,7 @@ export default function ControleCelulaSupervision() {
   if (!session) {
     return <SpinnerButton />
   }
+  console.log(`Celula DATA PAGE: ${celula}`)
 
   if (error) {
     return (
