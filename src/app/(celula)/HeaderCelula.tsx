@@ -1,17 +1,34 @@
 'use client'
+import { fetchWithToken } from '@/functions/functions'
 import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
+import { hostname } from 'os'
+import useSWR from 'swr'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
+interface Celula {
+  id: string
+  nome: string
+  lider: {
+    id: string
+    first_name: string
+  }
+}
 
 export default function HeaderCelula() {
   const { data: session, status } = useSession()
+  const URLCelula = `https://${hostname}/celulas/${session?.user.celula}`
 
   const toDay = format(new Date(), 'PP', { locale: pt })
+
+  const { data: celula } = useSWR<Celula>(
+    [URLCelula, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
 
   const pathName = usePathname().split('/')[1]
   function captitalizeTheFirstLetter(word: string) {
@@ -40,7 +57,7 @@ export default function HeaderCelula() {
         <div className="mx-auto flex w-full flex-wrap items-center justify-between">
           {/* Titile Page */}
           <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-            {`${NamePage} ${session?.user?.celula?.nome}`}
+            {`${NamePage} ${celula?.nome}`}
           </h1>
         </div>
         <div className="flex w-1/2 items-center justify-end gap-2 sm:w-1/2 sm:gap-8">
