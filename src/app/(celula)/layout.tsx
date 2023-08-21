@@ -6,7 +6,6 @@ import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import { authOptions } from '../api/auth/[...nextauth]/auth'
-import HeaderCelula from './HeaderCelula'
 import './globals.css'
 
 export const metadata = {
@@ -45,10 +44,7 @@ export default async function RootLayout({
           <div className="flex min-h-screen bg-slate-100">
             <Providers>
               <Sidebar />
-              <div className="mx-auto w-full px-2 py-2">
-                <HeaderCelula />
-                {children}
-              </div>
+              <div className="mx-auto w-full px-2 py-2">{children}</div>
             </Providers>
           </div>
         </div>

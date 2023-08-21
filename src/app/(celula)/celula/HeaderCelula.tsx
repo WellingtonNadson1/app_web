@@ -1,29 +1,21 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { fetchWithToken } from '@/functions/functions'
 import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import useSWR from 'swr'
-import { CelulaProps } from './celula/ControlePresencaCelula'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
+interface HeaderCelulaProps {
+  headerCelula: string
+}
 
-export default function HeaderCelula() {
+export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
   const { data: session, status } = useSession()
 
-  const hostname = 'app-ibb.onrender.com'
-  const URLCelula = `https://${hostname}/celulas/${session?.user.celulaId}`
-
   const toDay = format(new Date(), 'PP', { locale: pt })
-
-  const { data: celula, isLoading } = useSWR<CelulaProps>(
-    [URLCelula, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
 
   const pathName = usePathname().split('/')[1]
   function captitalizeTheFirstLetter(word: string) {
@@ -51,9 +43,9 @@ export default function HeaderCelula() {
       <nav className="relative z-10 mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
         <div className="mx-auto flex w-full flex-wrap items-center justify-between">
           {/* Titile Page */}
-          {!isLoading ? (
+          {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              {NamePage} {celula?.nome}
+              {NamePage} {headerCelula}
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">

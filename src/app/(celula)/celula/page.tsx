@@ -1,28 +1,28 @@
 'use client'
 import Calendar from '@/components/Calendar'
-// import Header from '@/components/Header'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
+import HeaderCelula from './HeaderCelula'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
-  console.log(`Use session CelulaID: ${session?.user.celulaId}`)
-  const URL = session?.user.celulaId
-    ? `https://${hostname}/celulas/${session.user.celulaId}`
-    : null
+  const celulaId = session?.user?.celulaId // Safely access celulaId
+  const token = session?.user?.token // Safely access token
+  console.log(`Use session CelulaID: ${celulaId}`)
+
+  const URL = celulaId ? `https://${hostname}/celulas/${celulaId}` : null
 
   const {
     data: celula,
     error,
     isLoading,
-  } = useSWR<CelulaProps>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  } = useSWR<CelulaProps>([URL, `${token}`], ([url, token]: [string, string]) =>
+    fetchWithToken(url, token),
   )
 
   if (!session) {
@@ -43,7 +43,7 @@ export default function ControleCelulaSupervision() {
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
-        {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
+        {celula && <HeaderCelula headerCelula={celula.nome} />}
       </div>
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
