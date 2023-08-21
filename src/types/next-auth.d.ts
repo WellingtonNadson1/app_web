@@ -23,7 +23,7 @@ declare module 'next-auth' {
       isDiscipulado: string
       discipulador: string
       supervisao: string
-      celula: string | undefined
+      celula: { id: string; nome: string } | undefined
       escolas: [id: string, nome: string]
       encontros: [id: string, nome: string]
       estadoCivil: string

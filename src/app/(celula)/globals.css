@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .page-title{
+  @apply text-2xl leading-6 font-bold text-[#161e2e]/100
+}
+}
