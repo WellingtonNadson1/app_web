@@ -1,4 +1,5 @@
 'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { fetchWithToken } from '@/functions/functions'
 import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
@@ -6,26 +7,20 @@ import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
-import { hostname } from 'os'
 import useSWR from 'swr'
+import { CelulaProps } from './celula/ControlePresencaCelula'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
-interface Celula {
-  id: string
-  nome: string
-  lider: {
-    id: string
-    first_name: string
-  }
-}
 
 export default function HeaderCelula() {
   const { data: session, status } = useSession()
+
+  const hostname = 'app-ibb.onrender.com'
   const URLCelula = `https://${hostname}/celulas/${session?.user.celulaId}`
 
   const toDay = format(new Date(), 'PP', { locale: pt })
 
-  const { data: celula, isLoading } = useSWR<Celula>(
+  const { data: celula, isLoading } = useSWR<CelulaProps>(
     [URLCelula, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
@@ -38,7 +33,7 @@ export default function HeaderCelula() {
   const NamePage = captitalizeTheFirstLetter(pathName)
 
   if (status === 'loading') {
-    return <div>Loading...</div>
+    return <SpinnerButton />
   }
 
   const isAuthenticated = status === 'authenticated'
