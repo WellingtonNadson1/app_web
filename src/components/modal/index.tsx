@@ -22,13 +22,17 @@ function Modal({
       id="wrapper"
       onClick={handleClose}
     >
-      <div className="w-[600]">
-        <div className="rounded bg-white p-2">
-          <header className="flex items-center justify-between">
-            <div>Cadastro de Eventos</div>
-            <X onClick={() => onClose()} />
-          </header>
-          <body>{children}</body>
+      <div className="relative mx-auto w-full px-2 py-2">
+        <div className="relative mx-auto mb-4 mt-3 w-full px-2">
+          <div className="w-[600]">
+            <div className="rounded bg-white p-2">
+              <header className="flex items-center justify-between">
+                <div>Cadastro de Cultos</div>
+                <X onClick={() => onClose()} />
+              </header>
+              <div>{children}</div>
+            </div>
+          </div>
         </div>
       </div>
     </div>

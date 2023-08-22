@@ -190,10 +190,7 @@ export default function Cultos() {
 
               {/* Botões para submeter Forms */}
               <div className="mt-6 flex items-center justify-end gap-x-6">
-                <button
-                  type="button"
-                  className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
-                >
+                <button className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white">
                   Cancelar
                 </button>
                 {isLoadingSubmitForm ? (
