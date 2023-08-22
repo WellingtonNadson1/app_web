@@ -109,11 +109,11 @@ export default function Cultos() {
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
         <div className="flex items-center justify-between">
-          <div></div>
+          <div className="sm:w-1/2"></div>
           <button
             type="button"
             onClick={() => setShowModal(!showModal)}
-            className="rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+            className="rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5"
           >
             Cadastrar
           </button>
