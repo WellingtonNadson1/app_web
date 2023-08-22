@@ -1,10 +1,9 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
-import { fetchWithToken } from '@/functions/functions'
+import { errorCadastro, fetchWithToken, success } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import useSWR from 'swr'
 import { z } from 'zod'
@@ -68,31 +67,6 @@ export default function Celulas() {
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
   const { register, handleSubmit, reset } = useForm<FormCelula>()
 
-  // Notification sucsses or error Submit Forms
-  const success = () =>
-    toast.success('Célula Cadastrada!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
-  const errorCadastro = () =>
-    toast.error('Error no Cadastro!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
   const onSubmit: SubmitHandler<FormCelula> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
@@ -118,13 +92,13 @@ export default function Celulas() {
       if (response.ok) {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
-        success()
+        success('Célula Cadastrada')
       } else {
-        errorCadastro()
+        errorCadastro('Erro ao Cadastrar Célula')
       }
     } catch (error) {
       console.log(error)
-      errorCadastro()
+      errorCadastro('Erro ao Cadastrar Célula')
     }
     reset()
   }
@@ -350,9 +324,7 @@ export default function Celulas() {
                           name="lider"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option disabled={true} value="">
-                            Selecione
-                          </option>
+                          <option value="">Selecione</option>
                           {supervisaoSelecionada &&
                             usersSupervisaoSelecionada?.map((lider) => (
                               <option key={lider.id} value={lider.id}>
