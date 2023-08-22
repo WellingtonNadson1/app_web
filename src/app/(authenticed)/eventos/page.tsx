@@ -14,7 +14,6 @@ import useSWR from 'swr'
 import { CultoDaSemana, NewCulto } from './schemaNewCulto'
 
 export default function Cultos() {
-  const [showModal, setShowModal] = useState(false)
   const { data: session } = useSession()
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const hostname = 'app-ibb.onrender.com'
@@ -102,13 +101,7 @@ export default function Cultos() {
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
-        <button
-          onClick={() => setShowModal(true)}
-          className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-        >
-          <span>Cadastrar</span>
-        </button>
-        <Modal isVisible={showModal} onClose={() => setShowModal(false)}>
+        <Modal titleButton="Cadastrar">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-sm uppercase leading-normal text-gray-400">
