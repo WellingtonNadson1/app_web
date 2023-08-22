@@ -17,12 +17,8 @@ import { handleCPFNumber, handlePhoneNumber } from './utils'
 
 export default function NovoMembro() {
   const hostname = 'app-ibb.onrender.com'
-  const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLUsers = `https://${hostname}/users`
-  const URLEscolas = `https://${hostname}/escolas`
-  const URLEncontros = `https://${hostname}/encontros`
-  const URLSituacoesNoReino = `https://${hostname}/situacoesnoreino`
-  const URLCagosLideranca = `https://${hostname}/cargoslideranca`
+  const URLCombinedData = `https://${hostname}/users/all`
 
   const { data: session } = useSession()
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
@@ -169,56 +165,28 @@ export default function NovoMembro() {
   //   console.log('Resultado do FetchWithToken: ', data)
   // })
 
-  // GET Supervisoes
+  // UseSWR para buscar os dados combinados
   const {
-    data: supervisoes,
+    data: combinedData,
     error,
-    isValidating,
     isLoading,
-  } = useSWR<SupervisaoData[]>(
-    [URLSupervisoes, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
-  // GET Escolas
-  const { data: escolas } = useSWR<Escolas>(
-    [URLEscolas, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
-  // GET Encontro
-  const { data: encontros } = useSWR<Encontros>(
-    [URLEncontros, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
-  // GET Situacoes no Reino
-  const { data: situacoesNoReino } = useSWR<SituacoesNoReino>(
-    [URLSituacoesNoReino, `${session?.user.token}`],
+  } = useSWR<any>(
+    [URLCombinedData, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
-  // GET Cargos de Lideranca
-  const { data: cargoLideranca } = useSWR<SituacoesNoReino>(
-    [URLCagosLideranca, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
-
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-  }
+  // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
+  const supervisoes: SupervisaoData[] = combinedData?.[0]
+  const escolas: Escolas = combinedData?.[1]
+  const encontros: Encontros = combinedData?.[2]
+  const situacoesNoReino: SituacoesNoReino = combinedData?.[3]
+  const cargoLideranca: SituacoesNoReino = combinedData?.[4]
 
   if (error)
     return (
       <div className="mx-auto w-full px-2 py-2">
         <div className="mx-auto w-full">
           <div>failed to load</div>
-        </div>
-      </div>
-    )
-
-  if (isLoading)
-    return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
         </div>
       </div>
     )
