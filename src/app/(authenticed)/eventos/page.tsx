@@ -18,6 +18,7 @@ export default function Cultos() {
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const hostname = 'app-ibb.onrender.com'
   const URLCultosIndividuais = `https://${hostname}/cultosindividuais`
+  const URLCultosSemanais = `https://${hostname}/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
@@ -58,7 +59,7 @@ export default function Cultos() {
   }
 
   const { data: cultosSemanais, isLoading } = useSWR<CultoDaSemana[]>(
-    [URLCultosIndividuais, `${session?.user.token}`],
+    [URLCultosSemanais, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
 
@@ -104,17 +105,13 @@ export default function Cultos() {
         <Modal titleModal="Cadastro de Culto" titleButton="Cadastrar">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
-              <h2 className="text-sm uppercase leading-normal text-gray-400">
-                Cadastro de Culto
-              </h2>
-
-              <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-9">
+              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-9">
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="data_inicio_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
                   >
-                    Dt. Início
+                    Data Início
                   </label>
                   <div className="mt-3">
                     <input
@@ -132,7 +129,7 @@ export default function Cultos() {
                     htmlFor="data_termino_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
                   >
-                    Dt. Multipli.
+                    Data Término
                   </label>
                   <div className="mt-3">
                     <input
@@ -147,7 +144,7 @@ export default function Cultos() {
               </div>
 
               {/* INFORMAÇÕES DO REINO */}
-              <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-6">
                 <div className="sm:col-span-3">
                   <label
                     htmlFor="culto_semana"
