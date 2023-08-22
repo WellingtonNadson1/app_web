@@ -101,7 +101,7 @@ export default function Cultos() {
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
-        <Modal titleButton="Cadastrar">
+        <Modal titleModal="Cadastro de Culto" titleButton="Cadastrar">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
               <h2 className="text-sm uppercase leading-normal text-gray-400">
