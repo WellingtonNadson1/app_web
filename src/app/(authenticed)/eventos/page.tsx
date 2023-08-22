@@ -22,6 +22,7 @@ export default function Cultos() {
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
+  const [showModal, setShowModal] = useState<boolean>(false)
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
@@ -48,12 +49,17 @@ export default function Cultos() {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
         success('Culto Cadastrado')
+        setShowModal(!showModal)
       } else {
         errorCadastro('Erro ao cadastrar Culto')
+        setIsLoadingSubmitForm(false)
+        setShowModal(!showModal)
       }
     } catch (error) {
       console.log(error)
       errorCadastro('Erro ao cadastrar Culto')
+      setIsLoadingSubmitForm(false)
+      setShowModal(!showModal)
     }
     reset()
   }
@@ -102,11 +108,21 @@ export default function Cultos() {
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
-        <Modal titleModal="Cadastro de Culto" titleButton="Cadastrar">
+        <div className="flex items-center justify-between">
+          <div></div>
+          <button
+            type="button"
+            onClick={() => setShowModal(!showModal)}
+            className="rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+          >
+            Cadastrar
+          </button>
+        </div>
+        <Modal titleModal="Cadastro de Culto" isShow={showModal}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
-              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-9">
-                <div className="sm:col-span-3">
+              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
+                <div className="sm:col-span-4">
                   <label
                     htmlFor="data_inicio_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
@@ -124,7 +140,7 @@ export default function Cultos() {
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-4">
                   <label
                     htmlFor="data_termino_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
@@ -179,46 +195,48 @@ export default function Cultos() {
               </div>
 
               {/* Botões para submeter Forms */}
-              <div className="mt-6 flex items-center justify-end gap-x-6">
-                <button className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white">
-                  Cancelar
-                </button>
-                {isLoadingSubmitForm ? (
-                  <button
-                    type="submit"
-                    disabled={isLoadingSubmitForm}
-                    className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                  >
-                    <svg
-                      className="mr-3 h-5 w-5 animate-spin text-gray-400"
-                      xmlns="http://www.w3.org/2000/svg"
-                      fill="none"
-                      viewBox="0 0 24 24"
+              <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                <div className="mt-6 flex items-center justify-end gap-x-6">
+                  <button className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white">
+                    Cancelar
+                  </button>
+                  {isLoadingSubmitForm ? (
+                    <button
+                      type="submit"
+                      disabled={isLoadingSubmitForm}
+                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
-                      <circle
-                        className="opacity-25"
-                        cx="12"
-                        cy="12"
-                        r="10"
-                        stroke="currentColor"
-                        strokeWidth="4"
-                      ></circle>
-                      <path
-                        className="opacity-75"
-                        fill="currentColor"
-                        d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                      ></path>
-                    </svg>
-                    <span>Cadastrando...</span>
-                  </button>
-                ) : (
-                  <button
-                    type="submit"
-                    className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                  >
-                    <span>Cadastrar</span>
-                  </button>
-                )}
+                      <svg
+                        className="mr-3 h-5 w-5 animate-spin text-gray-400"
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                      >
+                        <circle
+                          className="opacity-25"
+                          cx="12"
+                          cy="12"
+                          r="10"
+                          stroke="currentColor"
+                          strokeWidth="4"
+                        ></circle>
+                        <path
+                          className="opacity-75"
+                          fill="currentColor"
+                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                        ></path>
+                      </svg>
+                      <span>Cadastrando...</span>
+                    </button>
+                  ) : (
+                    <button
+                      type="submit"
+                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                    >
+                      <span>Cadastrar</span>
+                    </button>
+                  )}
+                </div>
               </div>
             </div>
           </form>
