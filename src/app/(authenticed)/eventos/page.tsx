@@ -105,8 +105,8 @@ export default function Cultos() {
         <Modal titleModal="Cadastro de Culto">
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
-              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-9">
-                <div className="sm:col-span-3">
+              <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
+                <div className="sm:col-span-4">
                   <label
                     htmlFor="data_inicio_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
@@ -124,7 +124,7 @@ export default function Cultos() {
                   </div>
                 </div>
 
-                <div className="sm:col-span-3">
+                <div className="sm:col-span-4">
                   <label
                     htmlFor="data_termino_culto"
                     className="block text-sm font-medium leading-6 text-slate-700"
@@ -176,19 +176,49 @@ export default function Cultos() {
                     </select>
                   </div>
                 </div>
+                <div className="sm:col-span-3">
+                  <label
+                    htmlFor="status"
+                    className="block text-sm font-medium leading-6 text-slate-700"
+                  >
+                    Culto da Semana
+                  </label>
+                  <div className="mt-3">
+                    <select
+                      {...register('status')}
+                      id="status"
+                      name="status"
+                      className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                    >
+                      {isLoading ? (
+                        <option value="">Carregando status...</option>
+                      ) : (
+                        <>
+                          <option value="">Selecione</option>
+                          <option value="Agendado">Agendado</option>
+                          <option value="Cancelado">Cancelado</option>
+                          <option value="Realizado">Realizado</option>
+                        </>
+                      )}
+                    </select>
+                  </div>
+                </div>
               </div>
 
               {/* Botões para submeter Forms */}
               <div className="mt-6 flex items-center justify-end gap-x-6">
-                <button className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white">
+                <button
+                  type="button"
+                  className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
+                >
                   Cancelar
                 </button>
                 {isLoadingSubmitForm ? (
-                  <div className="mt-6 flex items-center justify-end gap-x-6">
+                  <div>
                     <button
                       type="submit"
                       disabled={isLoadingSubmitForm}
-                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      className="flex w-full items-center justify-center gap-2 rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
                         className="mr-3 h-5 w-5 animate-spin text-gray-400"
