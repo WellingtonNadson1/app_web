@@ -54,7 +54,7 @@ export default function ListMembers() {
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
             <h2 className="text-lg font-semibold leading-7 text-gray-800">
-              Lista de Presença
+              Lista de Membros IBB
             </h2>
             <table className="w-full table-auto border-separate border-spacing-y-6">
               <thead>
@@ -62,20 +62,20 @@ export default function ListMembers() {
                   <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
                     Nome
                   </th>
-                  <th className="border-b-2 border-orange-300 py-2 text-gray-800">
+                  <th className="invisible border-b-2 border-orange-300 py-2 text-gray-800 sm:visible">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
+                  <th className="invisible border-b-2 border-indigo-300 py-2 text-gray-800 sm:visible">
                     Cargo
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
+                  <th className="invisible border-b-2 border-blue-300 py-2 text-gray-800 sm:visible">
                     Supervisão
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
+                  <th className="invisible border-b-2 border-indigo-300 py-2 text-gray-800 sm:visible">
                     Célula
                   </th>
-                  <th className="border-b-2 border-green-300 py-2 text-gray-800"></th>
                   <th className="border-b-2 border-red-300 py-2 text-gray-800"></th>
+                  <th className="border-b-2 border-green-300 py-2 text-gray-800"></th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
