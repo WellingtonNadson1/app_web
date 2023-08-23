@@ -113,7 +113,7 @@ export default function Cultos() {
           }}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div>
+            <div className="pb-10">
               <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
                 <div className="sm:col-span-4">
                   <label
