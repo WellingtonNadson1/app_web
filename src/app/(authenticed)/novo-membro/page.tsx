@@ -35,6 +35,7 @@ export default function NovoMembro() {
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
   const fetchMembers = useCallback(async () => {
+    if (!session?.user.token) return
     try {
       const response = await fetch(URLUsers, {
         headers: {
