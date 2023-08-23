@@ -31,7 +31,7 @@ export default function NovoMembro() {
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
-  const [dataMembers, setDataMembers] = useState<ReturnMembers[]>()
+  const [dataMembers, setDataMembers] = useState<ReturnMembers[]>([])
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
@@ -171,37 +171,6 @@ export default function NovoMembro() {
     }
   }
 
-  const fetchMembers = useCallback(async () => {
-    try {
-      const response = await fetch(URLUsers, {
-        headers: {
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
-      if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch get Members.')
-        error.status = response.status
-        throw error
-      }
-      const members = await response.json()
-      setDataMembers(members)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [URLUsers, session?.user.token])
-
-  // UseEffect para buscar as células quando a página é carregada
-  useEffect(() => {
-    fetchMembers()
-  }, [fetchMembers])
-
-  // UseEffect para buscar as células após o envio do formulário
-  useEffect(() => {
-    if (formSuccess) {
-      fetchMembers()
-    }
-  }, [formSuccess, fetchMembers])
-
   // fetchWithToken(URL, `${session?.user.token}`).then((data) => {
   //   console.log('Resultado do FetchWithToken: ', data)
   // })
@@ -222,6 +191,37 @@ export default function NovoMembro() {
   const encontros: Encontros = combinedData?.[2]
   const situacoesNoReino: SituacoesNoReino = combinedData?.[3]
   const cargoLideranca: SituacoesNoReino = combinedData?.[4]
+
+  const fetchMembers = useCallback(async () => {
+    try {
+      const response = await fetch(URLUsers, {
+        headers: {
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      })
+      if (!response.ok) {
+        const error: FetchError = new Error('Failed to fetch get Members.')
+        error.status = response.status
+        throw error
+      }
+      const members: ReturnMembers[] = await response.json()
+      setDataMembers(members)
+    } catch (error) {
+      console.log(error)
+    }
+  }, [URLUsers, session?.user.token])
+
+  // UseEffect para buscar as células quando a página é carregada
+  useEffect(() => {
+    fetchMembers()
+  }, [fetchMembers])
+
+  // UseEffect para buscar as células após o envio do formulário
+  useEffect(() => {
+    if (formSuccess) {
+      fetchMembers()
+    }
+  }, [formSuccess, fetchMembers])
 
   if (error)
     return (
@@ -1001,10 +1001,10 @@ export default function NovoMembro() {
         </form>
       </Modal>
       <div className="relative z-10 mx-auto w-full px-2 py-2">
-        {isLoading ? (
+        {dataMembers.length === 0 ? (
           <pre>Loading...</pre>
         ) : (
-          dataMembers && <ListMembers data={dataMembers} />
+          <ListMembers data={dataMembers} />
         )}
       </div>
 
