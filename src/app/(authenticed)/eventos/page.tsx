@@ -7,6 +7,7 @@ import {
   fetchWithToken,
   success,
 } from '@/functions/functions'
+import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -102,7 +103,15 @@ export default function Cultos() {
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
         <Calendar />
-        <Modal titleModal="Cadastro de Culto">
+        <Modal
+          titleButton="Cadastrar"
+          icon={PencilSquareIcon}
+          titleModal="Cadastro de Culto"
+          buttonProps={{
+            className:
+              'rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5',
+          }}
+        >
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="border-b border-gray-900/10 pb-12">
               <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">

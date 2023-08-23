@@ -1,16 +1,30 @@
 import { Dialog, Transition } from '@headlessui/react'
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline'
 import React, { Fragment, useRef, useState } from 'react'
 
-export default function Modal({
-  titleModal,
-  // titleButton,
-  children,
-}: {
+type IconHeaderModal = {
+  icon: React.ForwardRefExoticComponent<
+    Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
+      title?: string | undefined
+      titleId?: string | undefined
+    } & React.RefAttributes<SVGSVGElement>
+  >
+}
+
+type ModalProps = {
+  icon: IconHeaderModal['icon']
   titleModal: string
-  // titleButton: string
+  titleButton: string
+  buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
   children: React.ReactNode
-}) {
+}
+
+export default function Modal({
+  icon: IconComponent,
+  titleModal,
+  titleButton,
+  buttonProps,
+  children,
+}: ModalProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const cancelButtonRef = useRef(null)
@@ -31,9 +45,9 @@ export default function Modal({
         <button
           type="button"
           onClick={openModal} // Ativa o modal ao clicar no botão
-          className="rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5"
+          {...buttonProps}
         >
-          Cadastrar
+          {titleButton}
         </button>
       </div>
       <Transition.Root show={isOpen} as={Fragment}>
@@ -68,12 +82,9 @@ export default function Modal({
               >
                 <Dialog.Panel className="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-start">
-                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-red-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <ExclamationTriangleIcon
-                          className="h-6 w-6 text-green-600"
-                          aria-hidden="true"
-                        />
+                    <div className="sm:flex sm:items-center">
+                      <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                        <IconComponent />
                       </div>
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <Dialog.Title
