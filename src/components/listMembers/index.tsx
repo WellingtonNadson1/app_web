@@ -41,7 +41,7 @@ export default function ListMembers() {
         <div className="mx-auto flex w-full items-center gap-2">
           <div className="flex items-center gap-3 text-white">
             <SpinnerButton />
-            carregando...
+            <span className="text-gray-500">carregando...</span>
           </div>
         </div>
       </div>
