@@ -1,4 +1,5 @@
 'use client'
+import ListMembers from '@/components/listMembers'
 import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useState } from 'react'
@@ -973,6 +974,9 @@ export default function NovoMembro() {
             </div>
           </div>
         </div>
+      </div>
+      <div className="relative mx-auto mb-4 mt-3 w-full px-2">
+        <ListMembers />
       </div>
     </>
   )
