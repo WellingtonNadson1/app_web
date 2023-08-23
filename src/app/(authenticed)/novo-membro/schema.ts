@@ -96,32 +96,47 @@ export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
 export interface ReturnMembers {
   id: string
   role: string
-  image_url?: string
+  image_url: string | null
   email: string
   first_name: string
   last_name: string
   date_nascimento: string
   sexo: string
-  telefone?: string
+  telefone: string
   escolaridade: string
-  profissao?: string
+  profissao: string
   batizado: boolean
-  date_batizado?: string
+  date_batizado: string | null
   is_discipulado: boolean
-  discipulador?: string
+  discipulador: string
   estado_civil: string
-  nome_conjuge?: string
-  date_casamento?: string
+  nome_conjuge: string
+  date_casamento: string
   has_filho: boolean
-  quantidade_de_filho: number
-  date_decisao?: string
-  supervisao_pertence?: string
-  celula?: string
-  celula_lidera?: string[]
-  situacao_no_reino?: string
-  cargo_de_lideranca?: string
-  escolas?: string[]
-  encontros?: string[]
-  presencas_aulas_escolas?: string[]
-  presencas_cultos?: string[]
+  quantidade_de_filho: number | null
+  date_decisao: string | null
+  supervisao_pertence: {
+    nome: string
+  }
+  celula: {
+    nome: string
+  }
+  celula_lidera: Array<{
+    nome: string
+  }>
+  situacao_no_reino: {
+    nome: string
+  }
+  cargo_de_lideranca: {
+    nome: string
+  }
+  escolas: any[] // Update this to the correct type if you have one
+  encontros: any[] // Update this to the correct type if you have one
+  presencas_aulas_escolas: any[] // Update this to the correct type if you have one
+  presencas_cultos: Array<{
+    id: string
+    status: boolean
+    userId: string
+    cultoIndividualId: string
+  }>
 }
