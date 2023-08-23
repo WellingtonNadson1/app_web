@@ -113,7 +113,7 @@ export default function Cultos() {
           }}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
-            <div className="border-b border-gray-900/10 pb-12">
+            <div>
               <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
                 <div className="sm:col-span-4">
                   <label
@@ -190,7 +190,7 @@ export default function Cultos() {
                     htmlFor="status"
                     className="block text-sm font-medium leading-6 text-slate-700"
                   >
-                    Culto da Semana
+                    Status do Culto
                   </label>
                   <div className="mt-3">
                     <select

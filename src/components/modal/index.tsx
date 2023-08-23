@@ -84,7 +84,10 @@ export default function Modal({
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="sm:flex sm:items-center">
                       <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
-                        <IconComponent />
+                        <IconComponent
+                          className="h-6 w-6 text-green-600"
+                          aria-hidden="true"
+                        />
                       </div>
                       <div className="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
                         <Dialog.Title
