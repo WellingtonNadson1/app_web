@@ -12,6 +12,7 @@ import {
   Encontros,
   Escolas,
   Member,
+  ReturnMembers,
   SituacoesNoReino,
   SupervisaoData,
 } from './schema'
@@ -30,7 +31,7 @@ export default function NovoMembro() {
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
-  const [dataMembers, setDataMembers] = useState<Member[]>()
+  const [dataMembers, setDataMembers] = useState<ReturnMembers[]>()
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {

@@ -1,10 +1,10 @@
-import { Member } from '@/app/(authenticed)/novo-membro/schema'
+import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 
 interface ListMembersProps {
-  data: Member[]
+  data: ReturnMembers[]
 }
 
 export default function ListMembers({ data }: ListMembersProps) {

@@ -2,18 +2,19 @@ import { z } from 'zod'
 
 export const MemberSchema = z.object({
   id: z.string(),
-  supervisao_pertence: z.string().optional(),
-  celula: z.string().optional(),
+  role: z.string(),
   image_url: z.string().optional(),
-  escolas: z.string().array().optional(),
-  encontros: z.string().array().optional(),
   email: z.string().email(),
-  password: z.string(),
   first_name: z.string(),
   last_name: z.string(),
-  cpf: z.string().optional(),
   date_nascimento: z.string().datetime(),
   sexo: z.string(),
+  supervisao_pertence: z.string().optional(),
+  celula: z.string().optional(),
+  escolas: z.string().array().optional(),
+  encontros: z.string().array().optional(),
+  password: z.string(),
+  cpf: z.string().optional(),
   telefone: z.string(),
   escolaridade: z.string(),
   profissao: z.string().optional(),
@@ -91,3 +92,36 @@ const SituacoesNoReinoSchema = z
   .array()
 
 export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
+
+export interface ReturnMembers {
+  id: string
+  role: string
+  image_url?: string
+  email: string
+  first_name: string
+  last_name: string
+  date_nascimento: string
+  sexo: string
+  telefone?: string
+  escolaridade: string
+  profissao?: string
+  batizado: boolean
+  date_batizado?: string
+  is_discipulado: boolean
+  discipulador?: string
+  estado_civil: string
+  nome_conjuge?: string
+  date_casamento?: string
+  has_filho: boolean
+  quantidade_de_filho: number
+  date_decisao?: string
+  supervisao_pertence?: string
+  celula?: string
+  celula_lidera?: string[]
+  situacao_no_reino?: string
+  cargo_de_lideranca?: string
+  escolas?: string[]
+  encontros?: string[]
+  presencas_aulas_escolas?: string[]
+  presencas_cultos?: string[]
+}
