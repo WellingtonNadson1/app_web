@@ -4,6 +4,7 @@ import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import useSWR from 'swr'
+import SpinnerButton from '../spinners/SpinnerButton'
 // import { useEffect, useState } from 'react'
 
 export default function ListMembers() {
@@ -38,7 +39,10 @@ export default function ListMembers() {
     return (
       <div className="mx-auto w-full px-2 py-2">
         <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
+          <div className="flex items-center gap-3 text-white">
+            <SpinnerButton />
+            carregando...
+          </div>
         </div>
       </div>
     )
