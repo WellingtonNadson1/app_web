@@ -46,7 +46,7 @@ export default function ListMembers({ data }: ListMembersProps) {
                       </td>
 
                       <td className="mt-2 hidden text-start text-gray-700 sm:block">
-                        {member.supervisao_pertence}
+                        {member.supervisao_pertence.nome}
                       </td>
                       <td>
                         <div className="flex w-3/4 items-center justify-center">
