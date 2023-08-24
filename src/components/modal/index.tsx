@@ -40,8 +40,8 @@ export default function Modal({
   return (
     <>
       {/* Mudar o tipo do botão quando necessário */}
-      <div className="mt-2 flex items-center justify-between">
-        <div className="sm:w-1/2"></div>
+      <div className="flex items-center justify-between">
+        <div></div>
         <button
           type="button"
           onClick={openModal} // Ativa o modal ao clicar no botão
