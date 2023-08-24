@@ -6,6 +6,8 @@ import { useSession } from 'next-auth/react'
 import React, { useCallback, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
+
+import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import {
   AddressProps,
@@ -26,6 +28,7 @@ function AddNewMember() {
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
+  const router = useRouter()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -153,6 +156,7 @@ function AddNewMember() {
         setIsLoadingSubmitForm(false)
         successCadastroMembro()
         reset()
+        router.refresh()
       } else {
         errorCadastroMembro()
         setIsLoadingSubmitForm(false)
