@@ -115,7 +115,6 @@ function AddNewMember() {
       const selectedIsDiscipulado = Boolean(data.is_discipulado)
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
-      const quantidadeDeFilho = Number(data.quantidade_de_filho)
       const passwordDefault = 'JesusCristoReina'
       console.log(data.is_discipulado)
 
@@ -133,7 +132,6 @@ function AddNewMember() {
 
       const dataToSend = {
         ...data,
-        quantidade_de_filho: quantidadeDeFilho,
         encontros: encontrosToSend,
         escolas: escolasToSend,
         is_discipulado: selectedIsDiscipulado,
@@ -807,7 +805,10 @@ function AddNewMember() {
                       </label>
                       <div className="mt-3">
                         <input
-                          {...register('quantidade_de_filho')}
+                          {...register('quantidade_de_filho', {
+                            setValueAs: (value) =>
+                              value ? parseInt(value) : 0,
+                          })}
                           type="number"
                           id="quantidade_de_filho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
