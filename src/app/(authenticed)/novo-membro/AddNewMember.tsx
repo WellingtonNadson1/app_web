@@ -115,6 +115,7 @@ function AddNewMember() {
       const selectedIsDiscipulado = Boolean(data.is_discipulado)
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
+      const quantidadeDeFilho = Number(data.quantidade_de_filho)
       const passwordDefault = 'JesusCristoReina'
       console.log(data.is_discipulado)
 
@@ -132,6 +133,7 @@ function AddNewMember() {
 
       const dataToSend = {
         ...data,
+        quantidade_de_filho: quantidadeDeFilho,
         encontros: encontrosToSend,
         escolas: escolasToSend,
         is_discipulado: selectedIsDiscipulado,
