@@ -40,7 +40,7 @@ export default function Modal({
   return (
     <>
       {/* Mudar o tipo do botão quando necessário */}
-      <div className="z-50 mt-2 flex items-center justify-between">
+      <div className="mt-2 flex items-center justify-between">
         <div className="sm:w-1/2"></div>
         <button
           type="button"

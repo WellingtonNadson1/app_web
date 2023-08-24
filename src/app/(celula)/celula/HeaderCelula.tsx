@@ -24,7 +24,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
 
   if (!isAuthenticated) {
     return (
-      <nav className="relative z-10 mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
+      <nav className="relative mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
         <h2>Deu não autenticado!</h2>
       </nav>
     )
@@ -32,7 +32,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
 
   return (
     <>
-      <nav className="relative z-10 mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
+      <nav className="relative mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
         <div className="mx-auto flex w-full flex-wrap items-center justify-between">
           {/* Titile Page */}
           {session ? (

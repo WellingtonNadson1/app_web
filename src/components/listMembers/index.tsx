@@ -1,4 +1,5 @@
 'use client'
+import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
 import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
@@ -57,9 +58,12 @@ export default function ListMembers() {
       <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
-            <h2 className="text-lg font-semibold leading-7 text-gray-800">
-              Lista de Membros IBB
-            </h2>
+            <div className="flex items-center justify-between">
+              <h2 className="text-lg font-semibold leading-7 text-gray-800">
+                Lista de Membros IBB
+              </h2>
+              <AddNewMember />
+            </div>
             <table className="w-full table-auto border-separate border-spacing-y-6">
               <thead>
                 <tr className="text-base font-bold ">
@@ -157,12 +161,12 @@ export default function ListMembers() {
                 )}
               </tbody>
             </table>
-            <button
+            {/* <button
               className="mx-auto w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
               type="submit"
             >
               Registrar
-            </button>
+            </button> */}
           </div>
         </div>
       </div>
