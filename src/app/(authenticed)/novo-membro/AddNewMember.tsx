@@ -1,13 +1,14 @@
 'use client'
 import Modal from '@/components/modal'
 import { fetchWithToken } from '@/functions/functions'
+import { Combobox, Transition } from '@headlessui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
-import React, { useCallback, useState } from 'react'
+import { useRouter } from 'next/navigation'
+import React, { Fragment, useCallback, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-
-import { useRouter } from 'next/navigation'
 import useSWR from 'swr'
 import {
   AddressProps,
@@ -29,6 +30,10 @@ function AddNewMember() {
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
   const router = useRouter()
+
+  // Combobox Autocomplete
+  const [selected, setSelected] = useState<Member>()
+  const [query, setQuery] = useState('')
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -176,6 +181,21 @@ function AddNewMember() {
     [URLCombinedData, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, token),
   )
+  // UseSWR para buscar os dados combinados
+  const { data: queryMembers } = useSWR<Member[]>(
+    [URLUsers, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, token),
+  )
+
+  const filteredPeople =
+    query === ''
+      ? queryMembers
+      : queryMembers?.filter((person) =>
+          person.first_name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(query.toLowerCase().replace(/\s+/g, '')),
+        )
 
   // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
   const supervisoes: SupervisaoData[] = combinedData?.[0]
@@ -506,12 +526,87 @@ function AddNewMember() {
                         Discipulador
                       </label>
                       <div className="mt-3">
-                        <input
-                          {...register('discipulador')}
-                          id="discipulador"
-                          type="text"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        />
+                        <Combobox value={selected} onChange={setSelected}>
+                          <div className="relative mt-1">
+                            <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                              <Combobox.Input
+                                {...register('discipulador')}
+                                id="discipulador"
+                                className="w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0"
+                                displayValue={(person: Member) =>
+                                  person.first_name
+                                }
+                                onChange={(event) =>
+                                  setQuery(event.target.value)
+                                }
+                              />
+                              <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
+                                <ChevronUpDownIcon
+                                  className="h-5 w-5 text-gray-400"
+                                  aria-hidden="true"
+                                />
+                              </Combobox.Button>
+                            </div>
+                            <Transition
+                              as={Fragment}
+                              leave="transition ease-in duration-100"
+                              leaveFrom="opacity-100"
+                              leaveTo="opacity-0"
+                              afterLeave={() => setQuery('')}
+                            >
+                              <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                {filteredPeople?.length === 0 &&
+                                query !== '' ? (
+                                  <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
+                                    Nothing found.
+                                  </div>
+                                ) : (
+                                  filteredPeople?.map((person) => (
+                                    <Combobox.Option
+                                      key={person.id}
+                                      className={({ active }) =>
+                                        `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                          active
+                                            ? 'bg-teal-600 text-white'
+                                            : 'text-gray-900'
+                                        }`
+                                      }
+                                      value={person}
+                                    >
+                                      {({ selected, active }) => (
+                                        <>
+                                          <span
+                                            className={`block truncate ${
+                                              selected
+                                                ? 'font-medium'
+                                                : 'font-normal'
+                                            }`}
+                                          >
+                                            {person.first_name}
+                                          </span>
+                                          {selected ? (
+                                            <span
+                                              className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                active
+                                                  ? 'text-white'
+                                                  : 'text-teal-600'
+                                              }`}
+                                            >
+                                              <CheckIcon
+                                                className="h-5 w-5"
+                                                aria-hidden="true"
+                                              />
+                                            </span>
+                                          ) : null}
+                                        </>
+                                      )}
+                                    </Combobox.Option>
+                                  ))
+                                )}
+                              </Combobox.Options>
+                            </Transition>
+                          </div>
+                        </Combobox>
                       </div>
                     </div>
 
