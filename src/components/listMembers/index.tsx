@@ -1,5 +1,6 @@
 'use client'
 import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
+import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
 import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
@@ -130,17 +131,8 @@ export default function ListMembers() {
                         </span>
                       </td>
 
-                      <td className="ml-1 text-center">
-                        <button
-                          name={user.first_name}
-                          value={user.id}
-                          type="button"
-                          className="h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
-                        >
-                          Delete
-                        </button>
-                      </td>
-                      <td className="mr-1 text-center">
+                      <td className="ml-1 flex items-center justify-center text-center">
+                        <DeleteMember member={user} />
                         <button
                           name={user.first_name}
                           value={user.id}
