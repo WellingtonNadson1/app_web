@@ -83,7 +83,7 @@ export default function Modal({
               >
                 <Dialog.Panel className="relative w-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
-                    <div className="sm:flex sm:items-center">
+                    <div className="flex items-center justify-between">
                       <div>
                         <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
                           <IconComponent
@@ -99,15 +99,15 @@ export default function Modal({
                             {titleModal}
                           </Dialog.Title>
                         </div>
-                        <div className="rounded-full bg-gray-50 px-1 py-1 sm:flex sm:flex-row-reverse sm:px-6">
-                          <button
-                            type="submit"
-                            className="slate-300 inline-flex w-full justify-center rounded-full px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 sm:ml-3 sm:w-auto"
-                            onClick={closeModal}
-                          >
-                            <X />
-                          </button>
-                        </div>
+                      </div>
+                      <div className="rounded-full bg-gray-50 px-1 py-1 sm:flex sm:flex-row-reverse">
+                        <button
+                          type="submit"
+                          className="inline-flex w-full justify-center rounded-full bg-slate-200 px-2 py-2 text-xs font-normal text-slate-800 shadow-sm hover:bg-gray-300 sm:w-auto"
+                          onClick={closeModal}
+                        >
+                          <X />
+                        </button>
                       </div>
                     </div>
                     <div className="mt-3 text-left sm:ml-4 sm:mt-0 sm:text-left">
