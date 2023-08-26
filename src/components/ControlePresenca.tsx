@@ -53,7 +53,7 @@ export default function ControlePresenca() {
     isLoading,
   } = useSWR<Celula>(
     [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   console.log('Celula dados Controle Presenca', celula)

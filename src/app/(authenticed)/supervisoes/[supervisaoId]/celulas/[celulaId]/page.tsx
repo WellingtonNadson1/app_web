@@ -26,7 +26,7 @@ export default function ControleCelulaSupervision({
     isLoading,
   } = useSWR<ICelula>(
     [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   if (error) {

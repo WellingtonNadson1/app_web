@@ -61,7 +61,7 @@ export default function Cultos() {
 
   const { data: cultosSemanais, isLoading } = useSWR<CultoDaSemana[]>(
     [URLCultosSemanais, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   const fetchCultos = useCallback(async () => {

@@ -109,7 +109,7 @@ export default function Celulas() {
     isLoading,
   } = useSWR<SupervisaoData[]>(
     [URLSupervisoes, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   const fetchCelulas = useCallback(async () => {

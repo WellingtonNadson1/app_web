@@ -44,7 +44,7 @@ export default function Supervisao({
     isLoading,
   } = useSWR<ISupervisaoData>(
     [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   if (error) return <div>failed to load</div>
