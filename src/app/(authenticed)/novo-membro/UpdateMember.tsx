@@ -6,12 +6,11 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
 import {
-  AddressProps,
   Encontros,
   Escolas,
   Member,
@@ -38,42 +37,42 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [queryUpDate, setQueryUpDate] = useState('')
 
-  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
-    let value = e.currentTarget.value
-    value = value.replace(/\D/g, '')
-    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-    e.currentTarget.value = value
+  // const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
+  //   e.currentTarget.maxLength = 9
+  //   let value = e.currentTarget.value
+  //   value = value.replace(/\D/g, '')
+  //   value = value.replace(/^(\d{5})(\d)/, '$1-$2')
+  //   e.currentTarget.value = value
 
-    if (value.length === 9) {
-      await handleFetchCep(value)
-    }
-  }
+  //   if (value.length === 9) {
+  //     await handleFetchCep(value)
+  //   }
+  // }
 
-  const handleSetDataAddress = useCallback(
-    (data: AddressProps) => {
-      setValue('cidade', data.localidade)
-      setValue('endereco', data.logradouro)
-      setValue('estado', data.uf)
-      setValue('bairro', data.bairro)
-    },
-    [setValue],
-  )
+  // const handleSetDataAddress = useCallback(
+  //   (data: AddressProps) => {
+  //     setValue('cidade', data.localidade)
+  //     setValue('endereco', data.logradouro)
+  //     setValue('estado', data.uf)
+  //     setValue('bairro', data.bairro)
+  //   },
+  //   [setValue],
+  // )
 
-  const handleFetchCep = useCallback(
-    async (zipCode: string) => {
-      try {
-        const response = await fetch(
-          `https://viacep.com.br/ws/${zipCode}/json/`,
-        )
-        const result = await response.json()
-        handleSetDataAddress(result)
-      } catch (error) {
-        console.error('Erro ao buscar CEP:', error)
-      }
-    },
-    [handleSetDataAddress],
-  )
+  // const handleFetchCep = useCallback(
+  //   async (zipCode: string) => {
+  //     try {
+  //       const response = await fetch(
+  //         `https://viacep.com.br/ws/${zipCode}/json/`,
+  //       )
+  //       const result = await response.json()
+  //       handleSetDataAddress(result)
+  //     } catch (error) {
+  //       console.error('Erro ao buscar CEP:', error)
+  //     }
+  //   },
+  //   [handleSetDataAddress],
+  // )
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -964,7 +963,7 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           {...register('cep')}
                           type="text"
                           id="cep"
-                          onKeyUp={handleZipCode}
+                          // onKeyUp={handleZipCode}
                           maxLength={9}
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
