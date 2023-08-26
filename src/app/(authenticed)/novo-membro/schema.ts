@@ -100,21 +100,27 @@ export interface ReturnMembers {
   email: string
   first_name: string
   last_name: string
+  cpf: string
   date_nascimento: string
   sexo: string
-  telefone: string | null
+  telefone: string
   escolaridade: string
-  profissao: string | null
+  profissao: string
   batizado: boolean
-  date_batizado: string | null
+  date_batizado: string
   is_discipulado: boolean
-  discipulador: string | null
+  discipulador: string
   estado_civil: string
-  nome_conjuge: string | null
+  nome_conjuge: string
   date_casamento: string
   has_filho: boolean
-  quantidade_de_filho: number | null
-  date_decisao: string | null
+  quantidade_de_filho: number
+  date_decisao: string
+  cep: string
+  estado: string
+  cidade: string
+  bairro: string
+  numero_casa: string
   supervisao_pertence: {
     nome: string
   }
