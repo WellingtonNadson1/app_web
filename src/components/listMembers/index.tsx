@@ -1,6 +1,7 @@
 'use client'
 import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
 import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
+import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember'
 import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
@@ -22,7 +23,7 @@ export default function ListMembers() {
     isLoading,
   } = useSWR<ReturnMembers[]>(
     [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
 
   console.log('Members dados: ', members)
@@ -84,7 +85,6 @@ export default function ListMembers() {
                     Célula
                   </th>
                   <th className="border-b-2 border-red-300 py-2 text-gray-800"></th>
-                  <th className="border-b-2 border-green-300 py-2 text-gray-800"></th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
@@ -131,16 +131,9 @@ export default function ListMembers() {
                         </span>
                       </td>
 
-                      <td className="ml-1 flex items-center justify-center text-center">
+                      <td className="flex items-center justify-center gap-2 text-center">
                         <DeleteMember member={user} />
-                        <button
-                          name={user.first_name}
-                          value={user.id}
-                          type="button"
-                          className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
-                        >
-                          Editar
-                        </button>
+                        <UpdateMember member={user} />
                       </td>
                     </tr>
                   ))

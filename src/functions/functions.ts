@@ -4,12 +4,17 @@ export interface FetchError extends Error {
   status?: number
 }
 
-export async function fetchWithToken(url: string, token: string) {
+export async function fetchWithToken(
+  url: string,
+  methodType: string = 'GET',
+  token: string,
+) {
   try {
     const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      method: methodType,
     })
     if (!response.ok) {
       const error: FetchError = new Error('Failed to fetch data with token.')

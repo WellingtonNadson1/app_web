@@ -11,8 +11,8 @@ export const MemberSchema = z.object({
   sexo: z.string(),
   supervisao_pertence: z.string().optional(),
   celula: z.string().optional(),
-  escolas: z.string().array().optional(),
-  encontros: z.string().array().optional(),
+  escolas: z.union([z.string().array().optional(), z.null()]),
+  encontros: z.union([z.string().array().optional(), z.null()]),
   password: z.string(),
   cpf: z.string().optional(),
   telefone: z.string(),
@@ -102,15 +102,15 @@ export interface ReturnMembers {
   last_name: string
   date_nascimento: string
   sexo: string
-  telefone: string
+  telefone: string | null
   escolaridade: string
-  profissao: string
+  profissao: string | null
   batizado: boolean
   date_batizado: string | null
   is_discipulado: boolean
-  discipulador: string
+  discipulador: string | null
   estado_civil: string
-  nome_conjuge: string
+  nome_conjuge: string | null
   date_casamento: string
   has_filho: boolean
   quantidade_de_filho: number | null

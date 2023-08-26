@@ -15,13 +15,15 @@ import {
   Encontros,
   Escolas,
   Member,
+  ReturnMembers,
   SituacoesNoReino,
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 
-function AddNewMember() {
+function UpdateMember({ member }: { member: ReturnMembers }) {
   const hostname = 'app-ibb.onrender.com'
+  const URLUsersId = `https://${hostname}/users/${member.id}`
   const URLUsers = `https://${hostname}/users`
   const URLCombinedData = `https://${hostname}/users/all`
 
@@ -114,6 +116,43 @@ function AddNewMember() {
       theme: 'light',
     })
 
+  const { data: memberReturnForUpdate, mutate } = useSWR<Member>(
+    [URLUsersId, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  )
+  if (memberReturnForUpdate) {
+    reset({
+      cep: memberReturnForUpdate.cep,
+      estado: memberReturnForUpdate.estado,
+      cidade: memberReturnForUpdate.cidade,
+      bairro: memberReturnForUpdate.bairro,
+      numero_casa: memberReturnForUpdate.numero_casa,
+      first_name: memberReturnForUpdate.first_name,
+      last_name: memberReturnForUpdate.last_name,
+      cpf: memberReturnForUpdate.cpf,
+      telefone: memberReturnForUpdate.telefone,
+      email: memberReturnForUpdate.email,
+      date_nascimento: memberReturnForUpdate.date_nascimento,
+      sexo: memberReturnForUpdate.sexo,
+      escolaridade: memberReturnForUpdate.escolaridade,
+      profissao: memberReturnForUpdate.profissao,
+      batizado: memberReturnForUpdate.batizado,
+      date_batizado: memberReturnForUpdate.date_batizado,
+      is_discipulado: memberReturnForUpdate.is_discipulado,
+      discipulador: memberReturnForUpdate.discipulador,
+      supervisao_pertence: memberReturnForUpdate.supervisao_pertence,
+      celula: memberReturnForUpdate.celula,
+      escolas: memberReturnForUpdate.escolas,
+      encontros: memberReturnForUpdate.encontros,
+      cargo_de_lideranca: memberReturnForUpdate.cargo_de_lideranca,
+      estado_civil: memberReturnForUpdate.estado_civil,
+      nome_conjuge: memberReturnForUpdate.nome_conjuge,
+      date_casamento: memberReturnForUpdate.date_casamento,
+      has_filho: memberReturnForUpdate.has_filho,
+      quantidade_de_filho: memberReturnForUpdate.quantidade_de_filho,
+    })
+  }
+
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
@@ -158,6 +197,7 @@ function AddNewMember() {
         body: JSON.stringify(dataToSend),
       })
       if (response.ok) {
+        mutate(dataToSend, false)
         setIsLoadingSubmitForm(false)
         successCadastroMembro()
         reset()
@@ -239,7 +279,7 @@ function AddNewMember() {
       titleButton="+ Add Novo Membro"
       buttonProps={{
         className:
-          'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-full',
+          'z-10 rounded-md bg-green-800 text-white px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:w-full',
       }}
     >
       {/* Incio do Forms */}
@@ -1088,4 +1128,4 @@ function AddNewMember() {
   )
 }
 
-export default AddNewMember
+export default UpdateMember
