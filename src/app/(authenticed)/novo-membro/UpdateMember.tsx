@@ -15,12 +15,13 @@ import {
   Encontros,
   Escolas,
   Member,
+  ReturnMembers,
   SituacoesNoReino,
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 
-function UpdateMember({ member }: { member: Member }) {
+function UpdateMember({ member }: { member: ReturnMembers }) {
   const hostname = 'app-ibb.onrender.com'
   const URLUsersId = `https://${hostname}/users/${member.id}`
   const URLUsers = `https://${hostname}/users`
