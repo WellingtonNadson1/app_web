@@ -117,38 +117,35 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
       theme: 'light',
     })
 
-  if (member) {
-    reset({
-      cep: member.cep,
-      estado: member.estado,
-      cidade: member.cidade,
-      bairro: member.bairro,
-      numero_casa: member.numero_casa,
-      first_name: member.first_name,
-      last_name: member.last_name,
-      cpf: member.cpf,
-      telefone: member.telefone,
-      email: member.email,
-      date_nascimento: member.date_nascimento,
-      sexo: member.sexo,
-      escolaridade: member.escolaridade,
-      profissao: member.profissao,
-      batizado: member.batizado,
-      date_batizado: member.date_batizado,
-      is_discipulado: member.is_discipulado,
-      discipulador: member.discipulador,
-      supervisao_pertence: member.supervisao_pertence.nome,
-      celula: member.celula.nome,
-      escolas: member.escolas,
-      encontros: member.encontros,
-      cargo_de_lideranca: member.cargo_de_lideranca.nome,
-      estado_civil: member.estado_civil,
-      nome_conjuge: member.nome_conjuge,
-      date_casamento: member.date_casamento,
-      has_filho: member.has_filho,
-      quantidade_de_filho: member.quantidade_de_filho,
-    })
-  }
+  // Setando valorea para o Input vindas do Component Pai
+  setValue('cep', member.cep)
+  setValue('estado', member.estado)
+  setValue('cidade', member.cidade)
+  setValue('bairro', member.bairro)
+  setValue('numero_casa', member.numero_casa)
+  setValue('first_name', member.first_name)
+  setValue('last_name', member.last_name)
+  setValue('cpf', member.cpf)
+  setValue('telefone', member.telefone)
+  setValue('email', member.email)
+  setValue('date_nascimento', member.date_nascimento)
+  setValue('sexo', member.sexo)
+  setValue('escolaridade', member.escolaridade)
+  setValue('profissao', member.profissao)
+  setValue('batizado', member.batizado)
+  setValue('date_batizado', member.date_batizado)
+  setValue('is_discipulado', member.is_discipulado)
+  setValue('discipulador', member.discipulador)
+  setValue('supervisao_pertence', member.supervisao_pertence.nome)
+  setValue('celula', member.celula.nome)
+  setValue('escolas', member.escolas)
+  setValue('encontros', member.encontros)
+  setValue('cargo_de_lideranca', member.cargo_de_lideranca.nome)
+  setValue('estado_civil', member.estado_civil)
+  setValue('nome_conjuge', member.nome_conjuge)
+  setValue('date_casamento', member.date_nascimento)
+  setValue('has_filho', member.has_filho)
+  setValue('quantidade_de_filho', member.quantidade_de_filho)
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
@@ -380,7 +377,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           name="sexo"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value={'M'}>M</option>
                           <option value={'F'}>F</option>
                         </select>
@@ -440,7 +436,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           name="escolaridade"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value={'Sem Escolaridade'}>
                             Sem Escolaridade
                           </option>
@@ -509,7 +504,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="batizado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
                         </select>
@@ -547,7 +541,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="is_discipulado"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value="true">Sim</option>
                           <option value="false">Não</option>
                         </select>
@@ -663,7 +656,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           onChange={handleSupervisaoSelecionada}
                         >
-                          <option value={''}>Selecione</option>
                           {!isLoading ? (
                             (supervisoes ?? []).map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
@@ -690,7 +682,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="celula"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           {!isLoading ? (
                             (celulasFiltradas ?? []).map((celula) => (
                               <option key={celula.id} value={celula.id}>
@@ -799,7 +790,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="situacao_no_reino"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           {!isLoading ? (
                             (situacoesNoReino ?? []).map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
@@ -827,7 +817,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="cargo_de_lideranca"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           {!isLoading ? (
                             (cargoLideranca ?? []).map((cargo) => (
                               <option key={cargo.id} value={cargo.id}>
@@ -864,7 +853,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="estadoCivil"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value={'Casado'}>Casado(a)</option>
                           <option value={'Solteiro'}>Solteiro(a)</option>
                           <option value={'Viuvo'}>Viúvo(a)</option>
@@ -926,7 +914,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           id="has_filho"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value={''}>Selecione</option>
                           <option value={'true'}>Sim</option>
                           <option value={'false'}>Não</option>
                         </select>
