@@ -3,12 +3,19 @@ import Modal from '@/components/modal'
 import { UserMinusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import { ReturnMembers } from './schema'
+import { useRef, useState } from 'react'
 
-function DeleteMember({ member }: { member: ReturnMembers }) {
+function DeleteMember({
+  member,
+  memberName,
+}: {
+  member: string
+  memberName: string
+}) {
   const hostname = 'app-ibb.onrender.com'
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+
+  const cancelButtonRef = useRef(null)
 
   const { data: session } = useSession()
 
@@ -51,7 +58,7 @@ function DeleteMember({ member }: { member: ReturnMembers }) {
                 <h2 className="text-sm uppercase leading-normal text-gray-400">
                   Você dejesa Deletar este Membro?{' '}
                   <span className="font-semibold text-gray-600">
-                    {member.first_name}
+                    {memberName}
                   </span>
                 </h2>
               </div>
@@ -60,6 +67,7 @@ function DeleteMember({ member }: { member: ReturnMembers }) {
               <div className="mt-6 flex items-center justify-end gap-x-6">
                 <button
                   type="button"
+                  ref={cancelButtonRef}
                   className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-slate-500 hover:px-3 hover:py-2 hover:text-white"
                 >
                   Cancelar
@@ -94,7 +102,7 @@ function DeleteMember({ member }: { member: ReturnMembers }) {
                   </button>
                 ) : (
                   <button
-                    onClick={() => handleDelete(member.id)}
+                    onClick={() => handleDelete(member)}
                     type="submit"
                     className="rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
                   >

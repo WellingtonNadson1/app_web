@@ -6,12 +6,14 @@ import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
+import { useState } from 'react'
 import useSWR from 'swr'
 import SpinnerButton from '../spinners/SpinnerButton'
 // import { useEffect, useState } from 'react'
 
 export default function ListMembers() {
   const { data: session } = useSession()
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
 
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/users`
@@ -132,8 +134,18 @@ export default function ListMembers() {
                       </td>
 
                       <td className="flex items-center justify-center gap-2 text-center">
-                        <DeleteMember member={user} />
-                        <UpdateMember member={user} />
+                        <DeleteMember
+                          member={user.id}
+                          memberName={user.first_name}
+                        />
+                        <div onClick={() => setShouldFetch(true)}>
+                          {!isLoading && (
+                            <UpdateMember
+                              shouldFetch={shouldFetch}
+                              memberId={user.id}
+                            />
+                          )}
+                        </div>
                       </td>
                     </tr>
                   ))

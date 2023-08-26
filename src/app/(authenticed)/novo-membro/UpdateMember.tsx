@@ -6,23 +6,29 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { Fragment, useState } from 'react'
+import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
 import {
+  AddressProps,
   Encontros,
   Escolas,
   Member,
-  ReturnMembers,
   SituacoesNoReino,
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 
-function UpdateMember({ member }: { member: ReturnMembers }) {
+function UpdateMember({
+  memberId,
+  shouldFetch,
+}: {
+  memberId: string
+  shouldFetch: boolean
+}) {
   const hostname = 'app-ibb.onrender.com'
-  const URLUsersId = `https://${hostname}/users/${member.id}`
+  const URLUsersId = `https://${hostname}/users/${memberId}`
   const URLUsers = `https://${hostname}/users`
   const URLCombinedData = `https://${hostname}/users/all`
 
@@ -30,49 +36,66 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>()
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const { register, handleSubmit, setValue, reset } = useForm<Member>()
+  const { register, handleSubmit, setValue, reset } = useForm<Member>({
+    defaultValues: async () => {
+      if (!memberId) return {}
+
+      const response = await fetch(URLUsersId, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      })
+      const data = await response.json()
+      console.log('Data in the Update', data)
+      return data
+    },
+  })
+  const cancelButtonRef = useRef(null)
+
   const router = useRouter()
 
   // Combobox Autocomplete
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [queryUpDate, setQueryUpDate] = useState('')
 
-  // const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-  //   e.currentTarget.maxLength = 9
-  //   let value = e.currentTarget.value
-  //   value = value.replace(/\D/g, '')
-  //   value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-  //   e.currentTarget.value = value
+  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
+    e.currentTarget.maxLength = 9
+    let value = e.currentTarget.value
+    value = value.replace(/\D/g, '')
+    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
+    e.currentTarget.value = value
 
-  //   if (value.length === 9) {
-  //     await handleFetchCep(value)
-  //   }
-  // }
+    if (value.length === 9) {
+      await handleFetchCep(value)
+    }
+  }
 
-  // const handleSetDataAddress = useCallback(
-  //   (data: AddressProps) => {
-  //     setValue('cidade', data.localidade)
-  //     setValue('endereco', data.logradouro)
-  //     setValue('estado', data.uf)
-  //     setValue('bairro', data.bairro)
-  //   },
-  //   [setValue],
-  // )
+  const handleSetDataAddress = useCallback(
+    (data: AddressProps) => {
+      setValue('cidade', data.localidade)
+      setValue('endereco', data.logradouro)
+      setValue('estado', data.uf)
+      setValue('bairro', data.bairro)
+    },
+    [setValue],
+  )
 
-  // const handleFetchCep = useCallback(
-  //   async (zipCode: string) => {
-  //     try {
-  //       const response = await fetch(
-  //         `https://viacep.com.br/ws/${zipCode}/json/`,
-  //       )
-  //       const result = await response.json()
-  //       handleSetDataAddress(result)
-  //     } catch (error) {
-  //       console.error('Erro ao buscar CEP:', error)
-  //     }
-  //   },
-  //   [handleSetDataAddress],
-  // )
+  const handleFetchCep = useCallback(
+    async (zipCode: string) => {
+      try {
+        const response = await fetch(
+          `https://viacep.com.br/ws/${zipCode}/json/`,
+        )
+        const result = await response.json()
+        handleSetDataAddress(result)
+      } catch (error) {
+        console.error('Erro ao buscar CEP:', error)
+      }
+    },
+    [handleSetDataAddress],
+  )
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -115,36 +138,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
       progress: undefined,
       theme: 'light',
     })
-
-  // Setando valorea para o Input vindas do Component Pai
-  setValue('cep', member.cep)
-  setValue('estado', member.estado)
-  setValue('cidade', member.cidade)
-  setValue('bairro', member.bairro)
-  setValue('numero_casa', member.numero_casa)
-  setValue('first_name', member.first_name)
-  setValue('last_name', member.last_name)
-  setValue('cpf', member.cpf)
-  setValue('telefone', member.telefone)
-  setValue('email', member.email)
-  setValue('date_nascimento', member.date_nascimento)
-  setValue('sexo', member.sexo)
-  setValue('escolaridade', member.escolaridade)
-  setValue('profissao', member.profissao)
-  setValue('batizado', member.batizado)
-  setValue('date_batizado', member.date_batizado)
-  setValue('is_discipulado', member.is_discipulado)
-  setValue('discipulador', member.discipulador)
-  setValue('supervisao_pertence', member.supervisao_pertence.nome)
-  setValue('celula', member.celula.nome)
-  setValue('escolas', member.escolas)
-  setValue('encontros', member.encontros)
-  setValue('cargo_de_lideranca', member.cargo_de_lideranca.nome)
-  setValue('estado_civil', member.estado_civil)
-  setValue('nome_conjuge', member.nome_conjuge)
-  setValue('date_casamento', member.date_nascimento)
-  setValue('has_filho', member.has_filho)
-  setValue('quantidade_de_filho', member.quantidade_de_filho)
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
@@ -214,10 +207,51 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
   // UseSWR para buscar os dados combinados
-  const { data: queryMembers } = useSWR<Member[]>(
-    [URLUsers, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useSWR<
+    Member[]
+  >([URLUsers, `${session?.user.token}`], ([url, token]: [string, string]) =>
+    fetchWithToken(url, 'GET', token),
   )
+
+  if (isLoading) {
+    return null
+  }
+
+  if (isLoadingQueryUpdate) {
+    return null
+  }
+
+  // if (isLoadingQueryUpdateId) {
+  //   return null
+  // }
+
+  // // Setando valorea para o Input vindas do Component Pai
+  // if (queryMemberId) {
+  //   setValue('cep', queryMemberId.cep)
+  //   setValue('first_name', queryMemberId.first_name)
+  //   setValue('last_name', queryMemberId.last_name)
+  //   setValue('cpf', queryMemberId.cpf)
+  //   setValue('telefone', queryMemberId.telefone)
+  //   setValue('email', queryMemberId.email)
+  //   setValue('date_nascimento', queryMemberId.date_nascimento)
+  //   setValue('sexo', queryMemberId.sexo)
+  //   setValue('escolaridade', queryMemberId.escolaridade)
+  //   setValue('profissao', queryMemberId.profissao)
+  //   setValue('batizado', queryMemberId.batizado)
+  //   setValue('date_batizado', queryMemberId.date_batizado)
+  //   setValue('is_discipulado', queryMemberId.is_discipulado)
+  //   setValue('discipulador', queryMemberId.discipulador)
+  //   setValue('supervisao_pertence', queryMemberId.supervisao_pertence.nome)
+  //   setValue('celula', queryMemberId.celula.nome)
+  //   setValue('escolas', queryMemberId.escolas)
+  //   setValue('encontros', queryMemberId.encontros)
+  //   setValue('cargo_de_lideranca', queryMemberId.cargo_de_lideranca.nome)
+  //   setValue('estado_civil', queryMemberId.estado_civil)
+  //   setValue('nome_conjuge', queryMemberId.nome_conjuge)
+  //   setValue('date_casamento', queryMemberId.date_nascimento)
+  //   setValue('has_filho', queryMemberId.has_filho)
+  //   setValue('quantidade_de_filho', queryMemberId.quantidade_de_filho)
+  // }
 
   const filteredPeople =
     queryUpDate === ''
@@ -963,7 +997,7 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                           {...register('cep')}
                           type="text"
                           id="cep"
-                          // onKeyUp={handleZipCode}
+                          onKeyUp={handleZipCode}
                           maxLength={9}
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />
@@ -1062,6 +1096,7 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                 <div className="mt-6 flex items-center justify-end gap-x-6">
                   <button
                     type="button"
+                    ref={cancelButtonRef}
                     onClick={() => reset()}
                     className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
                   >

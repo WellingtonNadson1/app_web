@@ -110,13 +110,15 @@ export default function Modal({
                         </button>
                       </div>
                     </div>
-                    <div className="mt-3 text-left sm:ml-4 sm:mt-0 sm:text-left">
-                      <div className="mt-2">
-                        <p className="text-sm text-gray-500">{children}</p>
+                    {isOpen === false ? null : (
+                      <div className="mt-3 text-left sm:ml-4 sm:mt-0 sm:text-left">
+                        <div className="mt-2">
+                          <p className="text-sm text-gray-500">{children}</p>
+                        </div>
                       </div>
-                    </div>
+                    )}
                   </div>
-                  {/* <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                  <div className="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
                     <button
                       type="submit"
                       className="inline-flex w-full justify-center rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 sm:ml-3 sm:w-auto"
@@ -132,7 +134,7 @@ export default function Modal({
                     >
                       Cancel
                     </button>
-                  </div> */}
+                  </div>
                 </Dialog.Panel>
               </Transition.Child>
             </div>
