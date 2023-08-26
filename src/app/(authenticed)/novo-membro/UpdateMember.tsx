@@ -15,13 +15,12 @@ import {
   Encontros,
   Escolas,
   Member,
-  ReturnMembers,
   SituacoesNoReino,
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 
-function UpdateMember({ member }: { member: ReturnMembers }) {
+function UpdateMember({ member }: { member: Member }) {
   const hostname = 'app-ibb.onrender.com'
   const URLUsersId = `https://${hostname}/users/${member.id}`
   const URLUsers = `https://${hostname}/users`
@@ -116,40 +115,36 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
       theme: 'light',
     })
 
-  const { data: memberReturnForUpdate, mutate } = useSWR<Member>(
-    [URLUsersId, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-  if (memberReturnForUpdate) {
+  if (member) {
     reset({
-      cep: memberReturnForUpdate.cep,
-      estado: memberReturnForUpdate.estado,
-      cidade: memberReturnForUpdate.cidade,
-      bairro: memberReturnForUpdate.bairro,
-      numero_casa: memberReturnForUpdate.numero_casa,
-      first_name: memberReturnForUpdate.first_name,
-      last_name: memberReturnForUpdate.last_name,
-      cpf: memberReturnForUpdate.cpf,
-      telefone: memberReturnForUpdate.telefone,
-      email: memberReturnForUpdate.email,
-      date_nascimento: memberReturnForUpdate.date_nascimento,
-      sexo: memberReturnForUpdate.sexo,
-      escolaridade: memberReturnForUpdate.escolaridade,
-      profissao: memberReturnForUpdate.profissao,
-      batizado: memberReturnForUpdate.batizado,
-      date_batizado: memberReturnForUpdate.date_batizado,
-      is_discipulado: memberReturnForUpdate.is_discipulado,
-      discipulador: memberReturnForUpdate.discipulador,
-      supervisao_pertence: memberReturnForUpdate.supervisao_pertence,
-      celula: memberReturnForUpdate.celula,
-      escolas: memberReturnForUpdate.escolas,
-      encontros: memberReturnForUpdate.encontros,
-      cargo_de_lideranca: memberReturnForUpdate.cargo_de_lideranca,
-      estado_civil: memberReturnForUpdate.estado_civil,
-      nome_conjuge: memberReturnForUpdate.nome_conjuge,
-      date_casamento: memberReturnForUpdate.date_casamento,
-      has_filho: memberReturnForUpdate.has_filho,
-      quantidade_de_filho: memberReturnForUpdate.quantidade_de_filho,
+      cep: member.cep,
+      estado: member.estado,
+      cidade: member.cidade,
+      bairro: member.bairro,
+      numero_casa: member.numero_casa,
+      first_name: member.first_name,
+      last_name: member.last_name,
+      cpf: member.cpf,
+      telefone: member.telefone,
+      email: member.email,
+      date_nascimento: member.date_nascimento,
+      sexo: member.sexo,
+      escolaridade: member.escolaridade,
+      profissao: member.profissao,
+      batizado: member.batizado,
+      date_batizado: member.date_batizado,
+      is_discipulado: member.is_discipulado,
+      discipulador: member.discipulador,
+      supervisao_pertence: member.supervisao_pertence,
+      celula: member.celula,
+      escolas: member.escolas,
+      encontros: member.encontros,
+      cargo_de_lideranca: member.cargo_de_lideranca,
+      estado_civil: member.estado_civil,
+      nome_conjuge: member.nome_conjuge,
+      date_casamento: member.date_casamento,
+      has_filho: member.has_filho,
+      quantidade_de_filho: member.quantidade_de_filho,
     })
   }
 
@@ -188,8 +183,8 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
 
       console.log('Data Form2: ', dataToSend)
 
-      const response = await fetch(URLUsers, {
-        method: 'POST',
+      const response = await fetch(URLUsersId, {
+        method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${session?.user.token}`,
@@ -197,7 +192,6 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
         body: JSON.stringify(dataToSend),
       })
       if (response.ok) {
-        mutate(dataToSend, false)
         setIsLoadingSubmitForm(false)
         successCadastroMembro()
         reset()
@@ -275,11 +269,11 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   return (
     <Modal
       icon={UserPlusIcon}
-      titleModal="Cadastro de Membro"
-      titleButton="+ Add Novo Membro"
+      titleModal="Atualizar Dados"
+      titleButton="Editar"
       buttonProps={{
         className:
-          'z-10 rounded-md bg-green-800 text-white px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:w-full',
+          'z-10 rounded-md bg-green-600 text-white px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:w-full',
       }}
     >
       {/* Incio do Forms */}
