@@ -28,14 +28,15 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   const URLCombinedData = `https://${hostname}/users/all`
 
   const { data: session } = useSession()
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
+    useState<string>()
+  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
   const router = useRouter()
 
   // Combobox Autocomplete
-  const [selected, setSelected] = useState<Member>()
-  const [query, setQuery] = useState('')
+  const [selectedMember, setSelectedMember] = useState<Member>()
+  const [queryUpDate, setQueryUpDate] = useState('')
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -180,7 +181,7 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
         password: passwordDefault,
       }
 
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitUpDate(true)
 
       console.log('Data Form2: ', dataToSend)
 
@@ -193,17 +194,17 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
         body: JSON.stringify(dataToSend),
       })
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
+        setIsLoadingSubmitUpDate(false)
         successCadastroMembro()
         reset()
         router.refresh()
       } else {
         errorCadastroMembro()
-        setIsLoadingSubmitForm(false)
+        setIsLoadingSubmitUpDate(false)
       }
     } catch (error) {
       errorCadastroMembro()
-      setIsLoadingSubmitForm(false)
+      setIsLoadingSubmitUpDate(false)
     }
   }
 
@@ -223,13 +224,13 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   )
 
   const filteredPeople =
-    query === ''
+    queryUpDate === ''
       ? queryMembers
       : queryMembers?.filter((person) =>
           person.first_name
             .toLowerCase()
             .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, '')),
+            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
         )
 
   // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
@@ -261,11 +262,11 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
+    setSupervisaoSelecionadaUpDate(event.target.value)
   }
 
   const celulasFiltradas = (supervisoes ?? []).find(
-    (supervisao) => supervisao.id === supervisaoSelecionada,
+    (supervisao) => supervisao.id === supervisaoSelecionadaUpDate,
   )?.celulas
   return (
     <Modal
@@ -561,7 +562,10 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                         Discipulador
                       </label>
                       <div className="mt-3">
-                        <Combobox value={selected} onChange={setSelected}>
+                        <Combobox
+                          value={selectedMember}
+                          onChange={setSelectedMember}
+                        >
                           <div className="relative">
                             <div className="relative w-full cursor-default overflow-hidden rounded-md bg-white text-left shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                               <Combobox.Input
@@ -572,7 +576,7 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                                   person.first_name
                                 }
                                 onChange={(event) =>
-                                  setQuery(event.target.value)
+                                  setQueryUpDate(event.target.value)
                                 }
                               />
                               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
@@ -587,11 +591,11 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                               leave="transition ease-in duration-100"
                               leaveFrom="opacity-100"
                               leaveTo="opacity-0"
-                              afterLeave={() => setQuery('')}
+                              afterLeave={() => setQueryUpDate('')}
                             >
                               <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                 {filteredPeople?.length === 0 &&
-                                query !== '' ? (
+                                queryUpDate !== '' ? (
                                   <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
                                     Nothing found.
                                   </div>
@@ -1077,10 +1081,10 @@ function UpdateMember({ member }: { member: ReturnMembers }) {
                   >
                     Cancelar
                   </button>
-                  {isLoadingSubmitForm ? (
+                  {isLoadingSubmitUpDate ? (
                     <button
                       type="submit"
-                      disabled={isLoadingSubmitForm}
+                      disabled={isLoadingSubmitUpDate}
                       className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
