@@ -104,31 +104,31 @@ export default function ListMembers() {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`inline w-full rounded-md px-2 py-1 text-center ${
+                          className={`inline-flex w-full rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset ${
                             user.situacao_no_reino?.nome === 'Ativo'
-                              ? 'border border-green-200 bg-green-100 ring-green-500'
+                              ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                              ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
                               : user.situacao_no_reino?.nome === 'Frio'
-                              ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                              : 'border border-red-200 bg-red-100 ring-red-500'
+                              ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
+                              : 'bg-red-100  text-red-700 ring-red-600/20'
                           }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
+                        <span className="inline-flex items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.celula?.nome}
                         </span>
                       </td>

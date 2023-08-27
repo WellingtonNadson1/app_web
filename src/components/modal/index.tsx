@@ -84,8 +84,8 @@ export default function Modal({
                 <Dialog.Panel className="relative w-full transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-3xl">
                   <div className="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
                     <div className="flex items-center justify-between">
-                      <div>
-                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-100 sm:mx-0 sm:h-10 sm:w-10">
+                      <div className="flex items-center justify-between">
+                        <div className="mx-auto flex h-12 w-12 flex-shrink-0 items-center justify-center rounded-full bg-green-200 sm:mx-0 sm:h-10 sm:w-10">
                           <IconComponent
                             className="h-6 w-6 text-white"
                             aria-hidden="true"
@@ -100,13 +100,13 @@ export default function Modal({
                           </Dialog.Title>
                         </div>
                       </div>
-                      <div className="rounded-full bg-gray-50 px-1 py-1 sm:flex sm:flex-row-reverse">
+                      <div className="flex flex-row-reverse rounded-full bg-gray-50">
                         <button
                           type="submit"
-                          className="inline-flex w-full justify-center rounded-full bg-slate-200 px-2 py-2 text-xs font-normal text-slate-800 shadow-sm hover:bg-gray-300 sm:w-auto"
+                          className="inline-flex w-auto justify-center rounded-full bg-slate-200 px-1 py-1 text-xs font-thin text-slate-500 shadow-sm hover:bg-gray-300"
                           onClick={closeModal}
                         >
-                          <X />
+                          <X width={8} height={8} />
                         </button>
                       </div>
                     </div>
