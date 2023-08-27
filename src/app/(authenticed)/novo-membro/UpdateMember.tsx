@@ -49,7 +49,7 @@ function UpdateMember({
       })
       const data = await response.json()
       console.log('Data in the Update', data)
-      reset(data)
+      return data
     },
   })
   const cancelButtonRef = useRef(null)
