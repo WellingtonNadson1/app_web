@@ -74,19 +74,21 @@ export default function ListMembers() {
                   <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
                     Nome
                   </th>
-                  <th className="invisible border-b-2 border-orange-300 py-2 text-gray-800 sm:visible">
+                  <th className="hidden border-b-2 border-orange-300 py-2 text-gray-800 sm:inline">
                     Status
                   </th>
-                  <th className="invisible border-b-2 border-indigo-300 py-2 text-gray-800 sm:visible">
+                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:inline">
                     Cargo
                   </th>
-                  <th className="invisible border-b-2 border-blue-300 py-2 text-gray-800 sm:visible">
+                  <th className="hidden border-b-2 border-blue-300 py-2 text-gray-800 sm:inline">
                     Supervisão
                   </th>
-                  <th className="invisible border-b-2 border-indigo-300 py-2 text-gray-800 sm:visible">
+                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:inline">
                     Célula
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-gray-800"></th>
+                  <th className="border-b-2 border-red-300 py-2 text-gray-800">
+                    Opções
+                  </th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
@@ -117,23 +119,23 @@ export default function ListMembers() {
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:block">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
+                      <td className="text-center">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:block">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
+                      <td className="text-center">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:block">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
+                      <td className="text-center">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.celula?.nome}
                         </span>
                       </td>
 
-                      <td className="flex items-center justify-center gap-2 text-center">
+                      <td className="flex items-center justify-between gap-2 text-center">
                         <DeleteMember
                           member={user.id}
                           memberName={user.first_name}
