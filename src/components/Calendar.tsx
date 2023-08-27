@@ -1,4 +1,5 @@
 'use client'
+import { fetchWithToken } from '@/functions/functions'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
@@ -20,60 +21,73 @@ import {
   startOfToday,
 } from 'date-fns'
 import pt from 'date-fns/locale/pt'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { Fragment, useState } from 'react'
+import useSWR from 'swr'
 
 type meeting = {
-  id: number
-  name: string
+  id: string
+  culto_semana: string
   imageUrl: string
-  startDatetime: string
-  endDatetime: string
+  data_inicio_culto: string
+  data_termino_culto: string
 }
 
-const meetings = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    imageUrl: '/images/woman1.avif',
-    startDatetime: '2023-06-14T13:00',
-    endDatetime: '2023-06-14T14:30',
-  },
-  {
-    id: 2,
-    name: 'Michael Foster',
-    imageUrl: '/images/man1.avif',
-    startDatetime: '2023-06-20T09:00',
-    endDatetime: '2023-06-20T11:30',
-  },
-  {
-    id: 3,
-    name: 'Dries Vincent',
-    imageUrl: '/images/man2.avif',
-    startDatetime: '2023-06-22T17:00',
-    endDatetime: '2023-06-22T18:30',
-  },
-  {
-    id: 4,
-    name: 'Leslie Alexander',
-    imageUrl: '/images/woman1.avif',
-    startDatetime: '2023-06-09T13:00',
-    endDatetime: '2023-06-09T14:30',
-  },
-  {
-    id: 5,
-    name: 'Aniversário Pr. Pedro',
-    imageUrl: '/images/pr-pedro.png',
-    startDatetime: '2023-06-29T00:00',
-    endDatetime: '2023-06-29T23:59',
-  },
-]
+const hostname = 'app-ibb.onrender.com'
+const URLCultosInd = `https://${hostname}/cultosindividuais`
+
+// const meetings = [
+//   {
+//     id: 1,
+//     name: 'Leslie Alexander',
+//     imageUrl: '/images/woman1.avif',
+//     data_inicio_culto: '2023-06-14T13:00',
+//     data_termino_culto: '2023-06-14T14:30',
+//   },
+//   {
+//     id: 2,
+//     name: 'Michael Foster',
+//     imageUrl: '/images/man1.avif',
+//     data_inicio_culto: '2023-06-20T09:00',
+//     data_termino_culto: '2023-06-20T11:30',
+//   },
+//   {
+//     id: 3,
+//     name: 'Dries Vincent',
+//     imageUrl: '/images/man2.avif',
+//     data_inicio_culto: '2023-06-22T17:00',
+//     data_termino_culto: '2023-06-22T18:30',
+//   },
+//   {
+//     id: 4,
+//     name: 'Leslie Alexander',
+//     imageUrl: '/images/woman1.avif',
+//     data_inicio_culto: '2023-06-09T13:00',
+//     data_termino_culto: '2023-06-09T14:30',
+//   },
+//   {
+//     id: 5,
+//     name: 'Aniversário Pr. Pedro',
+//     imageUrl: '/images/pr-pedro.png',
+//     data_inicio_culto: '2023-06-29T00:00',
+//     data_termino_culto: '2023-06-29T23:59',
+//   },
+// ]
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function Example() {
+  const { data: session } = useSession()
+
+  // UseSWR para buscar os dados combinados
+  const { data: meetings } = useSWR<meeting[]>(
+    [URLCultosInd, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  )
+
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -94,8 +108,8 @@ export default function Example() {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings.filter((meeting) =>
-    isSameDay(parseISO(meeting.startDatetime), selectedDay),
+  const selectedDayMeetings = meetings?.filter((meeting) =>
+    isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
 
   return (
@@ -180,8 +194,8 @@ export default function Example() {
                     </button>
                     {/* Pontos de Eventos */}
                     <div className="mx-auto flex items-center justify-center gap-1">
-                      {meetings.some((meeting) =>
-                        isSameDay(parseISO(meeting.startDatetime), day),
+                      {meetings?.some((meeting) =>
+                        isSameDay(parseISO(meeting.data_inicio_culto), day),
                       ) && (
                         <div className="mt-1 h-1 w-1">
                           <div className="h-1 w-1 rounded-full bg-sky-500"></div>
@@ -211,8 +225,8 @@ export default function Example() {
                 </time>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayMeetings.length > 0 ? (
-                  selectedDayMeetings.map((meeting) => (
+                {selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
+                  selectedDayMeetings?.map((meeting) => (
                     <Meeting meeting={meeting} key={meeting.id} />
                   ))
                 ) : (
@@ -228,8 +242,10 @@ export default function Example() {
 }
 
 function Meeting({ meeting }: { meeting: meeting }) {
-  const startDateTime = parseISO(meeting.startDatetime)
-  const endDateTime = parseISO(meeting.endDatetime)
+  // eslint-disable-next-line camelcase
+  const data_inicio_culto = parseISO(meeting.data_inicio_culto)
+  // eslint-disable-next-line camelcase
+  const data_termino_culto = parseISO(meeting.data_termino_culto)
 
   return (
     <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
@@ -237,18 +253,18 @@ function Meeting({ meeting }: { meeting: meeting }) {
         src={meeting.imageUrl}
         width={10}
         height={10}
-        alt=""
+        alt="Null"
         className="h-10 w-10 flex-none rounded-full"
       />
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.name}</p>
+        <p className="text-gray-900">{meeting.culto_semana}</p>
         <p className="mt-0.5">
-          <time dateTime={meeting.startDatetime}>
-            {format(startDateTime, 'h:mm a')}
+          <time dateTime={meeting.data_inicio_culto}>
+            {format(data_inicio_culto, 'h:mm a')}
           </time>{' '}
           -{' '}
-          <time dateTime={meeting.endDatetime}>
-            {format(endDateTime, 'h:mm a')}
+          <time dateTime={meeting.data_termino_culto}>
+            {format(data_termino_culto, 'h:mm a')}
           </time>
         </p>
       </div>
