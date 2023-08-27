@@ -117,18 +117,18 @@ export default function ListMembers() {
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:inline">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
+                      <td className="hidden text-center sm:block">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:inline">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
+                      <td className="hidden text-center sm:block">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
-                      <td className="hidden text-center sm:inline">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
+                      <td className="hidden text-center sm:block">
+                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:block">
                           {user.celula?.nome}
                         </span>
                       </td>
