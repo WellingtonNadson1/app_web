@@ -104,7 +104,7 @@ export default function ListMembers() {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`inline-flex w-full rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset ${
+                          className={`inline-flex w-full items-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset ${
                             user.situacao_no_reino?.nome === 'Ativo'
                               ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
