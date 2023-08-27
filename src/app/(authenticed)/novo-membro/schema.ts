@@ -122,18 +122,23 @@ export interface ReturnMembers {
   bairro: string
   numero_casa: string
   supervisao_pertence: {
+    id: string
     nome: string
   }
   celula: {
+    id: string
     nome: string
   }
   celula_lidera: Array<{
+    id: string
     nome: string
   }>
   situacao_no_reino: {
+    id: string
     nome: string
   }
   cargo_de_lideranca: {
+    id: string
     nome: string
   }
   escolas: any[] // Update this to the correct type if you have one

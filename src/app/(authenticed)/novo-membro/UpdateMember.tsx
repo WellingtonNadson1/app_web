@@ -6,7 +6,14 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { Fragment, useCallback, useRef, useState } from 'react'
+import React, {
+  Fragment,
+  useCallback,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+} from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import useSWR from 'swr'
@@ -32,45 +39,40 @@ function UpdateMember({
   const URLUsers = `https://${hostname}/users`
   const URLCombinedData = `https://${hostname}/users/all`
 
+  const cancelButtonRef = useRef(null)
+
+  const router = useRouter()
   const { data: session } = useSession()
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>()
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const { register, handleSubmit, setValue, reset } = useForm<Member>({
-    defaultValues: async () => {
-      if (!memberId) return {}
-
-      const response = await fetch(URLUsersId, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
-      const data = await response.json()
-      console.log('Data in the Update', data)
-      return data
-    },
-  })
-  const cancelButtonRef = useRef(null)
-
-  const router = useRouter()
-
   // Combobox Autocomplete
   const [selectedMember, setSelectedMember] = useState<Member>()
   const [queryUpDate, setQueryUpDate] = useState('')
 
-  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
-    let value = e.currentTarget.value
-    value = value.replace(/\D/g, '')
-    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-    e.currentTarget.value = value
+  const [loading, setLoading] = useState(true)
+  const [userUpdateDefault, setUserUpdateDefault] = useState<Member>()
 
-    if (value.length === 9) {
-      await handleFetchCep(value)
-    }
-  }
+  const { register, handleSubmit, setValue, reset } = useForm<Member>({
+    reValidateMode: 'onChange',
+    defaultValues: useMemo(() => userUpdateDefault, [userUpdateDefault]),
+  })
+
+  // UseSWR para buscar os dados combinados
+  const {
+    data: combinedData,
+    error,
+    isLoading,
+  } = useSWR<any>(
+    [URLCombinedData, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  )
+  // UseSWR para buscar os dados combinados
+  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useSWR<
+    Member[]
+  >([URLUsers, `${session?.user.token}`], ([url, token]: [string, string]) =>
+    fetchWithToken(url, 'GET', token),
+  )
 
   const handleSetDataAddress = useCallback(
     (data: AddressProps) => {
@@ -96,6 +98,54 @@ function UpdateMember({
     },
     [handleSetDataAddress],
   )
+
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!memberId) {
+        setLoading(false)
+        return
+      }
+
+      try {
+        const response = await fetch(URLUsersId, {
+          method: 'GET',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.user.token}`,
+          },
+        })
+
+        if (response.ok) {
+          const data = await response.json()
+          setUserUpdateDefault(data)
+        } else {
+          console.error('Failed to fetch user data')
+        }
+      } catch (error) {
+        console.error('Error fetching user data', error)
+      }
+
+      setLoading(false)
+    }
+
+    fetchData()
+  }, [URLUsersId, memberId, session?.user.token])
+
+  if (loading) {
+    return <p>Loading...</p>
+  }
+
+  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
+    e.currentTarget.maxLength = 9
+    let value = e.currentTarget.value
+    value = value.replace(/\D/g, '')
+    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
+    e.currentTarget.value = value
+
+    if (value.length === 9) {
+      await handleFetchCep(value)
+    }
+  }
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -197,22 +247,6 @@ function UpdateMember({
     }
   }
 
-  // UseSWR para buscar os dados combinados
-  const {
-    data: combinedData,
-    error,
-    isLoading,
-  } = useSWR<any>(
-    [URLCombinedData, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-  // UseSWR para buscar os dados combinados
-  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useSWR<
-    Member[]
-  >([URLUsers, `${session?.user.token}`], ([url, token]: [string, string]) =>
-    fetchWithToken(url, 'GET', token),
-  )
-
   if (isLoading) {
     return null
   }
@@ -220,38 +254,6 @@ function UpdateMember({
   if (isLoadingQueryUpdate) {
     return null
   }
-
-  // if (isLoadingQueryUpdateId) {
-  //   return null
-  // }
-
-  // // Setando valorea para o Input vindas do Component Pai
-  // if (queryMemberId) {
-  //   setValue('cep', queryMemberId.cep)
-  //   setValue('first_name', queryMemberId.first_name)
-  //   setValue('last_name', queryMemberId.last_name)
-  //   setValue('cpf', queryMemberId.cpf)
-  //   setValue('telefone', queryMemberId.telefone)
-  //   setValue('email', queryMemberId.email)
-  //   setValue('date_nascimento', queryMemberId.date_nascimento)
-  //   setValue('sexo', queryMemberId.sexo)
-  //   setValue('escolaridade', queryMemberId.escolaridade)
-  //   setValue('profissao', queryMemberId.profissao)
-  //   setValue('batizado', queryMemberId.batizado)
-  //   setValue('date_batizado', queryMemberId.date_batizado)
-  //   setValue('is_discipulado', queryMemberId.is_discipulado)
-  //   setValue('discipulador', queryMemberId.discipulador)
-  //   setValue('supervisao_pertence', queryMemberId.supervisao_pertence.nome)
-  //   setValue('celula', queryMemberId.celula.nome)
-  //   setValue('escolas', queryMemberId.escolas)
-  //   setValue('encontros', queryMemberId.encontros)
-  //   setValue('cargo_de_lideranca', queryMemberId.cargo_de_lideranca.nome)
-  //   setValue('estado_civil', queryMemberId.estado_civil)
-  //   setValue('nome_conjuge', queryMemberId.nome_conjuge)
-  //   setValue('date_casamento', queryMemberId.date_nascimento)
-  //   setValue('has_filho', queryMemberId.has_filho)
-  //   setValue('quantidade_de_filho', queryMemberId.quantidade_de_filho)
-  // }
 
   const filteredPeople =
     queryUpDate === ''
@@ -1098,7 +1100,7 @@ function UpdateMember({
                     type="button"
                     ref={cancelButtonRef}
                     onClick={() => reset()}
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-red-200 hover:px-3 hover:py-2 hover:text-white sm:mt-0 sm:w-auto"
+                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:px-3 hover:py-2 hover:text-white sm:mt-0 sm:w-auto"
                   >
                     Cancelar
                   </button>

@@ -117,17 +117,17 @@ export default function ListMembers() {
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
-                      <td className="text-center">
+                      <td className="hidden text-center sm:inline">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
-                      <td className="text-center">
+                      <td className="hidden text-center sm:inline">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
-                      <td className="text-center">
+                      <td className="hidden text-center sm:inline">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:inline">
                           {user.celula?.nome}
                         </span>
