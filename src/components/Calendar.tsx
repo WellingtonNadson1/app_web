@@ -3,6 +3,7 @@ import { fetchWithToken } from '@/functions/functions'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
+import { BookBookmark, Church, Cross } from '@phosphor-icons/react'
 import {
   add,
   eachDayOfInterval,
@@ -12,23 +13,24 @@ import {
   isEqual,
   isSameDay,
   isSameMonth,
-  isSaturday,
-  isSunday,
+  // isSaturday,
+  // isSunday,
   isToday,
-  isWednesday,
+  // isWednesday,
   parse,
   parseISO,
   startOfToday,
 } from 'date-fns'
 import pt from 'date-fns/locale/pt'
 import { useSession } from 'next-auth/react'
-import Image from 'next/image'
 import { Fragment, useState } from 'react'
 import useSWR from 'swr'
 
 type meeting = {
   id: string
-  culto_semana: string
+  culto_semana: {
+    nome: string
+  }
   imageUrl: string
   data_inicio_culto: string
   data_termino_culto: string
@@ -194,21 +196,22 @@ export default function Example() {
                     </button>
                     {/* Pontos de Eventos */}
                     <div className="mx-auto flex items-center justify-center gap-1">
-                      {meetings?.some((meeting) =>
-                        isSameDay(parseISO(meeting.data_inicio_culto), day),
-                      ) && (
-                        <div className="mt-1 h-1 w-1">
-                          <div className="h-1 w-1 rounded-full bg-sky-500"></div>
-                        </div>
-                      )}
+                      {meetings &&
+                        meetings?.some((meeting) =>
+                          isSameDay(parseISO(meeting.data_inicio_culto), day),
+                        ) && (
+                          <div className="mt-1 h-1 w-1">
+                            <div className="h-1 w-1 rounded-full bg-sky-500"></div>
+                          </div>
+                        )}
 
-                      {isSaturday(day) || isWednesday(day) || isSunday(day) ? (
+                      {/* {isSaturday(day) || isWednesday(day) || isSunday(day) ? (
                         <div className="mt-1 h-1 w-1">
                           <div className="h-1 w-1 rounded-full bg-orange-500"></div>
                         </div>
                       ) : (
                         ''
-                      )}
+                      )} */}
                     </div>
                   </div>
                 ))}
@@ -249,15 +252,38 @@ function Meeting({ meeting }: { meeting: meeting }) {
 
   return (
     <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
-      <Image
-        src={meeting.imageUrl}
-        width={10}
-        height={10}
-        alt="Null"
-        className="h-10 w-10 flex-none rounded-full"
-      />
+      {meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
+        <Cross
+          width={10}
+          height={10}
+          weight="thin"
+          className="h-10 w-10 flex-none rounded-full"
+        />
+      ) : meeting.culto_semana.nome === 'Culto de Edificação' ? (
+        <BookBookmark
+          width={10}
+          height={10}
+          weight="thin"
+          className="h-10 w-10 flex-none rounded-full"
+        />
+      ) : meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
+        <BookBookmark
+          width={10}
+          height={10}
+          weight="thin"
+          className="h-10 w-10 flex-none rounded-full"
+        />
+      ) : (
+        <Church
+          width={10}
+          height={10}
+          weight="thin"
+          className="h-10 w-10 flex-none rounded-full"
+        />
+      )}
+
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.culto_semana}</p>
+        <p className="text-gray-900">{meeting.culto_semana.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting.data_inicio_culto}>
             {format(data_inicio_culto, 'h:mm a')}
@@ -299,7 +325,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
                       'block px-4 py-2 text-sm',
                     )}
                   >
-                    Edit
+                    Editar
                   </a>
                 )}
               </Menu.Item>
@@ -312,7 +338,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
                       'block px-4 py-2 text-sm',
                     )}
                   >
-                    Cancel
+                    Cancelar
                   </a>
                 )}
               </Menu.Item>

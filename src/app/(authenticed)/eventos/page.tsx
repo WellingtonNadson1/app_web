@@ -9,6 +9,7 @@ import {
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -23,6 +24,7 @@ export default function Cultos() {
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
+  const router = useRouter()
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
@@ -48,6 +50,7 @@ export default function Cultos() {
       if (response.ok) {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
+        router.refresh()
         success('Culto Cadastrado')
       } else {
         errorCadastro('Erro ao cadastrar Culto')
@@ -109,7 +112,7 @@ export default function Cultos() {
           titleModal="Cadastro de Culto"
           buttonProps={{
             className:
-              'rounded-md bg-[#014874] px-4 py-2 text-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5',
+              'rounded-md bg-[#014874] px-4 py-2 text-sm mt-3 shadow-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5',
           }}
         >
           <form onSubmit={handleSubmit(onSubmit)}>
