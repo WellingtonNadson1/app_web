@@ -25,8 +25,9 @@ import pt from 'date-fns/locale/pt'
 import { useSession } from 'next-auth/react'
 import { Fragment, useState } from 'react'
 import useSWR from 'swr'
+import DeleteCulto from './DeleteCulto'
 
-type meeting = {
+export type meeting = {
   id: string
   culto_semana: {
     nome: string
@@ -38,44 +39,6 @@ type meeting = {
 
 const hostname = 'app-ibb.onrender.com'
 const URLCultosInd = `https://${hostname}/cultosindividuais`
-
-// const meetings = [
-//   {
-//     id: 1,
-//     name: 'Leslie Alexander',
-//     imageUrl: '/images/woman1.avif',
-//     data_inicio_culto: '2023-06-14T13:00',
-//     data_termino_culto: '2023-06-14T14:30',
-//   },
-//   {
-//     id: 2,
-//     name: 'Michael Foster',
-//     imageUrl: '/images/man1.avif',
-//     data_inicio_culto: '2023-06-20T09:00',
-//     data_termino_culto: '2023-06-20T11:30',
-//   },
-//   {
-//     id: 3,
-//     name: 'Dries Vincent',
-//     imageUrl: '/images/man2.avif',
-//     data_inicio_culto: '2023-06-22T17:00',
-//     data_termino_culto: '2023-06-22T18:30',
-//   },
-//   {
-//     id: 4,
-//     name: 'Leslie Alexander',
-//     imageUrl: '/images/woman1.avif',
-//     data_inicio_culto: '2023-06-09T13:00',
-//     data_termino_culto: '2023-06-09T14:30',
-//   },
-//   {
-//     id: 5,
-//     name: 'Aniversário Pr. Pedro',
-//     imageUrl: '/images/pr-pedro.png',
-//     data_inicio_culto: '2023-06-29T00:00',
-//     data_termino_culto: '2023-06-29T23:59',
-//   },
-// ]
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
@@ -330,17 +293,10 @@ function Meeting({ meeting }: { meeting: meeting }) {
                 )}
               </Menu.Item>
               <Menu.Item>
-                {({ active }) => (
-                  <a
-                    href="#"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm',
-                    )}
-                  >
-                    Cancelar
-                  </a>
-                )}
+                <DeleteCulto
+                  culto={meeting.id}
+                  cultoName={meeting.culto_semana.nome}
+                />
               </Menu.Item>
             </div>
           </Menu.Items>

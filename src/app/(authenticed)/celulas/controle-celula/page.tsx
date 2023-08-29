@@ -1,6 +1,6 @@
 'use client'
-import Calendar from '@/components/Calendar'
-import ControlePresenca from '@/components/ControlePresenca'
+import Calendar from '@/components/Calendar/Calendar'
+// import ControlePresenca from '@/components/ControlePresenca'
 import LicoesCelula from '@/components/LicoesCelula'
 
 export default function ControleCelula() {
@@ -12,9 +12,9 @@ export default function ControleCelula() {
       <div className="relative mx-auto mb-4 w-full px-2">
         <LicoesCelula />
       </div>
-      <div className="relative mx-auto mb-4 w-full px-2">
+      {/* <div className="relative mx-auto mb-4 w-full px-2">
         <ControlePresenca />
-      </div>
+      </div> */}
     </div>
   )
 }

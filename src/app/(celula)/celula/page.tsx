@@ -1,10 +1,13 @@
 'use client'
-import Calendar from '@/components/Calendar'
+import { meeting } from '@/components/Calendar/Calendar'
+import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { FetchError } from '@/functions/functions'
+import { FetchError, fetchWithToken } from '@/functions/functions'
+import { isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
+import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import HeaderCelula from './HeaderCelula'
 
@@ -15,6 +18,18 @@ export default function ControleCelulaSupervision() {
   const celulaId = session?.user?.celulaId // Safely access celulaId
 
   const URLCelula = `https://${hostname}/celulas/${celulaId}`
+  const URLCultosInd = `https://${hostname}/cultosindividuais`
+
+  const { data: meetings } = useSWR<meeting[]>(
+    [URLCultosInd, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  )
+
+  const today = startOfToday()
+
+  const selectedDayMeetings = meetings?.filter((meeting) =>
+    isSameDay(parseISO(meeting.data_inicio_culto), today),
+  )
 
   const fetchCelula = useCallback(async () => {
     try {
@@ -53,17 +68,25 @@ export default function ControleCelulaSupervision() {
         {<HeaderCelula headerCelula={dataCelula?.nome} />}
       </div>
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
-        <Calendar />
+        <CalendarLiderCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
         <LicoesCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        {dataCelula ? (
-          <ControlePresencaCelula celula={dataCelula} />
+        {selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
+          selectedDayMeetings?.map((meeting) =>
+            isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
+              dataCelula ? (
+                <ControlePresencaCelula celula={dataCelula} />
+              ) : (
+                <SpinnerButton />
+              )
+            ) : null,
+          )
         ) : (
-          <SpinnerButton />
-        )}
+          <p>Sem Eventos hoje.</p>
+        )}{' '}
       </div>
     </div>
   )
