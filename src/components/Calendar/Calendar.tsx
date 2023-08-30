@@ -280,20 +280,16 @@ function Meeting({ meeting }: { meeting: meeting }) {
           <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
-                <>
-                  <UpdateCulto
-                    cultoId={meeting.id}
-                    // cultoName={meeting.culto_semana.nome}
-                  />
-                </>
+                <UpdateCulto
+                  cultoId={meeting.id}
+                  // cultoName={meeting.culto_semana.nome}
+                />
               </Menu.Item>
               <Menu.Item>
-                <>
-                  <DeleteCulto
-                    culto={meeting.id}
-                    cultoName={meeting.culto_semana.nome}
-                  />
-                </>
+                <DeleteCulto
+                  culto={meeting.id}
+                  cultoName={meeting.culto_semana.nome}
+                />
               </Menu.Item>
             </div>
           </Menu.Items>
