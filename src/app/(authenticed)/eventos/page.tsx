@@ -2,10 +2,10 @@
 import Calendar from '@/components/Calendar/Calendar'
 import Modal from '@/components/modal'
 import {
-    FetchError,
-    errorCadastro,
-    fetchWithToken,
-    success,
+  FetchError,
+  errorCadastro,
+  fetchWithToken,
+  success,
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'

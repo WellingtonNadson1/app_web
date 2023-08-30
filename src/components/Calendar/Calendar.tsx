@@ -26,6 +26,7 @@ import { useSession } from 'next-auth/react'
 import { Fragment, useState } from 'react'
 import useSWR from 'swr'
 import DeleteCulto from './DeleteCulto'
+import UpdateCulto from './UpdateCulto'
 
 export type meeting = {
   id: string
@@ -43,6 +44,13 @@ const URLCultosInd = `https://${hostname}/cultosindividuais`
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
+
+// const handleDeleteClick = (
+//   meetingId: string,
+//   meetingCultoSemanaNome: string,
+// ) => {
+//   return <DeleteCulto culto={meetingId} cultoName={meetingCultoSemanaNome} />
+// }
 
 export default function Example() {
   const { data: session } = useSession()
@@ -167,14 +175,6 @@ export default function Example() {
                             <div className="h-1 w-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
-
-                      {/* {isSaturday(day) || isWednesday(day) || isSunday(day) ? (
-                        <div className="mt-1 h-1 w-1">
-                          <div className="h-1 w-1 rounded-full bg-orange-500"></div>
-                        </div>
-                      ) : (
-                        ''
-                      )} */}
                     </div>
                   </div>
                 ))}
@@ -280,23 +280,20 @@ function Meeting({ meeting }: { meeting: meeting }) {
           <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
-                {({ active }) => (
-                  <a
-                    href="#"
-                    className={classNames(
-                      active ? 'bg-gray-100 text-gray-900' : 'text-gray-700',
-                      'block px-4 py-2 text-sm',
-                    )}
-                  >
-                    Editar
-                  </a>
-                )}
+                <>
+                  <UpdateCulto
+                    cultoId={meeting.id}
+                    // cultoName={meeting.culto_semana.nome}
+                  />
+                </>
               </Menu.Item>
               <Menu.Item>
-                <DeleteCulto
-                  culto={meeting.id}
-                  cultoName={meeting.culto_semana.nome}
-                />
+                <>
+                  <DeleteCulto
+                    culto={meeting.id}
+                    cultoName={meeting.culto_semana.nome}
+                  />
+                </>
               </Menu.Item>
             </div>
           </Menu.Items>
@@ -305,6 +302,65 @@ function Meeting({ meeting }: { meeting: meeting }) {
     </li>
   )
 }
+
+// function EditInactiveIcon(props: any) {
+//   return (
+//     <svg
+//       {...props}
+//       viewBox="0 0 20 20"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <path
+//         d="M4 13V16H7L16 7L13 4L4 13Z"
+//         fill="#67e9a3ec"
+//         stroke="#47c180f7"
+//         strokeWidth="2"
+//       />
+//     </svg>
+//   )
+// }
+
+// function EditActiveIcon(props: any) {
+//   return (
+//     <svg
+//       {...props}
+//       viewBox="0 0 20 20"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <path
+//         d="M4 13V16H7L16 7L13 4L4 13Z"
+//         fill="#47c180f7"
+//         stroke="#87ffbfe6"
+//         strokeWidth="2"
+//       />
+//     </svg>
+//   )
+// }
+
+// function DeleteActiveIcon(props: any) {
+//   return (
+//     <svg
+//       {...props}
+//       viewBox="0 0 20 20"
+//       fill="none"
+//       xmlns="http://www.w3.org/2000/svg"
+//     >
+//       <rect
+//         x="5"
+//         y="6"
+//         width="10"
+//         height="10"
+//         fill="#ffb9b4dc"
+//         stroke="#ffb9b4"
+//         strokeWidth="2"
+//       />
+//       <path d="M3 6H17" stroke="#ffb9b4" strokeWidth="2" />
+//       <path d="M8 6V4H12V6" stroke="#ffb9b4" strokeWidth="2" />
+//     </svg>
+//   )
+// }
 
 const colStartClasses = [
   '',

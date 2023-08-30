@@ -106,7 +106,7 @@ export default function ListMembers() {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`inline-flex w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset ${
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:inline ${
                             user.situacao_no_reino?.nome === 'Ativo'
                               ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
@@ -135,7 +135,7 @@ export default function ListMembers() {
                         </span>
                       </td>
 
-                      <td className="flex items-center justify-between gap-2 text-center">
+                      <td className="ml-1 flex items-center justify-between gap-2 text-center">
                         <DeleteMember
                           member={user.id}
                           memberName={user.first_name}
