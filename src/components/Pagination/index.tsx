@@ -46,7 +46,7 @@ const Pagination = ({
             onClick={(event) => handlePageClick(event, index + 1)}
             className={`relative inline-flex items-center ${
               index + 1 === currentPage
-                ? 'bg-blue-600 text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600'
+                ? 'bg-[#1D70B6] text-white focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#1D70B6]'
                 : 'text-gray-900 ring-1 ring-inset ring-gray-300 hover:bg-gray-50 focus:z-20 focus:outline-offset-0'
             } cursor-pointer px-4 py-1 text-sm font-semibold`}
           >
