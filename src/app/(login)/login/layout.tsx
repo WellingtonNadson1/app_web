@@ -18,6 +18,7 @@ export default async function LoginLayout({
   children: React.ReactNode
 }) {
   const session = await getServerSession(authOptions)
+  console.log('Session Role: ', session?.user.role)
 
   if (session?.user.role === 'USERCENTRAL') {
     // Signed in

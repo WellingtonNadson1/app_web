@@ -118,7 +118,7 @@ export default function Sidebar() {
                 </li>
               ))
             ) : (
-              <div>!</div>
+              <div></div>
             )}
           </ul>
         ) : (
