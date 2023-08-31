@@ -229,7 +229,9 @@ export default function Celulas() {
                           id="date_que_ocorre"
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
-                          <option value="">Selecione</option>
+                          <option disabled value="">
+                            Selecione
+                          </option>
                           <option value="0">Domingo</option>
                           <option value="1">Segunda</option>
                           <option value="2">Terça</option>
@@ -298,7 +300,9 @@ export default function Celulas() {
                           {!supervisoes ? (
                             <option value="">Carregando supervisões...</option>
                           ) : (
-                            <option value="">Selecione</option>
+                            <option disabled value="">
+                              Selecione
+                            </option>
                           )}
                           {supervisoes &&
                             supervisoes?.map((supervisao) => (

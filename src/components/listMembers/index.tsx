@@ -41,11 +41,6 @@ export default function ListMembers() {
   const endIndex = startIndex + itemsPerPage
   const displayedMembers = members?.slice(startIndex, endIndex)
 
-  console.log('currentPage', currentPage)
-  console.log('displayedMembers', displayedMembers)
-
-  console.log('Members dados: ', members)
-
   if (error) {
     return (
       <div className="mx-auto w-full px-2 py-2">
@@ -183,12 +178,6 @@ export default function ListMembers() {
               totalPages={Math.ceil((members?.length || 0) / itemsPerPage)}
               onPageChange={handlePageChange}
             />
-            {/* <button
-              className="mx-auto w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
-              type="submit"
-            >
-              Registrar
-            </button> */}
           </div>
         </div>
       </div>

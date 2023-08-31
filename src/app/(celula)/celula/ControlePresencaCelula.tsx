@@ -82,6 +82,7 @@ export default function ControlePresencaCelula({
         body: JSON.stringify(data),
       })
       if (response.ok) {
+        alert('Presença Registrada com Sucesso!')
         setIsLoadingSubmitForm(false)
         reset()
         router.refresh()
