@@ -34,7 +34,9 @@ export default function ListMembers() {
     return (
       <div className="mx-auto w-full px-2 py-2">
         <div className="mx-auto w-full">
-          <div>failed to load</div>
+          <div>
+            Falha ao carregar, por favor, saia e entre no App novamente.
+          </div>
         </div>
       </div>
     )
@@ -46,7 +48,6 @@ export default function ListMembers() {
         <div className="mx-auto flex w-full items-center gap-2">
           <div className="flex items-center gap-3 text-white">
             <SpinnerButton />
-            <span className="text-gray-500">carregando...</span>
           </div>
         </div>
       </div>
@@ -68,7 +69,7 @@ export default function ListMembers() {
               </h2>
               <AddNewMember />
             </div>
-            <table className="w-full table-auto border-separate border-spacing-y-4">
+            <table className="w-full table-auto border-separate border-spacing-y-3">
               <thead>
                 <tr className="text-base font-bold ">
                   <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">

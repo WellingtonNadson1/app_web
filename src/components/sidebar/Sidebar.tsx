@@ -51,7 +51,7 @@ export default function Sidebar() {
         <hr className="mt-7 h-px bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
         {status === 'authenticated' ? (
           <ul className="relative flex flex-col gap-y-2 pt-4">
-            {session.user.role === 'MEMBER' ? (
+            {session.user.role === 'USERCENTRAL' ? (
               sidebarCentral.map((item) => (
                 <li
                   key={item.name}

@@ -25,11 +25,14 @@ export default function ListCelulas({ data }: ListCelulasProps) {
   }
   return (
     <div>
-      <div className="relative mx-auto mt-3 w-full p-2">
+      <div className="relative mx-auto mt-1 w-full p-2">
         <div className="relative mx-auto w-full py-2">
           <div className="w-full rounded-lg bg-white p-4 shadow-md">
+            <h2 className="text-lg font-semibold leading-7 text-gray-800">
+              Lista Geral de Células IBB
+            </h2>
             <div className="p-2">
-              <table className="w-full table-auto border-separate border-spacing-y-2 px-2">
+              <table className="w-full table-auto border-separate border-spacing-y-3 px-2">
                 <thead>
                   <tr>
                     <th className="text-start text-gray-800">Ord.</th>

@@ -305,7 +305,7 @@ function UpdateMember({
       titleButton="Editar"
       buttonProps={{
         className:
-          'z-10 rounded-md bg-green-600 text-white px-4 py-2 text-sm font-medium text-white hover:bg-green-700 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700 sm:w-full',
+          'z-10 rounded-md bg-green-300 text-white px-2 py-2 text-sm font-medium text-white hover:bg-green-400 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-400 sm:w-full',
       }}
     >
       {/* Incio do Forms */}

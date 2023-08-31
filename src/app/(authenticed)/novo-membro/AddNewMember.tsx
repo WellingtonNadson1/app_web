@@ -208,7 +208,7 @@ function AddNewMember() {
     return (
       <div className="mx-auto w-full px-2 py-2">
         <div className="mx-auto w-full">
-          <div>failed to load</div>
+          <div>Falha ao carregar, atualize a página.</div>
         </div>
       </div>
     )
