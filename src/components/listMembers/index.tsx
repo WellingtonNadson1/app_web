@@ -64,29 +64,29 @@ export default function ListMembers() {
           <div className="w-full rounded-md px-1 py-2">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold leading-7 text-gray-800">
-                Lista de Membros IBB
+                Lista Geral de Membros IBB
               </h2>
               <AddNewMember />
             </div>
-            <table className="w-full table-auto border-separate border-spacing-y-6">
+            <table className="w-full table-auto border-separate border-spacing-y-4">
               <thead>
                 <tr className="text-base font-bold ">
                   <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
                     Nome
                   </th>
-                  <th className="hidden border-b-2 border-orange-300 py-2 text-gray-800 sm:table-cell">
+                  <th className="hidden border-b-2 border-orange-300 py-2 text-start text-gray-800 sm:table-cell">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:table-cell">
+                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
                     Cargo
                   </th>
-                  <th className="hidden border-b-2 border-blue-300 py-2 text-gray-800 sm:table-cell">
+                  <th className="hidden border-b-2 border-blue-300 py-2 text-start text-gray-800 sm:table-cell">
                     Supervisão
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:table-cell">
+                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
                     Célula
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-gray-800">
+                  <th className="border-b-2 border-red-300 py-2 text-start text-gray-800">
                     Opções
                   </th>
                 </tr>

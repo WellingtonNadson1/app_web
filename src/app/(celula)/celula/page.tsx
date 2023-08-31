@@ -78,7 +78,10 @@ export default function ControleCelulaSupervision() {
           selectedDayMeetings?.map((meeting) =>
             isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
               dataCelula ? (
-                <ControlePresencaCelula celula={dataCelula} />
+                <ControlePresencaCelula
+                  culto={meeting.id}
+                  celula={dataCelula}
+                />
               ) : (
                 <SpinnerButton />
               )
