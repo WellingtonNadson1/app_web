@@ -1,14 +1,14 @@
 'use client'
 
 import {
-  CultoDaSemana,
-  NewCulto,
-} from '@/app/(authenticed)/eventos/schemaNewCulto'
+    CultoDaSemana,
+    NewCulto,
+} from '@/app/(authenticed)/cultos/schemaNewCulto'
 import {
-  FetchError,
-  errorCadastro,
-  fetchWithToken,
-  success,
+    FetchError,
+    errorCadastro,
+    fetchWithToken,
+    success,
 } from '@/functions/functions'
 import { UserMinusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'

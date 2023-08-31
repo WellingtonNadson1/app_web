@@ -16,12 +16,12 @@ export const sidebarCentral = [
   { name: 'Células', icon: Users, href: '/celulas' },
   { name: 'Escolas', icon: Student, href: '/escolas' },
   { name: 'Relatórios', icon: ChartBar, href: '/relatorios' },
-  { name: 'Eventos', icon: Calendar, href: '/eventos' },
+  { name: 'Cultos', icon: Calendar, href: '/cultos' },
   // { name: 'Fincanceiro', icon: Wallet, href: '/financeiro' },
 ]
 
 export const sidebarLiderCelula = [
-  { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  // { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Célula', icon: Users, href: '/celula' },
   // { name: 'Eventos', icon: Calendar, href: '/eventos' },
 ]
