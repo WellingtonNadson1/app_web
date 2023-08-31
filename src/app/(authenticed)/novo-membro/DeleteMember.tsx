@@ -46,7 +46,7 @@ function DeleteMember({
       titleButton="Deletar"
       buttonProps={{
         className:
-          'z-10 rounded-md bg-red-400 text-white px-2 py-2 text-sm font-medium text-white hover:bg-red-300 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-300 sm:w-full',
+          'z-10 rounded-md bg-red-400 text-white mt-2 px-2 py-1 text-sm font-medium text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 sm:w-full',
       }}
     >
       {/* Incio do Forms */}

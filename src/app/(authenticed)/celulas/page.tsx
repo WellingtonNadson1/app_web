@@ -69,6 +69,7 @@ export default function Celulas() {
 
   const onSubmit: SubmitHandler<FormCelula> = async (data) => {
     try {
+      console.log('Celula: ', data)
       setIsLoadingSubmitForm(true)
 
       const formatDatatoISO8601 = (dataString: string) => {
@@ -77,7 +78,6 @@ export default function Celulas() {
       }
 
       data.date_inicio = formatDatatoISO8601(data.date_inicio)
-      data.date_que_ocorre = formatDatatoISO8601(data.date_que_ocorre)
       data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
 
       const response = await fetch(URLCelulas, {
@@ -230,13 +230,13 @@ export default function Celulas() {
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           <option value="">Selecione</option>
-                          <option value="">Domingo</option>
-                          <option value="">Segunda</option>
-                          <option value="">Terça</option>
-                          <option value="">Quarta</option>
-                          <option value="">Quinta</option>
-                          <option value="">Sexta</option>
-                          <option value="">Sábado</option>
+                          <option value="0">Domingo</option>
+                          <option value="1">Segunda</option>
+                          <option value="2">Terça</option>
+                          <option value="3">Quarta</option>
+                          <option value="4">Quinta</option>
+                          <option value="5">Sexta</option>
+                          <option value="6">Sábado</option>
                         </select>
                       </div>
                     </div>
@@ -503,7 +503,7 @@ export default function Celulas() {
                       <button
                         type="submit"
                         disabled={isLoadingSubmitForm}
-                        className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                        className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                       >
                         <svg
                           className="mr-3 h-5 w-5 animate-spin text-gray-400"
