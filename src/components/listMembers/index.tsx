@@ -8,6 +8,7 @@ import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import useSWR from 'swr'
+import Pagination from '../Pagination'
 import SpinnerButton from '../spinners/SpinnerButton'
 // import { useEffect, useState } from 'react'
 
@@ -27,6 +28,21 @@ export default function ListMembers() {
     [URL, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
+
+  const handlePageChange = (newPage: number) => {
+    setCurrentPage(newPage)
+  }
+
+  // Pagination
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
+
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const displayedMembers = members?.slice(startIndex, endIndex)
+
+  console.log('currentPage', currentPage)
+  console.log('displayedMembers', displayedMembers)
 
   console.log('Members dados: ', members)
 
@@ -94,7 +110,7 @@ export default function ListMembers() {
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
                 {!isLoading ? (
-                  members?.map((user) => (
+                  displayedMembers?.map((user, index) => (
                     <tr
                       className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
                       key={user.id}
@@ -161,6 +177,12 @@ export default function ListMembers() {
                 )}
               </tbody>
             </table>
+            {/* Use the Pagination component */}
+            <Pagination
+              currentPage={currentPage}
+              totalPages={Math.ceil((members?.length || 0) / itemsPerPage)}
+              onPageChange={handlePageChange}
+            />
             {/* <button
               className="mx-auto w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
               type="submit"
