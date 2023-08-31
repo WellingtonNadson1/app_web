@@ -196,7 +196,7 @@ export default function Example() {
                     <Meeting meeting={meeting} key={meeting.id} />
                   ))
                 ) : (
-                  <p>Sem Eventos hoje.</p>
+                  <p>Não há culto hoje.</p>
                 )}
               </ol>
             </section>

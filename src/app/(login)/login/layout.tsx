@@ -19,10 +19,19 @@ export default async function LoginLayout({
 }) {
   const session = await getServerSession(authOptions)
 
-  if (session) {
+  if (session?.user.role === 'USERCENTRAL') {
     // Signed in
     return redirect('/dashboard', RedirectType.replace)
   }
+  if (session?.user.role === 'USERLIDER') {
+    // Signed in
+    return redirect('/celula', RedirectType.replace)
+  }
+  if (session?.user.role === 'MEMBER') {
+    // Signed in
+    return redirect('/login', RedirectType.replace)
+  }
+
   return (
     <html lang="pt">
       <body>

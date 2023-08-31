@@ -88,7 +88,7 @@ export default function ControleCelulaSupervision() {
             ) : null,
           )
         ) : (
-          <p>Sem Eventos hoje.</p>
+          <p>Não há Culto hoje.</p>
         )}{' '}
       </div>
     </div>
