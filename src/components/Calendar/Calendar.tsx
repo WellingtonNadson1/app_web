@@ -3,7 +3,7 @@ import { fetchWithToken } from '@/functions/functions'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { BookBookmark, Church, Cross } from '@phosphor-icons/react'
+import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
 import {
   add,
   eachDayOfInterval,
@@ -230,7 +230,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
           className="h-10 w-10 flex-none rounded-full"
         />
       ) : meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
-        <BookBookmark
+        <Student
           width={10}
           height={10}
           weight="thin"
