@@ -167,7 +167,7 @@ export default function ControlePresencaCelula({
                         {...register(`${index}.presenca_culto`)}
                       />
                       <div className="flex items-center justify-start gap-1 sm:gap-3">
-                        <UserFocus size={28} />
+                        <UserFocus className="hidden sm:block" size={28} />
                         <h2 className="ml-4">{user.first_name}</h2>
                       </div>
                       <div>
