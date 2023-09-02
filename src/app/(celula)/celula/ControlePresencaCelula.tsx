@@ -63,7 +63,7 @@ interface ControlePresencaCelulaProps {
 // }
 
 const attendanceSchema = z.object({
-  status: z.boolean(),
+  status: z.string(),
   membro: z.string(),
   presenca_culto: z.string(),
 })
@@ -89,14 +89,14 @@ export default function ControlePresencaCelula({
       console.log('Data presenca culto: ', data)
 
       for (const key in data) {
-        console.log('Key Data presenca culto: ', key)
+        const status = data[key].status === 'true'
         const response = await fetch(URLControlePresenca, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${session?.user.token}`,
           },
-          body: JSON.stringify(data[key]),
+          body: JSON.stringify({ ...data[key], status }),
         })
         if (!response.ok) {
           throw new Error('Failed to submit dados de presenca')
