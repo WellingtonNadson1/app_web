@@ -5,8 +5,8 @@ export default function StatsCard() {
   const statusIbb = [
     {
       title: 'Conversões/Mês',
-      porcentagem: '+32.48%',
-      total: '234',
+      porcentagem: '+--.--%',
+      total: '---',
       status: 'up',
       icon: HandsPraying,
       color: 'bg-[#6074E1]',
@@ -14,8 +14,8 @@ export default function StatsCard() {
     },
     {
       title: 'Conversões/Ano',
-      porcentagem: '+72.48%',
-      total: '334',
+      porcentagem: '--.--%',
+      total: '---',
       status: 'up',
       icon: Confetti,
       color: 'bg-[#F55343]',
@@ -23,8 +23,8 @@ export default function StatsCard() {
     },
     {
       title: 'Frequência',
-      porcentagem: '+52.48%',
-      total: '234',
+      porcentagem: '--.--%',
+      total: '---',
       status: 'up',
       icon: ChartLineUp,
       color: 'bg-[#5fe2c2]',
