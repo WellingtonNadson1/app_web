@@ -7,6 +7,8 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import * as z from 'zod'
 // import { useEffect, useState } from 'react'
 
@@ -80,6 +82,17 @@ export default function ControlePresencaCelula({
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
+  const notify = () =>
+    toast('😉 Presenças Registradas!', {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
@@ -103,7 +116,7 @@ export default function ControlePresencaCelula({
         }
       }
 
-      alert('Presença Registrada com Sucesso!')
+      notify()
       setIsLoadingSubmitForm(false)
       reset()
       router.refresh()
@@ -114,6 +127,7 @@ export default function ControlePresencaCelula({
 
   return (
     <>
+      <ToastContainer />
       <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
