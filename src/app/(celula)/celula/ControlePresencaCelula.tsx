@@ -88,17 +88,19 @@ export default function ControlePresencaCelula({
 
       console.log('Data presenca culto: ', data)
 
-      console.log('Attendance presenca culto: ', data)
-      const response = await fetch(URLControlePresenca, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-        body: JSON.stringify(data),
-      })
-      if (!response.ok) {
-        throw new Error('Failed to submit attendance')
+      for (const key in data) {
+        console.log('Key Data presenca culto: ', key)
+        const response = await fetch(URLControlePresenca, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${session?.user.token}`,
+          },
+          body: JSON.stringify(data[key]),
+        })
+        if (!response.ok) {
+          throw new Error('Failed to submit dados de presenca')
+        }
       }
 
       alert('Presença Registrada com Sucesso!')
@@ -195,7 +197,7 @@ export default function ControlePresencaCelula({
                   <button
                     type="submit"
                     disabled={isLoadingSubmitForm}
-                    className="mx-auto flex w-full items-center justify-between rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                    className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                   >
                     <svg
                       className="mr-3 h-5 w-5 animate-spin text-white"
