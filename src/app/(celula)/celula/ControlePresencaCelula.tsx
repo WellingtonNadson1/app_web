@@ -76,7 +76,7 @@ export default function ControlePresencaCelula({
 }: ControlePresencaCelulaProps) {
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
-  const URLControlePresenca = `https://${hostname}/presencamembros`
+  const URLControlePresenca = `https://${hostname}/presencacultos`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
