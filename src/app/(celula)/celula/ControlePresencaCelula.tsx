@@ -177,14 +177,14 @@ export default function ControlePresencaCelula({
                         </span>
                       </div>
                       <input
-                        {...register(`${index}.status`)}
+                        {...register(`${index}.status` as const)}
                         checked={true}
                         type="radio"
                         id={user.id}
                         className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
                       />
                       <input
-                        {...register(`${index}.status`)}
+                        {...register(`${index}.status` as const)}
                         checked={false}
                         type="radio"
                         id={user.first_name}
