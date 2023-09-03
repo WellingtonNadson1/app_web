@@ -8,7 +8,7 @@ import {
 import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import { signOut, useSession } from 'next-auth/react'
+import { useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
@@ -27,13 +27,13 @@ export default function Header() {
     {
       name: 'Configurações',
       description: 'Configurações do seu Perfil',
-      href: location.assign('/perfil-membro'),
+      href: '/perfil-membro',
       icon: FingerPrintIcon,
     },
     {
       name: 'Sair',
       description: 'Sair do App',
-      href: signOut(),
+      href: '/',
       icon: ArrowLeftOnRectangleIcon,
     },
   ]
@@ -145,13 +145,13 @@ export default function Header() {
                               />
                             </div>
                             <div>
-                              <button
-                                onClick={() => item.href}
+                              <a
+                                href={item.href}
                                 className="font-semibold text-gray-900"
                               >
                                 {item.name}
                                 <span className="absolute inset-0" />
-                              </button>
+                              </a>
                               <p className="mt-1 text-gray-600">
                                 {item.description}
                               </p>
