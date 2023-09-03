@@ -83,7 +83,7 @@ export default function ControlePresencaCelula({
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
   const notify = () =>
-    toast('😉 Presenças Registradas!', {
+    toast.success('😉 Presenças Registradas!', {
       position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
@@ -170,7 +170,7 @@ export default function ControlePresencaCelula({
                         <UserFocus className="hidden sm:block" size={28} />
                         <h2 className="ml-4">{user.first_name}</h2>
                       </div>
-                      <div>
+                      <div className="hidden sm:block">
                         <span
                           className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
                             user.situacao_no_reino?.nome === 'Ativo'
@@ -185,7 +185,7 @@ export default function ControlePresencaCelula({
                           {user.situacao_no_reino.nome}
                         </span>
                       </div>
-                      <div>
+                      <div className="hidden sm:block">
                         <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
                           {user.cargo_de_lideranca.nome}{' '}
                         </span>
