@@ -10,14 +10,13 @@ import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
-import { usePathname, useRouter } from 'next/navigation'
+import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
 // import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
 
 export default function Header() {
   const { data: session, status } = useSession()
-  const router = useRouter()
   const solutions = [
     {
       name: 'Análise',
@@ -28,7 +27,7 @@ export default function Header() {
     {
       name: 'Configurações',
       description: 'Configurações do seu Perfil',
-      href: router.push('/perfil-membro'),
+      href: location.assign('/perfil-membro'),
       icon: FingerPrintIcon,
     },
     {
