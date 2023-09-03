@@ -28,7 +28,7 @@ export default function Header() {
     {
       name: 'Configurações',
       description: 'Configurações do seu Perfil',
-      href: router.replace('/perfil-membro'),
+      href: router.push('/perfil-membro'),
       icon: FingerPrintIcon,
     },
     {
