@@ -64,25 +64,6 @@ export default function Header() {
               </h2>
               <p className="hidden text-xs text-gray-700 sm:block">{toDay}</p>
             </div>
-            {/* <div className="h-10  w-10 cursor-pointer rounded-full bg-gray-50 hover:ring-1 hover:ring-blue-400">
-              {session?.user?.image_url ? (
-                <Image
-                  src={session?.user?.image_url}
-                  width={58}
-                  height={58}
-                  alt="Wellington"
-                  className={`rounded-full shadow`}
-                />
-              ) : (
-                <UserCircle
-                  size={32}
-                  width={40}
-                  height={40}
-                  weight="thin"
-                  className={`rounded-full text-zinc-500 shadow`}
-                />
-              )}
-            </div> */}
             <div className="cursor-pointer">
               <div className="flex items-center gap-4">
                 <button
