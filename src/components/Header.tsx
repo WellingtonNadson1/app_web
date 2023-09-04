@@ -83,19 +83,19 @@ export default function Header() {
                 />
               )}
             </div> */}
-            <div className="h-10  w-10 cursor-pointer rounded-full bg-gray-50 hover:ring-1 hover:ring-blue-400">
-              <div className="ml-4 flex items-center">
+            <div className="cursor-pointer">
+              <div className="flex items-center gap-4">
                 <button
                   type="button"
                   className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
-                  <span className="absolute -inset-1.5" />
+                  <span className="relative -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="h-6 w-6" aria-hidden="true" />
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="relative z-10">
+                <Menu as="div" className="relative z-20">
                   <div>
                     <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
@@ -146,7 +146,7 @@ export default function Header() {
                       ))}
                       <Menu.Item>
                         <button
-                          className="block bg-gray-100 px-4 py-2 text-sm text-gray-700"
+                          className="block w-full bg-white px-4 py-2 text-start text-sm text-gray-700 hover:bg-gray-100"
                           onClick={() => signOut()}
                         >
                           Sair
