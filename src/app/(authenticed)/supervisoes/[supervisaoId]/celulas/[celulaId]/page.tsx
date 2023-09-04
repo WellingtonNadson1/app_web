@@ -1,9 +1,5 @@
 'use client'
-import Calendar from '@/components/Calendar/Calendar'
-// import ControlePresenca from '@/components/ControlePresenca'
-// import Header from '@/components/Header'
-import LicoesCelula from '@/components/LicoesCelula'
-import { ICelula } from '@/components/ListCelulas'
+import ListMembersCelula, { CelulaData, ListMembersCelulaProps } from '@/components/listMembersCelula'
 import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
@@ -18,17 +14,17 @@ export default function ControleCelulaSupervision({
   console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${celulaId}`
-
+  
   const {
     data: celula,
     error,
     isValidating,
     isLoading,
-  } = useSWR<ICelula>(
+  } = useSWR<CelulaData>(
     [URL, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-
+    )
+    
   if (error) {
     return (
       <div className="mx-auto w-full px-2 py-2">
@@ -38,6 +34,7 @@ export default function ControleCelulaSupervision({
       </div>
     )
   }
+  console.log(JSON.stringify(celula))
 
   if (isLoading) {
     return (
@@ -60,11 +57,13 @@ export default function ControleCelulaSupervision({
         {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
       </div>
       <div className="relative mx-auto mb-4 mt-3 w-full px-2">
-        <Calendar />
+        {celula &&
+          <ListMembersCelula data={celula} />
+        }
       </div>
-      <div className="relative mx-auto mb-4 w-full px-2">
+      {/* <div className="relative mx-auto mb-4 w-full px-2">
         <LicoesCelula />
-      </div>
+      </div> */}
       {/* <div className="relative mx-auto mb-4 w-full px-2">
         <ControlePresenca />
       </div> */}

@@ -68,7 +68,7 @@ export default function Header() {
               <div className="flex items-center gap-4">
                 <button
                   type="button"
-                  className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-gray-800"
                 >
                   <span className="relative -inset-1.5" />
                   <span className="sr-only">View notifications</span>
@@ -78,7 +78,7 @@ export default function Header() {
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative z-20">
                   <div>
-                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       {session?.user?.image_url ? (

@@ -83,7 +83,8 @@ export default function StatsCardSupervisions() {
     <>
       <div className="relative z-10 mx-auto w-full py-2">
         <div className="relative z-10 mx-auto mt-3 grid w-full grid-cols-1 flex-wrap items-center justify-between gap-4 p-2 sm:grid-cols-2 md:flex-nowrap">
-          {supervisoes?.map((supervisao) => (
+          {supervisoes && 
+          (supervisoes?.map((supervisao) => (
             <div
               onClick={handleSupervisaoSelecionada}
               key={supervisao.id}
@@ -114,7 +115,7 @@ export default function StatsCardSupervisions() {
                 </span>
               </div>
             </div>
-          ))}
+          )))}
         </div>
       </div>
     </>

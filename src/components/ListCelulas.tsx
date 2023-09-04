@@ -24,11 +24,10 @@ export default function ListCelulas({ data }: ListCelulasProps) {
     router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
   }
   return (
-    <div>
-      <div className="relative mx-auto mt-1 w-full p-2">
+      <div className="relative  mx-auto w-full p-2">
         <div className="relative mx-auto w-full py-2">
           <div className="w-full rounded-lg bg-white p-4 shadow-md">
-            <h2 className="text-lg font-semibold leading-7 text-gray-800">
+            <h2 className="text-lg py-6 font-semibold leading-7 text-gray-800">
               Lista Geral de Células IBB
             </h2>
             <div className="p-2">
@@ -60,7 +59,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                         {celula.lider?.first_name}
                       </td>
                       <td>
-                        <div className="flex w-3/4 items-center justify-center">
+                        <div className="flex items-center justify-center gap-2 text-center">
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
@@ -78,6 +77,5 @@ export default function ListCelulas({ data }: ListCelulasProps) {
           </div>
         </div>
       </div>
-    </div>
   )
 }

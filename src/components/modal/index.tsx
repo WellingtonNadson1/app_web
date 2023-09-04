@@ -103,7 +103,7 @@ export default function Modal({
                       <div className="flex flex-row-reverse rounded-full bg-gray-50">
                         <button
                           type="submit"
-                          className="inline-flex w-auto justify-center rounded-md bg-slate-200 px-1 py-1 text-xs font-thin text-slate-500 shadow-sm hover:bg-gray-300"
+                          className="inline-flex w-auto justify-center rounded-md bg-slate-200 px-1 py-1 text-xs font-thin text-slate-500 shadow-sm hover:bg-gray-300 hover:text-slate-800"
                           onClick={closeModal}
                         >
                           <X width={16} height={16} />

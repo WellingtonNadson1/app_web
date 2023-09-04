@@ -190,7 +190,7 @@ export default function Celulas() {
             <div className="mx-auto rounded-lg bg-white p-6">
               {/* Incio do Forms */}
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="border-b border-gray-900/10 pb-12">
+                <div className="pb-3">
                   <h2 className="text-sm uppercase leading-normal text-gray-400">
                     Cadastro de Célula
                   </h2>

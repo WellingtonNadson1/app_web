@@ -1,11 +1,11 @@
 'use client'
-import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
-import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
-import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember'
-import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { UserFocus } from '@phosphor-icons/react'
 import { useState } from 'react'
 import Pagination from '../Pagination'
+import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema';
+import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember';
+import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember';
+import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember';
 // import { useEffect, useState } from 'react'
 
 interface ListMembersProps {
@@ -34,7 +34,7 @@ export default function ListMembers({ members }: ListMembersProps) {
           <div className="w-full rounded-md px-1 py-2">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold leading-7 text-gray-800">
-                Lista Membros da Célula
+                Lista Geral de Membros IBB
               </h2>
               <AddNewMember />
             </div>
@@ -56,13 +56,13 @@ export default function ListMembers({ members }: ListMembersProps) {
                   <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
                     Célula
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-center text-gray-800">
+                  <th className="border-b-2 border-red-300 py-2 text-start text-gray-800">
                     Opções
                   </th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {members ? (
+                {!members ? (
                   displayedMembers?.map((user, index) => (
                     <tr
                       className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
@@ -74,7 +74,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                           <h2 className="ml-4">{user.first_name}</h2>
                         </div>
                       </td>
-                      <td className="hidden text-center sm:table-cell">
+                      <td className="text-center">
                         <span
                           className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
                             user.situacao_no_reino?.nome === 'Ativo'
@@ -89,17 +89,17 @@ export default function ListMembers({ members }: ListMembersProps) {
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
+                      <td className="text-center">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
+                      <td className="text-center">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
+                      <td className="text-center">
                         <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.celula?.nome}
                         </span>
@@ -111,7 +111,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                           memberName={user.first_name}
                         />
                         <div onClick={() => setShouldFetch(true)}>
-                          {members && (
+                          {!members && (
                             <UpdateMember
                               shouldFetch={shouldFetch}
                               memberId={user.id}
