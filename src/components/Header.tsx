@@ -1,42 +1,26 @@
 'use client'
-import { Popover, Transition } from '@headlessui/react'
-import {
-  ArrowLeftOnRectangleIcon,
-  ChartPieIcon,
-  FingerPrintIcon,
-} from '@heroicons/react/24/outline'
+
+import { Menu, Transition } from '@headlessui/react'
+import { BellIcon } from '@heroicons/react/24/outline'
 import { UserCircle } from '@phosphor-icons/react'
 import { format } from 'date-fns'
 import { pt } from 'date-fns/locale'
-import { useSession } from 'next-auth/react'
+import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
-// import { signIn } from 'next-auth/react'
 // import Image from 'next/image'
+const userNavigation = [
+  { name: 'Meu Perfil', href: '#' },
+  { name: 'Configurações', href: '#' },
+]
+
+function classNames(...classes: string[]) {
+  return classes.filter(Boolean).join(' ')
+}
 
 export default function Header() {
   const { data: session, status } = useSession()
-  const solutions = [
-    {
-      name: 'Análise',
-      description: 'Acompanhe o desempenho da sua célula',
-      href: '#',
-      icon: ChartPieIcon,
-    },
-    {
-      name: 'Configurações',
-      description: 'Configurações do seu Perfil',
-      href: '/perfil-membro',
-      icon: FingerPrintIcon,
-    },
-    {
-      name: 'Sair',
-      description: 'Sair do App',
-      href: '/',
-      icon: ArrowLeftOnRectangleIcon,
-    },
-  ]
 
   const toDay = format(new Date(), 'PP', { locale: pt })
 
@@ -100,69 +84,73 @@ export default function Header() {
               )}
             </div> */}
             <div className="h-10  w-10 cursor-pointer rounded-full bg-gray-50 hover:ring-1 hover:ring-blue-400">
-              <Popover className="relative">
-                <Popover.Button className="inline-flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
-                  {session?.user?.image_url ? (
-                    <Image
-                      src={session?.user?.image_url}
-                      width={58}
-                      height={58}
-                      alt="Wellington"
-                      className={`rounded-full shadow`}
-                    />
-                  ) : (
-                    <UserCircle
-                      size={32}
-                      width={40}
-                      height={40}
-                      weight="thin"
-                      className={`rounded-full text-zinc-500 shadow`}
-                    />
-                  )}
-                </Popover.Button>
-
-                <Transition
-                  as={Fragment}
-                  enter="transition ease-out duration-200"
-                  enterFrom="opacity-0 translate-y-1"
-                  enterTo="opacity-100 translate-y-0"
-                  leave="transition ease-in duration-150"
-                  leaveFrom="opacity-100 translate-y-0"
-                  leaveTo="opacity-0 translate-y-1"
+              <div className="ml-4 flex items-center md:ml-6">
+                <button
+                  type="button"
+                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
-                  <Popover.Panel className="absolute left-1/2 z-10 mt-5 flex w-screen max-w-max -translate-x-1/2 px-4">
-                    <div className="w-screen max-w-md flex-auto overflow-hidden rounded-3xl bg-white text-sm leading-6 shadow-lg ring-1 ring-gray-900/5">
-                      <div className="p-4">
-                        {solutions.map((item) => (
-                          <div
-                            key={item.name}
-                            className="group relative flex gap-x-6 rounded-lg p-4 hover:bg-gray-50"
-                          >
-                            <div className="mt-1 flex h-11 w-11 flex-none items-center justify-center rounded-lg bg-gray-50 group-hover:bg-white">
-                              <item.icon
-                                className="h-6 w-6 text-gray-600 group-hover:text-indigo-600"
-                                aria-hidden="true"
-                              />
-                            </div>
-                            <div>
-                              <a
-                                href={item.href}
-                                className="font-semibold text-gray-900"
-                              >
-                                {item.name}
-                                <span className="absolute inset-0" />
-                              </a>
-                              <p className="mt-1 text-gray-600">
-                                {item.description}
-                              </p>
-                            </div>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  </Popover.Panel>
-                </Transition>
-              </Popover>
+                  <span className="absolute -inset-1.5" />
+                  <span className="sr-only">View notifications</span>
+                  <BellIcon className="h-6 w-6" aria-hidden="true" />
+                </button>
+
+                {/* Profile dropdown */}
+                <Menu as="div" className="relative ml-3">
+                  <div>
+                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                      <span className="absolute -inset-1.5" />
+                      <span className="sr-only">Open user menu</span>
+                      {session?.user?.image_url ? (
+                        <Image
+                          src={session?.user?.image_url}
+                          width={58}
+                          height={58}
+                          alt="Wellington"
+                          className={`rounded-full shadow`}
+                        />
+                      ) : (
+                        <UserCircle
+                          size={32}
+                          width={40}
+                          height={40}
+                          weight="thin"
+                          className={`rounded-full text-zinc-500 shadow`}
+                        />
+                      )}
+                    </Menu.Button>
+                  </div>
+                  <Transition
+                    as={Fragment}
+                    enter="transition ease-out duration-100"
+                    enterFrom="transform opacity-0 scale-95"
+                    enterTo="transform opacity-100 scale-100"
+                    leave="transition ease-in duration-75"
+                    leaveFrom="transform opacity-100 scale-100"
+                    leaveTo="transform opacity-0 scale-95"
+                  >
+                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                      {userNavigation.map((item) => (
+                        <Menu.Item key={item.name}>
+                          {({ active }) => (
+                            <a
+                              href={item.href}
+                              className={classNames(
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700',
+                              )}
+                            >
+                              {item.name}
+                            </a>
+                          )}
+                        </Menu.Item>
+                      ))}
+                      <Menu.Item>
+                        <button onClick={() => signOut}>Sair</button>
+                      </Menu.Item>
+                    </Menu.Items>
+                  </Transition>
+                </Menu>
+              </div>
             </div>
           </>
           {/* ) : (
