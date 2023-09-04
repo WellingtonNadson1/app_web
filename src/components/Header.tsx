@@ -84,10 +84,10 @@ export default function Header() {
               )}
             </div> */}
             <div className="h-10  w-10 cursor-pointer rounded-full bg-gray-50 hover:ring-1 hover:ring-blue-400">
-              <div className="ml-4 flex items-center md:ml-6">
+              <div className="ml-4 flex items-center">
                 <button
                   type="button"
-                  className="relative rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   <span className="absolute -inset-1.5" />
                   <span className="sr-only">View notifications</span>
@@ -95,9 +95,9 @@ export default function Header() {
                 </button>
 
                 {/* Profile dropdown */}
-                <Menu as="div" className="relative ml-3">
+                <Menu as="div" className="relative z-10">
                   <div>
-                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-gray-800 text-sm focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800">
+                    <Menu.Button className="relative flex max-w-xs items-center rounded-full bg-white text-sm focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800">
                       <span className="absolute -inset-1.5" />
                       <span className="sr-only">Open user menu</span>
                       {session?.user?.image_url ? (
@@ -128,7 +128,7 @@ export default function Header() {
                     leaveFrom="transform opacity-100 scale-100"
                     leaveTo="transform opacity-0 scale-95"
                   >
-                    <Menu.Items className="absolute right-0 z-10 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+                    <Menu.Items className="absolute right-0 z-20 mt-2 w-48 origin-top-right rounded-md bg-white py-1 shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
                       {userNavigation.map((item) => (
                         <Menu.Item key={item.name}>
                           {({ active }) => (
@@ -145,7 +145,12 @@ export default function Header() {
                         </Menu.Item>
                       ))}
                       <Menu.Item>
-                        <button onClick={() => signOut}>Sair</button>
+                        <button
+                          className="block bg-gray-100 px-4 py-2 text-sm text-gray-700"
+                          onClick={() => signOut}
+                        >
+                          Sair
+                        </button>
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
