@@ -1,6 +1,7 @@
 'use client'
 // import Header from '@/components/Header'
 import { ICelula } from '@/components/ListCelulas'
+import ListCelulasSupervision from '@/components/ListCelulasSupervision'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
 import { fetchWithToken } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
@@ -59,6 +60,10 @@ export default function Supervisao({
         {/* <Header titlePage={`${!error}` && `Supervisão ${supervisao.nome}`} /> */}
       </div>
       <StatsCardSupervision supervisao={supervisao} />
+      {supervisao && 
+        <ListCelulasSupervision data={supervisao?.celulas} />
+      }
+
     </div>
   )
 }

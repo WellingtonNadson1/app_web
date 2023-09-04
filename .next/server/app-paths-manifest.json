@@ -1,4 +1,8 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(celula)/celula/page": "app/(celula)/celula/page.js",
+  "/(authenticed)/novo-membro/page": "app/(authenticed)/novo-membro/page.js",
+  "/(authenticed)/supervisoes/page": "app/(authenticed)/supervisoes/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(authenticed)/supervisoes/[supervisaoId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/page.js"
 }

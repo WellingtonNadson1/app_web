@@ -41,7 +41,6 @@ export default function StatsCardSupervision({ supervisao }: ISupervisaoProps) {
               </div>
             </div>
           </div>
-          <ListCelulas data={...supervisao.celulas} />
         </div>
       )}
     </>
