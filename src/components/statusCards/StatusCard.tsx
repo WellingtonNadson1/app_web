@@ -5,7 +5,7 @@ export default function StatsCard() {
   const statusIbb = [
     {
       title: 'Conversões/Mês',
-      porcentagem: '+--.--%',
+      porcentagem: '--.--%',
       total: '---',
       status: 'up',
       icon: HandsPraying,
