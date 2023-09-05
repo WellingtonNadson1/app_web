@@ -45,13 +45,6 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-// const handleDeleteClick = (
-//   meetingId: string,
-//   meetingCultoSemanaNome: string,
-// ) => {
-//   return <DeleteCulto culto={meetingId} cultoName={meetingCultoSemanaNome} />
-// }
-
 export default function Example() {
   const { data: session } = useSession()
 
@@ -215,21 +208,21 @@ function Meeting({ meeting }: { meeting: meeting }) {
 
   return (
     <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
-      {meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
+      {meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
         <Cross
           width={10}
           height={10}
           weight="thin"
           className="h-10 w-10 flex-none rounded-full"
         />
-      ) : meeting.culto_semana.nome === 'Culto de Edificação' ? (
+      ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Culto de Edificação' ? (
         <BookBookmark
           width={10}
           height={10}
           weight="thin"
           className="h-10 w-10 flex-none rounded-full"
         />
-      ) : meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
+      ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
         <Student
           width={10}
           height={10}
@@ -246,7 +239,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
       )}
 
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.culto_semana.nome}</p>
+        <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting.data_inicio_culto}>
             {format(data_inicio_culto, 'h:mm a')}
@@ -282,13 +275,13 @@ function Meeting({ meeting }: { meeting: meeting }) {
               <Menu.Item>
                 <UpdateCulto
                   cultoId={meeting.id}
-                  // cultoName={meeting.culto_semana.nome}
+                // cultoName={meeting?.culto_semana.nome}
                 />
               </Menu.Item>
               <Menu.Item>
                 <DeleteCulto
                   culto={meeting.id}
-                  cultoName={meeting.culto_semana.nome}
+                  cultoName={meeting?.culto_semana?.nome}
                 />
               </Menu.Item>
             </div>
