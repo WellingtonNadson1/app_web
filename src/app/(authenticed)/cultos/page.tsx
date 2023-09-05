@@ -61,16 +61,23 @@ export default function Cultos() {
     }
     reset()
   }
-
+  
   const { data: cultosSemanais, isLoading } = useSWR<CultoDaSemana[]>(
     [URLCultosSemanais, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-
-  const fetchCultos = useCallback(async () => {
-    try {
-      if (session?.user?.token) {
-        const response = await fetchWithToken(URLCultosIndividuais, 'GET', session?.user.token)
+    )
+    
+    const fetchCultos = useCallback(async () => {
+      try {
+        if (session?.user.token) {
+          const response = await fetch(URLCultosIndividuais, {
+            method: 'GET',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session?.user.token}`,
+            },
+          })
+          console.log(JSON.stringify(response))
         if (!response.ok) {
           const error: FetchError = new Error('Failed to fetch get Cultos.')
           error.status = response.status
