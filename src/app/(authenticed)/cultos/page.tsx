@@ -69,18 +69,16 @@ export default function Cultos() {
 
   const fetchCultos = useCallback(async () => {
     try {
-      const response = await fetch(URLCultosIndividuais, {
-        headers: {
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
-      if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch get Cultos.')
-        error.status = response.status
-        throw error
+      if (session?.user?.token) {
+        const response = await fetchWithToken(URLCultosIndividuais, 'GET', session?.user.token)
+        if (!response.ok) {
+          const error: FetchError = new Error('Failed to fetch get Cultos.')
+          error.status = response.status
+          throw error
+        }
+        const cultos = await response.json()
+        setDataCultos(cultos)
       }
-      const cultos = await response.json()
-      setDataCultos(cultos)
     } catch (error) {
       console.log(error)
     }

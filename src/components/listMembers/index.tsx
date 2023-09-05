@@ -34,7 +34,7 @@ export default function ListMembers({ members }: ListMembersProps) {
           <div className="w-full rounded-md px-1 py-2">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold leading-7 text-gray-800">
-                Lista Membros da Célula
+                Lista de Membros IBB
               </h2>
               <AddNewMember />
             </div>
