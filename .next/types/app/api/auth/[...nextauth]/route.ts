@@ -1,6 +1,6 @@
 // File: /home/wellingtonnadson/www/app_web/src/app/api/auth/[...nextauth]/route.ts
-import * as entry from '../../../../../../src/app/api/auth/[...nextauth]/route.js'
 import type { NextRequest } from 'next/server.js'
+import * as entry from '../../../../../../src/app/api/auth/[...nextauth]/route.js'
 
 type TEntry = typeof import('../../../../../../src/app/api/auth/[...nextauth]/route.js')
 
@@ -22,7 +22,7 @@ checkFields<Diff<{
   preferredRegion?: 'auto' | 'global' | 'home' | string | string[]
   runtime?: 'nodejs' | 'experimental-edge' | 'edge'
   maxDuration?: number
-  
+
 }, TEntry, ''>>()
 
 // Check the prop type of the entry function

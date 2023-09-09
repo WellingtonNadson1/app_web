@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 {
   "/(login)/login/page": "app/(login)/login/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }
+=======
+{
+  "/(login)/login/page": "app/(login)/login/page.js"
+}
+>>>>>>> 3058166 (Implementation chamada de celula)
