@@ -1,16 +1,13 @@
 'use client'
 import { UserFocus } from '@phosphor-icons/react'
-// import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
-// import { Props } from 'next/script'
-// import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+
 import * as z from 'zod'
-// import { useEffect, useState } from 'react'
 
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
@@ -62,15 +59,8 @@ const PresencaCultoCelulaSchema = z.object({
 
 export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
 
-interface ControlePresencaCelulaProps {
-  celula: CelulaProps
-  culto: string
-}
-
-// type Attendance = {
-//   userId: string
-//   meetingId: string
-//   present: boolean
+// interface ControlePresencaCelulaProps {
+//   celulaId: string
 // }
 
 const attendanceSchema = z.object({
@@ -81,18 +71,24 @@ const attendanceSchema = z.object({
 
 type attendance = z.infer<typeof attendanceSchema>
 
-export default function ControlePresencaCelula({
-  culto,
-  celula,
-}: ControlePresencaCelulaProps) {
+export default function ControlePresencaReuniaoCelula({
+  celulaId,
+  dataCelula,
+}: {
+  celulaId: string
+  dataCelula: CelulaProps
+}) {
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
-  const URLControlePresenca = `https://${hostname}/presencacultos`
+  const URLControlePresencaReuniaoCelula = `https://${hostname}/presencareuniaocelulas`
+  // const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
+
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
+
   const notify = () =>
-    toast.success('😉 Presenças Registradas!', {
+    toast.success('😉 Presenças de Célula Registradas!', {
       position: 'top-right',
       autoClose: 5000,
       hideProgressBar: false,
@@ -112,7 +108,7 @@ export default function ControlePresencaCelula({
 
       for (const key in data) {
         const status = data[key].status === 'true'
-        const response = await fetch(URLControlePresenca, {
+        const response = await fetch(URLControlePresencaReuniaoCelula, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -141,7 +137,7 @@ export default function ControlePresencaCelula({
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
             <h2 className="text-lg font-semibold leading-7 text-gray-800">
-              Lista de Presença
+              Presença de Reunião de Célula
             </h2>
             <div className="w-full border-separate border-spacing-y-6">
               <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
@@ -162,7 +158,7 @@ export default function ControlePresencaCelula({
                 </div>
               </div>
               <div className="text-sm font-normal text-gray-700">
-                {celula.membros.map((user, index) => (
+                {dataCelula.membros.map((user, index) => (
                   <form key={user.id} id={user.id}>
                     <div className="mb-1 mt-3 grid grid-cols-3 gap-4 sm:grid-cols-5">
                       <input
@@ -172,7 +168,7 @@ export default function ControlePresencaCelula({
                       />
                       <input
                         type="hidden"
-                        value={culto}
+                        value={celulaId}
                         {...register(`${index}.presenca_culto`)}
                       />
                       <div className="flex items-center justify-start gap-1 sm:gap-3">

@@ -4,11 +4,12 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { FetchError, fetchWithToken } from '@/functions/functions'
-import { isSameDay, parseISO, startOfToday } from 'date-fns'
+import { getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
+import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 
 export default function ControleCelulaSupervision() {
@@ -58,6 +59,9 @@ export default function ControleCelulaSupervision() {
     fetchCelula()
   }, [fetchCelula])
 
+  const dataHoje = new Date()
+  const dayOfWeek = getDay(dataHoje)
+
   if (!session) {
     return <SpinnerButton />
   }
@@ -88,8 +92,29 @@ export default function ControleCelulaSupervision() {
             ) : null,
           )
         ) : (
-          <p>Não há Culto hoje.</p>
+          <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
+            <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
+              <div className="mb-3 flex flex-col items-start justify-start">
+                <p>Não há Culto hoje.</p>
+              </div>
+            </div>
+          </div>
         )}{' '}
+      </div>
+      <div className="relative mx-auto mb-4 w-full px-2">
+        {Number(dataCelula?.date_que_ocorre) === dayOfWeek ? (
+          dataCelula && (
+            <ControlePresencaReuniaoCelula
+              dataCelula={dataCelula}
+              celulaId={dataCelula?.id}
+            />
+          )
+        ) : (
+          <div>
+            <h2>Frequência de Célula</h2>
+            <p>Hoje não temos Célula</p>
+          </div>
+        )}
       </div>
     </div>
   )
