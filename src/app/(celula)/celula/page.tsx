@@ -1,3 +1,4 @@
+/* eslint-disable camelcase */
 'use client'
 import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'

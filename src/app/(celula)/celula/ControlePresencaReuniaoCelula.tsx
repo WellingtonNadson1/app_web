@@ -1,8 +1,10 @@
+/* eslint-disable camelcase */
 'use client'
 import { UserFocus } from '@phosphor-icons/react'
+import { getDay } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -63,10 +65,20 @@ export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
 //   celulaId: string
 // }
 
+const reuniaoCelulaDataSchema = z.object({
+  id: z.string(),
+  status: z.string(),
+  celula: z.string(),
+  data_reuniao: z.string(),
+  presencas_membros_reuniao_celula: z.string(),
+})
+
+type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
+
 const attendanceSchema = z.object({
   status: z.string(),
   membro: z.string(),
-  presenca_culto: z.string(),
+  which_reuniao_celula: z.string(),
 })
 
 type attendance = z.infer<typeof attendanceSchema>
@@ -81,9 +93,10 @@ export default function ControlePresencaReuniaoCelula({
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
   const URLControlePresencaReuniaoCelula = `https://${hostname}/presencareuniaocelulas`
-  // const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
+  const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData>()
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
 
@@ -99,6 +112,74 @@ export default function ControlePresencaReuniaoCelula({
       theme: 'light',
     })
 
+  const notifyError = (message: string) =>
+    toast.error(`😰 ${message}`, {
+      position: 'top-right',
+      autoClose: 5000,
+      hideProgressBar: false,
+      closeOnClick: true,
+      pauseOnHover: false,
+      draggable: true,
+      progress: undefined,
+      theme: 'light',
+    })
+
+  const memoizedDataHoje = useMemo(() => new Date(), [])
+  const dayOfWeek = getDay(memoizedDataHoje)
+
+  useEffect(() => {
+    // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
+    if (Number(dataCelula?.date_que_ocorre) === dayOfWeek) {
+      const createCelula = async () => {
+        setIsLoadingSubmitForm(true)
+        try {
+          const status = 'Marcado'
+          const celula = celulaId
+          const data_reuniao = memoizedDataHoje
+          const presencas_membros_reuniao_celula = null
+
+          const dataToSend = {
+            status,
+            celula,
+            data_reuniao,
+            presencas_membros_reuniao_celula,
+          }
+
+          console.log('Data Create Reuniao: ', dataToSend)
+
+          const response = await fetch(URLReuniaoCelula, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              Authorization: `Bearer ${session?.user.token}`,
+            },
+            body: JSON.stringify(dataToSend),
+          })
+          if (response.ok) {
+            const dataReuniao = await response.json()
+            setDataReuniao(dataReuniao)
+            console.log(dataReuniao)
+          } else {
+            throw new Error(response.status + ': ' + response.statusText)
+          }
+        } catch (error) {
+          if (error instanceof Error && error.message.startsWith('409')) {
+            notifyError('Já existem presenças registradas!')
+            setIsLoadingSubmitForm(false)
+          }
+        }
+      }
+      createCelula()
+    }
+  }, [
+    URLReuniaoCelula,
+    celulaId,
+    dataCelula?.date_que_ocorre,
+    memoizedDataHoje,
+    dayOfWeek,
+    session?.user.token,
+  ])
+
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
@@ -108,13 +189,14 @@ export default function ControlePresencaReuniaoCelula({
 
       for (const key in data) {
         const status = data[key].status === 'true'
+        const which_reuniao_celula = dataReuniao?.id
         const response = await fetch(URLControlePresencaReuniaoCelula, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
             Authorization: `Bearer ${session?.user.token}`,
           },
-          body: JSON.stringify({ ...data[key], status }),
+          body: JSON.stringify({ ...data[key], status, which_reuniao_celula }),
         })
         if (!response.ok) {
           throw new Error('Failed to submit dados de presenca')
@@ -126,6 +208,7 @@ export default function ControlePresencaReuniaoCelula({
       reset()
       router.refresh()
     } catch (error) {
+      notifyError('Já existem presenças registradas!')
       setIsLoadingSubmitForm(false)
     }
   }
@@ -165,11 +248,6 @@ export default function ControlePresencaReuniaoCelula({
                         type="hidden"
                         value={user.id}
                         {...register(`${index}.membro`)}
-                      />
-                      <input
-                        type="hidden"
-                        value={celulaId}
-                        {...register(`${index}.presenca_culto`)}
                       />
                       <div className="flex items-center justify-start gap-1 sm:gap-3">
                         <UserFocus className="hidden sm:block" size={28} />

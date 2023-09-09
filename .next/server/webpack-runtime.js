@@ -125,15 +125,7 @@
 /******/ 	
 /******/ 	/* webpack/runtime/getFullHash */
 /******/ 	(() => {
-<<<<<<< HEAD
-<<<<<<< HEAD
-/******/ 		__webpack_require__.h = () => ("2e5907e85c94ed71")
-=======
-/******/ 		__webpack_require__.h = () => ("86ddd71263ccce0e")
->>>>>>> 3058166 (Implementation chamada de celula)
-=======
-/******/ 		__webpack_require__.h = () => ("86ddd71263ccce0e")
->>>>>>> 3058166 (Implementation chamada de celula)
+/******/ 		__webpack_require__.h = () => ("a3aada0a7f5001e1")
 /******/ 	})();
 /******/ 	
 /******/ 	/* webpack/runtime/hasOwnProperty shorthand */
