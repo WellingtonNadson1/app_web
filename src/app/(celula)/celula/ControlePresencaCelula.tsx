@@ -1,4 +1,5 @@
 'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 // import { UserFocus } from '@phosphor-icons/react'
@@ -95,7 +96,7 @@ export default function ControlePresencaCelula({
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
 
-  const { data: PresenceExistRegister } = useSWR<PresenceCulto>(
+  const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
     [URLPresencaCultoId, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
@@ -145,6 +146,7 @@ export default function ControlePresencaCelula({
 
   return (
     <>
+    {isLoading && <SpinnerButton/>}
       {PresenceExistRegister ?
         (
           <p className="text-lg mb-3 font-normal leading-2 text-gray-800">
