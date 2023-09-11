@@ -149,7 +149,7 @@ export default function ControlePresencaCelula({
     {isLoading && <SpinnerButton/>}
       {PresenceExistRegister ?
         (
-          <p className="text-lg mb-3 font-normal leading-2 text-gray-800">
+          <p className="text-sm mb-3 font-normal leading-2 text-gray-800">
             Presença já cadastrada!
           </p>
         )
