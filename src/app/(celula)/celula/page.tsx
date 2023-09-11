@@ -5,13 +5,16 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { FetchError, fetchWithToken } from '@/functions/functions'
-import { getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
+import { format, getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
+import { Disclosure } from '@headlessui/react'
 import HeaderCelula from './HeaderCelula'
+import { ChevronUpIcon } from '@heroicons/react/24/outline'
+import { pt } from 'date-fns/locale'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -22,7 +25,7 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `https://${hostname}/celulas/${celulaId}`
   const URLCultosInd = `https://${hostname}/cultosindividuais`
 
-  const { data: meetings } = useSWR<meeting[]>(
+  const { data: meetings, isLoading } = useSWR<meeting[]>(
     [URLCultosInd, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
@@ -83,10 +86,35 @@ export default function ControleCelulaSupervision() {
           selectedDayMeetings?.map((meeting) =>
             isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
               dataCelula ? (
-                <ControlePresencaCelula
-                  culto={meeting.id}
-                  celula={dataCelula}
-                />
+                <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
+                  <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
+                    <div className="mb-2 flex flex-col items-start justify-start">
+                      <div className="w-full">
+                        <div className="mx-auto w-full rounded-2xl bg-white p-2">
+                          <Disclosure>
+                            {({ open }) => (
+                              <>
+                                <Disclosure.Button className="flex w-full justify-between rounded-lg ring ring-1 ring-blue-100  px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
+                                  <span>Frequência de Culto - {format(new Date(meeting.data_inicio_culto), 'Pp', { locale: pt })}</span>
+                                  <ChevronUpIcon
+                                    className={`${open ? 'rotate-180 transform' : ''
+                                      } h-5 w-5 text-blue-500`}
+                                  />
+                                </Disclosure.Button>
+                                <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                                  <ControlePresencaCelula
+                                    culto={meeting.id}
+                                    celula={dataCelula}
+                                  />
+                                </Disclosure.Panel>
+                              </>
+                            )}
+                          </Disclosure>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
               ) : (
                 <SpinnerButton />
               )
@@ -95,8 +123,28 @@ export default function ControleCelulaSupervision() {
         ) : (
           <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
             <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
-              <div className="mb-3 flex flex-col items-start justify-start">
-                <p>Não há Culto hoje.</p>
+              <div className="mb-2 flex flex-col items-start justify-start">
+                <div className="w-full">
+                  <div className="mx-auto w-full rounded-2xl bg-white p-2">
+                    <Disclosure>
+                      {({ open }) => (
+                        <>
+                          <Disclosure.Button className="flex w-full justify-between rounded-lg ring ring-1 ring-blue-100  px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
+                            <span>Frequência de Culto</span>
+                            <ChevronUpIcon
+                              className={`${open ? 'rotate-180 transform' : ''
+                                } h-5 w-5 text-blue-500`}
+                            />
+                          </Disclosure.Button>
+                          <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                            <p>Não há Culto hoje.</p>
+                          </Disclosure.Panel>
+                        </>
+                      )}
+                    </Disclosure>
+                  </div>
+
+                </div>
               </div>
             </div>
           </div>
@@ -105,15 +153,64 @@ export default function ControleCelulaSupervision() {
       <div className="relative mx-auto mb-4 w-full px-2">
         {Number(dataCelula?.date_que_ocorre) === dayOfWeek ? (
           dataCelula && (
-            <ControlePresencaReuniaoCelula
-              dataCelula={dataCelula}
-              celulaId={dataCelula?.id}
-            />
+            <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
+              <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
+                <div className="mb-2 flex flex-col items-start justify-start">
+                  <div className="w-full">
+                    <div className="mx-auto w-full rounded-2xl bg-white p-2">
+                      <Disclosure>
+                        {({ open }) => (
+                          <>
+                            <Disclosure.Button className="flex w-full justify-between rounded-lg ring ring-1 ring-blue-100  px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
+                              <span>Frequência de Célula  - {format(new Date(today), 'P', { locale: pt })}</span>
+                              <ChevronUpIcon
+                                className={`${open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-blue-500`}
+                              />
+                            </Disclosure.Button>
+                            <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                              <ControlePresencaReuniaoCelula
+                                dataCelula={dataCelula}
+                                celulaId={dataCelula?.id}
+                              />
+                            </Disclosure.Panel>
+                          </>
+                        )}
+                      </Disclosure>
+                    </div>
+
+                  </div>
+                </div>
+              </div>
+            </div>
           )
         ) : (
-          <div>
-            <h2>Frequência de Célula</h2>
-            <p>Hoje não temos Célula</p>
+          <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
+            <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
+              <div className="mb-2 flex flex-col items-start justify-start">
+                <div className="w-full">
+                  <div className="mx-auto w-full rounded-2xl bg-white p-2">
+                    <Disclosure>
+                      {({ open }) => (
+                        <>
+                          <Disclosure.Button className="flex w-full justify-between rounded-lg ring ring-1 ring-blue-100  px-4 py-2 text-left text-sm font-medium text-blue-900 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
+                            <span>Frequência de Célula</span>
+                            <ChevronUpIcon
+                              className={`${open ? 'rotate-180 transform' : ''
+                                } h-5 w-5 text-blue-500`}
+                            />
+                          </Disclosure.Button>
+                          <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                            <p>Não há Célula hoje.</p>
+                          </Disclosure.Panel>
+                        </>
+                      )}
+                    </Disclosure>
+                  </div>
+
+                </div>
+              </div>
+            </div>
           </div>
         )}
       </div>

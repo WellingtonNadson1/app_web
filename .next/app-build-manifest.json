@@ -10,6 +10,18 @@
       "static/chunks/main-app.js",
       "static/css/app/(login)/login/layout.css",
       "static/chunks/app/(login)/login/layout.js"
+    ],
+    "/(celula)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
+    ],
+    "/(celula)/celula/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ]
   }
 }
