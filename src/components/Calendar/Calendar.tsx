@@ -13,6 +13,7 @@ import {
   isEqual,
   isSameDay,
   isSameMonth,
+  isSunday,
   // isSaturday,
   // isSunday,
   isToday,
@@ -168,6 +169,13 @@ export default function Example() {
                             <div className="h-1 w-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
+                      {isSunday(day) ? (
+                        <div className="mt-1 h-1 w-1">
+                          <div className="h-1 w-1 rounded-full bg-orange-500"></div>
+                        </div>
+                      ) : (
+                        ''
+                      )}
                     </div>
                   </div>
                 ))}
