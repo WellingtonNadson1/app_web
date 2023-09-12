@@ -118,7 +118,7 @@ export default function ControleCelulaSupervision() {
               ) : (
                 <SpinnerButton />
               )
-            ) : null,
+            ) : <SpinnerButton />
           )
         ) : (
           <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">

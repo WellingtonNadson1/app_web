@@ -11,6 +11,7 @@ import {
   isEqual,
   isSameDay,
   isSameMonth,
+  isSunday,
   // isSaturday,
   // isSunday,
   isToday,
@@ -164,14 +165,13 @@ export default function CalendarLiderCelula() {
                             <div className="h-1 w-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
-
-                      {/* {isSaturday(day) || isWednesday(day) || isSunday(day) ? (
+                      {isSunday(day) ? (
                         <div className="mt-1 h-1 w-1">
                           <div className="h-1 w-1 rounded-full bg-orange-500"></div>
                         </div>
                       ) : (
                         ''
-                      )} */}
+                      )}
                     </div>
                   </div>
                 ))}
@@ -206,27 +206,27 @@ export default function CalendarLiderCelula() {
 
 function Meeting({ meeting }: { meeting: meeting }) {
   // eslint-disable-next-line camelcase
-  const data_inicio_culto = parseISO(meeting.data_inicio_culto)
+  const data_inicio_culto = parseISO(meeting?.data_inicio_culto)
   // eslint-disable-next-line camelcase
-  const data_termino_culto = parseISO(meeting.data_termino_culto)
+  const data_termino_culto = parseISO(meeting?.data_termino_culto)
 
   return (
     <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
-      {meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
+      {meeting?.culto_semana?.nome === 'Domingo de Sacrifício' ? (
         <Cross
           width={10}
           height={10}
           weight="thin"
           className="h-10 w-10 flex-none rounded-full"
         />
-      ) : meeting.culto_semana.nome === 'Culto de Edificação' ? (
+      ) : meeting?.culto_semana?.nome === 'Culto de Edificação' ? (
         <BookBookmark
           width={10}
           height={10}
           weight="thin"
           className="h-10 w-10 flex-none rounded-full"
         />
-      ) : meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
+      ) : meeting?.culto_semana?.nome === 'Capacitação Para Discípulos' ? (
         <Student
           width={10}
           height={10}
@@ -243,13 +243,13 @@ function Meeting({ meeting }: { meeting: meeting }) {
       )}
 
       <div className="flex-auto">
-        <p className="text-gray-900">{meeting.culto_semana.nome}</p>
+        <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
-          <time dateTime={meeting.data_inicio_culto}>
+          <time dateTime={meeting?.data_inicio_culto}>
             {format(data_inicio_culto, 'h:mm a')}
           </time>{' '}
           -{' '}
-          <time dateTime={meeting.data_termino_culto}>
+          <time dateTime={meeting?.data_termino_culto}>
             {format(data_termino_culto, 'h:mm a')}
           </time>
         </p>
