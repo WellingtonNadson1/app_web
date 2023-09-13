@@ -5,9 +5,36 @@ import {
   HandsPraying,
   UsersFour,
 } from '@phosphor-icons/react'
+import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 export default function StatsCardRelatorios() {
+  const { data: session } = useSession()
+  // eslint-disable-next-line no-unused-vars
+
+  // const hostname = 'app-ibb.onrender.com'
+  const URLRelatorioSupervision = `http://localhost:3333/relatorio/presencacultos`
+
+  const handleRelatorio = async () => {
+    try {
+      const response = await fetch(URLRelatorioSupervision, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/pdf',
+          Authorization: `Bearer ${session?.user.token}`,
+        },
+      })
+      if (response.ok) {
+        const dataReuniao = await response
+        console.log(dataReuniao)
+      } else {
+        throw new Error(response.status + ': ' + response.statusText)
+      }
+    } 
+    catch (error) {
+      
+    }
+
   const escolasIbb = [
     {
       title: 'Presença',
@@ -81,6 +108,18 @@ export default function StatsCardRelatorios() {
               </div>
             </Link>
           ))}
+
+          <div className="mt-2">
+            <form>
+              <button
+                type="submit"
+                onClick={handleRelatorio}
+                className="py1 rounded-sm bg-sky-600 px-2"
+              >
+                Relatorio
+              </button>
+            </form>
+          </div>
         </div>
       </div>
     </>

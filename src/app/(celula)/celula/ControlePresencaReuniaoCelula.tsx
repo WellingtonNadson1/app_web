@@ -217,7 +217,7 @@ export default function ControlePresencaReuniaoCelula({
       <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
-            <h2 className="text-lg mb-3 font-semibold leading-7 text-gray-800">
+            <h2 className="mb-3 text-lg font-semibold leading-7 text-gray-800">
               Presença de Reunião de Célula
             </h2>
             <div className="w-full border-separate border-spacing-y-6">
@@ -225,16 +225,16 @@ export default function ControlePresencaReuniaoCelula({
                 <div className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
                   Nome
                 </div>
-                <div className="hidden text-center border-b-2 border-orange-300 py-2 text-gray-800 sm:block">
+                <div className="hidden border-b-2 border-orange-300 py-2 text-center text-gray-800 sm:block">
                   Status
                 </div>
-                <div className="hidden text-center border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
+                <div className="hidden border-b-2 border-indigo-300 py-2 text-center text-gray-800 sm:block">
                   Cargo
                 </div>
-                <div className="text-center border-b-2 border-green-300 py-2 text-gray-800">
+                <div className="border-b-2 border-green-300 py-2 text-center text-gray-800">
                   P
                 </div>
-                <div className="text-center border-b-2 border-red-300 py-2 text-gray-800">
+                <div className="border-b-2 border-red-300 py-2 text-center text-gray-800">
                   F
                 </div>
               </div>
@@ -276,14 +276,14 @@ export default function ControlePresencaReuniaoCelula({
                         value="true"
                         type="radio"
                         id={user.id}
-                        className="h-4 w-4 cursor-pointer mx-auto border-green-300 text-green-600 focus:ring-green-600"
+                        className="mx-auto h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
                       />
                       <input
                         {...register(`${index}.status` as const)}
                         value="false"
                         type="radio"
                         id={user.first_name}
-                        className="h-4 w-4 cursor-pointer mx-auto border-red-300 text-red-600 focus:ring-red-600"
+                        className="mx-auto h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
                       />
                     </div>
                   </form>

@@ -1,4 +1,4 @@
-import StatsCardRelatorios from '@/components/StatsCardRelatoros'
+import StatsCardRelatorios from '@/components/StatsCardRelatorios'
 
 export default function Relatorios() {
   return (

@@ -1,10 +1,21 @@
 {
   "pages": {
-    "/(authenticed)/loading": [
+    "/(login)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/loading.css",
-      "static/chunks/app/(authenticed)/loading.js"
+      "static/chunks/app/(login)/login/page.js"
+    ],
+    "/(login)/login/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(login)/login/loading.css",
+      "static/chunks/app/(login)/login/loading.js"
+    ],
+    "/(login)/login/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(login)/login/layout.css",
+      "static/chunks/app/(login)/login/layout.js"
     ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
@@ -12,10 +23,11 @@
       "static/css/app/(authenticed)/layout.css",
       "static/chunks/app/(authenticed)/layout.js"
     ],
-    "/(authenticed)/novo-membro/page": [
+    "/(authenticed)/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/novo-membro/page.js"
+      "static/css/app/(authenticed)/loading.css",
+      "static/chunks/app/(authenticed)/loading.js"
     ],
     "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",
@@ -26,38 +38,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/relatorios/page.js"
-    ],
-    "/(authenticed)/escolas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/escolas/page.js"
-    ],
-    "/(authenticed)/supervisoes/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/supervisoes/page.js"
-    ],
-    "/(login)/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(login)/login/page.js"
-    ],
-    "/(authenticed)/celulas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/celulas/page.css",
-      "static/chunks/app/(authenticed)/celulas/page.js"
-    ],
-    "/(login)/login/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
-    ],
-    "/(authenticed)/cultos/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/cultos/page.js"
     ]
   }
 }
