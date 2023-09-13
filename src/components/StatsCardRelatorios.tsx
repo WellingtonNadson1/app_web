@@ -24,16 +24,26 @@ export default function StatsCardRelatorios() {
           Authorization: `Bearer ${session?.user.token}`,
         },
       })
-      if (response.ok) {
-        const dataReuniao = await response
-        console.log(dataReuniao)
-      } else {
-        throw new Error(response.status + ': ' + response.statusText)
+      const blob = await response.blob();
+
+      // Cria um objeto URL para o blob
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+
+      // Abre o PDF em uma nova aba ao invés de baixá-lo
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      if (link.parentNode) {
+        link.parentNode.removeChild(link);
       }
-    } 
-    catch (error) {
-      
+
     }
+    catch (error) {
+
+    }
+  }
 
   const escolasIbb = [
     {
