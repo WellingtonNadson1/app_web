@@ -22,31 +22,32 @@ export default function StatsCardRelatorios() {
           'Content-Type': 'application/pdf',
           Authorization: `Bearer ${session?.user.token}`,
         },
-      })
-      const blob = await response.blob();
-
+      });
+      
+      if (!response.ok) {
+        // Lidar com erros de resposta, se necessário
+        console.log('Erro na resposta da API:', response.statusText);
+        return;
+      }
+  
+      const buffer = await response.arrayBuffer();
+      console.log(buffer)
+      const blob = new Blob([buffer], { type: 'application/pdf' });
+  
       // Cria um objeto URL para o blob
       const url = window.URL.createObjectURL(blob);
-      const link = document.createElement('a');
-      link.href = url;
-
+  
       // Abre o PDF em uma nova aba ao invés de baixá-lo
-      link.target = '_blank';
-      document.body.appendChild(link);
-      link.click();
-      if (link.parentNode) {
-        link.parentNode.removeChild(link);
-      }
-
-    }
-    catch (error) {
-
+      window.open(url);
+    } catch (error) {
+      console.log('Erro ao buscar o relatório:', error);
     }
   }
+  
 
   const escolasIbb = [
     {
-      title: 'Presença',
+      title: 'Presença1',
       supervisor: 'Células',
       // total: '234',
       // status: 'up',
@@ -119,15 +120,13 @@ export default function StatsCardRelatorios() {
           ))}
 
           <div className="mt-2">
-            <form>
               <button
                 type="submit"
                 onClick={handleRelatorio}
-                className="py1 rounded-sm bg-sky-600 px-2"
+                className="py-1 rounded-md text-white hover:gb-sky-500 bg-sky-600 px-2"
               >
                 Relatorio
               </button>
-            </form>
           </div>
         </div>
       </div>
