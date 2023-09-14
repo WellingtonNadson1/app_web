@@ -602,7 +602,7 @@ export default function AddNewCelula() {
                                 </div>
                             </div>
                         </Modal>
-                        <button onClick={() => router.push('/celulas/licoes-celula')} className="z-10 rounded-md bg-sky-700 text-white px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                        <button onClick={() => router.push('/celulas/licoes-celula')} className="z-10 rounded-md bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                             Lições de Célula
                         </button>
