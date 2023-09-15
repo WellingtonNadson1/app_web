@@ -38,6 +38,17 @@ function DropzoneUpload() {
             <div {...getRootProps()} className="grid grid-cols-1 space-y-2">
               <label className="text-sm font-bold text-gray-500 tracking-wide">Anexar documento</label>
               <div className="flex items-center justify-center w-full">
+                <input {...getInputProps()} type="file" className="hidden" />
+                {!isDragActive && (
+                  <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
+                  <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                    <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
+                    <UploadSimple size={32} color="#827d7d" />
+                    </div>
+                    <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
+                  </div>
+                </label>
+                )}
                 {isDragActive && (
                   <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 border-green-400 text-center">
                   <div className="h-full w-full text-center flex flex-col items-center justify-center">
@@ -46,7 +57,6 @@ function DropzoneUpload() {
                     </div>
                     <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
                   </div>
-                  <input {...getInputProps()} type="file" className="hidden" />
                 </label>
                 )}
                 {isDragReject && (
@@ -57,18 +67,8 @@ function DropzoneUpload() {
                     </div>
                     <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
                   </div>
-                  <input {...getInputProps()} type="file" className="hidden" />
                 </label>
                 )}
-                <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
-                  <div className="h-full w-full text-center flex flex-col items-center justify-center">
-                    <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
-                    <UploadSimple size={32} color="#827d7d" />
-                    </div>
-                    <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
-                  </div>
-                  <input {...getInputProps()} type="file" className="hidden" />
-                </label>
               </div>
             </div>
             <p className="text-sm text-gray-300">
