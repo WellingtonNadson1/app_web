@@ -1,8 +1,15 @@
 'use client'
 
 import { UploadSimple } from "@phosphor-icons/react"
+import { useState } from "react"
+import {useDropzone} from "react-dropzone"
 
-function Dropzone() {
+function DropzoneUpload() {
+  const [uploadFiles, setUploadFiles] = useState([])
+
+  const { getRootProps, getInputProps, isDragActive, isDragReject } = useDropzone({
+    accept: {'application/pdf': ['.pdf']},
+  })
   return (
     <>
         <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
@@ -27,9 +34,32 @@ function Dropzone() {
                 <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="" />
               </div>
             </div>
-            <div className="grid grid-cols-1 space-y-2">
+
+            <div {...getRootProps()} className="grid grid-cols-1 space-y-2">
               <label className="text-sm font-bold text-gray-500 tracking-wide">Anexar documento</label>
               <div className="flex items-center justify-center w-full">
+                {isDragActive && (
+                  <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 border-green-400 text-center">
+                  <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                    <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
+                    <UploadSimple size={32} color="#827d7d" />
+                    </div>
+                    <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
+                  </div>
+                  <input {...getInputProps()} type="file" className="hidden" />
+                </label>
+                )}
+                {isDragReject && (
+                  <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 border-red-400 text-center">
+                  <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                    <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
+                    <UploadSimple size={32} color="#827d7d" />
+                    </div>
+                    <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
+                  </div>
+                  <input {...getInputProps()} type="file" className="hidden" />
+                </label>
+                )}
                 <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 group text-center">
                   <div className="h-full w-full text-center flex flex-col items-center justify-center">
                     <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
@@ -37,7 +67,7 @@ function Dropzone() {
                     </div>
                     <p className="pointer-none text-gray-500 "><span className="text-sm">Arraste e solte</span> o arquivo aqui <br /> ou <a href="" id="" className="text-blue-600 hover:underline">selecione um arquivo</a> do seu dispositivo</p>
                   </div>
-                  <input type="file" className="hidden" />
+                  <input {...getInputProps()} type="file" className="hidden" />
                 </label>
               </div>
             </div>
@@ -55,4 +85,4 @@ function Dropzone() {
   )
 }
 
-export default Dropzone
+export default DropzoneUpload
