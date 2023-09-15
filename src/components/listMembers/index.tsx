@@ -4,7 +4,7 @@ import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
 import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember'
 import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { UserFocus } from '@phosphor-icons/react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import Pagination from '../Pagination'
 // import { useEffect, useState } from 'react'
 
@@ -19,6 +19,21 @@ export default function ListMembers({ members }: ListMembersProps) {
     setCurrentPage(newPage)
   }
 
+  const [memberAtivo, setMemberAtivo] = useState<ReturnMembers[]>()
+  const [memberNormal, setMemberNormal] = useState<ReturnMembers[]>()
+
+  useEffect(() => {
+    setMemberAtivo(
+      members.filter((user) => user?.situacao_no_reino?.nome === 'Ativo')
+    )
+  }, [members])
+
+  useEffect(() => {
+    setMemberNormal(
+      members.filter((user) => user?.situacao_no_reino?.nome === 'Normal')
+    )
+  }, [members])
+
   // Pagination
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
@@ -32,11 +47,24 @@ export default function ListMembers({ members }: ListMembersProps) {
       <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
         <div className="w-full px-2 py-2 ">
           <div className="w-full rounded-md px-1 py-2">
-            <div className="flex items-center justify-between">
-              <h2 className="text-lg font-semibold leading-7 text-gray-800">
-                Lista de Membros IBB
-              </h2>
-              <AddNewMember />
+            <div className="flex items-center justify-between w-full gap-3">
+              <div className='flex items-center justify-between sm:justify-start gap-3 w-full'>
+                <h2 className="line-clamp-1 text-lg py-6 font-semibold leading-7 text-gray-800">
+                  Lista de Membros IBB
+                </h2>
+                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20 sm:block'>
+                  <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{members?.length}</span></p>
+                </div>
+                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-green-50  text-sky-700 ring-blue-600/20 sm:block'>
+                  <p className='flex items-center justify-between'>Ativos <span className='text-white ml-2 rounded-md px-1 py-1 bg-green-700'>{memberAtivo?.length}</span></p>
+                </div>
+                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-sky-50  text-sky-700 ring-blue-600/20 md:block'>
+                  <p className='flex items-center justify-between'>Normal <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{memberNormal?.length}</span></p>
+                </div>
+                </div>
+              <div className='sm:w-2/5 w-full'>
+                <AddNewMember />              
+              </div>
             </div>
             <table className="w-full table-auto border-separate border-spacing-y-3">
               <thead>

@@ -1,5 +1,6 @@
 'use client'
 import Modal from '@/components/modal'
+import ButtonLoader from '@/components/ButtonLoader'
 import { fetchWithToken } from '@/functions/functions'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -223,6 +224,12 @@ function AddNewMember() {
     )
   }
 
+  if (isLoading) {
+    return (
+      <ButtonLoader />
+    )
+  }
+
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
@@ -236,7 +243,7 @@ function AddNewMember() {
     <Modal
       icon={UserPlusIcon}
       titleModal="Cadastro de Membro"
-      titleButton="+ Add Novo Membro"
+      titleButton="+ Add Membro"
       buttonProps={{
         className:
           'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-full',

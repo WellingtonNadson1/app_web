@@ -9,6 +9,7 @@ import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 import { Fragment } from 'react'
+import HeaderLoad from './HeaderLoad'
 // import Image from 'next/image'
 const userNavigation = [
   { name: 'Meu Perfil', href: '#' },
@@ -32,7 +33,9 @@ export default function Header() {
   const NamePage = captitalizeTheFirstLetter(pathName)
 
   if (status === 'loading') {
-    return <div>Loading...</div>
+    return (
+      <HeaderLoad />
+    )
   }
 
   const isAuthenticated = status === 'authenticated'

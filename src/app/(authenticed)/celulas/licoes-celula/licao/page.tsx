@@ -1,6 +1,6 @@
-import AddNewTemaLicoesCelula from "./AddNewTemaLicoesCelula"
+import Dropzone from "@/components/Dropzone"
 
-export default function LicoesCelula() {
+export default function Licao() {
   return (
     <>
       <div className="relative mx-auto w-full mt-4 px-4 py-2 ">
@@ -9,7 +9,7 @@ export default function LicoesCelula() {
             <div className="card rounded-lg w-full bg-base-100 shadow-md px-4 py-2">
               <h2 className="text-sm font-bold text-gray-500">Lições de Células</h2>
               <div className="card-body mt-2">
-                <AddNewTemaLicoesCelula />
+                <Dropzone />
               </div>
             </div>
           </div>

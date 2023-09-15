@@ -24,12 +24,12 @@ function DropzoneUpload() {
               <label className="text-sm font-bold text-gray-500 tracking-wide">Título da lição</label>
               <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="" placeholder="nome da lição" />
             </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <div className="sm:col-span-1">
                 <label className="text-sm font-bold text-gray-500 tracking-wide">Versículo Chave</label>
                 <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="" placeholder="versículo chave" />
               </div>
-              <div>
+              <div className="sm:col-span-1">
                 <label className="text-sm font-bold text-gray-500 tracking-wide">Período</label>
                 <input className="text-base p-2 border border-gray-300 rounded-lg focus:outline-none focus:border-indigo-500" type="" />
               </div>

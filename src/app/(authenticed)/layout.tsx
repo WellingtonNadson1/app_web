@@ -5,9 +5,11 @@ import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
-import React from 'react'
+import React, { Suspense } from 'react'
 import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
+import HeaderLoad from '@/components/HeaderLoad'
+import { LoaderHeader } from './loading'
 
 export const metadata = {
   title: 'App IBB',
@@ -46,7 +48,9 @@ export default async function RootLayout({
             <Providers>
               <Sidebar />
               <div className="mx-auto w-full px-2 py-2">
-                <Header />
+                <Suspense fallback={<LoaderHeader />}>
+                  <Header />
+                </Suspense>
                 {children}
               </div>
             </Providers>
