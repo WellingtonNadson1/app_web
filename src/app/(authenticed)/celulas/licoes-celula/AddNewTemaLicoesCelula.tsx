@@ -1,15 +1,17 @@
 'use client'
-import ListCelulas, { ICelula } from '@/components/ListCelulas'
+
+import { ICelula } from '@/components/ListCelulas'
+import ListTemaLicoesCelula from '@/components/ListTemaLicoesCelula'
+import Modal from '@/components/modal'
 import { errorCadastro, fetchWithToken, success } from '@/functions/functions'
+import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 import useSWR from 'swr'
 import { z } from 'zod'
-import Modal from '@/components/modal'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/navigation'
 import { AddressProps } from '../../novo-membro/schema'
 
 const schemaFormCelula = z.object({
@@ -413,7 +415,7 @@ export default function AddNewTemaLicoesCelula() {
                 {isLoading ? (
                     <pre>Loading...</pre>
                 ) : (
-                    <h2>Lições de Célula</h2>
+                  dataCelulas &&  <ListTemaLicoesCelula data={dataCelulas} />
                 )}
             </div>
         </>

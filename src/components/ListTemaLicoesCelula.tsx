@@ -1,6 +1,7 @@
 import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
 import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
+import { useState } from 'react'
+import React from 'react'
 import Pagination from './Pagination'
 
 export interface ICelula {
@@ -16,7 +17,7 @@ interface ListCelulasProps {
   data: ICelula[]
 }
 
-export default function ListCelulas({ data }: ListCelulasProps) {
+export default function ListTemaLicoesCelula({ data }: ListCelulasProps) {
   const router = useRouter()
   const contextParamsSupervisaoId = useSupervisaoContext()
 
@@ -39,7 +40,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
 
   const calculateCellNumber = (pageIndex: number, index: number) => {
     return (pageIndex - 1) * itemsPerPage + index + 1;
-  };
+  };  
 
   return (
       <div className="relative  mx-auto w-full p-2">
@@ -47,7 +48,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
           <div className="w-full rounded-lg bg-white p-4 shadow-md">
             <div className='flex items-center justify-between sm:justify-start gap-3'>
               <h2 className="text-lg py-6 font-semibold leading-7 text-gray-800">
-                Lista Geral de Células IBB
+                Temas Lições de Células
               </h2>
               <div className='flex items-center justify-center rounded-md px-3 py-2 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20'>
                 <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-2 py-1 bg-sky-700'>{data?.length}</span></p>
@@ -58,7 +59,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                 <thead>
                   <tr>
                     <th className="text-start text-gray-800">Ord.</th>
-                    <th className="text-start text-gray-800">Célula</th>
+                    <th className="text-start text-gray-800">Temas</th>
                     <th className="hidden text-start text-gray-800 sm:block">
                       Líder(es)
                     </th>

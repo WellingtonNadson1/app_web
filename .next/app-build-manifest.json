@@ -1,5 +1,22 @@
 {
   "pages": {
+    "/(authenticed)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/page.js"
+    ],
+    "/(authenticed)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/loading.css",
+      "static/chunks/app/(authenticed)/loading.js"
+    ],
+    "/(authenticed)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/layout.css",
+      "static/chunks/app/(authenticed)/layout.js"
+    ],
     "/(login)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -22,17 +39,22 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/dashboard/page.js"
     ],
-    "/(authenticed)/loading": [
+    "/(authenticed)/celulas/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/loading.css",
-      "static/chunks/app/(authenticed)/loading.js"
+      "static/css/app/(authenticed)/celulas/page.css",
+      "static/chunks/app/(authenticed)/celulas/page.js"
     ],
-    "/(authenticed)/layout": [
+    "/(authenticed)/celulas/licoes-celula/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/layout.css",
-      "static/chunks/app/(authenticed)/layout.js"
+      "static/css/app/(authenticed)/celulas/licoes-celula/page.css",
+      "static/chunks/app/(authenticed)/celulas/licoes-celula/page.js"
+    ],
+    "/(authenticed)/celulas/licoes-celula/[temalicaoId]/licao/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/celulas/licoes-celula/[temalicaoId]/licao/page.js"
     ]
   }
 }

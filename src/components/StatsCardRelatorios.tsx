@@ -22,28 +22,27 @@ export default function StatsCardRelatorios() {
           'Content-Type': 'application/pdf',
           Authorization: `Bearer ${session?.user.token}`,
         },
-      });
-      
+      })
+
       if (!response.ok) {
         // Lidar com erros de resposta, se necessário
-        console.log('Erro na resposta da API:', response.statusText);
-        return;
+        console.log('Erro na resposta da API:', response.statusText)
+        return
       }
-  
-      const buffer = await response.arrayBuffer();
+
+      const buffer = await response.arrayBuffer()
       console.log(buffer)
-      const blob = new Blob([buffer], { type: 'application/pdf' });
-  
+      const blob = new Blob([buffer], { type: 'application/pdf' })
+
       // Cria um objeto URL para o blob
-      const url = window.URL.createObjectURL(blob);
-  
+      const url = window.URL.createObjectURL(blob)
+
       // Abre o PDF em uma nova aba ao invés de baixá-lo
-      window.open(url);
+      window.open(url)
     } catch (error) {
-      console.log('Erro ao buscar o relatório:', error);
+      console.log('Erro ao buscar o relatório:', error)
     }
   }
-  
 
   const escolasIbb = [
     {
@@ -120,13 +119,13 @@ export default function StatsCardRelatorios() {
           ))}
 
           <div className="mt-2">
-              <button
-                type="submit"
-                onClick={handleRelatorio}
-                className="py-1 rounded-md text-white hover:gb-sky-500 bg-sky-600 px-2"
-              >
-                Relatorio
-              </button>
+            <button
+              type="submit"
+              onClick={handleRelatorio}
+              className="hover:gb-sky-500 rounded-md bg-sky-600 px-2 py-1 text-white"
+            >
+              Relatorio
+            </button>
           </div>
         </div>
       </div>
