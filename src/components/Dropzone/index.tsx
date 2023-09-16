@@ -1,12 +1,11 @@
 'use client'
 
-import { FetchError, errorCadastro, fetchWithToken, success } from "@/functions/functions"
+import { errorCadastro, success } from "@/functions/functions"
 import { UploadSimple } from "@phosphor-icons/react"
 import { useSession } from "next-auth/react"
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 import { useDropzone } from "react-dropzone"
 import { SubmitHandler, useForm } from "react-hook-form"
-import useSWR from "swr"
 
 interface ILicaoCelula {
   title: string
@@ -18,14 +17,12 @@ interface ILicaoCelula {
 function DropzoneUpload() {
   // Logica Submit Data to BackEnd
   const hostname = 'app-ibb.onrender.com'
-  const URLSupervisoes = `https://${hostname}/supervisoes`
+  // const URLSupervisoes = `https://${hostname}/supervisoes`
   const URLCelulas = `https://${hostname}/celulas`
 
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [dataCelulas, setDataCelulas] = useState<ILicaoCelula>()
   const { register, handleSubmit, reset } = useForm<ILicaoCelula>()
 
   const onSubmit: SubmitHandler<ILicaoCelula> = async (data) => {
@@ -63,73 +60,6 @@ function DropzoneUpload() {
     }
     reset()
   }
-
-  const {
-    data: licoesCelula,
-    error,
-    isLoading,
-  } = useSWR<ILicaoCelula[]>(
-    [URLSupervisoes, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-
-  const fetchCelulas = useCallback(async () => {
-    try {
-      const response = await fetch(URLCelulas, {
-        headers: {
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
-      if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch get Celulas.')
-        error.status = response.status
-        throw error
-      }
-      const celulas = await response.json()
-      setDataCelulas(celulas)
-    } catch (error) {
-      console.log(error)
-    }
-  }, [URLCelulas, session?.user.token])
-
-  // UseEffect para buscar as células quando a página é carregada
-  useEffect(() => {
-    fetchCelulas()
-  }, [fetchCelulas])
-
-  // UseEffect para buscar as células após o envio do formulário
-  useEffect(() => {
-    if (formSuccess) {
-      fetchCelulas()
-    }
-  }, [formSuccess, fetchCelulas])
-
-  const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
-
-  if (error)
-    return (
-      <div className="z-50 mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
-          <div className="text-white">failed to load</div>
-        </div>
-      </div>
-    )
-
-  if (isLoading)
-    return (
-      <div className="z-50 mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
-        </div>
-      </div>
-    )
-
-
-
 
   // Logica Drop
   const [uploadFiles, setUploadFiles] = useState<File | null>(null)
