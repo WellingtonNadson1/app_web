@@ -92,7 +92,7 @@ function DropzoneUpload() {
                 <form onSubmit={handleSubmit(onSubmit)}>
                   <div className="pb-3">
                     <h2 className="text-sm uppercase leading-normal text-gray-400">
-                      Tema de Lições de Célula
+                      Título da Lição
                     </h2>
                     <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-9">
                       <div className="sm:col-span-3">
@@ -163,10 +163,23 @@ function DropzoneUpload() {
 
                     {/* Dropzone */}
                     <div {...getRootProps()} className="grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                    <div className="sm:col-span-6">
+
                       <label className="text-sm font-bold text-gray-500 tracking-wide">Anexar documento</label>
                       <div className="flex items-center justify-center w-full">
                         <input {...getInputProps()} type="file" className="hidden" />
-                        <label className={`flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 ${isDragActive ? 'border-green-400' : 'border-gray-400'} text-center`}>
+                        {isDragReject ? (
+                          <label className="flex flex-col rounded-lg border-2 border-dashed w-full h-60 p-10 border-red-400 text-center">
+                            <div className="h-full w-full text-center flex flex-col items-center justify-center">
+                              <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
+                                <UploadSimple size={32} color="#827d7d" />
+                              </div>
+                              <p className="pointer-none text-gray-500 "><span className="text-sm">Arquivo</span> não suportado</p>
+                            </div>
+                          </label>
+                        ) : (
+
+                        <label className={`flex flex-col rounded-lg border-2 border-dashed w-full h-60 p-10 ${isDragActive ? 'border-green-400' : 'border-gray-400'} text-center`}>
                           <div className="h-full w-full text-center flex flex-col items-center justify-center">
                             <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
                               <UploadSimple size={32} color={isDragActive ? '#75d587' : '#827d7d'} />
@@ -179,17 +192,10 @@ function DropzoneUpload() {
                             )}
                           </div>
                         </label>
-
-                        {isDragReject && (
-                          <label className="flex flex-col rounded-lg border-4 border-dashed w-full h-60 p-10 border-red-400 text-center">
-                            <div className="h-full w-full text-center flex flex-col items-center justify-center">
-                              <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
-                                <UploadSimple size={32} color="#827d7d" />
-                              </div>
-                              <p className="pointer-none text-gray-500 "><span className="text-sm">Arquivo</span> não suportado</p>
-                            </div>
-                          </label>
                         )}
+                    </div>
+
+
                       </div>
                     </div>
                     <p className="text-sm text-gray-300">
