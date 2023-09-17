@@ -33,7 +33,10 @@ const UserSchema = z.object({
 const CelulaSchema = z.object({
   id: z.string(),
   nome: z.string(),
-  lider: z.string(),
+  lider: z.object({
+    first_name: z.string(),
+    id: z.string(),
+  }),
   supervisao: z.string(),
   cep: z.string(),
   cidade: z.string(),

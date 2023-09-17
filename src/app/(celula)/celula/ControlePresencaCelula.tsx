@@ -37,7 +37,10 @@ const UserSchema = z.object({
 const CelulaSchema = z.object({
   id: z.string(),
   nome: z.string(),
-  lider: z.string(),
+  lider: z.object({
+    first_name: z.string(),
+    id: z.string(),
+  }),
   supervisao: z.string(),
   cep: z.string(),
   cidade: z.string(),
@@ -97,7 +100,7 @@ export default function ControlePresencaCelula({
   const { handleSubmit, register, reset } = useForm<attendance[]>()
 
   console.log('URL Celula ID', URLPresencaCultoId)
-  console.log('Celula Lider', celula.lider)
+  console.log('Lider', celula.lider.id)
 
   const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
     [URLPresencaCultoId, `${session?.user.token}`],
