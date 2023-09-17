@@ -97,6 +97,7 @@ export default function ControlePresencaCelula({
   const { handleSubmit, register, reset } = useForm<attendance[]>()
 
   console.log('URL Celula ID', URLPresencaCultoId)
+  console.log('Celula Lider', celula.lider)
 
   const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
     [URLPresencaCultoId, `${session?.user.token}`],
