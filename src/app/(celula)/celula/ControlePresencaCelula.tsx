@@ -37,7 +37,10 @@ const UserSchema = z.object({
 const CelulaSchema = z.object({
   id: z.string(),
   nome: z.string(),
-  lider: z.string(),
+  lider: z.object({
+    first_name: z.string(),
+    id: z.string(),
+  }),
   supervisao: z.string(),
   cep: z.string(),
   cidade: z.string(),
@@ -91,7 +94,7 @@ export default function ControlePresencaCelula({
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
   const URLControlePresenca = `https://${hostname}/presencacultos`
-  const URLPresencaCultoId = `https://${hostname}/presencacultosbycelula?culto=${culto}&celula=${celula.lider}`
+  const URLPresencaCultoId = `https://${hostname}/presencacultosbycelula?culto=${culto}&celula=${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
