@@ -91,10 +91,12 @@ export default function ControlePresencaCelula({
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
   const URLControlePresenca = `https://${hostname}/presencacultos`
-  const URLPresencaCultoId = `https://${hostname}/presencacultosbycelula/${culto}&${celula.id}`
+  const URLPresencaCultoId = `https://${hostname}/presencacultosbycelula?culto=${culto}&celula=${celula.lider}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
+
+  console.log('URL Celula ID', URLPresencaCultoId)
 
   const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
     [URLPresencaCultoId, `${session?.user.token}`],
