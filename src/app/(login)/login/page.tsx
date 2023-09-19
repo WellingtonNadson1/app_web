@@ -1,4 +1,5 @@
 'use client'
+import { errorCadastro } from '@/functions/functions'
 import { GoogleLogo } from '@phosphor-icons/react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
@@ -31,6 +32,8 @@ export default function Login() {
       redirect: false,
     })
     if (result?.error) {
+      errorCadastro('Senha ou E-mail inválido')
+      setIsLoading(false)
       return
     }
     router.replace('/dashboard')
@@ -193,7 +196,7 @@ export default function Login() {
                 </span>
               </button>
 
-              <p className="mb-4 mt-8 text-center text-sm text-gray-500">
+              {/* <p className="mb-4 mt-8 text-center text-sm text-gray-500">
                 Não tem uma conta?{' '}
                 <Link
                   href="#"
@@ -201,7 +204,7 @@ export default function Login() {
                 >
                   Cadastre-se
                 </Link>
-              </p>
+              </p> */}
             </div>
           </div>
 
