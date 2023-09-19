@@ -1,6 +1,6 @@
 'use client'
 import { errorCadastro } from '@/functions/functions'
-import { GoogleLogo } from '@phosphor-icons/react'
+// import { GoogleLogo } from '@phosphor-icons/react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
