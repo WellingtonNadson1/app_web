@@ -182,9 +182,9 @@ export default function Login() {
                 </div>
               </form>
 
-              <hr className='opacity-30" mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent' />
+              <hr className='opacity-30" mb-6 mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent' />
 
-              <button
+              {/* <button
                 // onClick={() => signIn('google')}
                 type="button"
                 className="flex w-full items-center justify-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm ring-1 ring-red-300 duration-100 hover:bg-gray-100/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
@@ -193,7 +193,7 @@ export default function Login() {
                 <span className="ml-2 text-sm font-semibold leading-7 text-gray-900">
                   Entrar com Google
                 </span>
-              </button>
+              </button> */}
 
               {/* <p className="mb-4 mt-8 text-center text-sm text-gray-500">
                 Não tem uma conta?{' '}
