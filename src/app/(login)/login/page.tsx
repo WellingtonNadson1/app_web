@@ -182,7 +182,7 @@ export default function Login() {
                 </div>
               </form>
 
-              <hr className='opacity-30" mb-6 mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent' />
+              <hr className='opacity-30" mb-6 mt-8 mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent' />
 
               {/* <button
                 // onClick={() => signIn('google')}
