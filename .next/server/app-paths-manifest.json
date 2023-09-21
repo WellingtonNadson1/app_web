@@ -1,3 +1,7 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(authenticed)/page": "app/(authenticed)/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(celula)/celula/page": "app/(celula)/celula/page.js"
 }

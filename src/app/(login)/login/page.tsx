@@ -32,6 +32,10 @@ export default function Login() {
     })
     if (result?.error) {
       setIsLoadingFaield(true)
+      setIsLoading(false)
+      setTimeout(() => {
+        setIsLoadingFaield(false)
+      }, 4000);
       return
     }
     setIsLoading(false)
@@ -179,7 +183,9 @@ export default function Login() {
                       Entrar
                     </button>
                   )}
-                    {isLoadingFaield && <span className="text-red-400">Senha ou e-mail inválido!</span>}
+                  <div className='mx-auto mt-2 text-center'>
+                    {isLoadingFaield && <span className="text-red-400 text-sm">Senha ou e-mail inválido!</span>}
+                  </div>
                 </div>
               </form>
 

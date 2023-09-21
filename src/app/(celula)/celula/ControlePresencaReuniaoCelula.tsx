@@ -266,12 +266,12 @@ export default function ControlePresencaReuniaoCelula({
                               : 'border border-red-200 bg-red-100 ring-red-500'
                           }`}
                         >
-                          {user.situacao_no_reino.nome}
+                          {user.situacao_no_reino?.nome}
                         </span>
                       </div>
                       <div className="hidden sm:block">
                         <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
-                          {user.cargo_de_lideranca.nome}{' '}
+                          {user.cargo_de_lideranca?.nome}{' '}
                         </span>
                       </div>
                       <input
