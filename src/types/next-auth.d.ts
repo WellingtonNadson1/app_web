@@ -32,6 +32,16 @@ declare module 'next-auth' {
       situacao_no_reino: string
       cargo_de_lideranca: string
       token: string
+      refreshToken: {
+        id: string
+        expiresIn: string
+		    userIdRefresh: string
+      }
+      newRefreshToken: {
+        id: string
+        expiresIn: string
+		    userIdRefresh: string
+      }
     }
   }
 }

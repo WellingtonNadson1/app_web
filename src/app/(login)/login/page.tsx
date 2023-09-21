@@ -1,5 +1,4 @@
 'use client'
-import { errorCadastro } from '@/functions/functions'
 // import { GoogleLogo } from '@phosphor-icons/react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
@@ -19,6 +18,7 @@ export default function Login() {
   const router = useRouter()
   const { handleSubmit, register } = useForm<TypeLogin>()
   const [isLoading, setIsLoading] = useState(false)
+  const [isLoadingFaield, setIsLoadingFaield] = useState(false)
 
   const onSubmit: SubmitHandler<TypeLogin> = async ({
     email,
@@ -31,10 +31,10 @@ export default function Login() {
       redirect: false,
     })
     if (result?.error) {
-      errorCadastro('Senha ou E-mail inválido')
-      setIsLoading(false)
+      setIsLoadingFaield(true)
       return
     }
+    setIsLoading(false)
     router.replace('/dashboard')
   }
 
@@ -179,6 +179,7 @@ export default function Login() {
                       Entrar
                     </button>
                   )}
+                    {isLoadingFaield && <span className="text-red-400">Senha ou e-mail inválido!</span>}
                 </div>
               </form>
 

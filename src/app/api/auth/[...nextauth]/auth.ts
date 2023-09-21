@@ -53,8 +53,45 @@ export const authOptions: NextAuthOptions = {
     signIn: '/login',
     signOut: '/login',
   },
+  // callbacks: {
+  //   async jwt({ token, user }) {
+  //     user && (token.user = user)
+  //     return token
+  //   },
+  //   async session({ session, token }) {
+  //     session.user = token.user as any
+  //     return session
+  //   },
+
+  // },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user, account }) {
+      if (account?.accessToken) {
+        token.accessToken = account.accessToken;
+        token.refreshToken = account.refreshToken;
+      }
+
+      if (token?.accessToken && token?.refreshToken) {
+        const hostname = 'app-ibb.onrender.com'
+        const URL = `https://${hostname}/refresh-token`
+        const response = await fetch(URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token.accessToken}`
+          },
+          body: JSON.stringify({
+            refresh_token: token?.refreshToken,
+          }),
+        })
+        const newToken = await response.json()
+
+        if (newToken && response.ok) {
+          console.log(JSON.stringify(newToken))
+          token.accessToken = newToken.accessToken;
+        }
+      }
+
       user && (token.user = user)
       return token
     },
@@ -63,4 +100,5 @@ export const authOptions: NextAuthOptions = {
       return session
     },
   },
+
 }
