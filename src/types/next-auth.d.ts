@@ -34,12 +34,12 @@ declare module 'next-auth' {
       token: string
       refreshToken: {
         id: string
-        expiresIn: string
+        expiresIn: number
 		    userIdRefresh: string
       }
       newRefreshToken: {
         id: string
-        expiresIn: string
+        expiresIn: number
 		    userIdRefresh: string
       }
     }

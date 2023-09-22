@@ -22,13 +22,14 @@ export default function ControleCelulaSupervision() {
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
   const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
+  const axiosAuth = useAxiosAuth()
 
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
   const { data: meetings, isLoading } = useSWR<meeting[]>(
-    [URLCultosInd, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+    [URLCultosInd],
+    async ([url]: [string]) => await axiosAuth.get(URLCultosInd),
   )
 
   const today = startOfToday()
@@ -42,13 +43,12 @@ export default function ControleCelulaSupervision() {
       if (!session) {
         return
       }
-      const axiosAuth = useAxiosAuth()
       const response = await axiosAuth.get(URLCelula)
-      if (!response) {
+      const celula = response.data
+      if (!celula) {
         const error: FetchError = new Error('Failed to fetch get Celula Lider.')
         throw error
       }
-      const celula = response.data
       setDataCelula(celula)
     } catch (error) {
       console.log(error)
