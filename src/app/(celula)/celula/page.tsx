@@ -4,11 +4,10 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { FetchError, fetchWithToken } from '@/functions/functions'
+import { FetchError } from '@/functions/functions'
 import { format, getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
-import useSWR from 'swr'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import { Disclosure } from '@headlessui/react'
@@ -16,7 +15,6 @@ import HeaderCelula from './HeaderCelula'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { pt } from 'date-fns/locale'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import axios from '@/lib/axios'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -28,13 +26,6 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  // const fetchWithTokenAxios = async (url: string, token: string) => {
-  //   const response = await axios.get(url, {
-  //     headers: { Authorization: `Bearer ${token}` },
-  //   });
-  //   return response.data;
-  // };
-
   useEffect(() => {
     axiosAuth.get(URLCultosInd)
       .then(response => {
@@ -45,20 +36,7 @@ export default function ControleCelulaSupervision() {
       });
   }, []);
 
-
-  // const { data: meetings, isLoading } = useSWR<meeting[]>(
-  //   [URLCultosInd, session?.user.token], fetchWithTokenAxios)
-
-  // const { data: meetings, isLoading } = useSWR<meeting[]>(
-  //   [URLCultosInd, `${session?.user.token}`],
-  //   ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  // )
-
   const today = startOfToday()
-
-  // if (isLoading) {
-  //   return
-  // }
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
