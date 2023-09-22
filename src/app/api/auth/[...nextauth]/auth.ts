@@ -52,10 +52,10 @@ export const authOptions: NextAuthOptions = {
     async jwt({ token, user, account }) {
       console.log({ account })
       user && (token.user = user)
-      return {...token, ...user}
+      return token
     },
 
-    async session({ session, token, user }) {
+    async session({ session, token }) {
       session = token.user as any
       return session
     }
