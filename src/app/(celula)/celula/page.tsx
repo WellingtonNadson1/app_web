@@ -15,6 +15,7 @@ import { Disclosure } from '@headlessui/react'
 import HeaderCelula from './HeaderCelula'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { pt } from 'date-fns/locale'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -22,8 +23,8 @@ export default function ControleCelulaSupervision() {
   const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
 
-  const URLCelula = `https://${hostname}/celulas/${celulaId}`
-  const URLCultosInd = `https://${hostname}/cultosindividuais`
+  const URLCelula = `/celulas/${celulaId}`
+  const URLCultosInd = `/cultosindividuais`
 
   const { data: meetings, isLoading } = useSWR<meeting[]>(
     [URLCultosInd, `${session?.user.token}`],
@@ -41,17 +42,13 @@ export default function ControleCelulaSupervision() {
       if (!session) {
         return
       }
-      const response = await fetch(URLCelula, {
-        headers: {
-          Authorization: `Bearer ${session?.user?.token}`,
-        },
-      })
-      if (!response.ok) {
+      const axiosAuth = useAxiosAuth()
+      const response = await axiosAuth.get(URLCelula)
+      if (!response) {
         const error: FetchError = new Error('Failed to fetch get Celula Lider.')
-        error.status = response.status
         throw error
       }
-      const celula = await response.json()
+      const celula = response.data
       setDataCelula(celula)
     } catch (error) {
       console.log(error)
