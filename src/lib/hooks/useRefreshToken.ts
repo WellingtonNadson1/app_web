@@ -18,6 +18,7 @@ export const useRefreshToken = () => {
           refresh_token: session?.user.refreshToken.id
         })
         const newToken = response.data
+        console.log('New Token Function Refresh', newToken)
 
         if (newToken) session.user.token = response.data.token
       }
@@ -32,6 +33,7 @@ export const useRefreshToken = () => {
           refresh_token: session?.user.newRefreshToken.id
         })
         const newToken = response.data
+        console.log('New Token Function NewRefresh', newToken)
 
         if (newToken) session.user.token = response.data.token
       }
