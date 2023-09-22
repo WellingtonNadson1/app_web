@@ -4,7 +4,7 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { FetchError, fetchWithToken } from '@/functions/functions'
+import { FetchError } from '@/functions/functions'
 import { format, getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
@@ -20,7 +20,6 @@ import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
-  const hostname = 'app-ibb.onrender.com'
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const axiosAuth = useAxiosAuth()
 
@@ -29,14 +28,18 @@ export default function ControleCelulaSupervision() {
 
   const { data: meetings, isLoading } = useSWR<meeting[]>(
     [URLCultosInd],
-    async ([url]: [string]) => await axiosAuth.get(URLCultosInd),
+    async () => await axiosAuth.get(URLCultosInd),
   )
+
+  if (isLoading) {
+    return
+  }
 
   const today = startOfToday()
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
-  )
+    )
 
   const fetchCelula = useCallback(async () => {
     try {
