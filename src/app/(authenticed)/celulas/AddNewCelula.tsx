@@ -11,6 +11,8 @@ import { AddressProps } from '../novo-membro/schema'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
+import axios from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 const schemaFormCelula = z.object({
     nome: z.string(),
@@ -97,10 +99,8 @@ export default function AddNewCelula() {
     const handleFetchCep = useCallback(
         async (zipCode: string) => {
             try {
-                const response = await fetch(
-                    `https://viacep.com.br/ws/${zipCode}/json/`,
-                )
-                const result = await response.json()
+                const response = await axios.get(`https://viacep.com.br/ws/${zipCode}/json/`)
+                const result = response.data
                 handleSetDataAddress(result)
             } catch (error) {
                 console.error('Erro ao buscar CEP:', error)
@@ -122,16 +122,12 @@ export default function AddNewCelula() {
             data.date_inicio = formatDatatoISO8601(data.date_inicio)
             data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
 
-            const response = await fetch(URLCelulas, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    Authorization: `Bearer ${session?.user.token}`,
-                },
-                body: JSON.stringify(data),
-            })
+            const axiosAuth = useAxiosAuth()
 
-            if (response.ok) {
+            const response = await axiosAuth.post('/celulas', {data})
+            const celulaRegister = response.data
+
+            if (celulaRegister) {
                 setIsLoadingSubmitForm(false)
                 setFormSuccess(true)
                 success('Célula Cadastrada')
@@ -156,22 +152,19 @@ export default function AddNewCelula() {
 
     const fetchCelulas = useCallback(async () => {
         try {
-            const response = await fetch(URLCelulas, {
-                headers: {
-                    Authorization: `Bearer ${session?.user.token}`,
-                },
-            })
-            if (!response.ok) {
+          const axiosAuth = useAxiosAuth()
+          const response = await axiosAuth.get('/celulas')
+          const getCelulaRegister = response.data
+            if (!getCelulaRegister) {
                 const error: FetchError = new Error('Failed to fetch get Celulas.')
                 error.status = response.status
                 throw error
             }
-            const celulas = await response.json()
-            setDataCelulas(celulas)
+            setDataCelulas(getCelulaRegister)
         } catch (error) {
             console.log(error)
         }
-    }, [URLCelulas, session?.user.token])
+    }, [session?.user.token])
 
     // UseEffect para buscar as células quando a página é carregada
     useEffect(() => {

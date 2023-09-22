@@ -14,12 +14,13 @@ import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { CultoDaSemana, NewCulto } from './schemaNewCulto'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function Cultos() {
   const { data: session } = useSession()
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const hostname = 'app-ibb.onrender.com'
-  const URLCultosIndividuais = `https://${hostname}/cultosindividuais`
+  const URLCultosIndividuais = `/cultosindividuais`
   const URLCultosSemanais = `https://${hostname}/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
@@ -38,16 +39,14 @@ export default function Cultos() {
       data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
       data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
 
-      const response = await fetch(URLCultosIndividuais, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-        body: JSON.stringify(data),
-      })
+      const axiosAuth = useAxiosAuth()
 
-      if (response.ok) {
+      const response = await axiosAuth.post(URLCultosIndividuais, {
+        data
+      })
+      const cultoIsRegister = response.data
+
+      if (cultoIsRegister) {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
         router.refresh()
@@ -69,27 +68,22 @@ export default function Cultos() {
 
   const fetchCultos = useCallback(async () => {
     try {
-      if (session?.user.token) {
-        const response = await fetch(URLCultosIndividuais, {
-          method: 'GET',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session?.user.token}`,
-          },
-        })
-        console.log(JSON.stringify(response))
-        if (!response.ok) {
+      if (session?.user) {
+        const axiosAuth = useAxiosAuth()
+
+      const response = await axiosAuth.get(URLCultosIndividuais)
+      const cultosIndividuais = response.data
+        console.log(JSON.stringify(cultosIndividuais))
+        if (!cultosIndividuais) {
           const error: FetchError = new Error('Failed to fetch get Cultos.')
-          error.status = response.status
           throw error
         }
-        const cultos = await response.json()
-        setDataCultos(cultos)
+        setDataCultos(cultosIndividuais)
       }
     } catch (error) {
       console.log(error)
     }
-  }, [URLCultosIndividuais, session?.user.token])
+  }, [URLCultosIndividuais, session?.user])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
