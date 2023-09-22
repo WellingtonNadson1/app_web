@@ -16,6 +16,7 @@ import HeaderCelula from './HeaderCelula'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { pt } from 'date-fns/locale'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import axios from '@/lib/axios'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -26,10 +27,9 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  const { data: meetings, isLoading } = useSWR<meeting[]>(
-    [URLCultosInd],
-    async () => await axiosAuth.get(URLCultosInd),
-  )
+  const fetcher = async (url: string) => await axiosAuth.get(url).then(res => res.data)
+
+  const { data: meetings, isLoading } = useSWR<meeting[]>(URLCultosInd, fetcher)
 
   if (isLoading) {
     return
