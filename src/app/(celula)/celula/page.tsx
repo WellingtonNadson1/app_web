@@ -21,21 +21,33 @@ import axios from '@/lib/axios'
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
+  const [meetings, setMeetings] = useState<meeting[]>()
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const axiosAuth = useAxiosAuth()
 
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  const fetchWithTokenAxios = async (url: string, token: string) => {
-    const response = await axios.get(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-    return response.data;
-  };
+  // const fetchWithTokenAxios = async (url: string, token: string) => {
+  //   const response = await axios.get(url, {
+  //     headers: { Authorization: `Bearer ${token}` },
+  //   });
+  //   return response.data;
+  // };
 
-  const { data: meetings, isLoading } = useSWR<meeting[]>(
-    [URLCultosInd, session?.user.token], fetchWithTokenAxios)
+  useEffect(() => {
+    axiosAuth.get(URLCultosInd)
+      .then(response => {
+        setMeetings(response.data);
+      })
+      .catch(error => {
+        console.error('Erro na requisição:', error);
+      });
+  }, []);
+
+
+  // const { data: meetings, isLoading } = useSWR<meeting[]>(
+  //   [URLCultosInd, session?.user.token], fetchWithTokenAxios)
 
   // const { data: meetings, isLoading } = useSWR<meeting[]>(
   //   [URLCultosInd, `${session?.user.token}`],
@@ -44,9 +56,9 @@ export default function ControleCelulaSupervision() {
 
   const today = startOfToday()
 
-  if (isLoading) {
-    return
-  }
+  // if (isLoading) {
+  //   return
+  // }
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
