@@ -1,3 +1,4 @@
+import axios from '@/lib/axios'
 import dayjs from 'dayjs'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialProvider from 'next-auth/providers/credentials'
@@ -18,21 +19,15 @@ export const authOptions: NextAuthOptions = {
         if (!credentials!.email || !credentials!.password) {
           return null
         }
-        const hostname = 'app-ibb.onrender.com'
-        const URL = `https://${hostname}/login`
-        const response = await fetch(URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            email: credentials?.email,
-            password: credentials?.password,
-          }),
-        })
-        const user = await response.json()
 
-        if (user && response.ok) {
+        const response = await axios.post('/login', {
+          email: credentials?.email,
+          password: credentials?.password,
+        });
+
+        const user = response.data
+
+        if (user) {
           console.log(JSON.stringify(user))
           return user
         }
