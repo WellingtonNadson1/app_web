@@ -3,6 +3,7 @@
 import { useSession } from "next-auth/react"
 import axios from "../axios"
 import dayjs from "dayjs"
+import { mutate } from "swr"
 
 interface INewRefreshToken {
   id: string
@@ -31,6 +32,9 @@ export const useRefreshToken = () => {
           session.user.refreshToken.id = newToken.newRefreshToken.id
           session.user.refreshToken.expiresIn = newToken.newRefreshToken.expiresIn
           session.user.refreshToken.userIdRefresh = newToken.newRefreshToken.userIdRefresh
+
+          // Atualize a sessão
+          mutate("session", { ...session })
         }
       }
     }
