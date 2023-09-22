@@ -4,7 +4,7 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { FetchError } from '@/functions/functions'
+import { FetchError, fetchWithToken } from '@/functions/functions'
 import { format, getDay, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
@@ -27,19 +27,30 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  const fetcher = async (url: string) => await axiosAuth.get(url).then(res => res.data)
+  const fetchWithTokenAxios = async (url: string, token: string) => {
+    const response = await axios.get(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    return response.data;
+  };
 
-  const { data: meetings, isLoading } = useSWR<meeting[]>(URLCultosInd, fetcher)
+  const { data: meetings, isLoading } = useSWR<meeting[]>(
+    [URLCultosInd, session?.user.token], fetchWithTokenAxios)
+
+  // const { data: meetings, isLoading } = useSWR<meeting[]>(
+  //   [URLCultosInd, `${session?.user.token}`],
+  //   ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  // )
+
+  const today = startOfToday()
 
   if (isLoading) {
     return
   }
 
-  const today = startOfToday()
-
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
-    )
+  )
 
   const fetchCelula = useCallback(async () => {
     try {
