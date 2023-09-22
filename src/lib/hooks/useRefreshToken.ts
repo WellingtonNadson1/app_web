@@ -4,6 +4,12 @@ import { useSession } from "next-auth/react"
 import axios from "../axios"
 import dayjs from "dayjs"
 
+interface INewRefreshToken {
+  id: string
+  expiresIn: number
+  userIdRefresh: string
+}
+
 export const useRefreshToken = () => {
   const { data: session } = useSession()
 
@@ -20,9 +26,9 @@ export const useRefreshToken = () => {
         const newToken = response.data
         console.log('New Token Function Refresh', newToken)
 
-        if (newToken) {
-          session.user.token = response.data.token
-          session.user.refreshToken = response.data.newRefreshToken
+        if (newToken.token && newToken.newRefreshToken) {
+          session.user.token = newToken.token as string
+          session.user.refreshToken = newToken.newRefreshToken as INewRefreshToken
         }
       }
     }
