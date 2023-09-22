@@ -28,7 +28,9 @@ export const useRefreshToken = () => {
 
         if (newToken.token && newToken.newRefreshToken) {
           session.user.token = newToken.token as string
-          session.user.refreshToken = newToken.newRefreshToken as INewRefreshToken
+          session.user.refreshToken.id = newToken.newRefreshToken.id
+          session.user.refreshToken.expiresIn = newToken.newRefreshToken.expiresIn
+          session.user.refreshToken.userIdRefresh = newToken.newRefreshToken.userIdRefresh
         }
       }
     }
