@@ -28,7 +28,7 @@ export default function ControleCelulaSupervision() {
 
   const fetch = async () => {
   try {
-      
+
   const response = await axiosAuth.get(URLCultosInd)
   const cultos = response.data
   setMeetings(cultos)
@@ -39,13 +39,16 @@ export default function ControleCelulaSupervision() {
 
   useEffect(() => {
 fetch()
-  }, []);
+  }, [fetch()]);
 
   const today = startOfToday()
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
+
+  console.log('selectedDayMeetings: ', selectedDayMeetings)
+  console.log('dataCelula: ', dataCelula)
 
   const fetchCelula = useCallback(async () => {
     try {

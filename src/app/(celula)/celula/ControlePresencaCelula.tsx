@@ -119,7 +119,7 @@ export default function ControlePresencaCelula({
       setIsLoading(true)
       fetch()
       setIsLoading(false)
-    }, []);
+    }, [fetch()]);
 
   const notify = () =>
     toast.success('😉 Presenças Registradas!', {
