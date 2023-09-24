@@ -2,6 +2,7 @@
 import Calendar from '@/components/Calendar/Calendar'
 import Modal from '@/components/modal'
 import {
+  BASE_URL,
   errorCadastro,
   fetchWithToken,
   success,
@@ -19,8 +20,8 @@ export default function Cultos() {
   const { data: session } = useSession()
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const hostname = 'app-ibb.onrender.com'
-  const URLCultosIndividuais = `/cultosindividuais`
-  const URLCultosSemanais = `https://${hostname}/cultossemanais`
+  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
+  const URLCultosSemanais = `${BASE_URL}/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()

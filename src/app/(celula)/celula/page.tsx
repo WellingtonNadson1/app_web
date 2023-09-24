@@ -4,7 +4,7 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { fetchWithToken } from '@/functions/functions'
+import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
@@ -24,8 +24,8 @@ export default function ControleCelulaSupervision() {
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const axiosAuth = useAxiosAuth(session?.user.token as string)
 
-  const URLCelula = `/celulas/${celulaId}`
-  const URLCultosInd = `/cultosindividuais`
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+  const URLCultosInd = `${BASE_URL}/cultosindividuais`
 
     // UseSWR para buscar os dados combinados
     const { data: meetings } = useSWR<meeting[]>(

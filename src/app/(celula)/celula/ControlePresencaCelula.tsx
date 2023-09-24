@@ -1,6 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { fetchWithToken } from '@/functions/functions'
+import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 // import { UserFocus } from '@phosphor-icons/react'
@@ -92,8 +92,8 @@ export default function ControlePresencaCelula({
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
-  const URLControlePresenca = `/presencacultos`
-  const URLPresencaCultoId = `/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const URLControlePresenca = `${BASE_URL}/presencacultos`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   // const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()

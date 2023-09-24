@@ -1,20 +1,23 @@
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
-import axios, { AxiosError, AxiosInstance } from 'axios';
+import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify';
 
 export interface FetchError extends AxiosError {}
 
+const hostname = 'app-ibb.onrender.com'
+export const BASE_URL = `https://${hostname}`
+
 export async function fetchWithToken(
   url: string,
   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
-  token: string,
+  token: string
 ) {
-  const axiosAuth: AxiosInstance = useAxiosAuth(token); // Obtenha a instância do axios com autenticação
-
   try {
-    const response = await axiosAuth({
+    const response = await axios({
       method: methodType, // Usa o método passado como parâmetro
       url: url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;

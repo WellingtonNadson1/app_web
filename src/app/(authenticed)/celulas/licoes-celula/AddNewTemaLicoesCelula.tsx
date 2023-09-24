@@ -3,7 +3,7 @@
 import { ICelula } from '@/components/ListCelulas'
 import ListTemaLicoesCelula from '@/components/ListTemaLicoesCelula'
 import Modal from '@/components/modal'
-import { errorCadastro, fetchWithToken, success } from '@/functions/functions'
+import { BASE_URL, errorCadastro, fetchWithToken, success } from '@/functions/functions'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -59,9 +59,8 @@ export interface SupervisaoData {
 
 export default function AddNewTemaLicoesCelula() {
     // const hostname = 'backibb-w7ri-dev.fl0.io'
-    const hostname = 'app-ibb.onrender.com'
-    const URLSupervisoes = `/supervisoes`
-    const URLCelulas = `https://${hostname}/celulas`
+    const URLSupervisoes = `${BASE_URL}/supervisoes`
+    const URLCelulas = `${BASE_URL}/celulas`
     const router = useRouter()
 
     const { data: session } = useSession()

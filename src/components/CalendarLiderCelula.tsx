@@ -1,5 +1,5 @@
 'use client'
-import { fetchWithToken } from '@/functions/functions'
+import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
 import {
@@ -32,8 +32,7 @@ type meeting = {
   data_termino_culto: string
 }
 
-const hostname = 'app-ibb.onrender.com'
-const URLCultosInd = `/cultosindividuais`
+const URLCultosInd = `${BASE_URL}/cultosindividuais`
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
