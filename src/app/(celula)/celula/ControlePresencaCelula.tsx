@@ -1,13 +1,14 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { fetchWithToken } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 // import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 // import { Props } from 'next/script'
 // import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -91,21 +92,34 @@ export default function ControlePresencaCelula({
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
-  const { data: session } = useSession()
-  const hostname = 'app-ibb.onrender.com'
-  const URLControlePresenca = `https://${hostname}/presencacultos`
-  const URLPresencaCultoId = `https://${hostname}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const URLControlePresenca = `/presencacultos`
+  const URLPresencaCultoId = `/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
+  const [PresenceExistRegister, setPresenceExistRegister] = useState<PresenceCulto>()
+  const axiosAuth = useAxiosAuth()
 
   console.log('URL Celula ID', URLPresencaCultoId)
   console.log('Lider', celula.lider.id)
 
-  const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
-    [URLPresencaCultoId, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const fetch = async () => {
+    try {
+
+    const response = await axiosAuth.get(URLPresencaCultoId)
+    const presenca = response.data
+    setPresenceExistRegister(presenca)
+  }
+      catch (error) {
+          console.error('Erro na requisição:', error);
+        }}
+
+    useEffect(() => {
+      setIsLoading(true)
+      fetch()
+      setIsLoading(false)
+    }, []);
 
   const notify = () =>
     toast.success('😉 Presenças Registradas!', {
@@ -128,15 +142,9 @@ export default function ControlePresencaCelula({
 
       for (const key in data) {
         const status = data[key].status === 'true'
-        const response = await fetch(URLControlePresenca, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session?.user.token}`,
-          },
-          body: JSON.stringify({ ...data[key], status }),
-        })
-        if (!response.ok) {
+        const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
+        const presenceRedister = response.data
+        if (!presenceRedister) {
           throw new Error('Failed to submit dados de presenca')
         }
       }
