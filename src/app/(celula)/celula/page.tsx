@@ -32,9 +32,9 @@ export default function ControleCelulaSupervision() {
   const cultos = response.data
   setMeetings(cultos)
 }
-      .catch(error => {
+    catch (error) {
         console.error('Erro na requisição:', error);
-      });
+      }
   }, []);
 
   const today = startOfToday()
