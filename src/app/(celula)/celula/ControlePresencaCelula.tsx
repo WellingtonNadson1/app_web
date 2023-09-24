@@ -95,32 +95,37 @@ export default function ControlePresencaCelula({
   const URLControlePresenca = `/presencacultos`
   const URLPresencaCultoId = `/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
+  // const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
-  const [PresenceExistRegister, setPresenceExistRegister] = useState<PresenceCulto>()
-  const axiosAuth = useAxiosAuth()
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   console.log('URL Celula ID', URLPresencaCultoId)
   console.log('Lider', celula.lider.id)
 
-  const fetch = async () => {
-    // Antes da chamada
-    setIsLoading(true);
-    try {
-      const response = await axiosAuth.get(URLPresencaCultoId);
-      const presenca = response.data;
-      setPresenceExistRegister(presenca);
-    } catch (error) {
-      console.error('Erro na requisição:', error);
-    } finally {
-      setIsLoading(false); // Defina como false após a chamada
-    }
-  }
+  const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
+    [URLPresencaCultoId, `${session?.user.token}`],
+    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+  )
 
-  useEffect(() => {
-    fetch()
-  }, [fetch]);
+  // const fetch = async () => {
+  //   // Antes da chamada
+  //   setIsLoading(true);
+  //   try {
+  //     const response = await axiosAuth.get(URLPresencaCultoId);
+  //     const presenca = response.data;
+  //     setPresenceExistRegister(presenca);
+  //   } catch (error) {
+  //     console.error('Erro na requisição:', error);
+  //   } finally {
+  //     setIsLoading(false); // Defina como false após a chamada
+  //   }
+  // }
+
+  // useEffect(() => {
+  //   fetch()
+  // }, [fetch]);
 
   const notify = () =>
     toast.success('😉 Presenças Registradas!', {

@@ -4,7 +4,7 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { FetchError } from '@/functions/functions'
+import { fetchWithToken } from '@/functions/functions'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
@@ -15,30 +15,37 @@ import HeaderCelula from './HeaderCelula'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { pt } from 'date-fns/locale'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import useSWR from 'swr'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
-  const [meetings, setMeetings] = useState<meeting[]>([])
+  // const [meetings, setMeetings] = useState<meeting[]>([])
   const celulaId = session?.user?.celulaId // Safely access celulaId
-  const axiosAuth = useAxiosAuth()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  const fetchMeetings = useCallback(async () => {
-    try {
-      const response = await axiosAuth.get(URLCultosInd)
-      const cultos = response.data
-      setMeetings(cultos)
-    } catch (error) {
-      console.error('Erro na requisição de cultos individuais:', error)
-    }
-  }, [URLCultosInd, axiosAuth])
+    // UseSWR para buscar os dados combinados
+    const { data: meetings } = useSWR<meeting[]>(
+      [URLCultosInd, `${session?.user.token}`],
+      ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+    )
 
-  useEffect(() => {
-    fetchMeetings()
-  }, [fetchMeetings]);
+  // const fetchMeetings = useCallback(async () => {
+  //   try {
+  //     const response = await axiosAuth.get(URLCultosInd)
+  //     const cultos = response.data
+  //     setMeetings(cultos)
+  //   } catch (error) {
+  //     console.error('Erro na requisição de cultos individuais:', error)
+  //   }
+  // }, [URLCultosInd, axiosAuth])
+
+  // useEffect(() => {
+  //   fetchMeetings()
+  // }, [fetchMeetings]);
 
   const today = startOfToday()
 
@@ -54,8 +61,7 @@ export default function ControleCelulaSupervision() {
       const response = await axiosAuth.get(URLCelula)
       const celula = response.data
       if (!celula) {
-        const error: FetchError = new Error('Failed to fetch Celula Lider.')
-        throw error
+        console.log('Failed to fetch Celula Lider.')
       }
       setDataCelula(celula)
     } catch (error) {

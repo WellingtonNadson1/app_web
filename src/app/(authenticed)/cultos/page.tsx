@@ -2,7 +2,6 @@
 import Calendar from '@/components/Calendar/Calendar'
 import Modal from '@/components/modal'
 import {
-  FetchError,
   errorCadastro,
   fetchWithToken,
   success,
@@ -26,6 +25,7 @@ export default function Cultos() {
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
   const router = useRouter()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
@@ -38,8 +38,6 @@ export default function Cultos() {
 
       data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
       data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
-
-      const axiosAuth = useAxiosAuth()
 
       const response = await axiosAuth.post(URLCultosIndividuais, {
         data
@@ -69,14 +67,11 @@ export default function Cultos() {
   const fetchCultos = useCallback(async () => {
     try {
       if (session?.user) {
-        const axiosAuth = useAxiosAuth()
-
       const response = await axiosAuth.get(URLCultosIndividuais)
       const cultosIndividuais = response.data
         console.log(JSON.stringify(cultosIndividuais))
         if (!cultosIndividuais) {
-          const error: FetchError = new Error('Failed to fetch get Cultos.')
-          throw error
+          console.log('Failed to fetch get Cultos.')
         }
         setDataCultos(cultosIndividuais)
       }

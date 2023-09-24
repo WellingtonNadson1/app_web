@@ -1,40 +1,38 @@
-import { toast } from 'react-toastify'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import axios, { AxiosError, AxiosInstance } from 'axios';
+import { toast } from 'react-toastify';
 
-export interface FetchError extends Error {
-  status?: number
-}
+export interface FetchError extends AxiosError {}
 
 export async function fetchWithToken(
   url: string,
-  methodType: string = 'GET',
+  methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
   token: string,
 ) {
+  const axiosAuth: AxiosInstance = useAxiosAuth(token); // Obtenha a instância do axios com autenticação
+
   try {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      method: methodType,
-    })
-    if (!response.ok) {
-      const error: FetchError = new Error('Failed to fetch data with token.')
-      error.status = response.status
-      throw error
-    }
-    const data = await response.json()
-    return data
+    const response = await axiosAuth({
+      method: methodType, // Usa o método passado como parâmetro
+      url: url,
+    });
+
+    return response.data;
   } catch (error) {
-    if (error instanceof Error) {
-      console.error('Error while fetching data with token:', error.message)
-      throw error
+    if (axios.isAxiosError(error)) {
+      const fetchError: FetchError = {
+        ...error,
+        message: 'Failed to fetch data with token.',
+      };
+      throw fetchError;
     } else {
-      console.error('Unknown error occurred:', error)
-      throw new Error('Unknown error occurred.')
+      console.error('Unknown error occurred:', error);
+      throw new Error('Unknown error occurred.');
     }
   }
 }
 
-// Notification sucsses or error Submit Forms
+// Notification success or error Submit Forms
 export const success = (message: string) =>
   toast.success(`${message}`, {
     position: 'top-right',
@@ -45,7 +43,7 @@ export const success = (message: string) =>
     draggable: true,
     progress: undefined,
     theme: 'light',
-  })
+  });
 
 export const errorCadastro = (message: string) =>
   toast.error(`${message}`, {
@@ -57,4 +55,4 @@ export const errorCadastro = (message: string) =>
     draggable: true,
     progress: undefined,
     theme: 'light',
-  })
+  });
