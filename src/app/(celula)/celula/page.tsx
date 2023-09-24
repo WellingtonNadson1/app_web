@@ -18,7 +18,7 @@ import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
-  const [dataCelula, setDataCelula] = useState<CelulaProps | null>(null)
+  const [dataCelula, setDataCelula] = useState<CelulaProps>()
   const [meetings, setMeetings] = useState<meeting[]>([])
   const celulaId = session?.user?.celulaId // Safely access celulaId
   const axiosAuth = useAxiosAuth()
