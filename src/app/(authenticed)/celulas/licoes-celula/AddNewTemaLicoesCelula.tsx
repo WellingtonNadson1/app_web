@@ -60,7 +60,7 @@ export interface SupervisaoData {
 export default function AddNewTemaLicoesCelula() {
     // const hostname = 'backibb-w7ri-dev.fl0.io'
     const hostname = 'app-ibb.onrender.com'
-    const URLSupervisoes = `https://${hostname}/supervisoes`
+    const URLSupervisoes = `/supervisoes`
     const URLCelulas = `https://${hostname}/celulas`
     const router = useRouter()
 

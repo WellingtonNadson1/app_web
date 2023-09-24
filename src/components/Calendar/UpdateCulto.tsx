@@ -28,7 +28,7 @@ export default function UpdateCulto({
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
   const URLCultosIndividuais = `https://${hostname}/cultosindividuais`
-  const URLCultosSemanais = `https://${hostname}/cultossemanais`
+  const URLCultosSemanais = `/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
@@ -99,9 +99,7 @@ export default function UpdateCulto({
         },
       })
       if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch get Cultos.')
-        error.status = response.status
-        throw error
+        console.log('Failed to fetch get Cultos.')
       }
       const cultos = await response.json()
       setDataCultos(cultos)

@@ -72,7 +72,7 @@ export default function AddNewCelula() {
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
-  const axiosAuth = useAxiosAuth()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -156,9 +156,7 @@ export default function AddNewCelula() {
       const response = await axiosAuth.get(URLCelulas)
       const getCelulaRegister = response.data
       if (!getCelulaRegister) {
-        const error: FetchError = new Error('Failed to fetch get Celulas.')
-        error.status = response.status
-        throw error
+        console.log('Failed to fetch get Celulas.')
       }
       setDataCelulas(getCelulaRegister)
     } catch (error) {
