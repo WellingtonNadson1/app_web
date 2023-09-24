@@ -26,11 +26,12 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  useEffect(() => {
-    axiosAuth.get(URLCultosInd)
-      .then(response => {
-        setMeetings(response.data);
-      })
+  useEffect(async () => {
+    try {
+  const response = await axiosAuth.get(URLCultosInd)
+  const cultos = response.data
+  setMeetings(cultos)
+}
       .catch(error => {
         console.error('Erro na requisição:', error);
       });
