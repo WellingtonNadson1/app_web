@@ -88,7 +88,7 @@ export default function ControleCelulaSupervision() {
       <div className="relative mx-auto mb-4 w-full px-2">
   {selectedDayMeetings === null ? (
     <SpinnerButton /> // Mostra um spinner enquanto os dados estão sendo carregados
-  ) : selectedDayMeetings.length > 0 ? (
+  ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
     selectedDayMeetings.map((meeting) => (
       isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
         dataCelula ? (
