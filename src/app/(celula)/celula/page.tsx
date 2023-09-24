@@ -28,7 +28,7 @@ export default function ControleCelulaSupervision() {
 
   useEffect(() => {
     try {
-  const response = await axiosAuth.get(URLCultosInd)
+  const response = axiosAuth.get(URLCultosInd)
   const cultos = response.data
   setMeetings(cultos)
 }
