@@ -33,7 +33,7 @@ type meeting = {
 }
 
 const hostname = 'app-ibb.onrender.com'
-const URLCultosInd = `https://${hostname}/cultosindividuais`
+const URLCultosInd = `/cultosindividuais`
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
