@@ -26,7 +26,7 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `/celulas/${celulaId}`
   const URLCultosInd = `/cultosindividuais`
 
-  useEffect(async () => {
+  useEffect(() => {
     try {
   const response = await axiosAuth.get(URLCultosInd)
   const cultos = response.data
