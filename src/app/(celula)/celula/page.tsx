@@ -28,13 +28,15 @@ export default function ControleCelulaSupervision() {
 
   useEffect(() => {
     try {
-  const response = axiosAuth.get(URLCultosInd)
+      const fetch = async () => {
+  const response = await axiosAuth.get(URLCultosInd)
   const cultos = response.data
   setMeetings(cultos)
 }
     catch (error) {
         console.error('Erro na requisição:', error);
-      }
+      }}
+fetch()
   }, []);
 
   const today = startOfToday()
