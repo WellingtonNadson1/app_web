@@ -1,11 +1,9 @@
 "use client"
 import axios, { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
-import { useRefreshToken } from '@/lib/hooks/useRefreshToken';
-import { useEffect } from 'react';
-import { useSession } from 'next-auth/react';
-import { axiosAuthToken } from '@/lib/axios';
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken';
+// import { useRefreshToken } from '@/lib/hooks/useRefreshToken';
+// import { useEffect } from 'react';
+// import { useSession } from 'next-auth/react';
 
 export interface FetchError extends AxiosError {}
 
@@ -45,17 +43,18 @@ export const BASE_URL = `https://${hostname}`
 // const hostname = 'app-ibb.onrender.com'
 // export const BASE_URL = `https://${hostname}`
 
-
 export async function fetchWithToken(
   url: string,
   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
   token: string
-  ) {
-  const axiosAuthToken = useAxiosAuthToken(token)
+) {
   try {
-    const response = await axiosAuthToken({
+    const response = await axios({
       method: methodType, // Usa o método passado como parâmetro
       url: url,
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
     });
 
     return response.data;
