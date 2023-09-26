@@ -46,7 +46,7 @@ export default function CalendarLiderCelula() {
     [URLCultosInd, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
-
+console.log('meetings: ',meetings)
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
