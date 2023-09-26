@@ -1,3 +1,4 @@
+'use client'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers } from '@/providers/providers'
 import { getServerSession } from 'next-auth'
