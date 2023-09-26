@@ -2,6 +2,7 @@
 import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import {
   add,
   eachDayOfInterval,
@@ -40,17 +41,30 @@ function classNames(...classes: string[]) {
 
 export default function CalendarLiderCelula() {
   const { data: session } = useSession()
+  if (!session) {
+    return
+  }
   console.log('Token value:', session?.user.token)
+
+  const { data, isLoading } = useQuery<meeting[]>({queryKey: ['meetings'], queryFn: () => {
+    console.log('useSWR callback called with URL:', URLCultosInd)
+    console.log('Token inside callback:', session?.user.token)
+    return fetchWithToken(URLCultosInd, 'GET', session?.user.token)
+  }})
+
+  if (isLoading) {
+    return <div className='loading'>carregando...</div>
+  }
   // UseSWR para buscar os dados combinados
-  const { data: meetings } = useSWR<meeting[]>(
-    [URLCultosInd, `${session?.user.token}`],
-    ([url, token]: [string, string]) => {
-      console.log('useSWR callback called with URL:', url);
-      console.log('Token inside callback:', token);
-      return fetchWithToken(url, 'GET', token);
-    },
-  )
-console.log('meetings: ',meetings)
+  // const { data: meetings } = useSWR<meeting[]>(
+  //   [URLCultosInd, `${session?.user.token}`],
+  //   ([url, token]: [string, string]) => {
+  //     console.log('useSWR callback called with URL:', url);
+  //     console.log('Token inside callback:', token);
+  //     return fetchWithToken(url, 'GET', token);
+  //   },
+  // )
+console.log('meetings: ', data)
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -71,7 +85,7 @@ console.log('meetings: ',meetings)
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings?.filter((meeting) =>
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
 
@@ -157,8 +171,8 @@ console.log('meetings: ',meetings)
                     </button>
                     {/* Pontos de Eventos */}
                     <div className="mx-auto flex items-center justify-center gap-1">
-                      {meetings &&
-                        meetings?.some((meeting) =>
+                      {data &&
+                        data?.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="mt-1 h-1 w-1">
