@@ -40,11 +40,15 @@ function classNames(...classes: string[]) {
 
 export default function CalendarLiderCelula() {
   const { data: session } = useSession()
-
+  console.log('Token value:', session?.user.token)
   // UseSWR para buscar os dados combinados
   const { data: meetings } = useSWR<meeting[]>(
     [URLCultosInd, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
+    ([url, token]: [string, string]) => {
+      console.log('useSWR callback called with URL:', url);
+      console.log('Token inside callback:', token);
+      return fetchWithToken(url, 'GET', token);
+    },
   )
 console.log('meetings: ',meetings)
   const today = startOfToday()

@@ -19,6 +19,7 @@ export async function fetchWithToken(
   const refreshToken = useRefreshToken()
 
   try {
+    console.log('fetchWithToken called with URL:', url)
     const response = await axios({
       method: methodType,
       url: url,
@@ -27,6 +28,7 @@ export async function fetchWithToken(
       },
     });
 
+    console.log('fetchWithToken response data:', response.data)
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
