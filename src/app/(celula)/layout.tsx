@@ -10,10 +10,10 @@ import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
-export const metadata = {
-  title: 'App IBB',
-  description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
-}
+// export const metadata = {
+//   title: 'App IBB',
+//   description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
+// }
 
 export default async function RootLayout({
   children,
