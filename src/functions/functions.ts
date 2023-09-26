@@ -1,23 +1,61 @@
-import axios, { AxiosError } from 'axios';
+"use client"
+import axios, { AxiosError, AxiosInstance } from 'axios';
 import { toast } from 'react-toastify';
+import { useRefreshToken } from '@/lib/hooks/useRefreshToken';
+import { useEffect } from 'react';
+import { useSession } from 'next-auth/react';
+import { axiosAuthToken } from '@/lib/axios';
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken';
 
 export interface FetchError extends AxiosError {}
 
 const hostname = 'app-ibb.onrender.com'
 export const BASE_URL = `https://${hostname}`
 
+// export async function fetchWithToken(
+//   url: string,
+//   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
+//   token: string
+// ) {
+//   const { data: session } = useSession()
+//   const refreshToken = useRefreshToken()
+
+//   useEffect(() => {
+//     const request = axios.interceptors.request.use((config) => {
+//       if (!config.headers["Authorization"]) {
+//         config.headers["Authorization"] = `Bearer ${token}`;
+//       }
+//       if (!config.method) {
+//         config.method = methodType;
+//       }
+//       if (!config.url) {
+//         config.url = url;
+//       }
+//       return config
+//     },
+//     (error) => Promise.reject(error)
+//     )
+
+//   }, [session])
+//   }
+
+
+// export interface FetchError extends AxiosError {}
+
+// const hostname = 'app-ibb.onrender.com'
+// export const BASE_URL = `https://${hostname}`
+
+
 export async function fetchWithToken(
   url: string,
   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
   token: string
-) {
+  ) {
+  const axiosAuthToken = useAxiosAuthToken(token)
   try {
-    const response = await axios({
+    const response = await axiosAuthToken({
       method: methodType, // Usa o método passado como parâmetro
       url: url,
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
     });
 
     return response.data;

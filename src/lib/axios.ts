@@ -19,3 +19,10 @@ export const axiosAuth = axios.create({
   }
 })
 
+export const axiosAuthToken = axios.create({
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+})
+
