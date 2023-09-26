@@ -25,9 +25,16 @@ const useAxiosAuthToken = (token: string): AxiosInstance => {
         const prevRequest = error.config
         if (error.response.status === 401 && !prevRequest.sent) {
           prevRequest.sent = true
-          await refreshToken()
-          prevRequest.headers["Authorization"] = `Bearer ${token}`
-          return axiosAuthToken(prevRequest)
+          try {
+            // Obtenha um novo token de acesso usando refreshToken
+            const newToken = await refreshToken();
+            prevRequest.headers["Authorization"] = `Bearer ${newToken}`
+            return axiosAuthToken(prevRequest)
+          }
+          catch (refreshError) {
+            console.error('Failed to refresh token:', refreshError);
+            return Promise.reject(error);
+          }
         }
         return Promise.reject(error)
       }
