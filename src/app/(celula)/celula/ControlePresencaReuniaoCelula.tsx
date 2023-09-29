@@ -95,6 +95,8 @@ export default function ControlePresencaReuniaoCelula({
   celulaId: string
   dataCelula: CelulaProps
 }) {
+  console.log('Data celula: ', dataCelula)
+
   const { data: session } = useSession()
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
