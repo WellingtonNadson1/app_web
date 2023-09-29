@@ -132,7 +132,8 @@ export default function ControlePresencaReuniaoCelula({
     })
 
   const memoizedDataHoje = useMemo(() => new Date(), [])
-  const memoizedDataHojeString = memoizedDataHoje.toDateString
+  const memoizedDataHojeString = memoizedDataHoje.toDateString()
+
   const dayOfWeek = getDay(memoizedDataHoje)
 
   const formatDatatoISO8601 = (dataString: string) => {
@@ -148,7 +149,7 @@ export default function ControlePresencaReuniaoCelula({
         try {
           const status = 'Marcado'
           const celula = celulaId
-          const data_reuniao = formatDatatoISO8601(memoizedDataHojeString())
+          const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
 
           const dataToSend = {
@@ -158,10 +159,10 @@ export default function ControlePresencaReuniaoCelula({
             presencas_membros_reuniao_celula,
           }
 
-          console.log('Data Create Reuniao: ', dataToSend)
+          console.log('Data for Create Reuniao: ', dataToSend)
 
           const response = await axiosAuth.post(URLReuniaoCelula, {dataToSend})
-          if (response.status === 200) {
+          if (response.status === 201) {
             console.log('Reuniao Marcada: dados -  ', dataToSend)
             const dataReuniao = response.data
             setDataReuniao(dataReuniao)
