@@ -139,6 +139,8 @@ export default function ControlePresencaReuniaoCelula({
     const dataObj = new Date(dataString);
     return dataObj.toISOString();
   }
+  console.log('Date week normal: ', dayOfWeek)
+  console.log('Date week string: ', dayOfWeek.toString())
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
