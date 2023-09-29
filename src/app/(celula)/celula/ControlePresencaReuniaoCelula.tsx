@@ -47,7 +47,7 @@ const CelulaSchema = z.object({
   endereco: z.string(),
   numero_casa: z.string(),
   date_inicio: z.string().datetime(),
-  date_que_ocorre: z.string().datetime(),
+  date_que_ocorre: z.string(),
   date_multipicar: z.string().datetime(),
   supervisaoId: z.string(),
   membros: z.array(UserSchema),
@@ -142,7 +142,7 @@ export default function ControlePresencaReuniaoCelula({
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
-    if (Number(dataCelula?.date_que_ocorre) === dayOfWeek) {
+    if (dataCelula?.date_que_ocorre === dayOfWeek.toString()) {
       const createCelula = async () => {
         try {
           const status = 'Marcado'
