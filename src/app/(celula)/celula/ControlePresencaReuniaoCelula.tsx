@@ -144,7 +144,6 @@ export default function ControlePresencaReuniaoCelula({
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
-    if (Number(dataCelula?.date_que_ocorre) === dayOfWeek) {
       const createCelula = async () => {
         try {
           const status = 'Marcado'
@@ -177,7 +176,6 @@ export default function ControlePresencaReuniaoCelula({
         }
       }
       createCelula()
-    }
   }, [])
 
   // Funcao para submeter os dados do Formulario Preenchido
