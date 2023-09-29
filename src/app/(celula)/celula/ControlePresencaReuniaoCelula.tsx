@@ -1,5 +1,7 @@
 /* eslint-disable camelcase */
 'use client'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { getDay } from 'date-fns'
 import { useSession } from 'next-auth/react'
@@ -95,13 +97,14 @@ export default function ControlePresencaReuniaoCelula({
 }) {
   const { data: session } = useSession()
   const hostname = 'app-ibb.onrender.com'
-  const URLControlePresencaReuniaoCelula = `https://${hostname}/presencareuniaocelulas`
-  const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
+  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData>()
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const notify = () =>
     toast.success('😉 Presenças de Célula Registradas!', {
@@ -149,16 +152,10 @@ export default function ControlePresencaReuniaoCelula({
 
           console.log('Data Create Reuniao: ', dataToSend)
 
-          const response = await fetch(URLReuniaoCelula, {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-              Authorization: `Bearer ${session?.user.token}`,
-            },
-            body: JSON.stringify(dataToSend),
-          })
-          if (response.ok) {
-            const dataReuniao = await response.json()
+          const response = await axiosAuth.post(URLReuniaoCelula, {dataToSend})
+          if (response.status === 200) {
+            console.log('Reuniao Marcada: dados -  ', dataToSend)
+            const dataReuniao = response.data
             setDataReuniao(dataReuniao)
             console.log(dataReuniao)
           } else {
@@ -166,7 +163,7 @@ export default function ControlePresencaReuniaoCelula({
           }
         } catch (error) {
           if (error instanceof Error && error.message.startsWith('409')) {
-            notifyError('Já existem presenças registradas!')
+            notifyError('Já existe reunião marcada para hoje!')
           }
         }
       }
