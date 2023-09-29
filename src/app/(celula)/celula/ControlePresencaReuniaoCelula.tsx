@@ -144,7 +144,7 @@ export default function ControlePresencaReuniaoCelula({
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
-    if (dataCelula?.date_que_ocorre === dayOfWeek.toString()) {
+    if (Number(dataCelula?.date_que_ocorre) === dayOfWeek) {
       const createCelula = async () => {
         try {
           const status = 'Marcado'
@@ -178,14 +178,7 @@ export default function ControlePresencaReuniaoCelula({
       }
       createCelula()
     }
-  }, [
-    URLReuniaoCelula,
-    celulaId,
-    dataCelula?.date_que_ocorre,
-    memoizedDataHoje,
-    dayOfWeek,
-    session?.user.token,
-  ])
+  }, [])
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
