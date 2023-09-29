@@ -130,7 +130,13 @@ export default function ControlePresencaReuniaoCelula({
     })
 
   const memoizedDataHoje = useMemo(() => new Date(), [])
+  const memoizedDataHojeString = memoizedDataHoje.toDateString
   const dayOfWeek = getDay(memoizedDataHoje)
+
+  const formatDatatoISO8601 = (dataString: string) => {
+    const dataObj = new Date(dataString);
+    return dataObj.toISOString();
+  }
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
@@ -139,7 +145,7 @@ export default function ControlePresencaReuniaoCelula({
         try {
           const status = 'Marcado'
           const celula = celulaId
-          const data_reuniao = memoizedDataHoje
+          const data_reuniao = formatDatatoISO8601(memoizedDataHojeString())
           const presencas_membros_reuniao_celula = null
 
           const dataToSend = {
