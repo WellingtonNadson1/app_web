@@ -96,7 +96,6 @@ export default function ControlePresencaReuniaoCelula({
   dataCelula: CelulaProps
 }) {
   const { data: session } = useSession()
-  const hostname = 'app-ibb.onrender.com'
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
 
@@ -188,15 +187,9 @@ export default function ControlePresencaReuniaoCelula({
       for (const key in data) {
         const status = data[key].status === 'true'
         const which_reuniao_celula = dataReuniao?.id
-        const response = await fetch(URLControlePresencaReuniaoCelula, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            Authorization: `Bearer ${session?.user.token}`,
-          },
-          body: JSON.stringify({ ...data[key], status, which_reuniao_celula }),
-        })
-        if (!response.ok) {
+
+        const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {...data[key], status, which_reuniao_celula})
+        if (response.status !== 201) {
           throw new Error('Failed to submit dados de presenca')
         }
       }

@@ -19,6 +19,7 @@ export default function Login() {
   const { handleSubmit, register } = useForm<TypeLogin>()
   const [isLoading, setIsLoading] = useState(false)
   const [isLoadingFaield, setIsLoadingFaield] = useState(false)
+  const [isLoading504, setIsLoading504] = useState(false)
 
   const onSubmit: SubmitHandler<TypeLogin> = async ({
     email,
@@ -30,6 +31,12 @@ export default function Login() {
       password,
       redirect: false,
     })
+    if (result?.status === 504) {
+      setIsLoading504(true)
+      setTimeout(() => {
+        setIsLoading504(false)
+      }, 4000);
+    }
     if (result?.error) {
       setIsLoadingFaield(true)
       setIsLoading(false)
@@ -185,6 +192,9 @@ export default function Login() {
                   )}
                   <div className='mx-auto mt-2 text-center'>
                     {isLoadingFaield && <span className="text-red-400 text-sm">Senha ou e-mail inválido!</span>}
+                  </div>
+                  <div className='mx-auto mt-2 text-center'>
+                    {isLoading504 && <span className="text-red-400 text-sm">Tente novamente!</span>}
                   </div>
                 </div>
               </form>
