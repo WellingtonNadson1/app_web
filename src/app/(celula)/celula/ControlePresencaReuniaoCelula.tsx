@@ -168,13 +168,14 @@ export default function ControlePresencaReuniaoCelula({
           if (response.status === 201) {
             const dataReuniao = response.data
             setDataReuniao(dataReuniao)
+          } else if (response.status === 409) {
+            // Handle conflict here by setting reuniaoIsRegistered to true
+            setReuniaoIsRegistered(true);
           } else {
-            setReuniaoIsRegistered(true)
             throw new Error(response.status + ': ' + response.statusText)
           }
         } catch (error) {
           if (error instanceof Error && error.message.startsWith('409')) {
-            setReuniaoIsRegistered(true)
             notifyError('Já existe reunião marcada para hoje!')
           }
         }
