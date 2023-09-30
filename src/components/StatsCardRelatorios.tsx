@@ -1,4 +1,5 @@
 'use client'
+import { BASE_URL } from '@/functions/functions'
 import {
   FishSimple,
   Footprints,
@@ -11,8 +12,7 @@ import Link from 'next/link'
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   // eslint-disable-next-line no-unused-vars
-  const hostname = 'app-ibb.onrender.com'
-  const URLRelatorioSupervision = `https://${hostname}/relatorio/presencacultos`
+  const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
 
   const handleRelatorio = async () => {
     try {
