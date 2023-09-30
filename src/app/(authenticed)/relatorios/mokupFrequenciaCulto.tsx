@@ -42,6 +42,7 @@ const MokupFrequenciaCulto = () => {
     queryFn: () =>
     axiosAuth.get(`${BASE_URL}/presencacultos`),
   })
+  console.log('Presencas: ', presencas)
   return (
     <>
       {isLoading ? (
