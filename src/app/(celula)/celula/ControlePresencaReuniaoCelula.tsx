@@ -152,18 +152,20 @@ export default function ControlePresencaReuniaoCelula({
           const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
 
-          const dataToSend = {
-            status,
+          console.log('Data for Create Reuniao: ', status,
             celula,
             data_reuniao,
-            presencas_membros_reuniao_celula,
-          }
+            presencas_membros_reuniao_celula,)
 
-          console.log('Data for Create Reuniao: ', dataToSend)
-
-          const response = await axiosAuth.post(URLReuniaoCelula, {dataToSend})
+          const response = await axiosAuth.post(URLReuniaoCelula, {status,
+            celula,
+            data_reuniao,
+            presencas_membros_reuniao_celula,})
           if (response.status === 201) {
-            console.log('Reuniao Marcada: dados -  ', dataToSend)
+            console.log('Reuniao Marcada: dados -  ', status,
+            celula,
+            data_reuniao,
+            presencas_membros_reuniao_celula,)
             const dataReuniao = response.data
             setDataReuniao(dataReuniao)
             console.log(dataReuniao)
