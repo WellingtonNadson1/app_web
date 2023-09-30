@@ -169,6 +169,7 @@ export default function ControlePresencaReuniaoCelula({
             const dataReuniao = response.data
             setDataReuniao(dataReuniao)
           } else {
+            setReuniaoIsRegistered(true)
             throw new Error(response.status + ': ' + response.statusText)
           }
         } catch (error) {
@@ -213,7 +214,7 @@ export default function ControlePresencaReuniaoCelula({
     <>
     {isLoadingCreateReuniaoCelula ? (
       <p className="leading-2 mb-3 text-sm font-normal text-gray-500">
-      <SpinnerButton /> carregando...
+      <SpinnerButton />
     </p>
     ) : (
       <>
