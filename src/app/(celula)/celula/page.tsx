@@ -85,7 +85,7 @@ export default function ControleCelulaSupervision() {
       <div className="relative mx-auto w-full">
         {dataCelula && <HeaderCelula headerCelula={dataCelula.nome} />}
       </div>
-      <div className="relative mx-auto mb-4 mt-3 w-full px-2">
+      <div className="relative flex flex-col gap-3 mx-auto mb-4 mt-3 w-full px-2">
         <CalendarLiderCelula />
       </div>
       <div className="relative mx-auto mb-4 w-full px-2">
