@@ -30,9 +30,6 @@ export default function Cultos() {
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
 
     try {
-      console.log('Data Início (antes de formatar)', data.data_inicio_culto);
-      console.log('Data Término (antes de formatar)', data.data_termino_culto);
-
       setIsLoadingSubmitForm(true)
 
       const formatDatatoISO8601 = (dataString: string) => {
@@ -42,14 +39,6 @@ export default function Cultos() {
 
       data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
       data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
-
-      console.log('Data Início (após formatação)', data.data_inicio_culto);
-      console.log('Data Término (após formatação)', data.data_termino_culto);
-
-
-      console.log('Dados a serem enviados para o backend', {
-        data
-      });
 
       const response = await axiosAuth.post(URLCultosIndividuais, {
         data
@@ -87,7 +76,6 @@ export default function Cultos() {
       if (session?.user) {
       const response = await axiosAuth.get(URLCultosIndividuais)
       const cultosIndividuais = response.data
-        console.log(JSON.stringify(cultosIndividuais))
         if (!cultosIndividuais) {
           console.log('Failed to fetch get Cultos.')
         }
@@ -111,7 +99,7 @@ export default function Cultos() {
   }, [formSuccess, fetchCultos])
 
   if (dataCultos) {
-    console.log('data Cultos Modal Eventos', dataCultos)
+    console.log('data Cultos Modal Eventos ok')
   }
 
   return (

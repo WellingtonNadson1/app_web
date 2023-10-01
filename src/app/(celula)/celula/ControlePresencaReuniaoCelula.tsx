@@ -96,8 +96,6 @@ export default function ControlePresencaReuniaoCelula({
   celulaId: string
   dataCelula: CelulaProps
 }) {
-  console.log('Data celula: ', dataCelula)
-
   const { data: session } = useSession()
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
@@ -143,8 +141,6 @@ export default function ControlePresencaReuniaoCelula({
     const dataObj = new Date(dataString);
     return dataObj.toISOString();
   }
-  console.log('Date week normal: ', dayOfWeek)
-  console.log('Date week string: ', dayOfWeek.toString())
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
@@ -155,11 +151,6 @@ export default function ControlePresencaReuniaoCelula({
           const celula = celulaId
           const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
-
-          console.log('Data for Create Reuniao: ', status,
-            celula,
-            data_reuniao,
-            presencas_membros_reuniao_celula,)
 
           const response = await axiosAuth.post(URLReuniaoCelula, {status,
             celula,
