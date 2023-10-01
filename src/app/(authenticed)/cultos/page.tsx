@@ -28,11 +28,11 @@ export default function Cultos() {
   const router = useRouter()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const onSubmit: SubmitHandler<NewCulto> = async ({ data_inicio_culto, data_termino_culto, culto_semana, presencas_culto, status }) => {
+  const onSubmit: SubmitHandler<NewCulto> = async (data) => {
 
     try {
-      console.log('Data Início (antes de formatar)', data_inicio_culto);
-      console.log('Data Término (antes de formatar)', data_termino_culto);
+      console.log('Data Início (antes de formatar)', data.data_inicio_culto);
+      console.log('Data Término (antes de formatar)', data.data_termino_culto);
 
       setIsLoadingSubmitForm(true)
 
@@ -41,23 +41,19 @@ export default function Cultos() {
         return dataObj.toISOString()
       }
 
-      data_inicio_culto = formatDatatoISO8601(data_inicio_culto)
-      data_termino_culto = formatDatatoISO8601(data_termino_culto)
+      data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
+      data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
 
-      console.log('Data Início (após formatação)', data_inicio_culto);
-      console.log('Data Término (após formatação)', data_termino_culto);
+      console.log('Data Início (após formatação)', data.data_inicio_culto);
+      console.log('Data Término (após formatação)', data.data_termino_culto);
 
 
       console.log('Dados a serem enviados para o backend', {
-        data_inicio_culto,
-        data_termino_culto,
-        culto_semana,
-        presencas_culto,
-        status,
+        data
       });
 
       const response = await axiosAuth.post(URLCultosIndividuais, {
-        data_inicio_culto, data_termino_culto, culto_semana, presencas_culto, status
+        data
       })
       const cultoIsRegister = response.data
 
