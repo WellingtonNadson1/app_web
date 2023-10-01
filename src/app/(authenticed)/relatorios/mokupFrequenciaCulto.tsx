@@ -49,7 +49,7 @@ const MokupFrequenciaCulto = () => {
         <p><SpinnerButton /></p>
       ) : (
         <>
-          {presencas?.map((presenca) => (
+          {presencas && presencas?.map((presenca) => (
             <div key={presenca.id} className="px-2 py-2 mt-3">
               <h2>{presenca.membro.celula.nome}</h2>
               <p>{presenca.membro.first_name}</p>

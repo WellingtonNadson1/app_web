@@ -14,7 +14,7 @@ import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import { CultoDaSemana, NewCulto } from './schemaNewCulto'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 export default function Cultos() {
   const { data: session } = useSession()
@@ -26,7 +26,7 @@ export default function Cultos() {
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
   const router = useRouter()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
@@ -51,10 +51,14 @@ export default function Cultos() {
         router.refresh()
         success('Culto Cadastrado')
       } else {
+        setIsLoadingSubmitForm(false)
+
         errorCadastro('Erro ao cadastrar Culto')
       }
     } catch (error) {
       console.log(error)
+      setIsLoadingSubmitForm(false)
+
       errorCadastro('Erro ao cadastrar Culto')
     }
     reset()
