@@ -29,6 +29,8 @@ export default function Cultos() {
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const onSubmit: SubmitHandler<NewCulto> = async ({ data_inicio_culto, data_termino_culto, culto_semana, presencas_culto, status }) => {
+    console.log('Data Inicio', data_inicio_culto)
+    console.log('Data Termino', data_termino_culto)
     try {
       setIsLoadingSubmitForm(true)
 
