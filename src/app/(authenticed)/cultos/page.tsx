@@ -41,7 +41,7 @@ export default function Cultos() {
       data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
 
       const response = await axiosAuth.post(URLCultosIndividuais, {
-        data
+        ...data
       })
       const cultoIsRegister = response.data
 
