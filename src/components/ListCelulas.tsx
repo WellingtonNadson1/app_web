@@ -49,8 +49,8 @@ export default function ListCelulas({ data }: ListCelulasProps) {
               <h2 className="text-lg py-6 font-semibold leading-7 text-gray-800">
                 Lista Geral de Células IBB
               </h2>
-              <div className='flex items-center justify-center rounded-md px-3 py-2 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20'>
-                <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-2 py-1 bg-sky-700'>{data?.length}</span></p>
+              <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20 sm:block'>
+                <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{data?.length}</span></p>
               </div>
             </div>
             <div className="p-2">

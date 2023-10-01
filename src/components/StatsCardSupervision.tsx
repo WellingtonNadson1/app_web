@@ -7,7 +7,6 @@ interface ISupervisaoProps {
 }
 
 export default function StatsCardSupervision({ supervisao }: ISupervisaoProps) {
-  console.log({ supervisao })
   return (
     <>
       {supervisao && (

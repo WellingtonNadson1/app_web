@@ -44,7 +44,6 @@ export default function CalendarLiderCelula() {
   if (!session) {
     return
   }
-  console.log('Token value:', session?.user.token)
 
   // const { data, isLoading } = useQuery<meeting[]>({queryKey: ['meetings'], queryFn: () => {
   //   console.log('useSWR callback called with URL:', URLCultosInd)
@@ -59,12 +58,9 @@ export default function CalendarLiderCelula() {
   const { data: meetings } = useSWR<meeting[]>(
     [URLCultosInd, `${session?.user.token}`],
     ([url, token]: [string, string]) => {
-      console.log('useSWR callback called with URL:', url);
-      console.log('Token inside callback:', token);
       return fetchWithToken(url, 'GET', token);
     },
   )
-console.log('meetings: ', meetings)
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))

@@ -54,7 +54,6 @@ export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const displayedMembers = data.membros?.slice(startIndex, endIndex)
-  console.log('Display', displayedMembers)
 
     return (
     <>

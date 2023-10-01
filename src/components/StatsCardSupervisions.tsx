@@ -76,14 +76,11 @@ export default function StatsCardSupervisions() {
     router.push(`/supervisoes/${id}`)
   }
 
-  console.log('Supervisoes Component:', supervisoes)
-  console.log('Token in Component:', session?.user.token)
-
   return (
     <>
       <div className="relative z-10 mx-auto w-full py-2">
         <div className="relative z-10 mx-auto mt-3 grid w-full grid-cols-1 flex-wrap items-center justify-between gap-4 p-2 sm:grid-cols-2 md:flex-nowrap">
-          {supervisoes && 
+          {supervisoes &&
           (supervisoes?.map((supervisao) => (
             <div
               onClick={handleSupervisaoSelecionada}

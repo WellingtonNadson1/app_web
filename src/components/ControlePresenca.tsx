@@ -44,8 +44,6 @@ export default function ControlePresenca() {
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${session?.user?.celulaId}`
 
-  console.log('Celula que Lidera', URL)
-
   const {
     data: celula,
     error,
@@ -55,8 +53,6 @@ export default function ControlePresenca() {
     [URL, `${session?.user.token}`],
     ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
   )
-
-  console.log('Celula dados Controle Presenca', celula)
 
   if (error) {
     return (

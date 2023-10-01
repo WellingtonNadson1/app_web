@@ -31,7 +31,6 @@ export default function StatsCardRelatorios() {
       }
 
       const buffer = await response.arrayBuffer()
-      console.log(buffer)
       const blob = new Blob([buffer], { type: 'application/pdf' })
 
       // Cria um objeto URL para o blob
