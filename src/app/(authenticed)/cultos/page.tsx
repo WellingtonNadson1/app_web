@@ -9,7 +9,6 @@ import {
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -26,7 +25,6 @@ export default function Cultos() {
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
-  const router = useRouter()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
@@ -63,8 +61,7 @@ export default function Cultos() {
         setFormSuccess(true)
         success('😉 Culto Cadastrado')
         setTimeout(() => {
-          router.reload()
-          // window.location.reload()
+          window.location.reload()
         }, 3000);
       } else {
         setIsLoadingSubmitForm(false)
