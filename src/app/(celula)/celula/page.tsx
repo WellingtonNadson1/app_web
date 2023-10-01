@@ -91,7 +91,7 @@ export default function ControleCelulaSupervision() {
       <div className="relative mx-auto mb-4 w-full px-2">
         <LicoesCelula />
       </div>
-      <div className="relative mx-auto mb-4 w-full px-2">
+      <div className="relative flex flex-col gap-3 mx-auto mb-4 w-full px-2">
   {selectedDayMeetings === null ? (
     <SpinnerButton /> // Mostra um spinner enquanto os dados estão sendo carregados
   ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
