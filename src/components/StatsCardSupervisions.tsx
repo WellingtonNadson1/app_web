@@ -1,9 +1,11 @@
 'use client'
+import { BASE_URL } from '@/functions/functions'
 import { UsersFour } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import useSWR from 'swr'
+import { twMerge } from 'tailwind-merge'
 
 export interface SupervisaoDataCard {
   id: string
@@ -19,8 +21,7 @@ export default function StatsCardSupervisions() {
   const { data: session } = useSession()
   const router = useRouter()
 
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/supervisoes`
+  const URL = `${BASE_URL}/supervisoes`
 
   function fetchWithToken(url: string, token: string) {
     return fetch(url, {
@@ -93,7 +94,7 @@ export default function StatsCardSupervisions() {
                   {supervisao.nome}
                 </div>
                 <div
-                  className={`rounded-full ${supervisao.cor} p-2 drop-shadow-md`}
+                  className={twMerge(`rounded-full p-2 drop-shadow-md`, `${supervisao.cor}`)}
                 >
                   <UsersFour width={24} height={24} color="#fff" />
                 </div>
