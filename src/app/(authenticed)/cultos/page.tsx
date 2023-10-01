@@ -28,7 +28,7 @@ export default function Cultos() {
   const router = useRouter()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const onSubmit: SubmitHandler<NewCulto> = async ({data_inicio_culto, data_termino_culto, culto_semana, presencas_culto, status}) => {
+  const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
 
@@ -37,11 +37,11 @@ export default function Cultos() {
         return dataObj.toISOString()
       }
 
-      data_inicio_culto = formatDatatoISO8601(data_inicio_culto)
-      data_termino_culto = formatDatatoISO8601(data_termino_culto)
+      data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
+      data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
 
       const response = await axiosAuth.post(URLCultosIndividuais, {
-        data_inicio_culto, data_termino_culto, culto_semana, presencas_culto, status
+        data
       })
       const cultoIsRegister = response.data
 
