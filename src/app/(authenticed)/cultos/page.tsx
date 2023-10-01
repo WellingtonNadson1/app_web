@@ -9,7 +9,7 @@ import {
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { useRouter } from 'next/router'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
@@ -62,7 +62,10 @@ export default function Cultos() {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
         success('😉 Culto Cadastrado')
-        router.refresh()
+        setTimeout(() => {
+          router.reload()
+          // window.location.reload()
+        }, 3000);
       } else {
         setIsLoadingSubmitForm(false)
 
