@@ -1,5 +1,5 @@
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
-import { Providers } from '@/providers/providers'
+import { Providers, ReactQueryProvider } from '@/providers/providers'
 import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
@@ -47,7 +47,9 @@ export default async function LoginLayout({
           speed={200}
           shadow="0 0 10px #ffffff,0 0 5px #ffffff"
         />
-        <Providers>{children}</Providers>
+        <ReactQueryProvider>
+          <Providers>{children}</Providers>
+        </ReactQueryProvider>
       </body>
     </html>
   )

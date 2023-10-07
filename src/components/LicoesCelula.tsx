@@ -1,9 +1,18 @@
 'use client'
 import { BASE_URL } from '@/functions/functions'
+import { axiosAuthToken } from '@/lib/axios'
 import { FilePdf } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
+import Link from 'next/link'
 
 export default function LicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
+  const {data, isLoading } = useQuery<string[]>({
+    queryKey: ['licoesCelula'],
+    queryFn: () =>
+      axiosAuthToken.get(URLLicoesCelula),
+  })
+  if(isLoading) return
   const temaMesCelula = 'Cuidar'
   const statusLicoes = [
     {
@@ -56,8 +65,10 @@ export default function LicoesCelula() {
           <span className="mb-3 text-base">Tema: {temaMesCelula}</span>
         </div>
         <div className="mb-3 grid grid-cols-1 gap-4 px-2 py-1 sm:grid-cols-2">
-          {statusLicoes.map((stat) => (
-            <div
+          {statusLicoes.map((stat, index) => (
+            data && (
+              <Link
+              href={data[index]}
               key={stat.id}
               className="cursor-pointer rounded-md bg-gray-50 hover:bg-gray-100/80"
             >
@@ -99,8 +110,9 @@ export default function LicoesCelula() {
                   </div>
                 </div>
               </div>
-            </div>
-          ))}
+            </Link>
+
+          )))}
         </div>
       </div>
     </div>

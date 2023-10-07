@@ -1,5 +1,5 @@
 import Sidebar from '@/components/sidebar/Sidebar'
-import { Providers } from '@/providers/providers'
+import { Providers, ReactQueryProvider } from '@/providers/providers'
 import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
@@ -44,12 +44,12 @@ export default async function RootLayout({
         <div className="overflow-x-auto overflow-y-auto">
           <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
-            {/* <QueryClientProvider client={queryClient}> */}
-              <Providers>
-                <Sidebar />
-                <div className="mx-auto w-full px-2 py-2">{children}</div>
-              </Providers>
-            {/* </QueryClientProvider> */}
+          <ReactQueryProvider>
+            <Providers>
+              <Sidebar />
+              <div className="mx-auto w-full px-2 py-2">{children}</div>
+            </Providers>
+          </ReactQueryProvider>
           </div>
         </div>
       </body>
