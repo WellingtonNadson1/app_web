@@ -1,40 +1,50 @@
 'use client'
+import { BASE_URL } from '@/functions/functions'
 import { FilePdf } from '@phosphor-icons/react'
 
 export default function LicoesCelula() {
-  const temaMesCelula = 'Aliança'
+  const URLLicoesCelula = `${BASE_URL}/licoescelulas`
+  const temaMesCelula = 'Cuidar'
   const statusLicoes = [
     {
       id: 1,
-      title: 'A Colheita da Aliança',
-      periodo: '11 a 17 de Jun/2023',
+      title: 'Cuidar de si Mesmo',
+      periodo: '01 a 07 de Out/2023',
       status: 'ok',
       icon: FilePdf,
-      versiculo: '1Re 11:9-13',
+      versiculo: '1Te 5:23',
     },
     {
       id: 2,
-      title: 'Deus de Aliança',
-      periodo: '04 a 10 de Jun/2023',
+      title: 'Cuidar da Doutrina',
+      periodo: '08 a 14 de Out/2023',
       status: 'ok',
       icon: FilePdf,
-      versiculo: '1Re 11:9-13',
+      versiculo: 'Sl 119:11',
     },
     {
       id: 3,
-      title: 'A Colheita da Aliança',
-      periodo: '11 a 17 de Jun/2023',
+      title: 'Cuidado com a Família',
+      periodo: '15 a 21 de Out/2023',
       status: 'pendente',
       icon: FilePdf,
-      versiculo: '1Re 11:9-13',
+      versiculo: '1Tm 5:8',
     },
     {
       id: 4,
-      title: 'Nova Aliança',
-      periodo: '25 de Jun a 1º de Jul/2023',
+      title: 'Cuidar da casa do SENHOR',
+      periodo: '22 a 28 de Out/2023',
       status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Fp 2:22',
+      versiculo: 'Sl 69:9',
+    },
+    {
+      id: 5,
+      title: 'O Cuidado de Deus',
+      periodo: '29 de Out a 04 de Nov/2023',
+      status: 'pendente',
+      icon: FilePdf,
+      versiculo: 'Ez 34:11-12',
     },
   ]
 
@@ -45,11 +55,11 @@ export default function LicoesCelula() {
           <h1 className="mb-3 text-lg font-semibold leading-7">Lições</h1>
           <span className="mb-3 text-base">Tema: {temaMesCelula}</span>
         </div>
-        <div className="mb-3 grid cursor-pointer grid-cols-1 gap-4 px-2 py-1 sm:grid-cols-2">
+        <div className="mb-3 grid grid-cols-1 gap-4 px-2 py-1 sm:grid-cols-2">
           {statusLicoes.map((stat) => (
             <div
               key={stat.id}
-              className="rounded-md bg-gray-50 hover:bg-gray-100/80"
+              className="cursor-pointer rounded-md bg-gray-50 hover:bg-gray-100/80"
             >
               <div className="p-2 sm:col-span-1">
                 <div className="flex w-full items-center justify-between gap-4">
