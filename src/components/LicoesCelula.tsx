@@ -1,18 +1,37 @@
 'use client'
 import { BASE_URL } from '@/functions/functions'
-import { axiosAuthToken } from '@/lib/axios'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { FilePdf } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
-import Link from 'next/link'
+import { useSession } from 'next-auth/react'
+import { z } from 'zod'
+import SpinnerButton from './spinners/SpinnerButton'
+
+
+const ResponseSchema = z.object({
+  data: z.string().array()
+})
+
+type ApiResponse = z.infer<typeof ResponseSchema>
 
 export default function LicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
-  const {data, isLoading } = useQuery<string[]>({
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const {data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
     queryFn: () =>
-      axiosAuthToken.get(URLLicoesCelula),
+    axiosAuth.get(URLLicoesCelula),
   })
-  if(isLoading) return
+  if(isLoading) return <SpinnerButton />
+  if (isError) {
+    return <div>Erro ao carregar os dados.</div>
+  }
+  console.log(data)
+  console.log(data.data[0])
+
+  console.log(Array.isArray(data.data));
+
   const temaMesCelula = 'Cuidar'
   const statusLicoes = [
     {
@@ -27,7 +46,7 @@ export default function LicoesCelula() {
       id: 2,
       title: 'Cuidar da Doutrina',
       periodo: '08 a 14 de Out/2023',
-      status: 'ok',
+      status: 'pendente',
       icon: FilePdf,
       versiculo: 'Sl 119:11',
     },
@@ -66,9 +85,10 @@ export default function LicoesCelula() {
         </div>
         <div className="mb-3 grid grid-cols-1 gap-4 px-2 py-1 sm:grid-cols-2">
           {statusLicoes.map((stat, index) => (
-            data && (
-              <Link
-              href={data[index]}
+            data ?  (
+              <a
+              href={`${data.data[index]}`}
+              target="_blank"
               key={stat.id}
               className="cursor-pointer rounded-md bg-gray-50 hover:bg-gray-100/80"
             >
@@ -110,8 +130,11 @@ export default function LicoesCelula() {
                   </div>
                 </div>
               </div>
-            </Link>
+            </a>
 
+          ) : (
+            // Handle the case where data or data[index] is not valid
+    <div key={stat.id}>Invalid Data</div>
           )))}
         </div>
       </div>
