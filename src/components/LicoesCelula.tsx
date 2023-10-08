@@ -101,7 +101,7 @@ export default function LicoesCelula() {
                     <div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm font-normal leading-6 text-gray-700">
-                          {stat.versiculo}
+                        {stat.id}ª - {stat.versiculo}
                         </span>
                       </div>
                       <div className="mt-3 flex items-center">
