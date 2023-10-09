@@ -12,7 +12,7 @@ import { useQuery } from '@tanstack/react-query'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
-import { useCallback, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
@@ -55,23 +55,19 @@ export default function ControleCelulaSupervision() {
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
-  const fetchCelula = useCallback(async () => {
+  useEffect(() => {
     try {
       if (!session) {
         return
       }
       if (!celula) {
-        console.log('Failed to fetch Celula Lider.')
+        console.log('Failed to fetch Celula.')
       }
       setDataCelula(celula)
     } catch (error) {
       console.error('Erro na requisição de celula:', error)
     }
-  }, [URLCelula, session, axiosAuth])
-
-  useEffect(() => {
-    fetchCelula()
-  }, [fetchCelula])
+  }, [URLCelula])
 
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
