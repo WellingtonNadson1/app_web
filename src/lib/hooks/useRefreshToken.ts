@@ -32,9 +32,31 @@ export const useRefreshToken = () => {
             })
             const newToken = response.data
             console.log('New Token Function Refresh', newToken)
+            console.log('New Token vaslue', newToken.token)
 
             // Processo para realizar autalização da session
             if (newToken.token && newToken.newRefreshToken) {
+              const handleUpdateUser = async () => {
+                const newSession = {
+                  ...session,
+                  user: {
+                    ...session?.user,
+                    token: newToken.token as string,
+                    refreshToken: {
+                      id: newToken.newRefreshToken.id,
+                      expiresIn: newToken.newRefreshToken.expiresIn,
+                      userIdRefresh: newToken.newRefreshToken.userIdRefresh
+                    }
+                  }
+                }
+                // Atualize a sessão
+                await update(newSession)
+              }
+              handleUpdateUser()
+            }
+
+            // Processo para realizar autalização da session
+            if (newToken.token) {
               const handleUpdateUser = async () => {
                 const newSession = {
                   ...session,
