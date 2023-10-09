@@ -20,22 +20,36 @@ import HeaderCelula from './HeaderCelula'
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
-  // const [meetings, setMeetings] = useState<meeting[]>([])
-  const celulaId = session?.user?.celulaId // Safely access celulaId
+
+  const celulaId = session?.user?.celulaId
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
 
-    // UseSWR para buscar os dados combinados
-    const { data, isLoading } = useQuery<meeting[]>({
-      queryKey: ['mettingsData'],
-      queryFn: () => axiosAuth.get(URLCultosInd)
-    })
+  const { data, isLoading } = useQuery<meeting[]>({
+    queryKey: ['mettingsData'],
+    queryFn: () => axiosAuth.get(URLCultosInd)
+  })
+
+  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
+    queryKey: ['mettingsData'],
+    queryFn: () => axiosAuth.get(URLCelula)
+  })
 
   const today = startOfToday()
 
-  if (isLoading) return
+  if (isLoading) {
+    return
+  }
+
+  if (isLoadingCelula) {
+    return
+  }
+
+  if (!session) {
+    return
+  }
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
@@ -46,8 +60,6 @@ export default function ControleCelulaSupervision() {
       if (!session) {
         return
       }
-      const response = await axiosAuth.get(URLCelula)
-      const celula = response.data
       if (!celula) {
         console.log('Failed to fetch Celula Lider.')
       }
@@ -81,7 +93,7 @@ export default function ControleCelulaSupervision() {
       </div>
       <div className="relative flex flex-col gap-3 mx-auto mb-4 w-full px-2">
   {selectedDayMeetings === null ? (
-    <SpinnerButton /> // Mostra um spinner enquanto os dados estão sendo carregados
+    <SpinnerButton />
   ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
     selectedDayMeetings.map((meeting) => (
       isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
