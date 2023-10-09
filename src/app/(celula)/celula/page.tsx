@@ -4,52 +4,40 @@ import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, fetchWithToken } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
+import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
-import { Disclosure } from '@headlessui/react'
 import HeaderCelula from './HeaderCelula'
-import { ChevronUpIcon } from '@heroicons/react/24/outline'
-import { pt } from 'date-fns/locale'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import useSWR from 'swr'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const [dataCelula, setDataCelula] = useState<CelulaProps>()
   // const [meetings, setMeetings] = useState<meeting[]>([])
   const celulaId = session?.user?.celulaId // Safely access celulaId
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
 
     // UseSWR para buscar os dados combinados
-    const { data: meetings } = useSWR<meeting[]>(
-      [URLCultosInd, `${session?.user.token}`],
-      ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-    )
-
-  // const fetchMeetings = useCallback(async () => {
-  //   try {
-  //     const response = await axiosAuth.get(URLCultosInd)
-  //     const cultos = response.data
-  //     setMeetings(cultos)
-  //   } catch (error) {
-  //     console.error('Erro na requisição de cultos individuais:', error)
-  //   }
-  // }, [URLCultosInd, axiosAuth])
-
-  // useEffect(() => {
-  //   fetchMeetings()
-  // }, [fetchMeetings]);
+    const { data, isLoading } = useQuery<meeting[]>({
+      queryKey: ['mettingsData'],
+      queryFn: () => axiosAuth.get(URLCultosInd)
+    })
 
   const today = startOfToday()
 
-  const selectedDayMeetings = meetings?.filter((meeting) =>
+  if (isLoading) return
+
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 

@@ -27,10 +27,6 @@ export default function LicoesCelula() {
   if (isError) {
     return <div>Erro ao carregar os dados.</div>
   }
-  console.log(data)
-  console.log(data.data[0])
-
-  console.log(Array.isArray(data.data));
 
   const temaMesCelula = 'Cuidar'
   const statusLicoes = [

@@ -1,5 +1,6 @@
 'use client'
-import { BASE_URL, fetchWithToken } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
@@ -21,7 +22,6 @@ import {
 import pt from 'date-fns/locale/pt'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
-import useSWR from 'swr'
 
 type meeting = {
   id: string
@@ -55,12 +55,22 @@ export default function CalendarLiderCelula() {
   //   return <div className='loading'>carregando...</div>
   // }
   // UseSWR para buscar os dados combinados
-  const { data: meetings } = useSWR<meeting[]>(
-    [URLCultosInd, `${session?.user.token}`],
-    ([url, token]: [string, string]) => {
-      return fetchWithToken(url, 'GET', token);
-    },
-  )
+  // const { data: meetings } = useSWR<meeting[]>(
+  //   [URLCultosInd, `${session?.user.token}`],
+  //   ([url, token]: [string, string]) => {
+  //     return fetchWithToken(url, 'GET', token);
+  //   },
+  // )
+
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
+  const { data, isLoading } = useQuery<meeting[]>({
+    queryKey: ['meeingsData'],
+    queryFn: () => axiosAuth.get(URLCultosInd)
+  })
+
+if (isLoading) return
+
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
@@ -81,7 +91,7 @@ export default function CalendarLiderCelula() {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = meetings?.filter((meeting) =>
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
 
@@ -167,8 +177,8 @@ export default function CalendarLiderCelula() {
                     </button>
                     {/* Pontos de Eventos */}
                     <div className="mx-auto flex items-center justify-center gap-1">
-                      {meetings &&
-                        meetings?.some((meeting) =>
+                      {data &&
+                        data?.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="mt-1 h-1 w-1">
