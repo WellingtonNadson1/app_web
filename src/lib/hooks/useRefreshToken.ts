@@ -1,9 +1,9 @@
 'use client'
 
-import { useSession } from "next-auth/react"
-import axios from "../axios"
 import dayjs from "dayjs"
 import { decode } from "jsonwebtoken"
+import { useSession } from "next-auth/react"
+import axios from "../axios"
 
 interface INewRefreshToken {
   id: string
@@ -19,6 +19,7 @@ export const useRefreshToken = () => {
     if (session?.user.token && session?.user.refreshToken) {
       // Verificar se o token de acesso expirou
       const decoded = decode(session?.user.token)
+      console.log('decoded: ', decoded);
       if (typeof decoded === 'object' && decoded !== null && 'exp' in decoded) {
         if (decoded.exp !== undefined) {
           const isTokenExpired = dayjs().isAfter(dayjs.unix(decoded.exp));
