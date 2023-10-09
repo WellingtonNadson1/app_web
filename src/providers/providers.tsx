@@ -1,6 +1,6 @@
 'use client'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
-import { SessionProvider, useSession } from 'next-auth/react'
+import { SessionProvider } from 'next-auth/react'
 import React from 'react'
 
 interface IProps {
@@ -8,10 +8,8 @@ interface IProps {
 
 }
 
-const { data: session } = useSession()
-
 export const Providers = ({ children }: IProps) => {
-  return <SessionProvider session={session}>{children}</SessionProvider>
+  return <SessionProvider>{children}</SessionProvider>
 }
 
 const queryClient = new QueryClient()
