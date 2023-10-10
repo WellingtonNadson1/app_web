@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 'use client'
-import { meeting } from '@/components/Calendar/Calendar'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
@@ -13,9 +12,10 @@ import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import { useEffect, useState } from 'react'
-import ControlePresencaCelula, { CelulaProps } from './ControlePresencaCelula'
+import ControlePresencaCelula from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
+import { CelulaProps, Meeting } from './schema'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -27,31 +27,27 @@ export default function ControleCelulaSupervision() {
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
 
-  const { data, isLoading } = useQuery<meeting[]>({
-    queryKey: ['mettingsData'],
+  const { data, isLoading } = useQuery<Meeting>({
+    queryKey: ['meetingsData'],
     queryFn: () => axiosAuth.get(URLCultosInd)
   })
 
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ['mettingsData'],
+    queryKey: ['celulaData'],
     queryFn: () => axiosAuth.get(URLCelula)
   })
 
   const today = startOfToday()
 
-  if (isLoading) {
-    return
+  if (!isLoading) {
+    console.log('Data: ', data)
   }
 
-  if (isLoadingCelula) {
-    return
+  if (!isLoadingCelula) {
+    console.log('Celula: ', celula)
   }
 
-  if (!session) {
-    return
-  }
-
-  const selectedDayMeetings = data?.filter((meeting) =>
+  const selectedDayMeetings = data?.data.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
@@ -67,7 +63,7 @@ export default function ControleCelulaSupervision() {
     } catch (error) {
       console.error('Erro na requisição de celula:', error)
     }
-  }, [URLCelula])
+  }, [URLCelula, celula, session])
 
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
@@ -79,7 +75,7 @@ export default function ControleCelulaSupervision() {
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
-        {dataCelula && <HeaderCelula headerCelula={dataCelula.nome} />}
+        {dataCelula && <HeaderCelula headerCelula={dataCelula?.data.nome} />}
       </div>
       <div className="relative flex flex-col gap-3 mx-auto mb-4 mt-3 w-full px-2">
         <CalendarLiderCelula />
@@ -111,7 +107,7 @@ export default function ControleCelulaSupervision() {
                           <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                             <ControlePresencaCelula
                               culto={meeting.id}
-                              celula={dataCelula}
+                              celula={dataCelula?.data}
                             />
                           </Disclosure.Panel>
                         </>
@@ -156,7 +152,7 @@ export default function ControleCelulaSupervision() {
   )}{' '}
 </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        {dataCelula && Number(dataCelula.date_que_ocorre) === dayOfWeek ? (
+        {dataCelula && Number(dataCelula.data.date_que_ocorre) === dayOfWeek ? (
           <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
             <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
               <div className="mb-2 flex flex-col items-start justify-start">
@@ -174,7 +170,7 @@ export default function ControleCelulaSupervision() {
                           <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                             <ControlePresencaReuniaoCelula
                               dataCelula={dataCelula}
-                              celulaId={dataCelula.id}
+                              celulaId={dataCelula.data.id}
                             />
                           </Disclosure.Panel>
                         </>

@@ -1,4 +1,5 @@
 'use client'
+import { Meeting } from '@/app/(celula)/celula/schema'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
@@ -22,58 +23,46 @@ import {
 import pt from 'date-fns/locale/pt'
 import { useSession } from 'next-auth/react'
 import { useState } from 'react'
+import { z } from 'zod'
+import SpinnerButton from './spinners/SpinnerButton'
 
-type meeting = {
-  id: string
-  culto_semana: {
-    nome: string
-  }
-  imageUrl: string
-  data_inicio_culto: string
-  data_termino_culto: string
-}
+const meetingSchema = z.object({
+  id: z.string(),
+  culto_semana: z.object({
+    nome: z.string(),
+  }),
+  imageUrl: z.string(),
+  data_inicio_culto: z.string(),
+  data_termino_culto: z.string(),
+})
 
-const URLCultosInd = `${BASE_URL}/cultosindividuais`
+export type meeting = z.infer<typeof meetingSchema>
+
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function CalendarLiderCelula() {
+  const today = startOfToday()
+  const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  const [selectedDay, setSelectedDay] = useState(today)
+  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
+
   const { data: session } = useSession()
   if (!session) {
-    return
+    return <SpinnerButton />
   }
-
-  // const { data, isLoading } = useQuery<meeting[]>({queryKey: ['meetings'], queryFn: () => {
-  //   console.log('useSWR callback called with URL:', URLCultosInd)
-  //   console.log('Token inside callback:', session?.user.token)
-  //   return fetchWithToken(URLCultosInd, 'GET', session?.user.token)
-  // }})
-
-  // if (isLoading) {
-  //   return <div className='loading'>carregando...</div>
-  // }
-  // UseSWR para buscar os dados combinados
-  // const { data: meetings } = useSWR<meeting[]>(
-  //   [URLCultosInd, `${session?.user.token}`],
-  //   ([url, token]: [string, string]) => {
-  //     return fetchWithToken(url, 'GET', token);
-  //   },
-  // )
 
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const { data, isLoading } = useQuery<meeting[]>({
-    queryKey: ['meeingsData'],
+  const { data, isLoading } = useQuery<Meeting>({
+    queryKey: ['meetingsData'],
     queryFn: () => axiosAuth.get(URLCultosInd)
   })
 
-if (isLoading) return
-
-  const today = startOfToday()
-  const [selectedDay, setSelectedDay] = useState(today)
-  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
+if (isLoading) {
+  return <SpinnerButton/>}
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
   const days = eachDayOfInterval({
@@ -91,7 +80,7 @@ if (isLoading) return
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = data?.filter((meeting) =>
+  const selectedDayMeetings = data?.data.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
 
@@ -178,7 +167,7 @@ if (isLoading) return
                     {/* Pontos de Eventos */}
                     <div className="mx-auto flex items-center justify-center gap-1">
                       {data &&
-                        data?.some((meeting) =>
+                        data?.data.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="mt-1 h-1 w-1">

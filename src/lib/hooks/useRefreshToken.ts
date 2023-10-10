@@ -63,11 +63,6 @@ export const useRefreshToken = () => {
                   user: {
                     ...session?.user,
                     token: newToken.token as string,
-                    refreshToken: {
-                      id: newToken.newRefreshToken.id,
-                      expiresIn: newToken.newRefreshToken.expiresIn,
-                      userIdRefresh: newToken.newRefreshToken.userIdRefresh
-                    }
                   }
                 }
                 // Atualize a sessão

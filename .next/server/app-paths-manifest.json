@@ -1,6 +1,5 @@
 {
   "/(login)/login/page": "app/(login)/login/page.js",
-  "/(authenticed)/page": "app/(authenticed)/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/(celula)/celula/page": "app/(celula)/celula/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js"
 }

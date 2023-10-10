@@ -13,50 +13,7 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 import * as z from 'zod'
-
-const ReuniaoCelulaSchema = z.object({
-  id: z.string(),
-  status: z.string(),
-  celula: z.string(),
-  data_reuniao: z.string(),
-  presencas_reuniao_celula: z.object({}).array(),
-})
-
-const UserSchema = z.object({
-  id: z.string(),
-  first_name: z.string(),
-  situacao_no_reino: z.object({
-    nome: z.string(),
-  }),
-  cargo_de_lideranca: z.object({
-    nome: z.string(),
-  }),
-})
-
-const CelulaSchema = z.object({
-  id: z.string(),
-  nome: z.string(),
-  lider: z.object({
-    first_name: z.string(),
-    id: z.string(),
-  }),
-  supervisao: z.string(),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_que_ocorre: z.string(),
-  date_multipicar: z.string().datetime(),
-  supervisaoId: z.string(),
-  membros: z.array(UserSchema),
-  reunioes_celula: z.array(ReuniaoCelulaSchema),
-  userId: z.string(),
-})
-
-export type CelulaProps = z.infer<typeof CelulaSchema>
+import { CelulaProps } from './schema'
 
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
@@ -66,10 +23,6 @@ const PresencaCultoCelulaSchema = z.object({
 })
 
 export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
-
-// interface ControlePresencaCelulaProps {
-//   celulaId: string
-// }
 
 const reuniaoCelulaDataSchema = z.object({
   id: z.string(),
@@ -242,7 +195,7 @@ export default function ControlePresencaReuniaoCelula({
                       </div>
                     </div>
                     <div className="text-sm font-normal text-gray-700">
-                      {dataCelula.membros.map((user, index) => (
+                      {dataCelula.data.membros.map((user, index) => (
                         <form key={user.id} id={user.id}>
                           <div className="mb-1 mt-3 grid grid-cols-3 gap-4 sm:grid-cols-5">
                             <input
