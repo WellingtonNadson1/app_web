@@ -31,8 +31,9 @@ export default function ControleCelulaSupervision() {
   })
 
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ['celulaData'],
-    queryFn: () => axiosAuth.get(URLCelula)
+    queryKey: ['celula', celulaId],
+    queryFn: () => axiosAuth.get(URLCelula),
+    enabled: !!celulaId
   })
 
   if (isLoading) {
