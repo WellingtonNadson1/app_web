@@ -43,8 +43,8 @@ export default function ControleCelulaSupervision() {
     console.log('Data: ', data)
   }
 
-  if (!isLoadingCelula) {
-    console.log('Celula: ', celula)
+  if (isLoadingCelula) {
+    <SpinnerButton />
   }
 
   const selectedDayMeetings = data?.data.filter((meeting) =>
@@ -58,6 +58,7 @@ export default function ControleCelulaSupervision() {
       }
       if (!celula) {
         console.log('Failed to fetch Celula.')
+        return
       }
       setDataCelula(celula)
       console.log('Nome Célula: ', dataCelula?.data.nome);
@@ -70,8 +71,8 @@ export default function ControleCelulaSupervision() {
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
 
-  if (!session) {
-    return <SpinnerButton />
+  if (!dataCelula) {
+    return null; // Não renderiza nada se os dados da célula ainda não foram definidos.
   }
 
   return (
