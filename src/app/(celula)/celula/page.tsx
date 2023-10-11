@@ -19,7 +19,7 @@ import { CelulaProps, Meeting } from './schema'
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
 
-  const celulaId = session?.user?.celulaId
+  const celulaId = session?.user.celulaId
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
@@ -33,7 +33,7 @@ export default function ControleCelulaSupervision() {
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
     queryFn: () => axiosAuth.get(URLCelula),
-    enabled: !!celulaId
+    enabled: !!celulaId,
   })
 
   if (isLoading) {
