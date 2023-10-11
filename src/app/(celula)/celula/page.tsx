@@ -71,10 +71,6 @@ export default function ControleCelulaSupervision() {
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
 
-  if (!dataCelula) {
-    return null; // Não renderiza nada se os dados da célula ainda não foram definidos.
-  }
-
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
