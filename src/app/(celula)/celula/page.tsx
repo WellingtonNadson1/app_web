@@ -22,8 +22,8 @@ export default function ControleCelulaSupervision() {
   const celulaId = session?.user.celulaId
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
