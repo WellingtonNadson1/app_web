@@ -60,6 +60,8 @@ export default function ControleCelulaSupervision() {
         console.log('Failed to fetch Celula.')
       }
       setDataCelula(celula)
+      console.log('Nome Célula: ', dataCelula?.data.nome);
+
     } catch (error) {
       console.error('Erro na requisição de celula:', error)
     }
