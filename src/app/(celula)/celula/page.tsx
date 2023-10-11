@@ -11,7 +11,6 @@ import { useQuery } from '@tanstack/react-query'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
 import ControlePresencaCelula from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
@@ -19,7 +18,6 @@ import { CelulaProps, Meeting } from './schema'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
-  const [dataCelula, setDataCelula] = useState<CelulaProps>()
 
   const celulaId = session?.user?.celulaId
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -37,27 +35,12 @@ export default function ControleCelulaSupervision() {
     queryFn: () => axiosAuth.get(URLCelula)
   })
 
-  useEffect(() => {
-    try {
-
-      if (isLoading) {
-        return
-      }
-
-      if (isLoadingCelula) {
-        console.log('Get fetch Celula.')
-        return
-      }
-      setDataCelula(celula)
-      console.log('Nome Célula: ', dataCelula?.data.nome);
-
-    } catch (error) {
-      console.error('Erro na requisição de celula:', error)
-    }
-  }, [URLCelula, celula])
-
   if (isLoading) {
-    return
+    return <SpinnerButton />
+  }
+
+  if (isLoadingCelula) {
+    return <SpinnerButton />
   }
 
   const today = startOfToday()
@@ -72,7 +55,7 @@ export default function ControleCelulaSupervision() {
   return (
     <div className="relative mx-auto w-full px-2 py-2">
       <div className="relative mx-auto w-full">
-        {dataCelula && <HeaderCelula headerCelula={dataCelula?.data.nome} />}
+        {celula && <HeaderCelula headerCelula={celula?.data.nome} />}
       </div>
       <div className="relative flex flex-col gap-3 mx-auto mb-4 mt-3 w-full px-2">
         <CalendarLiderCelula />
@@ -86,7 +69,7 @@ export default function ControleCelulaSupervision() {
   ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
     selectedDayMeetings.map((meeting) => (
       isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
-        dataCelula ? (
+        celula ? (
           <div key={meeting.id} className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
             <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
               <div className="mb-2 flex flex-col items-start justify-start">
@@ -104,7 +87,7 @@ export default function ControleCelulaSupervision() {
                           <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                             <ControlePresencaCelula
                               culto={meeting.id}
-                              celula={dataCelula?.data}
+                              celula={celula?.data}
                             />
                           </Disclosure.Panel>
                         </>
@@ -149,7 +132,7 @@ export default function ControleCelulaSupervision() {
   )}{' '}
 </div>
       <div className="relative mx-auto mb-4 w-full px-2">
-        {dataCelula && Number(dataCelula.data.date_que_ocorre) === dayOfWeek ? (
+        {celula && Number(celula.data.date_que_ocorre) === dayOfWeek ? (
           <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
             <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
               <div className="mb-2 flex flex-col items-start justify-start">
@@ -166,8 +149,8 @@ export default function ControleCelulaSupervision() {
                           </Disclosure.Button>
                           <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                             <ControlePresencaReuniaoCelula
-                              dataCelula={dataCelula}
-                              celulaId={dataCelula.data.id}
+                              dataCelula={celula}
+                              celulaId={celula.data.id}
                             />
                           </Disclosure.Panel>
                         </>
