@@ -39,8 +39,8 @@ export default function ControleCelulaSupervision() {
 
   const today = startOfToday()
 
-  if (!isLoading) {
-    console.log('Data: ', data)
+  if (isLoading) {
+    return <SpinnerButton />
   }
 
   if (isLoadingCelula) {
