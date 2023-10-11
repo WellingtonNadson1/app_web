@@ -37,27 +37,15 @@ export default function ControleCelulaSupervision() {
     queryFn: () => axiosAuth.get(URLCelula)
   })
 
-  const today = startOfToday()
-
-  if (isLoading) {
-    return <SpinnerButton />
-  }
-
-  if (isLoadingCelula) {
-    <SpinnerButton />
-  }
-
-  const selectedDayMeetings = data?.data.filter((meeting) =>
-    isSameDay(parseISO(meeting.data_inicio_culto), today),
-  )
-
   useEffect(() => {
     try {
-      if (!session) {
+
+      if (isLoading) {
         return
       }
-      if (!celula) {
-        console.log('Failed to fetch Celula.')
+
+      if (isLoadingCelula) {
+        console.log('Get fetch Celula.')
         return
       }
       setDataCelula(celula)
@@ -66,7 +54,17 @@ export default function ControleCelulaSupervision() {
     } catch (error) {
       console.error('Erro na requisição de celula:', error)
     }
-  }, [URLCelula, celula, session])
+  }, [URLCelula, celula])
+
+  if (isLoading) {
+    return
+  }
+
+  const today = startOfToday()
+
+  const selectedDayMeetings = data?.data.filter((meeting) =>
+    isSameDay(parseISO(meeting.data_inicio_culto), today),
+  )
 
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
