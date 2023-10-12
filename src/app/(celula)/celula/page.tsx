@@ -16,6 +16,7 @@ import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderLoad from '@/components/HeaderLoad'
+import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -38,7 +39,7 @@ export default function ControleCelulaSupervision() {
   })
 
   if (isLoading) {
-    return <HeaderLoad />
+    return <HeaderCelulaLoad />
   }
 
   const today = startOfToday()
@@ -54,7 +55,7 @@ export default function ControleCelulaSupervision() {
     <>
     {isLoadingCelula ? (
       <>
-        <HeaderLoad />
+        <HeaderCelulaLoad />
       </>
     ) : (
       <div className="relative mx-auto w-full px-2 py-2">
