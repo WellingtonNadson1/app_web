@@ -15,6 +15,7 @@ import ControlePresencaCelula from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
+import HeaderLoad from '@/components/HeaderLoad'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -52,7 +53,9 @@ export default function ControleCelulaSupervision() {
   return (
     <>
     {isLoadingCelula ? (
-      <SpinnerButton />
+      <>
+        <HeaderLoad />
+      </>
     ) : (
       <div className="relative mx-auto w-full px-2 py-2">
         <div className="relative mx-auto w-full">

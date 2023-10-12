@@ -18,9 +18,9 @@ function HeaderLoad() {
             <div>
               <h2 className="hidden text-xs text-gray-700 sm:block">
                 Shalom,{' '}
-                <span className="w-40 h-6 animate-pulse font-bold"></span>
+                <span className="w-60 h-6 animate-pulse font-bold"></span>
               </h2>
-              <p className="w-20 h-6 animate-pulse hidden text-xs text-gray-700 sm:block"></p>
+              <p className="w-40 h-6 animate-pulse hidden text-xs text-gray-700 sm:block"></p>
             </div>
             <div className="cursor-pointer">
               <div className="flex items-center gap-4">
