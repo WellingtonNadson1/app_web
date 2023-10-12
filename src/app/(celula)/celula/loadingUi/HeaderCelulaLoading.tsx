@@ -5,7 +5,7 @@ import React from 'react'
 function HeaderCelulaLoad() {
   return (
     <>
-      <nav className="relative mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
+      <nav className="relative mx-2 mt-3 flex h-12 items-center justify-between rounded-full bg-white p-1 shadow-none">
         <div className="animate-pulse ml-2 mx-auto flex w-full flex-wrap items-center justify-start gap-2">
           <div className="w-8 h-5 px-3 rounded bg-gray-400"></div>
           <div className="w-10 h-5 px-3 rounded bg-gray-400"></div>
