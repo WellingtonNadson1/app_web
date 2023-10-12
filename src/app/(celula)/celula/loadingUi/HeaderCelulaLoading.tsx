@@ -18,11 +18,7 @@ function HeaderCelulaLoad() {
             </div>
 
               <div className="flex items-center gap-4">
-                <div className="cursor-pointer w-8 h-8 relative rounded-full bg-gray-400">
-                  <span className="relative -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-3 w-6" aria-hidden="true" />
-                </div>
+                <div className="cursor-pointer w-8 h-8 relative rounded-full bg-gray-400"></div>
                 {/* Profile dropdown */}
                 <div className={`cursor-pointer w-8 h-8 rounded-full bg-gray-400 shadow`}></div>
               </div>
