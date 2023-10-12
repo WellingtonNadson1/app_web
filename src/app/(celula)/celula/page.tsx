@@ -38,7 +38,7 @@ export default function ControleCelulaSupervision() {
   })
 
   if (isLoading) {
-    return <SpinnerButton />
+    return <HeaderLoad />
   }
 
   const today = startOfToday()
