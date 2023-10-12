@@ -7,10 +7,12 @@ function HeaderCelulaLoad() {
   return (
     <>
       <nav className="relative mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
-        <div className="mx-auto flex w-full flex-wrap items-center justify-between">
+        <div className="mx-auto flex w-full flex-wrap items-center justify-start gap-3">
           {/* Titile Page */}
-          <h1 className="w-28 h-6 animate-pulse px-3 text-xl font-semibold leading-relaxed text-gray-800">
+          <h1 className="flex justify-start items-center gap-2 w-28 h-6 px-3 text-xl font-semibold leading-relaxed text-gray-800">
+            Célula
           </h1>
+          <div className='w-28 h-6 animate-pulse px-3 text-xl font-semibold leading-relaxed text-gray-800"'></div>
         </div>
         <div className="flex w-1/2 items-center justify-end gap-2 sm:w-1/2 sm:gap-8">
           {/* {session?.user ? ( */}
