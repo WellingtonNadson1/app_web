@@ -1,4 +1,6 @@
 'use client'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import {
   FishSimple,
   Footprints,
@@ -11,26 +13,21 @@ import Link from 'next/link'
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   // eslint-disable-next-line no-unused-vars
-  const hostname = 'app-ibb.onrender.com'
-  const URLRelatorioSupervision = `https://${hostname}/relatorio/presencacultos`
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
 
   const handleRelatorio = async () => {
     try {
-      const response = await fetch(URLRelatorioSupervision, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/pdf',
-          Authorization: `Bearer ${session?.user.token}`,
-        },
-      })
+      const response = await axiosAuth.get(URLRelatorioSupervision)
+      const relatorio = response.data
 
-      if (!response.ok) {
+      if (!relatorio) {
         // Lidar com erros de resposta, se necessário
         console.log('Erro na resposta da API:', response.statusText)
         return
       }
 
-      const buffer = await response.arrayBuffer()
+      const buffer = await relatorio.arrayBuffer()
       const blob = new Blob([buffer], { type: 'application/pdf' })
 
       // Cria um objeto URL para o blob
@@ -123,7 +120,7 @@ export default function StatsCardRelatorios() {
               onClick={handleRelatorio}
               className="hover:gb-sky-500 rounded-md bg-sky-600 px-2 py-1 text-white"
             >
-              Relatorio
+              Relat. Mensal Supervisão
             </button>
           </div>
         </div>

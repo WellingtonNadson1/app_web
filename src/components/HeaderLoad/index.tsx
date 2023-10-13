@@ -1,53 +1,31 @@
 'use client'
-import { BellIcon } from '@heroicons/react/24/outline'
-import { UserCircle } from '@phosphor-icons/react'
 import React from 'react'
 
 function HeaderLoad() {
   return (
     <>
-      <nav className="relative mx-2 mt-3 flex items-center justify-between rounded-full bg-white p-1 shadow-none">
-        <div className="mx-auto flex w-full flex-wrap items-center justify-between">
-          {/* Titile Page */}
-          <h1 className="w-200 h-6 animate-pulse px-3 text-xl font-semibold leading-relaxed text-gray-800">
-          </h1>
+      <nav className="relative mx-2 mt-3 flex h-12 items-center justify-between rounded-full bg-white p-1 shadow-none">
+          {/* Title Header */}
+        <div className="animate-pulse ml-2 mx-auto flex w-full flex-wrap items-center justify-start gap-2">
+          <div className="w-8 h-4 px-3 rounded bg-gray-400"></div>
+          <div className="w-10 h-4 px-3 rounded bg-gray-400"></div>
         </div>
-        <div className="flex w-1/2 items-center justify-end gap-2 sm:w-1/2 sm:gap-8">
-          {/* {session?.user ? ( */}
+          {/* Welcome Text */}
+        <div className="animate-pulse flex w-1/2 items-center justify-end gap-2 sm:w-1/2 sm:gap-8">
           <>
-            <div>
-              <h2 className="hidden text-xs text-gray-700 sm:block">
-                Shalom,{' '}
-                <span className="w-60 h-6 animate-pulse font-bold"></span>
-              </h2>
-              <p className="w-40 h-6 animate-pulse hidden text-xs text-gray-700 sm:block"></p>
+            <div className="flex flex-col gap-2 justify-start">
+              <div className="w-20 h-3 hidden rounded bg-gray-400 sm:block"></div>
+              <div className="w-14 h-3 hidden rounded bg-gray-400 sm:block"></div>
             </div>
-            <div className="cursor-pointer">
+
               <div className="flex items-center gap-4">
-                <button
-                  type="button"
-                  className="w-50 h-6 animate-pulse relative rounded-full bg-white p-1 text-gray-400 hover:text-gray-600 focus:outline-none focus:ring-1 focus:ring-blue-400 focus:ring-offset-1 focus:ring-offset-gray-800"
-                >
-                  <span className="relative -inset-1.5" />
-                  <span className="sr-only">View notifications</span>
-                  <BellIcon className="h-6 w-6" aria-hidden="true" />
-                </button>
-
+                <div className="cursor-pointer w-8 h-8 relative rounded-full bg-gray-400"></div>
                 {/* Profile dropdown */}
-
-                <UserCircle
-                  size={32}
-                  width={40}
-                  height={40}
-                  weight="thin"
-                  className={`rounded-full text-zinc-500 shadow`}
-                />
-
+                <div className={`cursor-pointer w-8 h-8 rounded-full bg-gray-400 shadow`}></div>
               </div>
-            </div>
+
           </>
         </div>
-
       </nav>
     </>
   )
