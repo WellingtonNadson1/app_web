@@ -1,6 +1,6 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
-import { errorCadastro, success } from '@/functions/functions'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -12,6 +12,7 @@ import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import axios from '@/lib/axios'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -57,8 +58,8 @@ export interface SupervisaoData {
 }
 
 export default function AddNewCelula() {
-  const URLSupervisoes = `/supervisoes`
-  const URLCelulas = `/celulas`
+  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLCelulas = `${BASE_URL}/celulas`
   const router = useRouter()
 
   const { data: session } = useSession()
@@ -72,7 +73,7 @@ export default function AddNewCelula() {
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -109,7 +110,21 @@ export default function AddNewCelula() {
     [handleSetDataAddress],
   )
 
-  const onSubmit: SubmitHandler<FormCelula> = async (data) => {
+  const onSubmit: SubmitHandler<FormCelula> = async ({
+    nome,
+    lider,
+    supervisao,
+    cep,
+    cidade,
+    estado,
+    bairro,
+    endereco,
+    numero_casa,
+    date_inicio,
+    date_multipicar,
+    date_que_ocorre,
+    membros
+  }) => {
     try {
       setIsLoadingSubmitForm(true)
 
@@ -118,10 +133,23 @@ export default function AddNewCelula() {
         return dataObj.toISOString()
       }
 
-      data.date_inicio = formatDatatoISO8601(data.date_inicio)
-      data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
+      date_inicio = formatDatatoISO8601(date_inicio)
+      date_multipicar = formatDatatoISO8601(date_multipicar)
 
-      const response = await axiosAuth.post(URLCelulas, { data })
+      const response = await axiosAuth.post(URLCelulas, { 
+        nome,
+        lider,
+        supervisao,
+        cep,
+        cidade,
+        estado,
+        bairro,
+        endereco,
+        numero_casa,
+        date_inicio,
+        date_multipicar,
+        date_que_ocorre,
+        membros })
       const celulaRegister = response.data
 
       if (celulaRegister) {
@@ -133,6 +161,7 @@ export default function AddNewCelula() {
       }
     } catch (error) {
       console.log(error)
+      setIsLoadingSubmitForm(false)
       errorCadastro('Erro ao Cadastrar Célula')
     }
     reset()
@@ -198,9 +227,9 @@ export default function AddNewCelula() {
 
   return (
     <>
-      <div className="relative mx-auto w-full mt-4 px-4 py-2 ">
-        <div className="w-full shadow-lg rounded-xl bg-white px-2 py-2 ">
-          <div className="flex items center justify-between sm:justify-start gap-3 w-full rounded-md px-1 py-2">
+      <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
+        <div className="w-full px-2 py-2 bg-white shadow-lg rounded-xl ">
+          <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
             <Modal
               icon={UserPlusIcon}
               titleModal="Cadastro de Céula"
@@ -210,18 +239,18 @@ export default function AddNewCelula() {
                   'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
               }}
             >
-              <div className="relative mx-auto w-full px-2 py-2">
+              <div className="relative w-full px-2 py-2 mx-auto">
                 <div className="flex justify-between">
-                  <div className="relative mx-auto px-2 py-7">
-                    <div className="mx-auto rounded-lg bg-white p-6">
+                  <div className="relative px-2 mx-auto py-7">
+                    <div className="p-6 mx-auto bg-white rounded-lg">
                       {/* Incio do Forms */}
                       <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="pb-3">
-                          <h2 className="text-sm uppercase leading-normal text-gray-400">
+                          <h2 className="text-sm leading-normal text-gray-400 uppercase">
                             Cadastro de Célula
                           </h2>
 
-                          <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-9">
+                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
                             <div className="sm:col-span-3">
                               <label
                                 htmlFor="nome"
@@ -307,7 +336,7 @@ export default function AddNewCelula() {
                           </div>
 
                           {/* INFORMAÇÕES DO REINO */}
-                          <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                             <div className="sm:col-span-3">
                               <label
                                 htmlFor="supervisao"
@@ -367,7 +396,7 @@ export default function AddNewCelula() {
                           </div>
 
                           {/* Escolha dos Membros da Celula */}
-                          <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-8">
+                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-8">
                             <div className="sm:col-span-4">
                               <div className="sm:col-span-3">
                                 <label
@@ -400,16 +429,16 @@ export default function AddNewCelula() {
                           </div>
 
                           {/* Informações para Localização */}
-                          <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                             <div className="sm:col-span-6">
-                              <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                              <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
+                              <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
+                              <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
                                 Endereço da Célula
                               </h2>
                             </div>
                           </div>
 
-                          <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                             <div className="sm:col-span-2">
                               <label
                                 htmlFor="cep"
@@ -468,7 +497,7 @@ export default function AddNewCelula() {
                             </div>
                           </div>
 
-                          <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                             <div className="sm:col-span-2">
                               <label
                                 htmlFor="bairro"
@@ -524,7 +553,7 @@ export default function AddNewCelula() {
                           </div>
 
                           {/* Botões para submeter Forms */}
-                          <div className="mt-6 flex items-center justify-end gap-x-6">
+                          <div className="flex items-center justify-end mt-6 gap-x-6">
                             <button
                               type="button"
                               className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
@@ -535,10 +564,10 @@ export default function AddNewCelula() {
                               <button
                                 type="submit"
                                 disabled={isLoadingSubmitForm}
-                                className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                                className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                               >
                                 <svg
-                                  className="mr-3 h-5 w-5 animate-spin text-gray-400"
+                                  className="w-5 h-5 mr-3 text-gray-400 animate-spin"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
                                   viewBox="0 0 24 24"
@@ -562,7 +591,7 @@ export default function AddNewCelula() {
                             ) : (
                               <button
                                 type="submit"
-                                className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                                className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                               >
                                 <span>Cadastrar</span>
                               </button>
@@ -586,7 +615,7 @@ export default function AddNewCelula() {
 
       {/* Cadastrar Nova Célula */}
 
-      <div className="relative z-10 mx-auto w-full px-2 py-2">
+      <div className="relative z-10 w-full px-2 py-2 mx-auto">
         {isLoading ? (
           <pre>Loading...</pre>
         ) : (
