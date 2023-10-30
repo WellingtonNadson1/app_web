@@ -1,5 +1,5 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js"
+  "/not-found": "app/not-found.js",
+  "/(authenticed)/page": "app/(authenticed)/page.js",
+  "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js"
 }

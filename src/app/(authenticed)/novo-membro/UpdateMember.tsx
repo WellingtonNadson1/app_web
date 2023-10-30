@@ -47,9 +47,9 @@ function UpdateMember({
           Authorization: `Bearer ${session?.user.token}`,
         },
       })
-      const data = await response.json()
-      console.log('Data in the Update', data)
-      return data
+      const dataMember = await response.json()
+      console.log('Data in the Update', dataMember)
+      return dataMember
     },
   })
   const cancelButtonRef = useRef(null)

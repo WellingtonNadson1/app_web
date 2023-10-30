@@ -40,10 +40,6 @@ interface Celula {
   }
 }
 
-interface FetchError extends Error {
-  status?: number
-}
-
 interface User {
   id: string
   first_name?: string
@@ -56,8 +52,15 @@ export interface SupervisaoData {
   membros: User[]
 }
 
-export default function AddNewCelula() {
+export default function UpdateCelula({
+  celulaId,
+  shouldFetch,
+}: {
+  celulaId: string
+  shouldFetch: boolean
+}) {
   const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
   const URLCelulas = `${BASE_URL}/celulas`
   const router = useRouter()
 
@@ -71,8 +74,19 @@ export default function AddNewCelula() {
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>({
+    defaultValues: async () => {
+      if (!celulaId) return {}
+
+      const response = await axiosAuth.get(URLCelulaId)
+      const dataCelula =  response.data
+      console.log('Data in the Update', dataCelula)
+      setValue('supervisao', dataCelula.supervisao.id)
+      setValue('lider', dataCelula.lider.firt_name)
+      return dataCelula
+    },
+  })
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -226,16 +240,16 @@ export default function AddNewCelula() {
 
   return (
     <>
-      <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
-        <div className="w-full px-2 py-2 bg-white shadow-lg rounded-xl ">
+      <div className="relative mx-auto ">
+        <div className="w-full rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
             <Modal
               icon={UserPlusIcon}
-              titleModal="Cadastro de Céula"
-              titleButton="+ Add Nova Célula"
+              titleModal="Atalização de Céula"
+              titleButton="Editar"
               buttonProps={{
                 className:
-                  'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
+                  'z-10 rounded-md bg-blue-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
               }}
             >
               <div className="relative w-full px-2 py-2 mx-auto">
@@ -246,7 +260,7 @@ export default function AddNewCelula() {
                       <form onSubmit={handleSubmit(onSubmit)}>
                         <div className="pb-3">
                           <h2 className="text-sm leading-normal text-gray-400 uppercase">
-                            Cadastro de Célula
+                            Atualização de Célula
                           </h2>
 
                           <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
@@ -603,23 +617,8 @@ export default function AddNewCelula() {
                 </div>
               </div>
             </Modal>
-            <button onClick={() => router.push('/celulas/licoes-celula')} className="z-10 rounded-md bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
-            >
-              Lições de Célula
-            </button>
           </div>
         </div>
-      </div>
-
-
-      {/* Cadastrar Nova Célula */}
-
-      <div className="relative z-10 w-full px-2 py-2 mx-auto">
-        {isLoading ? (
-          <pre>Loading...</pre>
-        ) : (
-          dataCelulas && <ListCelulas data={dataCelulas} />
-        )}
       </div>
     </>
   )

@@ -3,16 +3,13 @@ import ListMembers from '@/components/listMembers'
 import useSWR from 'swr'
 import { ReturnMembers } from './schema'
 import { useSession } from 'next-auth/react'
-import { fetchWithToken } from '@/functions/functions'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 
 
 export default function NovoMembro() {
   const { data: session } = useSession()
-
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/users`
+  const URL = `${BASE_URL}/users`
 
   const {
     data: members,

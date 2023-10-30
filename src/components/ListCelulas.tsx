@@ -2,6 +2,7 @@ import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Pagination from './Pagination'
+import UpdateCelula from '@/app/(authenticed)/celulas/UpdateCelula'
 
 export interface ICelula {
   id: string
@@ -17,6 +18,7 @@ interface ListCelulasProps {
 }
 
 export default function ListCelulas({ data }: ListCelulasProps) {
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
   const router = useRouter()
   const contextParamsSupervisaoId = useSupervisaoContext()
 
@@ -81,7 +83,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                         {celula.lider?.first_name}
                       </td>
                       <td>
-                        <div className="flex items-center justify-center gap-2 text-center">
+                        <div className="flex items-center justify-around gap-2 text-center">
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
@@ -89,7 +91,18 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                           >
                             Acessar
                           </button>
+                          {data && (
+                            <UpdateCelula
+                              shouldFetch={shouldFetch}
+                              celulaId={celula.id}
+                            />
+                            )}
+                            {/* <button
+                            className="block rounded-md bg-orange-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white  ring-1 ring-slate-700/10 duration-150 hover:bg-orange-600"
+                            >Editar</button> */}
                         </div>
+
+
                       </td>
                     </tr>
                   ))}
