@@ -25,19 +25,19 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
   }
   return (
     <div>
-      <div className="relative mx-auto mt-1 w-full p-2">
-        <div className="relative mx-auto w-full py-2">
-          <div className="w-full rounded-lg bg-white p-4 shadow-md">
+      <div className="relative w-full p-2 mx-auto mt-1">
+        <div className="relative w-full py-2 mx-auto">
+          <div className="w-full p-4 bg-white rounded-lg shadow-md">
             <h2 className="text-lg font-semibold leading-7 text-gray-800">
               Lista de Células
             </h2>
             <div className="p-2">
-              <table className="w-full table-auto border-separate border-spacing-y-3 px-2">
+              <table className="w-full px-2 border-separate table-auto border-spacing-y-3">
                 <thead>
                   <tr>
-                    <th className="text-start text-gray-800">Ord.</th>
-                    <th className="text-start text-gray-800">Célula</th>
-                    <th className="hidden text-start text-gray-800 sm:block">
+                    <th className="text-gray-800 text-start">Ord.</th>
+                    <th className="text-gray-800 text-start">Célula</th>
+                    <th className="hidden text-gray-800 text-start sm:block">
                       Líder(es)
                     </th>
                     <th className="text-gray-800">Detalhes</th>
@@ -56,7 +56,7 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
                         <h2 className="pl-2">{celula.nome}</h2>
                       </td>
 
-                      <td className="mt-2 hidden text-start text-gray-700 sm:block">
+                      <td className="hidden mt-2 text-gray-700 text-start sm:block">
                         {celula.lider?.first_name}
                       </td>
                       <td className='mx-auto'>
@@ -64,7 +64,7 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
-                            className="block rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white  ring-1 ring-slate-700/10 duration-150 hover:bg-green-600"
+                            className="px-4 py-2 mx-auto mt-2 text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
                           >
                             Acessar
                           </button>

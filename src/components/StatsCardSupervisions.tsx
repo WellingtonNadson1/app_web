@@ -23,16 +23,14 @@ export default function StatsCardSupervisions() {
 
   const URL = `${BASE_URL}/supervisoes`
 
-  function fetchWithToken(url: string, token: string) {
-    return fetch(url, {
+  async function fetchWithToken(url: string, token: string) {
+    const response = await fetch(url, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     })
-      .then((response) => response.json())
-      .then((data) => {
-        return data
-      })
+    const data = await response.json()
+    return data
   }
 
   const {
@@ -47,8 +45,8 @@ export default function StatsCardSupervisions() {
 
   if (error) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="w-full mx-auto">
           <div>failed to load</div>
         </div>
       </div>
@@ -57,8 +55,8 @@ export default function StatsCardSupervisions() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="flex items-center w-full gap-2 mx-auto">
           <div className="text-white">carregando...</div>
         </div>
       </div>
@@ -79,8 +77,8 @@ export default function StatsCardSupervisions() {
 
   return (
     <>
-      <div className="relative z-10 mx-auto w-full py-2">
-        <div className="relative z-10 mx-auto mt-3 grid w-full grid-cols-1 flex-wrap items-center justify-between gap-4 p-2 sm:grid-cols-2 md:flex-nowrap">
+      <div className="relative z-10 w-full py-2 mx-auto">
+        <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {supervisoes &&
           (supervisoes?.map((supervisao) => (
             <div
@@ -89,8 +87,8 @@ export default function StatsCardSupervisions() {
               id={supervisao.id}
               className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
             >
-              <div className="flex w-full items-center justify-between">
-                <div className="mb-0 font-sans text-sm font-semibold uppercase leading-normal">
+              <div className="flex items-center justify-between w-full">
+                <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
                   {supervisao.nome}
                 </div>
                 <div

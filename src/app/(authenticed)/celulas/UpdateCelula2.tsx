@@ -220,7 +220,7 @@ export default function UpdateCelula2({
   }, [supervisaoSelecionada, supervisoes])
   return (
     <>
-      <div className="relative mx-auto ">
+      <div className="relative ">
         <div className="w-full rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
             <Modal

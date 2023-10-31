@@ -85,7 +85,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                         {celula.lider?.first_name}
                       </td>
                       <td>
-                        <div className="flex items-center justify-around gap-2 text-center">
+                        <div className="flex items-center justify-center w-full gap-2 mx-auto text-center">
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}

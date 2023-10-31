@@ -46,16 +46,16 @@ function DeleteMember({
       titleButton="Deletar"
       buttonProps={{
         className:
-          'z-10 rounded-md bg-red-400 text-white mt-2 px-2 py-1 text-sm font-medium text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 sm:w-full',
+          'z-10 rounded-md bg-red-400 text-white mt-2 px-4 py-2 text-sm font-medium text-white hover:bg-red-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500 sm:w-full',
       }}
     >
       {/* Incio do Forms */}
-      <div className="relative mx-auto w-full px-2 py-2">
+      <div className="relative w-full px-2 py-2 mx-auto">
         <div className="flex justify-between">
-          <div className="relative mx-auto px-2 py-7">
-            <div className="mx-auto rounded-lg bg-white p-6">
-              <div className="border-b border-gray-900/10 pb-12">
-                <h2 className="text-sm uppercase leading-normal text-gray-400">
+          <div className="relative px-2 mx-auto py-7">
+            <div className="p-6 mx-auto bg-white rounded-lg">
+              <div className="pb-12 border-b border-gray-900/10">
+                <h2 className="text-sm leading-normal text-gray-400 uppercase">
                   Você dejesa Deletar este Membro?{' '}
                   <span className="font-semibold text-gray-600">
                     {memberName}
@@ -64,11 +64,11 @@ function DeleteMember({
               </div>
 
               {/* Botões para submeter Forms */}
-              <div className="mt-6 flex items-center justify-end gap-x-6">
+              <div className="flex items-center justify-end mt-6 gap-x-6">
                 <button
                   type="button"
                   ref={cancelButtonRef}
-                  className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-slate-300 hover:px-3 hover:py-2 hover:text-gray-900 sm:mt-0 sm:w-auto"
+                  className="inline-flex justify-center w-full px-3 py-2 mt-3 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-slate-300 hover:px-3 hover:py-2 hover:text-gray-900 sm:mt-0 sm:w-auto"
                 >
                   Cancelar
                 </button>
@@ -76,10 +76,10 @@ function DeleteMember({
                   <button
                     type="button"
                     disabled={isLoadingSubmitForm}
-                    className="flex items-center justify-between rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                    className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-red-700 rounded-md shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
                   >
                     <svg
-                      className="mr-3 h-5 w-5 animate-spin text-white"
+                      className="w-5 h-5 mr-3 text-white animate-spin"
                       xmlns="http://www.w3.org/2000/svg"
                       fill="none"
                       viewBox="0 0 24 24"
@@ -104,7 +104,7 @@ function DeleteMember({
                   <button
                     onClick={() => handleDelete(member)}
                     type="submit"
-                    className="rounded-md bg-red-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
+                    className="px-3 py-2 text-sm font-semibold text-white bg-red-700 rounded-md shadow-sm hover:bg-red-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-700"
                   >
                     <span>Deletar</span>
                   </button>
