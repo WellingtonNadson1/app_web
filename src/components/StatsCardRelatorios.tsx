@@ -9,6 +9,23 @@ import {
 } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
+import { useEffect, useState } from 'react'
+
+type MemberData = {
+  id: string;
+  first_name: string;
+  last_name: string;
+  presencas_cultos: {
+    status: boolean;
+    cultoIndividualId: string;
+    date_create: string;
+  }[];
+  celula: {
+    nome: string;
+  };
+};
+
+type GroupedData = Record<string, MemberData[]>;
 
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
@@ -16,79 +33,83 @@ export default function StatsCardRelatorios() {
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
 
+  const [groupedData, setGroupedData] = useState<GroupedData | null>(null); // Estado para os dados agrupados
+  const [celulas, setCelulas] = useState<GroupedData>(); // Estado para os dados agrupados
+
+  useEffect(() => {
+    handleRelatorio();
+  }, []);
+
   const handleRelatorio = async () => {
     try {
-      const response = await axiosAuth.get(URLRelatorioSupervision)
-      const relatorio = response.data
+      const response = await axiosAuth.get(URLRelatorioSupervision);
+      const relatorio: MemberData[] = response.data;
 
       if (!relatorio) {
-        // Lidar com erros de resposta, se necessário
-        console.log('Erro na resposta da API:', response.statusText)
-        return
+        console.log('Erro na resposta da API:', response.statusText);
+        return;
       }
 
-      const buffer = await relatorio.arrayBuffer()
-      const blob = new Blob([buffer], { type: 'application/pdf' })
-
-      // Cria um objeto URL para o blob
-      const url = window.URL.createObjectURL(blob)
-
-      // Abre o PDF em uma nova aba ao invés de baixá-lo
-      window.open(url)
+      const dataGrouped: GroupedData = groupDataByCell(relatorio);
+      setGroupedData(dataGrouped);
+      console.log('dataGrouped', dataGrouped)
     } catch (error) {
-      console.log('Erro ao buscar o relatório:', error)
+      console.log('Erro ao buscar o relatório:', error);
     }
-  }
+  };
+
+  const groupDataByCell = (relatorio: MemberData[]) => {
+    const groupedData: GroupedData = {};
+
+    relatorio.forEach(person => {
+      const cellName = person.celula.nome;
+
+      if (!groupedData[cellName]) {
+        groupedData[cellName] = [];
+      }
+
+      groupedData[cellName].push(person);
+    });
+
+    return groupedData;
+  };
 
   const escolasIbb = [
     {
       title: 'Presença1',
       supervisor: 'Células',
-      // total: '234',
-      // status: 'up',
       icon: Footprints,
       color: 'bg-[#F55343]',
-      // nivel: '',
     },
     {
       title: 'Presença',
       supervisor: 'Supervisões',
-      // total: '334',
-      // status: 'up',
       icon: FishSimple,
       color: 'bg-[#43a2f5]',
-      // nivel: '',
     },
     {
       title: 'Supervisores',
-      // supervisor: '',
-      // total: '234',
-      // status: 'up',
       icon: UsersFour,
       color: 'bg-[#e2de5f]',
-      // nivel: '',
     },
     {
       title: 'Discipulados',
       supervisor: '',
-      // total: '234',
-      // status: 'up',
       icon: HandsPraying,
       color: 'bg-[#f58224]',
-      // nivel: '',
     },
   ]
   return (
     <>
-      <div className="relative z-10 mx-auto w-full py-2">
-        <div className="relative z-10 mx-auto mt-3 grid w-full grid-cols-1 flex-wrap items-center justify-between gap-4 p-2 sm:grid-cols-2 md:flex-nowrap">
+      <div className="relative z-10 w-full py-2 mx-auto">
+        <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {escolasIbb.map((stat) => (
             <Link key={stat.title} href="/supervisoes/celulas">
               <div
                 className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
               >
-                <div className="flex w-full items-center justify-between">
-                  <div className="mb-0 font-sans text-sm font-semibold uppercase leading-normal">
+                <div className="flex items-center justify-between w-full">
+                  <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
                     {stat.title}
                   </div>
                   <div
@@ -102,14 +123,6 @@ export default function StatsCardRelatorios() {
                     {stat.supervisor}
                   </span>
                 </div>
-                {/* <div className="flex items-center">
-                  <span className="text-sm font-bold leading-normal text-emerald-500">
-                    {stat?.status}
-                  </span>
-                  <span className="ml-2 text-sm font-bold leading-normal text-gray-500">
-                    {stat?.nivel}
-                  </span>
-                </div> */}
               </div>
             </Link>
           ))}
@@ -118,12 +131,95 @@ export default function StatsCardRelatorios() {
             <button
               type="submit"
               onClick={handleRelatorio}
-              className="hover:gb-sky-500 rounded-md bg-sky-600 px-2 py-1 text-white"
+              className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
             >
               Relat. Mensal Supervisão
             </button>
           </div>
+
         </div>
+      </div>
+      <div className='rounded-sm shadow-md max-auto sm:rounded-lg'>
+        <table className='w-full text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
+          <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300'>
+            <tr>
+              <th className="px-6 py-3">Célula</th>
+              <th className="px-6 py-3">Membros</th>
+
+              {/* data do culto */}
+              {groupedData &&
+                Object.keys(groupedData).map((cellName, cellIndex) => (
+                  <th key={cellName + cellIndex} className='bg-white border-b '>
+                    {Array.from({ length: groupedData[cellName].length }, (_, i) => (
+                      <th key={i}>
+                        {groupedData[cellName].length > 0 &&
+                          groupedData[cellName].map((member, index) => (
+                            <div className='mx-auto font-semibold text-center'>
+                              {member.presencas_cultos[i] ? (
+                                typeof member.presencas_cultos[i] === 'object' &&
+                                  member.presencas_cultos[i].hasOwnProperty('status') ? (
+                                  member.presencas_cultos[i].date_create ? (
+                                    <th className='text-green-600'>{member.presencas_cultos[i].date_create}</th>
+                                  ) : (
+                                    <th className='text-red-600'>F</th>
+                                  )
+                                ) : (
+                                  'N/A'
+                                )
+                              ) : (
+                                'N/A'
+                              )}
+                            </div>
+                          ))}
+                      </th>
+                    ))}
+                  </th>
+                ))}
+              
+            </tr>
+          </thead>
+          <tbody>
+            {groupedData &&
+              Object.keys(groupedData).map((cellName, cellIndex) => (
+                <tr key={cellName + cellIndex} className='bg-white border-b '>
+                  <td>
+                    {cellName}
+                  </td>
+                  <td>
+                    {groupedData[cellName].length > 0 &&
+                      groupedData[cellName].map((member, index) => (
+                        <div key={member.id}>{member.first_name}</div>
+                      ))}
+                  </td>
+                  {Array.from({ length: groupedData[cellName].length }, (_, i) => (
+                    <td key={i}>
+                      {groupedData[cellName].length > 0 &&
+                        groupedData[cellName].map((member, index) => (
+                          <div className='mx-auto font-semibold text-center'>
+                            {member.presencas_cultos[i] ? (
+                              typeof member.presencas_cultos[i] === 'object' &&
+                                member.presencas_cultos[i].hasOwnProperty('status') ? (
+                                member.presencas_cultos[i].status === true ? (
+                                  <p className='text-green-600'>P</p>
+                                ) : (
+                                  <p className='text-red-600'>F</p>
+                                )
+                              ) : (
+                                'N/A'
+                              )
+                            ) : (
+                              'N/A'
+                            )}
+                          </div>
+                        ))}
+                    </td>
+                  ))}
+                </tr>
+              ))}
+
+          </tbody>
+
+        </table>
       </div>
     </>
   )

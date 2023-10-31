@@ -1,5 +1,7 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js"
+  "/(authenticed)/novo-membro/page": "app/(authenticed)/novo-membro/page.js",
+  "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
+  "/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.js"
 }
