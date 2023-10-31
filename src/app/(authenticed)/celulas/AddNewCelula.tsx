@@ -12,6 +12,7 @@ import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { ToastContainer } from 'react-toastify'
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -38,10 +39,6 @@ interface Celula {
     id: string
     first_name: string
   }
-}
-
-interface FetchError extends Error {
-  status?: number
 }
 
 interface User {
@@ -226,6 +223,7 @@ export default function AddNewCelula() {
 
   return (
     <>
+    <ToastContainer />
       <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
         <div className="w-full px-2 py-2 bg-white shadow-lg rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">

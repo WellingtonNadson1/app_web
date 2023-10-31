@@ -3,6 +3,8 @@ import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Pagination from './Pagination'
 import UpdateCelula from '@/app/(authenticed)/celulas/UpdateCelula'
+import UpdateCelulas2 from '@/app/(authenticed)/celulas/UpdateCelula2'
+import UpdateCelula2 from '@/app/(authenticed)/celulas/UpdateCelula2'
 
 export interface ICelula {
   id: string
@@ -44,24 +46,24 @@ export default function ListCelulas({ data }: ListCelulasProps) {
   };
 
   return (
-      <div className="relative  mx-auto w-full p-2">
-        <div className="relative mx-auto w-full py-2">
-          <div className="w-full rounded-lg bg-white p-4 shadow-md">
-            <div className='flex items-center justify-between sm:justify-start gap-3'>
-              <h2 className="text-lg py-6 font-semibold leading-7 text-gray-800">
+      <div className="relative w-full p-2 mx-auto">
+        <div className="relative w-full py-2 mx-auto">
+          <div className="w-full p-4 bg-white rounded-lg shadow-md">
+            <div className='flex items-center justify-between gap-3 sm:justify-start'>
+              <h2 className="py-6 text-lg font-semibold leading-7 text-gray-800">
                 Lista Geral de Células IBB
               </h2>
-              <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20 sm:block'>
-                <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{data?.length}</span></p>
+              <div className='items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block'>
+                <p className='flex items-center justify-between'>Total <span className='px-1 py-1 ml-2 text-white rounded-md bg-sky-700'>{data?.length}</span></p>
               </div>
             </div>
             <div className="p-2">
-              <table className="w-full table-auto border-separate border-spacing-y-3 px-2">
+              <table className="w-full px-2 border-separate table-auto border-spacing-y-3">
                 <thead>
                   <tr>
-                    <th className="text-start text-gray-800">Ord.</th>
-                    <th className="text-start text-gray-800">Célula</th>
-                    <th className="hidden text-start text-gray-800 sm:block">
+                    <th className="text-gray-800 text-start">Ord.</th>
+                    <th className="text-gray-800 text-start">Célula</th>
+                    <th className="hidden text-gray-800 text-start sm:block">
                       Líder(es)
                     </th>
                     <th className="text-gray-800">Detalhes</th>
@@ -79,7 +81,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                       <td>
                         <h2 className="pl-2">{celula.nome}</h2>
                       </td>
-                      <td className="mt-2 hidden text-start text-gray-700 sm:block">
+                      <td className="hidden mt-2 text-gray-700 text-start sm:block">
                         {celula.lider?.first_name}
                       </td>
                       <td>
@@ -87,19 +89,22 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
-                            className="block rounded-md bg-green-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white  ring-1 ring-slate-700/10 duration-150 hover:bg-green-600"
+                            className="'z-10 rounded-md bg-green-600 px-4 py-2 text-sm font-medium text-white hover:bg-green-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700'"
                           >
                             Acessar
                           </button>
-                          {data && (
+                          {/* {data && (
                             <UpdateCelula
                               shouldFetch={shouldFetch}
                               celulaId={celula.id}
                             />
+                            )} */}
+                          {data && (
+                            <UpdateCelula2
+                              shouldFetch={shouldFetch}
+                              id={celula.id}
+                            />
                             )}
-                            {/* <button
-                            className="block rounded-md bg-orange-500 px-4 py-2 text-center text-sm font-medium leading-3 text-white  ring-1 ring-slate-700/10 duration-150 hover:bg-orange-600"
-                            >Editar</button> */}
                         </div>
 
 

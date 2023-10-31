@@ -1,7 +1,8 @@
 "use client"
 import { useRefreshToken } from '@/lib/hooks/useRefreshToken';
 import axios, { AxiosError, AxiosInstance } from 'axios';
-import { toast } from 'react-toastify';
+import { ToastContainer, toast } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 // import { useRefreshToken } from '@/lib/hooks/useRefreshToken';
 // import { useEffect } from 'react';
 // import { useSession } from 'next-auth/react';

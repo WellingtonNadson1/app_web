@@ -1,5 +1,5 @@
 'use client'
-import ListCelulas, { ICelula } from '@/components/ListCelulas'
+import { ICelula } from '@/components/ListCelulas'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -9,9 +9,49 @@ import { z } from 'zod'
 import { AddressProps } from '../novo-membro/schema'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/navigation'
 import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { ToastContainer } from 'react-toastify'
+
+interface Member {
+  id: string;
+  first_name: string;
+  cargo_de_lideranca: {
+    id: string;
+    nome: string;
+  };
+  situacao_no_reino: {
+    id: string;
+    nome: string;
+  };
+}
+
+interface Lider {
+  id: string;
+  first_name: string;
+}
+
+interface Supervisao {
+  id: string;
+  nome: string;
+}
+
+interface ReuniaoCelula {
+  id: string;
+  data_reuniao: string;
+  status: string;
+  presencas_membros_reuniao_celula: any[]; // You can replace 'any' with the appropriate type if needed
+}
+
+interface DataCelula {
+  id: string;
+  nome: string;
+  membros: Member[];
+  lider: Lider;
+  supervisao: Supervisao;
+  date_que_ocorre: string;
+  reunioes_celula: ReuniaoCelula[];
+}
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -43,13 +83,20 @@ interface Celula {
 interface User {
   id: string
   first_name?: string
+  cargo_de_lideranca: { 
+    id: string, 
+    nome: string },
+  situacao_no_reino: { 
+    id: string, 
+    nome: string
+  }
 }
 
 export interface SupervisaoData {
   id: string
   nome: string
-  celulas: Celula[]
   membros: User[]
+  celulas: Celula[]
 }
 
 export default function UpdateCelula({
@@ -62,8 +109,6 @@ export default function UpdateCelula({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const router = useRouter()
-
   const { data: session } = useSession()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -74,6 +119,7 @@ export default function UpdateCelula({
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
+  const [teste, setTeste] = useState<DataCelula>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>({
     defaultValues: async () => {
@@ -81,9 +127,9 @@ export default function UpdateCelula({
 
       const response = await axiosAuth.get(URLCelulaId)
       const dataCelula =  response.data
+      setTeste(dataCelula)
       console.log('Data in the Update', dataCelula)
-      setValue('supervisao', dataCelula.supervisao.id)
-      setValue('lider', dataCelula.lider.firt_name)
+      console.log('Nome Celula', dataCelula.supervisao.nome);
       return dataCelula
     },
   })
@@ -237,9 +283,10 @@ export default function UpdateCelula({
       }
     }
   }, [supervisaoSelecionada, supervisoes])
-
+  console.log(teste?.supervisao.id)
   return (
     <>
+      <ToastContainer />
       <div className="relative mx-auto ">
         <div className="w-full rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
@@ -249,7 +296,7 @@ export default function UpdateCelula({
               titleButton="Editar"
               buttonProps={{
                 className:
-                  'z-10 rounded-md bg-blue-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
+                  'z-10 rounded-md bg-blue-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700',
               }}
             >
               <div className="relative w-full px-2 py-2 mx-auto">
@@ -275,7 +322,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('nome')}
                                   type="text"
-                                  name="nome"
                                   id="nome"
                                   autoComplete="given-name"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -293,7 +339,6 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('date_que_ocorre')}
-                                  name="date_que_ocorre"
                                   id="date_que_ocorre"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
@@ -322,7 +367,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('date_inicio')}
                                   type="datetime-local"
-                                  name="date_inicio"
                                   id="date_inicio"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -340,7 +384,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('date_multipicar')}
                                   type="datetime-local"
-                                  name="date_multipicar"
                                   id="date_multipicar"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -361,9 +404,9 @@ export default function UpdateCelula({
                                 <select
                                   {...register('supervisao')}
                                   id="supervisao"
-                                  name="supervisao"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   onChange={handleSupervisaoSelecionada}
+                                  defaultValue={teste?.supervisao.id}
                                 >
                                   {!supervisoes ? (
                                     <option value="">Carregando supervisões...</option>
@@ -393,7 +436,6 @@ export default function UpdateCelula({
                                 <select
                                   {...register('lider')}
                                   id="lider"
-                                  name="lider"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
                                   <option value="">Selecione</option>
@@ -423,7 +465,6 @@ export default function UpdateCelula({
                                     {...register('membros')}
                                     multiple={true}
                                     id="membros"
-                                    name="membros"
                                     className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   >
                                     <option value="">
@@ -465,7 +506,6 @@ export default function UpdateCelula({
                                   maxLength={9}
                                   onKeyUp={handleZipCode}
                                   type="text"
-                                  name="cep"
                                   id="cep"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -483,7 +523,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('cidade')}
                                   type="text"
-                                  name="cidade"
                                   id="cidade"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -501,7 +540,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('estado')}
                                   type="text"
-                                  name="estado"
                                   id="estado"
                                   autoComplete="address-level1"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -522,7 +560,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('bairro')}
                                   type="text"
-                                  name="bairro"
                                   id="bairro"
                                   autoComplete="address-level1"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -540,7 +577,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('endereco')}
                                   type="text"
-                                  name="endereco"
                                   id="endereco"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -557,7 +593,6 @@ export default function UpdateCelula({
                                 <input
                                   {...register('numero_casa')}
                                   type="text"
-                                  name="numero_casa"
                                   id="numero_casa"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
