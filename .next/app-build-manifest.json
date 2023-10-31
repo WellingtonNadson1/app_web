@@ -1,5 +1,10 @@
 {
   "pages": {
+    "/(authenticed)/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/page.js"
+    ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -17,45 +22,6 @@
       "static/chunks/main-app.js",
       "static/css/app/(authenticed)/celulas/page.css",
       "static/chunks/app/(authenticed)/celulas/page.js"
-    ],
-    "/(authenticed)/supervisoes/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/supervisoes/page.css",
-      "static/chunks/app/(authenticed)/supervisoes/page.js"
-    ],
-    "/(authenticed)/novo-membro/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/novo-membro/page.css",
-      "static/chunks/app/(authenticed)/novo-membro/page.js"
-    ],
-    "/(authenticed)/supervisoes/[supervisaoId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/supervisoes/[supervisaoId]/page.css",
-      "static/chunks/app/(authenticed)/supervisoes/[supervisaoId]/page.js"
-    ],
-    "/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.css",
-      "static/chunks/app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.js"
-    ],
-    "/(authenticed)/escolas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/escolas/page.js"
-    ],
-    "/(authenticed)/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
-    ],
-    "/(authenticed)/relatorios/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/relatorios/page.js"
     ]
   }
 }
