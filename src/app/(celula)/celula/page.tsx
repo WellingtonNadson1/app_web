@@ -35,6 +35,7 @@ export default function ControleCelulaSupervision() {
     queryKey: ['celula', celulaId],
     queryFn: () => axiosAuth.get(URLCelula),
     enabled: !!celulaId,
+    retry: false
   })
 
   if (isLoading) {

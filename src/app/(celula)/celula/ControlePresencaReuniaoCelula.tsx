@@ -4,14 +4,12 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
-import { getDay } from 'date-fns'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-
 import * as z from 'zod'
 import { CelulaProps } from './schema'
 
@@ -87,8 +85,6 @@ export default function ControlePresencaReuniaoCelula({
 
   const memoizedDataHoje = useMemo(() => new Date(), [])
   const memoizedDataHojeString = memoizedDataHoje.toDateString()
-
-  const dayOfWeek = getDay(memoizedDataHoje)
 
   const formatDatatoISO8601 = (dataString: string) => {
     const dataObj = new Date(dataString);
@@ -228,14 +224,14 @@ export default function ControlePresencaReuniaoCelula({
                               </span>
                             </div>
                             <input
-                              {...register(`${index}.status` as const)}
+                              {...register(`${index}.status` as const, { required: true })}
                               value="true"
                               type="radio"
                               id={user.id}
                               className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                             />
                             <input
-                              {...register(`${index}.status` as const)}
+                              {...register(`${index}.status` as const, { required: true })}
                               value="false"
                               type="radio"
                               id={user.first_name}

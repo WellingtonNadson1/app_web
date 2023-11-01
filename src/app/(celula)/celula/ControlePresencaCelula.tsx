@@ -1,20 +1,16 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, fetchWithToken } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
-// import { UserFocus } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
-// import { Props } from 'next/script'
-// import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import useSWR from 'swr'
 import * as z from 'zod'
-// import { useEffect, useState } from 'react'
 
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
@@ -80,12 +76,6 @@ const attendanceSchema = z.object({
   presenca_culto: z.string(),
 })
 
-interface PresenceCulto {
-  id: string
-  status: boolean
-  presenca_culto: string | null
-}
-
 type attendance = z.infer<typeof attendanceSchema>
 
 export default function ControlePresencaCelula({
@@ -95,37 +85,25 @@ export default function ControlePresencaCelula({
   const URLControlePresenca = `${BASE_URL}/presencacultos`
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  // const [isLoading, setIsLoading] = useState(false)
   const router = useRouter()
-  const { handleSubmit, register, reset } = useForm<attendance[]>()
+  const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance[]>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
 
-  console.log('URL Celula ID', URLPresencaCultoId)
-  console.log('Lider', celula.lider.id)
+  const getPresenceRegistered = async () => {
+    const response = await axiosAuth.get(URLPresencaCultoId)
+    const PresenceExistRegistered = await response.data
+    return PresenceExistRegistered
+  }
 
-  const { data: PresenceExistRegister, isLoading } = useSWR<PresenceCulto>(
-    [URLPresencaCultoId, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const result = useQuery({
+    queryKey: ['presence'],
+    queryFn: getPresenceRegistered,
+    retry: false
+  })
 
-  // const fetch = async () => {
-  //   // Antes da chamada
-  //   setIsLoading(true);
-  //   try {
-  //     const response = await axiosAuth.get(URLPresencaCultoId);
-  //     const presenca = response.data;
-  //     setPresenceExistRegister(presenca);
-  //   } catch (error) {
-  //     console.error('Erro na requisição:', error);
-  //   } finally {
-  //     setIsLoading(false); // Defina como false após a chamada
-  //   }
-  // }
+  const { data:PresenceExistRegister, isLoading  } = result
 
-  // useEffect(() => {
-  //   fetch()
-  // }, [fetch]);
 
   const notify = () =>
     toast.success('😉 Presenças Registradas!', {
@@ -243,14 +221,16 @@ export default function ControlePresencaCelula({
                                 </span>
                               </div>
                               <input
-                                {...register(`${index}.status` as const)}
+                                {...register(`${index}.status` as const, {
+                                  required: true
+                                })}
                                 value="true"
                                 type="radio"
                                 id={user.id}
                                 className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                               />
                               <input
-                                {...register(`${index}.status` as const)}
+                                {...register(`${index}.status` as const, { required: true })}
                                 value="false"
                                 type="radio"
                                 id={user.first_name}
