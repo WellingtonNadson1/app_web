@@ -69,7 +69,7 @@ export default function ControleCelulaSupervision() {
         </div>
         <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
     {selectedDayMeetings === null ? (
-      <SpinnerButton />
+      <SpinnerButton message={''}/>
     ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
       selectedDayMeetings.map((meeting) => (
         isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
@@ -103,9 +103,9 @@ export default function ControleCelulaSupervision() {
               </div>
             </div>
           ) : (
-            <SpinnerButton key={meeting.id} />
+            <SpinnerButton message={''} key={meeting.id} />
           )
-        ) : <SpinnerButton key={meeting.id} />
+        ) : <SpinnerButton message={''} key={meeting.id} />
       ))
     ) : (
       <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">

@@ -158,46 +158,46 @@ export default function ControlePresencaReuniaoCelula({
   return (
     <>
     {isLoadingCreateReuniaoCelula ? (
-      <p className="leading-2 mb-3 text-sm font-normal text-gray-500">
-      <SpinnerButton />
+      <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
+      <SpinnerButton message={''}/>
     </p>
     ) : (
       <>
         {reuniaoIsRegistered ? (
-          <p className="leading-2 mb-3 text-sm font-normal text-gray-500">
+          <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
             Presença já cadastrada!
           </p>
         ) : (
           <>
             <ToastContainer />
-            <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
+            <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
               <div className="w-full px-2 py-2 ">
-                <div className="w-full rounded-md px-1 py-2">
+                <div className="w-full px-1 py-2 rounded-md">
                   <h2 className="mb-3 text-lg font-semibold leading-7 text-gray-800">
                     Presença de Reunião de Célula
                   </h2>
                   <div className="w-full border-separate border-spacing-y-6">
                     <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
-                      <div className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
+                      <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                         Nome
                       </div>
-                      <div className="hidden border-b-2 border-orange-300 py-2 text-center text-gray-800 sm:block">
+                      <div className="hidden py-2 text-center text-gray-800 border-b-2 border-orange-300 sm:block">
                         Status
                       </div>
-                      <div className="hidden border-b-2 border-indigo-300 py-2 text-center text-gray-800 sm:block">
+                      <div className="hidden py-2 text-center text-gray-800 border-b-2 border-indigo-300 sm:block">
                         Cargo
                       </div>
-                      <div className="border-b-2 border-green-300 py-2 text-center text-gray-800">
+                      <div className="py-2 text-center text-gray-800 border-b-2 border-green-300">
                         P
                       </div>
-                      <div className="border-b-2 border-red-300 py-2 text-center text-gray-800">
+                      <div className="py-2 text-center text-gray-800 border-b-2 border-red-300">
                         F
                       </div>
                     </div>
                     <div className="text-sm font-normal text-gray-700">
                       {dataCelula.data.membros.map((user, index) => (
                         <form key={user.id} id={user.id}>
-                          <div className="mb-1 mt-3 grid grid-cols-3 gap-4 sm:grid-cols-5">
+                          <div className="grid grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-5">
                             <input
                               type="hidden"
                               value={user.id}
@@ -223,7 +223,7 @@ export default function ControlePresencaReuniaoCelula({
                               </span>
                             </div>
                             <div className="hidden sm:block">
-                              <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
+                              <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
                                 {user.cargo_de_lideranca?.nome}{' '}
                               </span>
                             </div>
@@ -232,14 +232,14 @@ export default function ControlePresencaReuniaoCelula({
                               value="true"
                               type="radio"
                               id={user.id}
-                              className="mx-auto h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
+                              className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                             />
                             <input
                               {...register(`${index}.status` as const)}
                               value="false"
                               type="radio"
                               id={user.first_name}
-                              className="mx-auto h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
+                              className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
                             />
                           </div>
                         </form>
@@ -251,7 +251,7 @@ export default function ControlePresencaReuniaoCelula({
                           className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                           <svg
-                            className="mr-3 h-5 w-5 animate-spin text-white"
+                            className="w-5 h-5 mr-3 text-white animate-spin"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"

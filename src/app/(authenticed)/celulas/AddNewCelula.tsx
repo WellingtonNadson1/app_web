@@ -13,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
+import LoadingListCelula from './LoadingListCelula'
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -614,7 +615,7 @@ export default function AddNewCelula() {
 
       <div className="relative z-10 w-full px-2 py-2 mx-auto">
         {isLoading ? (
-          <pre>Loading...</pre>
+          <LoadingListCelula />
         ) : (
           dataCelulas && <ListCelulas data={dataCelulas} />
         )}

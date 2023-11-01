@@ -93,12 +93,6 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                           >
                             Acessar
                           </button>
-                          {/* {data && (
-                            <UpdateCelula
-                              shouldFetch={shouldFetch}
-                              celulaId={celula.id}
-                            />
-                            )} */}
                           {data && (
                             <UpdateCelula2
                               shouldFetch={shouldFetch}
@@ -106,8 +100,6 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                             />
                             )}
                         </div>
-
-
                       </td>
                     </tr>
                   ))}

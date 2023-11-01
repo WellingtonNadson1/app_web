@@ -5,6 +5,7 @@ import { ReturnMembers } from './schema'
 import { useSession } from 'next-auth/react'
 import { BASE_URL, fetchWithToken } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 
 
 export default function NovoMembro() {
@@ -23,8 +24,8 @@ export default function NovoMembro() {
 
   if (error) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="w-full mx-auto">
           <div>
             Falha ao carregar, por favor, saia e entre no App novamente.
           </div>
@@ -36,48 +37,48 @@ export default function NovoMembro() {
   if (isLoading) {
     return (
       <>
-        <div className="relative mt-8 mx-auto w-full rounded-xl bg-white px-6 py-2 shadow-lg">
+        <div className="relative w-full px-6 py-2 mx-auto mt-8 bg-white shadow-lg rounded-xl">
           <div className="w-full px-2 py-2 ">
-            <div className="w-full rounded-md px-1 py-2">
+            <div className="w-full px-1 py-2 rounded-md">
               <div className="flex items-center justify-between">
                 {/* ... Outros elementos do cabeçalho ... */}
-                <div className='flex items-center justify-between sm:justify-start gap-3'>
-                  <h2 className="text-lg py-6 font-semibold leading-7 text-gray-800">
+                <div className='flex items-center justify-between gap-3 sm:justify-start'>
+                  <h2 className="py-6 text-lg font-semibold leading-7 text-gray-800">
                     Lista de Membros IBB
                   </h2>
-                  <div className='hidden items-center justify-center rounded-md px-3 py-2 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20 sm:block'>
-                    <p className='w-200 h-4 animate-pulse'>Total <span className='text-white ml-2 rounded-md px-2 py-1 bg-sky-700'></span></p>
+                  <div className='items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block'>
+                    <p className='h-4 w-200 animate-pulse'>Total <span className='px-2 py-1 ml-2 text-white rounded-md bg-sky-700'></span></p>
                   </div>
-                  <div className='hidden items-center justify-center rounded-md px-3 py-2 text-center text-xs font-medium ring-1 ring-inset bg-green-50  text-sky-700 ring-blue-600/20 sm:block'>
-                    <p className='w-200 h-4 animate-pulse'>Ativos <span className='text-white ml-2 rounded-md px-2 py-1 bg-green-700'></span></p>
+                  <div className='items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block'>
+                    <p className='h-4 w-200 animate-pulse'>Ativos <span className='px-2 py-1 ml-2 text-white bg-green-700 rounded-md'></span></p>
                   </div>
-                  <div className='hidden items-center justify-center rounded-md px-3 py-2 text-center text-xs font-medium ring-1 ring-inset bg-sky-50  text-sky-700 ring-blue-600/20 md:block'>
-                    <p className='w-200 h-4 animate-pulse'>Normal <span className='text-white ml-2 rounded-md px-2 py-1 bg-sky-700'></span></p>
+                  <div className='items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-sky-50 text-sky-700 ring-blue-600/20 md:block'>
+                    <p className='h-4 w-200 animate-pulse'>Normal <span className='px-2 py-1 ml-2 text-white rounded-md bg-sky-700'></span></p>
                   </div>
                 </div>
-                <button className='w-35 h-4 animate-pulse'></button>
+                <button className='h-4 w-35 animate-pulse'></button>
               </div>
             </div>
-            <table className="w-full table-auto border-separate border-spacing-y-3">
+            <table className="w-full border-separate table-auto border-spacing-y-3">
               {/* ... Cabeçalho da tabela ... */}
               <thead>
                 <tr className="text-base font-bold ">
-                  <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                     Nome
                   </th>
-                  <th className="hidden border-b-2 border-orange-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-orange-300 text-start sm:table-cell">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
                     Cargo
                   </th>
-                  <th className="hidden border-b-2 border-blue-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
                     Supervisão
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
                     Célula
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-center text-gray-800">
+                  <th className="py-2 text-center text-gray-800 border-b-2 border-red-300">
                     Opções
                   </th>
                 </tr>
@@ -86,25 +87,25 @@ export default function NovoMembro() {
                 {isLoading ? ( // Verificando se está em estado de carregamento
                   // Renderizar o esqueleto de carregamento
                   Array.from({ length: 5 }).map((_, index) => ( // Suponhamos que você queira renderizar 5 linhas de esqueleto
-      <tr key={index} className="border-b border-gray-200 py-8">
-        <td>
-          <div className="flex items-center gap-3">
-            <UserFocus size={24} />
-            <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
-          </div>
-        </td>
-        {/* ... Outras células de esqueleto ... */}
-      </tr>
-    ))
+                <tr key={index} className="py-8 border-b border-gray-200">
+                  <td>
+                    <div className="flex items-center gap-3">
+                      <UserFocus size={24} />
+                      <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
+                    </div>
+                  </td>
+                  {/* ... Outras células de esqueleto ... */}
+                </tr>
+              ))
                 ) : (
                   // Renderizar a lista de membros
-                  <p>CARREGANDO</p>
+                  <SpinnerButton message={'Carregando'}/>
                 )}
               </tbody>
             </table>
           </div>
         </div>
-    </>
+      </>
     )
   }
 
@@ -114,7 +115,7 @@ export default function NovoMembro() {
 
   return (
     <>
-      <div className="relative mx-auto mb-4 mt-4 w-full px-2">
+      <div className="relative w-full px-2 mx-auto mt-4 mb-4">
         {members &&
           <ListMembers members={members} />
         }

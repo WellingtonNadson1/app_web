@@ -23,7 +23,7 @@ export default function LicoesCelula() {
     queryFn: () =>
     axiosAuth.get(URLLicoesCelula),
   })
-  if(isLoading) return <SpinnerButton />
+  if(isLoading) return <SpinnerButton message={''}/>
   if (isError) {
     return <div>Erro ao carregar os dados.</div>
   }
@@ -73,25 +73,25 @@ export default function LicoesCelula() {
   ]
 
   return (
-    <div className="relative z-10 mx-auto flex w-full flex-wrap items-center justify-between md:flex-nowrap">
-      <div className="flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95">
-        <div className="mb-3 flex flex-col items-start justify-start">
+    <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
+      <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
+        <div className="flex flex-col items-start justify-start mb-3">
           <h1 className="mb-3 text-lg font-semibold leading-7">Lições</h1>
           <span className="mb-3 text-base">Tema: {temaMesCelula}</span>
         </div>
-        <div className="mb-3 grid grid-cols-1 gap-4 px-2 py-1 sm:grid-cols-2">
+        <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
           {statusLicoes.map((stat, index) => (
             data ?  (
               <a
               href={`${data.data[index]}`}
               target="_blank"
               key={stat.id}
-              className="cursor-pointer rounded-md bg-gray-50 hover:bg-gray-100/80"
+              className="rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100/80"
             >
               <div className="p-2 sm:col-span-1">
-                <div className="flex w-full items-center justify-between gap-4">
+                <div className="flex items-center justify-between w-full gap-4">
                   <div>
-                    <div className="mb-0 font-sans text-base font-semibold uppercase leading-normal text-gray-900">
+                    <div className="mb-0 font-sans text-base font-semibold leading-normal text-gray-900 uppercase">
                     {stat.id}ª - {stat.title}
                     </div>
                     <div>
@@ -100,7 +100,7 @@ export default function LicoesCelula() {
                         {stat.versiculo}
                         </span>
                       </div>
-                      <div className="mt-3 flex items-center">
+                      <div className="flex items-center mt-3">
                         {stat.status === 'pendente' ? (
                           <span className="text-sm font-normal leading-6 text-red-500">
                             {stat.status}

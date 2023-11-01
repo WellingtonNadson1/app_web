@@ -1,5 +1,7 @@
 {
-  "/(authenticed)/page": "app/(authenticed)/page.js",
   "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js",
+  "/(authenticed)/novo-membro/page": "app/(authenticed)/novo-membro/page.js",
+  "/(authenticed)/supervisoes/page": "app/(authenticed)/supervisoes/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
   "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }

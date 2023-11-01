@@ -1,6 +1,5 @@
 'use client'
 import Modal from '@/components/modal'
-import ButtonLoader from '@/components/ButtonLoader'
 import { fetchWithToken } from '@/functions/functions'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -20,6 +19,7 @@ import {
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 
 function AddNewMember() {
   const hostname = 'app-ibb.onrender.com'
@@ -207,8 +207,8 @@ function AddNewMember() {
 
   if (error)
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="w-full mx-auto">
           <div>Falha ao carregar, atualize a página.</div>
         </div>
       </div>
@@ -216,9 +216,9 @@ function AddNewMember() {
 
   if (!supervisoes) {
     return (
-      <div className="z-50 mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
-          <div className="text-white">carregando...</div>
+      <div className="z-50 w-full px-2 py-2 mx-auto">
+        <div className="flex items-center w-full gap-2 mx-auto">
+          <SpinnerButton message={''} />
         </div>
       </div>
     )
@@ -226,7 +226,7 @@ function AddNewMember() {
 
   if (isLoading) {
     return (
-      <ButtonLoader />
+      <SpinnerButton message={'Carregando'} />
     )
   }
 
@@ -250,17 +250,17 @@ function AddNewMember() {
       }}
     >
       {/* Incio do Forms */}
-      <div className="relative mx-auto w-full px-2 py-2">
+      <div className="relative w-full px-2 py-2 mx-auto">
         <div className="flex justify-between">
-          <div className="relative mx-auto px-2 py-7">
-            <div className="mx-auto rounded-lg bg-white p-6">
+          <div className="relative px-2 mx-auto py-7">
+            <div className="p-6 mx-auto bg-white rounded-lg">
               <form onSubmit={handleSubmit(onSubmit)}>
-                <div className="border-b border-gray-900/10 pb-12">
-                  <h2 className="text-sm uppercase leading-normal text-gray-400">
+                <div className="pb-12 border-b border-gray-900/10">
+                  <h2 className="text-sm leading-normal text-gray-400 uppercase">
                     Informações Pessoais
                   </h2>
 
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-3">
                       <label
                         htmlFor="first_name"
@@ -458,10 +458,10 @@ function AddNewMember() {
                   </div>
 
                   {/* INFORMAÇÕES DO REINO */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
-                      <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                      <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
+                      <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
+                      <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
                         Informações do Reino
                       </h2>
                     </div>
@@ -535,7 +535,7 @@ function AddNewMember() {
                       <div className="mt-3">
                         <Combobox value={selected} onChange={setSelected}>
                           <div className="relative">
-                            <div className="relative w-full cursor-default overflow-hidden rounded-md bg-white text-left shadow-sm focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
+                            <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                               <Combobox.Input
                                 {...register('discipulador')}
                                 id="discipulador"
@@ -549,7 +549,7 @@ function AddNewMember() {
                               />
                               <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
                                 <ChevronUpDownIcon
-                                  className="h-5 w-5 text-gray-400"
+                                  className="w-5 h-5 text-gray-400"
                                   aria-hidden="true"
                                 />
                               </Combobox.Button>
@@ -561,10 +561,10 @@ function AddNewMember() {
                               leaveTo="opacity-0"
                               afterLeave={() => setQuery('')}
                             >
-                              <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                              <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                 {filteredPeople?.length === 0 &&
                                 query !== '' ? (
-                                  <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
+                                  <div className="relative px-4 py-2 text-gray-700 cursor-default select-none">
                                     Nothing found.
                                   </div>
                                 ) : (
@@ -600,7 +600,7 @@ function AddNewMember() {
                                               }`}
                                             >
                                               <CheckIcon
-                                                className="h-5 w-5"
+                                                className="w-5 h-5"
                                                 aria-hidden="true"
                                               />
                                             </span>
@@ -674,26 +674,26 @@ function AddNewMember() {
                   </div>
 
                   {/* Escolas Realizadas */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="mt-3 sm:col-span-6">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
                           Escolas Feitas
                         </legend>
-                        <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
+                        <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {!isLoading ? (
                             (escolas ?? []).map((escola) => (
                               <div
                                 key={escola.id}
                                 className="relative flex gap-x-3"
                               >
-                                <div className="flex h-6 items-center">
+                                <div className="flex items-center h-6">
                                   <input
                                     {...register('escolas')}
                                     id={escola.id}
                                     value={escola.id}
                                     type="checkbox"
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-600"
+                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded shadow-sm focus:ring-blue-600"
                                   />
                                 </div>
                                 <div className="text-sm leading-6">
@@ -715,26 +715,26 @@ function AddNewMember() {
                   </div>
 
                   {/* Econtros Realizados */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="mt-3 sm:col-span-3">
                       <fieldset>
                         <legend className="block text-sm font-medium leading-6 text-slate-700">
                           Encontros Participados
                         </legend>
-                        <div className="mt-4 flex w-full flex-wrap items-center justify-between gap-x-8">
+                        <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {supervisoes ? (
                             (encontros ?? []).map((encontro) => (
                               <div
                                 key={encontro.id}
                                 className="relative flex gap-x-3"
                               >
-                                <div className="flex h-6 items-center">
+                                <div className="flex items-center h-6">
                                   <input
                                     {...register('encontros')}
                                     value={encontro.id}
                                     id={encontro.id}
                                     type="checkbox"
-                                    className="h-4 w-4 rounded border-gray-300 text-blue-600 shadow-sm focus:ring-blue-600"
+                                    className="w-4 h-4 text-blue-600 border-gray-300 rounded shadow-sm focus:ring-blue-600"
                                   />
                                 </div>
                                 <div className="text-sm leading-6">
@@ -754,7 +754,7 @@ function AddNewMember() {
                       </fieldset>
                     </div>
                     {/* Situação No reino */}
-                    <div className="ml-2 mt-3 sm:col-span-3">
+                    <div className="mt-3 ml-2 sm:col-span-3">
                       <label
                         htmlFor="situacao_no_reino"
                         className="block text-sm font-medium leading-6 text-slate-700"
@@ -781,7 +781,7 @@ function AddNewMember() {
                       </div>
                     </div>
                   </div>
-                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="col-span-6">
                       <label
                         htmlFor="cargo_de_lideranca"
@@ -811,10 +811,10 @@ function AddNewMember() {
                   </div>
 
                   {/* INFORMAÇÕES CONJUGAIS */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
-                      <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                      <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
+                      <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
+                      <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
                         Informações Conjugais
                       </h2>
                     </div>
@@ -923,16 +923,16 @@ function AddNewMember() {
                   </div>
 
                   {/* Informações para Visita */}
-                  <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-6">
-                      <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                      <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
+                      <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
+                      <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
                         Endereço para Visita/Contato
                       </h2>
                     </div>
                   </div>
 
-                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="sm:col-span-2">
                       <label
                         htmlFor="cep"
@@ -988,7 +988,7 @@ function AddNewMember() {
                     </div>
                   </div>
 
-                  <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                  <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                     <div className="col-span-2">
                       <label
                         htmlFor="bairro"
@@ -1041,11 +1041,11 @@ function AddNewMember() {
                 </div>
 
                 {/* Botões para submeter Forms */}
-                <div className="mt-6 flex items-center justify-end gap-x-6">
+                <div className="flex items-center justify-end mt-6 gap-x-6">
                   <button
                     type="button"
                     onClick={() => reset()}
-                    className="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:px-3 hover:py-2 hover:text-gray-900 sm:mt-0 sm:w-auto"
+                    className="inline-flex justify-center w-full px-3 py-2 mt-3 text-sm font-semibold text-gray-900 bg-white rounded-md shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 hover:px-3 hover:py-2 hover:text-gray-900 sm:mt-0 sm:w-auto"
                   >
                     Cancelar
                   </button>
@@ -1053,10 +1053,10 @@ function AddNewMember() {
                     <button
                       type="submit"
                       disabled={isLoadingSubmitForm}
-                      className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
-                        className="mr-3 h-5 w-5 animate-spin text-white"
+                        className="w-5 h-5 mr-3 text-white animate-spin"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -1080,7 +1080,7 @@ function AddNewMember() {
                   ) : (
                     <button
                       type="submit"
-                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <span>Cadastrar</span>
                     </button>

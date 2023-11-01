@@ -51,7 +51,7 @@ export default function CalendarLiderCelula() {
 
   const { data: session } = useSession()
   if (!session) {
-    return <SpinnerButton />
+    return <SpinnerButton message={''}/>
   }
 
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -62,7 +62,7 @@ export default function CalendarLiderCelula() {
   })
 
 if (isLoading) {
-  return <SpinnerButton/>}
+  return <SpinnerButton message={''}/>}
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
   const days = eachDayOfInterval({
@@ -86,8 +86,8 @@ if (isLoading) {
 
   return (
     <div className="pt-4">
-      <div className="rounded-lg bg-white px-2 py-6 shadow-md">
-        <div className="mx-auto max-w-md px-4 sm:px-4 md:max-w-4xl md:px-6">
+      <div className="px-2 py-6 bg-white rounded-lg shadow-md">
+        <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-10">
               <div className="flex items-center">
@@ -100,7 +100,7 @@ if (isLoading) {
                   className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Previous month</span>
-                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                  <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
                 <button
                   onClick={nextMonth}
@@ -108,10 +108,10 @@ if (isLoading) {
                   className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Next month</span>
-                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                  <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
-              <div className="mt-9 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
+              <div className="grid grid-cols-7 text-xs leading-6 text-center text-gray-500 mt-9">
                 <div>D</div>
                 <div>S</div>
                 <div>T</div>
@@ -120,7 +120,7 @@ if (isLoading) {
                 <div>S</div>
                 <div>S</div>
               </div>
-              <div className="mt-2 grid grid-cols-7 text-sm">
+              <div className="grid grid-cols-7 mt-2 text-sm">
                 {days.map((day, dayIdx) => (
                   <div
                     key={day.toString()}
@@ -165,18 +165,18 @@ if (isLoading) {
                       </time>
                     </button>
                     {/* Pontos de Eventos */}
-                    <div className="mx-auto flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center gap-1 mx-auto">
                       {data &&
                         data?.data.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
-                          <div className="mt-1 h-1 w-1">
-                            <div className="h-1 w-1 rounded-full bg-sky-500"></div>
+                          <div className="w-1 h-1 mt-1">
+                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
                       {isSunday(day) ? (
-                        <div className="mt-1 h-1 w-1">
-                          <div className="h-1 w-1 rounded-full bg-orange-500"></div>
+                        <div className="w-1 h-1 mt-1">
+                          <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
                         </div>
                       ) : (
                         ''
@@ -220,34 +220,34 @@ function Meeting({ meeting }: { meeting: meeting }) {
   const data_termino_culto = parseISO(meeting?.data_termino_culto)
 
   return (
-    <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
+    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       {meeting?.culto_semana?.nome === 'Domingo de Sacrifício' ? (
         <Cross
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : meeting?.culto_semana?.nome === 'Culto de Edificação' ? (
         <BookBookmark
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : meeting?.culto_semana?.nome === 'Capacitação Para Discípulos' ? (
         <Student
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : (
         <Church
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       )}
 

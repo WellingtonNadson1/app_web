@@ -7,6 +7,7 @@ import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sidebarCentral, sidebarLiderCelula } from './LinksSidebar'
+import SpinnerButton from '../spinners/SpinnerButton'
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -44,9 +45,9 @@ export default function Sidebar() {
             size={14}
           />
         </div>
-        <hr className="mt-7 h-px bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
+        <hr className="h-px bg-transparent mt-7 bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
         {status === 'authenticated' ? (
-          <ul className="relative flex flex-col gap-y-2 pt-4">
+          <ul className="relative flex flex-col pt-4 gap-y-2">
             {session.user.role === 'USERCENTRAL' ? (
               sidebarCentral.map((item) => (
                 <li
@@ -118,30 +119,14 @@ export default function Sidebar() {
             )}
           </ul>
         ) : (
-          <svg
-            className="mr-3 h-5 w-5 animate-spin text-gray-400"
-            xmlns="http://www.w3.org/2000/svg"
-            fill="none"
-            viewBox="0 0 24 24"
-          >
-            <circle
-              className="opacity-25"
-              cx="12"
-              cy="12"
-              r="10"
-              stroke="currentColor"
-              strokeWidth="4"
-            ></circle>
-            <path
-              className="opacity-75"
-              fill="currentColor"
-              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-            ></path>
-          </svg>
+          <div className='mt-7'>
+            <SpinnerButton message={''}/>
+          </div>
         )}
 
         {status === 'authenticated' ? (
-          <ul className="relative flex flex-col gap-y-2 pt-4">
+          <ul className="relative flex flex-col pt-4 gap-y-2">
+            <hr className="h-px mb-2 -mt-1 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
             <button
               className="focus:outline-none` group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md bg-red-400/90 py-2 pl-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out hover:scale-105 hover:bg-red-400 hover:fill-current hover:text-white "
               onClick={() => signOut()}
@@ -168,7 +153,9 @@ export default function Sidebar() {
             </button>
           </ul>
         ) : (
-          <div>carregando...</div>
+          <div className='mt-[21rem]'>
+            <SpinnerButton message={''}/>
+          </div>
         )}
       </aside>
     </div>
