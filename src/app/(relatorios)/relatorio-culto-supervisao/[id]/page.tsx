@@ -7,7 +7,10 @@ import { useEffect, useState } from 'react'
 import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
+import { twMerge } from 'tailwind-merge'
 
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
@@ -16,10 +19,19 @@ type PresencaForDate = {
   id: string;
   data_inicio_culto: string;
   presencas_culto: {
+    id: string;
     status: boolean;
     membro: {
       id: string
       first_name: string
+      presencas_cultos: {
+        status: boolean;
+        cultoIndividualId: string;
+        presenca_culto: {
+            id: string;
+            status: string;
+        }
+      }
       supervisao_pertence: {
         id: string
         nome: string
@@ -43,6 +55,10 @@ type MemberData = {
     status: boolean;
     cultoIndividualId: string;
     date_create: string;
+    presenca_culto: {
+      status: boolean;
+      id: string;
+    }
   }[];
   celula: {
     nome: string;
@@ -59,11 +75,13 @@ export default function StatsCardRelatorios() {
   const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
-  const [groupedData, setGroupedData] = useState<GroupedData | null>(null); // Estado para os dados agrupados
-  const [celulas, setCelulas] = useState<GroupedForCulto | null>(null); // Estado para os dados agrupados
-  const [celulas2, setCelulas2] = useState<PresencaForDate[] | null>(null); // Estado para os dados agrupados
-  const [dataCulto, setDataCulto] = useState<string | null>(null); // Estado para armazenar a data do culto
-  const [dateCulto, setDateCulto] = useState<string[] | null>(null); // Estado para armazenar a data do culto
+  const [groupedData, setGroupedData] = useState<GroupedData | null>(null);
+  const [celulas, setCelulas] = useState<GroupedForCulto | null>(null);
+  const [celulas2, setCelulas2] = useState<PresencaForDate[] | null>(null);
+  const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
+  const [dataCulto, setDataCulto] = useState<string | null>(null);
+  const [corSupervisao, setCorSupervisao] = useState<string | null>(null);
+  const [relatorioData, setRelatorioData] = useState<PresencaForDate[]>();
 
   useEffect(() => {
     handleRelatorio();
@@ -90,10 +108,8 @@ export default function StatsCardRelatorios() {
 
       console.log('groupedData', groupedData)
 
-      let dateCultos: string[] = []
-
       if (relatorio.length > 0 && !dataCulto) {
-          relatorio.map((cultos, index) => {
+        relatorio.map((cultos, index) => {
           return setDataCulto(cultos.presencas_cultos[index].date_create)
         })
       }
@@ -103,14 +119,13 @@ export default function StatsCardRelatorios() {
     }
   };
 
-
   const handlePresenceCulto = async () => {
     let startDate: string, endDate: string, superVisionId: string
     try {
       const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
-        startDate : "2023-10-01T00:00:00.000Z",
-        endDate : "2023-10-19T00:00:00.000Z",
-        superVisionId : "5e392d1b-f425-4865-a730-5191bc0821cd"
+        startDate: "2023-10-01T00:00:00.000Z",
+        endDate: "2023-10-19T00:00:00.000Z",
+        superVisionId: "5e392d1b-f425-4865-a730-5191bc0821cd"
       });
       const relatorio: PresencaForDate[] = response.data;
 
@@ -120,40 +135,59 @@ export default function StatsCardRelatorios() {
       }
 
       const dataGroupedForCulto: GroupedForCulto = groupDataByCulto(relatorio);
+
       setCelulas(dataGroupedForCulto)
       setCelulas2(relatorio)
+      setCorSupervisao(relatorio[0].presencas_culto[0].membro.supervisao_pertence.nome)
+      setRelatorioData(relatorio)
+
+      const dataGroupedForDateCulto: GroupedForCulto = groupDataByDateCulto(relatorio);
+      setDateCultoData(dataGroupedForDateCulto)
 
       console.log('Data dataGroupedForCulto: ', dataGroupedForCulto)
-      console.log('Presence Culto for ID: ', celulas)
+      console.log('Data dataGroupedForDateCulto: ', dataGroupedForDateCulto)
 
-
+      if (!dateCultoData) {
+        console.log('Ainda sem Date Cuto!');
+        return
+      }
+      console.log(dateCultoData[0]);
     } catch (error) {
       console.log('Erro ao buscar o relatório:', error);
     }
   };
 
+
   const groupDataByCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForCell: GroupedForCulto = {};
-  
+
     relatorio.forEach(entry => {
-      // const cultoId = entry.id;
-
       const celulaId = entry.presencas_culto[0]?.membro.celula.id;
-
-    if (celulaId) {
-      if (!groupedDataForCell[celulaId]) {
-        groupedDataForCell[celulaId] = [];
+      if (celulaId) {
+        if (!groupedDataForCell[celulaId]) {
+          groupedDataForCell[celulaId] = [];
+        }
+        groupedDataForCell[celulaId].push(entry);
       }
-
-      groupedDataForCell[celulaId].push(entry);
-    }
-    
     });
-  
     return groupedDataForCell;
   };
 
-  
+  const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
+    const groupedDataForDateCulto: GroupedForCulto = {};
+
+    relatorio.forEach(entry => {
+      const dateCultoId = entry.data_inicio_culto
+      if (dateCultoId) {
+        if (!groupedDataForDateCulto[dateCultoId]) {
+          groupedDataForDateCulto[dateCultoId] = [];
+        }
+        groupedDataForDateCulto[dateCultoId].push(entry);
+      }
+    });
+    return groupedDataForDateCulto;
+  };
+
   const groupDataByCell = (relatorio: MemberData[]) => {
     const groupedData: GroupedData = {};
 
@@ -170,69 +204,99 @@ export default function StatsCardRelatorios() {
     return groupedData;
   };
 
-  
-  return (
-    <>
-      <div className="relative z-10 w-full py-2 mx-auto">
-        
-      </div>
-          <div className="px-3 mt-2 mb-3">
-            <button
-              type="submit"
-              onClick={handleFunctions}
-              className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
-            >
-              Relat. Mensal Supervisão
-            </button>
-          </div>
-      <div className='px-2 rounded-sm shadow-md max-auto sm:rounded-lg'>
-        <table className='w-full text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
-          <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300'>
-            <tr>
-              <th className="px-6 py-3">Célula</th>
-              <th className="px-6 py-3">Membros</th>
+  let newCorSupervisao = ''
 
-              {celulas && 
-                celulas2?.map((test, indexTest) => (
-                  <th key={indexTest} className="px-6 py-3 mx-auto">
+  switch (corSupervisao) {
+    case "Vermelha":
+      newCorSupervisao = "w-full bg-red-500 dark:bg-red-500 dark:text-gray-100"
+      break;
+    case "Azul":
+      newCorSupervisao = "w-full bg-blue-500 dark:bg-blue-500 dark:text-gray-100"
+      break;
+    case "Verde":
+      newCorSupervisao = "w-full bg-green-500 dark:bg-green-500 dark:text-gray-100"
+      break;
+    case "Laranja":
+      newCorSupervisao = "w-full bg-orange-500 dark:bg-orange-500 dark:text-gray-100"
+      break;
+    case "Laranja":
+      newCorSupervisao = "w-full bg-yellow-500 dark:bg-yellow-500 dark:text-gray-100"
+      break;
+    default:
+      break;
+  }
+
+  return (
+    <div className='w-full'>
+      <div className="px-3 mt-2 mb-3">
+        <button
+          type="submit"
+          onClick={handleFunctions}
+          className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
+        >
+          Relat. Mensal Supervisão
+        </button>
+      </div>
+      <div className='px-2 rounded-sm shadow-md max-auto sm:rounded-lg'>
+        <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
+          {/* Cabecalho da tabela */}
+          <thead className={twMerge('text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300',
+            newCorSupervisao
+          )}>
+            {/* Linha */}
+            <tr className='mx-auto'>
+              {/* Colunas */}
+              <th className="px-6 py-3 mx-auto">Célula</th>
+              <th className="px-6 py-3 mx-auto">Membros</th>
+              {dateCultoData &&
+                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
+                  dateCultoData[cellDateCulto].length > 0 &&
+                    dateCultoData[cellDateCulto].map((culto, index) => (
+                  <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
                     <div className='flex flex-col items-center justify-center gap-2'>
                       <p>
-                        {dayjs(`${test.data_inicio_culto}`).tz().format('ddd')}
+                        {dayjs(`${cellDateCulto}`).tz().format('ddd')}
                       </p>
                       <p>
-                        {dayjs(`${test.data_inicio_culto}`).tz().format('DD')}
+                        {dayjs(`${cellDateCulto}`).tz().format('DD')}
+                      </p>
+                      <p>
+                        {dayjs(culto.data_inicio_culto).format('YYYY-MM-DDTHH')}
                       </p>
                     </div>
-                  
-               
                   </th>
-                ))
-              }
+                    ))
+                ))}
             </tr>
           </thead>
           <tbody>
             {groupedData &&
               Object.keys(groupedData).map((cellName, cellIndex) => (
-                <tr key={cellName + cellIndex} className='bg-white border-b '>
-                  <td>
+                // Linha Com dados da Celula
+                <tr key={cellName + cellIndex} className='bg-white border-b'>
+                  {/* NOME DA CELULA */}
+                  <td className='px-2 mx-auto text-base font-semibold'>
                     {cellName}
                   </td>
+                  {/* MEMBROS DA CELULA */}
                   <td>
                     {groupedData[cellName].length > 0 &&
                       groupedData[cellName].map((member, index) => (
-                        <div key={member.id}>{member.first_name}</div>
+                        <div className='ml-3 text-sm leading-8'>
+                          <div className='w-full' key={member.id + index}>{member.first_name.slice(0,9)}</div>
+                        </div>
                       ))}
                   </td>
-                  {Array.from({ length: groupedData[cellName].length }, (_, i) => (
-                    <div className='w-full mx-auto' key={i}>
+                  {Array.from({ length: 12 }, (_, i) => (
+                    <td key={i}>
                       {groupedData[cellName].length > 0 &&
                         groupedData[cellName].map((member, index) => (
-                          <td className='w-full mx-auto font-semibold text-center'>
+                          <div key={member.id} className='mx-auto font-semibold leading-8 text-center'>
                             {member.presencas_cultos[i] ? (
                               typeof member.presencas_cultos[i] === 'object' &&
                                 member.presencas_cultos[i].hasOwnProperty('status') ? (
                                 member.presencas_cultos[i].status === true ? (
-                                  <p className='text-green-600'>P</p>
+                                  <p className='text-green-600'>{member.presencas_cultos[i].presenca_culto.id}P</p>
                                 ) : (
                                   <p className='text-red-600'>F</p>
                                 )
@@ -242,15 +306,15 @@ export default function StatsCardRelatorios() {
                             ) : (
                               'N/A'
                             )}
-                          </td>
+                          </div>
                         ))}
-                    </div>
+                    </td>
                   ))}
                 </tr>
               ))}
           </tbody>
         </table>
       </div>
-    </>
+    </div>
   )
 }
