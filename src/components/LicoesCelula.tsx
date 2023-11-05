@@ -28,7 +28,8 @@ export default function LicoesCelula() {
     return <div>Erro ao carregar os dados.</div>
   }
 
-  const temaMesCelula = 'Tempo - Ensina-nos a contar os nossos dias... Salmos 90.12'
+  const temaMesCelula = 'Tempo'
+  const subTemaMesCelula = 'Ensina-nos a contar os nossos dias... Salmos 90.12'
   const statusLicoes = [
     {
       id: 1,
@@ -77,7 +78,12 @@ export default function LicoesCelula() {
       <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
         <div className="flex flex-col items-start justify-start mb-3">
           <h1 className="mb-3 text-lg font-semibold leading-7">Lições</h1>
-          <span className="mb-3 text-base">Tema: {temaMesCelula}</span>
+          <div className='flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50'>
+            <span className='mb-1 text-base'>
+              <span className="font-semibold">Tema: </span>{temaMesCelula}
+            </span>
+            <span className="mb-3 text-base italic">{subTemaMesCelula}</span>
+          </div>
         </div>
         <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
           {statusLicoes.map((stat, index) => (
