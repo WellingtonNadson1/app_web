@@ -291,14 +291,19 @@ export default function StatsCardRelatorios() {
                     <td key={i}>
                       {groupedData[cellName].length > 0 &&
                         groupedData[cellName].map((member, index) => (
+                          dateCultoData &&
+                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
+                  dateCultoData[cellDateCulto].length > 0 &&
+                    dateCultoData[cellDateCulto].map((culto, index) => (
                           <div key={member.id} className='mx-auto font-semibold leading-8 text-center'>
-                            {member.presencas_cultos[i] ? (
-                              typeof member.presencas_cultos[i] === 'object' &&
-                                member.presencas_cultos[i].hasOwnProperty('status') ? (
-                                member.presencas_cultos[i].status === true ? (
-                                  <p className='text-green-600'>{member.presencas_cultos[i].presenca_culto.id}P</p>
+                            {member.presencas_cultos[index] ? (
+                              typeof member.presencas_cultos[index] === 'object' &&
+                                // member.presencas_cultos[index].hasOwnProperty('status') && 
+                                culto.id === member.presencas_cultos[index].cultoIndividualId ? (
+                                member.presencas_cultos[index].status === true ? (
+                                  <p className='text-green-600'>{member.presencas_cultos[index].cultoIndividualId}P</p>
                                 ) : (
-                                  <p className='text-red-600'>F</p>
+                                  <p className='text-red-600'>{member.presencas_cultos[index].cultoIndividualId}F</p>
                                 )
                               ) : (
                                 'N/A'
@@ -307,6 +312,8 @@ export default function StatsCardRelatorios() {
                               'N/A'
                             )}
                           </div>
+
+                    ))))
                         ))}
                     </td>
                   ))}
