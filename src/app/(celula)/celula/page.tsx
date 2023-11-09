@@ -25,6 +25,8 @@ export default function ControleCelulaSupervision() {
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+  // const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  // const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],

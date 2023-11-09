@@ -2,7 +2,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { BASE_URL } from '@/functions/functions'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -34,6 +33,15 @@ const reuniaoCelulaDataSchema = z.object({
 
 type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
 
+interface ReuniaoCelula {
+  id: string;
+  data_reuniao: string; // Assumindo que a data seja uma string no formato ISO8601
+  status: string;
+  celulaId: string;
+  date_create: string; // Assumindo que a data seja uma string no formato ISO8601
+  date_update: string; // Assumindo que a data seja uma string no formato ISO8601
+}
+
 const attendanceSchema = z.object({
   status: z.string(),
   membro: z.string(),
@@ -53,12 +61,15 @@ export default function ControlePresencaReuniaoCelula({
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  // const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
+  // const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister`
+  // const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoadingCreateReuniaoCelula, setIsLoadingCreateReuniaoCelula] = useState(false)
   const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData>()
+  const [dataReuniao, setDataReuniao] = useState<ReuniaoCelula>()
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -105,7 +116,7 @@ export default function ControlePresencaReuniaoCelula({
           const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
 
-          const response = await axiosAuth.post(URLReuniaoCelula, {
+          const response = await axiosAuth.post<ReuniaoCelula>(URLReuniaoCelula, {
             status,
             celula,
             data_reuniao,
@@ -115,9 +126,11 @@ export default function ControlePresencaReuniaoCelula({
             return setDataReuniao(dataReuniao)
           } else if (response.status === 409) {
             // Handle conflict here by setting reuniaoIsRegistered to true
-            const ReuniaRegisteredId = response.data
+            const { id: ReuniaoCelulaId } = response.data
+            console.log('Id da reunniao marcada:', ReuniaoCelulaId);
+            
 
-            return setReuniaRegisteredId(ReuniaRegisteredId)      
+            return setReuniaRegisteredId(ReuniaoCelulaId)
           } else {
             throw new Error(response.status + ': ' + response.statusText)
           }
@@ -132,7 +145,7 @@ export default function ControlePresencaReuniaoCelula({
   }, [])
 
   const { data: PresenceCelulaExist } = useQuery({
-    queryKey: ["presenca", reuniaoRegisteredId],
+    queryKey: ["presenca"],
     queryFn: async () => {
       const response = await axiosAuth.post(URLPresencaReuniaoCelulaIsRegiter,{
         reuniaoRegisteredId

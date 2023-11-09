@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(authenticed)/page": [
+    "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/page.js"
+      "static/chunks/app/(authenticed)/dashboard/page.js"
     ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
@@ -17,16 +17,23 @@
       "static/css/app/(authenticed)/loading.css",
       "static/chunks/app/(authenticed)/loading.js"
     ],
-    "/(authenticed)/dashboard/page": [
+    "/(celula)/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
+      "static/css/app/(celula)/loading.css",
+      "static/chunks/app/(celula)/loading.js"
     ],
-    "/(authenticed)/celulas/page": [
+    "/(celula)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/celulas/page.css",
-      "static/chunks/app/(authenticed)/celulas/page.js"
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
+    ],
+    "/(celula)/celula/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",
