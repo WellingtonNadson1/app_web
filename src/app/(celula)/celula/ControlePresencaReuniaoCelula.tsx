@@ -12,6 +12,8 @@ import { ToastContainer, toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import * as z from 'zod'
 import { CelulaProps } from './schema'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
@@ -49,15 +51,17 @@ export default function ControlePresencaReuniaoCelula({
 }) {
   const { data: session } = useSession()
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoadingCreateReuniaoCelula, setIsLoadingCreateReuniaoCelula] = useState(false)
-  const [reuniaoIsRegistered, setReuniaoIsRegistered] = useState(false)
+  const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
+  const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
   const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData>()
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const notify = () =>
     toast.success('😉 Presenças de Célula Registradas!', {
@@ -101,16 +105,19 @@ export default function ControlePresencaReuniaoCelula({
           const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
 
-          const response = await axiosAuth.post(URLReuniaoCelula, {status,
+          const response = await axiosAuth.post(URLReuniaoCelula, {
+            status,
             celula,
             data_reuniao,
             presencas_membros_reuniao_celula,})
           if (response.status === 201) {
             const dataReuniao = response.data
-            setDataReuniao(dataReuniao)
+            return setDataReuniao(dataReuniao)
           } else if (response.status === 409) {
             // Handle conflict here by setting reuniaoIsRegistered to true
-            setReuniaoIsRegistered(true);
+            const ReuniaRegisteredId = response.data
+
+            return setReuniaRegisteredId(ReuniaRegisteredId)      
           } else {
             throw new Error(response.status + ': ' + response.statusText)
           }
@@ -123,6 +130,18 @@ export default function ControlePresencaReuniaoCelula({
       }
       createCelula()
   }, [])
+
+  const { data: PresenceCelulaExist } = useQuery({
+    queryKey: ["presenca"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
+      const PresenceExistRegistered = await response.data
+      if (response.status === 200) {
+        setPresencaReuniaoIsRegistered(true)
+      }
+      return PresenceExistRegistered
+    }
+  })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
@@ -159,7 +178,7 @@ export default function ControlePresencaReuniaoCelula({
     </p>
     ) : (
       <>
-        {reuniaoIsRegistered ? (
+        {presencaReuniaoIsRegistered ? (
           <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
             Presença já cadastrada!
           </p>
