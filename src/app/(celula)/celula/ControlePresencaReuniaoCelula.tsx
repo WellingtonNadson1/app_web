@@ -132,9 +132,11 @@ export default function ControlePresencaReuniaoCelula({
   }, [])
 
   const { data: PresenceCelulaExist } = useQuery({
-    queryKey: ["presenca"],
+    queryKey: ["presenca", reuniaoRegisteredId],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
+      const response = await axiosAuth.post(URLPresencaReuniaoCelulaIsRegiter,{
+        reuniaoRegisteredId
+      })
       const PresenceExistRegistered = await response.data
       if (response.status === 200) {
         setPresencaReuniaoIsRegistered(true)
