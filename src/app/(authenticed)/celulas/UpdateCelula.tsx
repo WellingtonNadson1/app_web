@@ -12,6 +12,8 @@ import { UserPlusIcon } from '@heroicons/react/24/outline'
 import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
+import { useQuery } from '@tanstack/react-query'
+import dayjs from 'dayjs'
 
 interface Member {
   id: string;
@@ -55,8 +57,14 @@ interface DataCelula {
 
 const schemaFormCelula = z.object({
   nome: z.string(),
-  lider: z.string().uuid(),
-  supervisao: z.string().uuid(),
+  lider: z.object({
+    id: z.string().uuid(),
+    first_name: z.string(),
+  }),
+  supervisao: z.object({
+    id: z.string().uuid(),
+    nome: z.string(),
+  }),
   cep: z.string(),
   cidade: z.string(),
   estado: z.string(),
@@ -66,7 +74,10 @@ const schemaFormCelula = z.object({
   date_inicio: z.string().datetime(),
   date_multipicar: z.string().datetime(),
   date_que_ocorre: z.string().datetime(),
-  membros: z.string().uuid().array(),
+  membros: z.object({
+    id: z.string().uuid(),
+    first_name: z.string(),
+  }).array(),
 })
 
 type FormCelula = z.infer<typeof schemaFormCelula>
@@ -114,25 +125,35 @@ export default function UpdateCelula({
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [supervisaoDefault, setSupervisaoDefault] = useState<string>()
   const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>()
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const [teste, setTeste] = useState<DataCelula>()
+  const [teste, setTeste] = useState<FormCelula>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>({
-    defaultValues: async () => {
-      if (!celulaId) return {}
 
-      const response = await axiosAuth.get(URLCelulaId)
+  const {data: dataCelula} = useQuery<FormCelula>({
+    queryKey: ['celulas', celulaId],
+    queryFn: async () => {
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
       const dataCelula =  response.data
-      setTeste(dataCelula)
-      console.log('Data in the Update', dataCelula)
-      console.log('Nome Celula', dataCelula.supervisao.nome);
       return dataCelula
-    },
+    }
   })
+
+  const {data: dataLider} = useQuery<Member>({
+    queryKey: ['celulas', celulaId],
+    queryFn: async () => {
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
+      const dataCelula =  response.data
+      return dataCelula
+    }
+  })
+
+
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
   const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
     e.currentTarget.maxLength = 9
@@ -187,15 +208,18 @@ export default function UpdateCelula({
     try {
       setIsLoadingSubmitForm(true)
 
-      const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+      console.log(dayjs(date_inicio).toISOString())
+      console.log(dayjs(date_multipicar).toISOString())
 
-      date_inicio = formatDatatoISO8601(date_inicio)
-      date_multipicar = formatDatatoISO8601(date_multipicar)
+      date_inicio = dayjs(date_inicio).toISOString()
+      date_multipicar = dayjs(date_multipicar).toISOString()
+      
+      console.log(date_inicio)
+      console.log(date_multipicar)
 
-      const response = await axiosAuth.post(URLCelulas, { 
+      
+
+      const response = await axiosAuth.put(URLCelulaId, { 
         nome,
         lider,
         supervisao,
@@ -209,19 +233,19 @@ export default function UpdateCelula({
         date_multipicar,
         date_que_ocorre,
         membros })
-      const celulaRegister = response.data
+      const celulaRUpdated = response.data
 
-      if (celulaRegister) {
+      if (celulaRUpdated) {
         setIsLoadingSubmitForm(false)
         setFormSuccess(true)
-        success('Célula Cadastrada')
+        success('Célula Atualizada')
       } else {
-        errorCadastro('Erro ao Cadastrar Célula')
+        errorCadastro('Erro ao Atualizar Célula')
       }
     } catch (error) {
       console.log(error)
       setIsLoadingSubmitForm(false)
-      errorCadastro('Erro ao Cadastrar Célula')
+      errorCadastro('Erro ao Atualizar Célula')
     }
     reset()
   }
@@ -283,7 +307,6 @@ export default function UpdateCelula({
       }
     }
   }, [supervisaoSelecionada, supervisoes])
-  console.log(teste?.supervisao.id)
   return (
     <>
       <ToastContainer />
@@ -296,7 +319,7 @@ export default function UpdateCelula({
               titleButton="Editar"
               buttonProps={{
                 className:
-                  'z-10 rounded-md bg-blue-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700',
+                  'z-10 rounded-md bg-orange-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-orange-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700',
               }}
             >
               <div className="relative w-full px-2 py-2 mx-auto">
@@ -321,6 +344,7 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <input
                                   {...register('nome')}
+                                  defaultValue={dataCelula?.nome}
                                   type="text"
                                   id="nome"
                                   autoComplete="given-name"
@@ -339,6 +363,7 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('date_que_ocorre')}
+                                  defaultValue={dataCelula?.date_que_ocorre}
                                   id="date_que_ocorre"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
@@ -366,7 +391,8 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <input
                                   {...register('date_inicio')}
-                                  type="datetime-local"
+                                  defaultValue={dayjs(dataCelula?.date_inicio).format('DD/MM/YYYY')}
+                                  // type="date"
                                   id="date_inicio"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -383,7 +409,8 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <input
                                   {...register('date_multipicar')}
-                                  type="datetime-local"
+                                  defaultValue={dayjs(dataCelula?.date_multipicar).format('DD/MM/YYYY')}
+                                  // type="date"
                                   id="date_multipicar"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 />
@@ -403,10 +430,11 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('supervisao')}
+                                  defaultValue={dataCelula?.supervisao.id}
                                   id="supervisao"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   onChange={handleSupervisaoSelecionada}
-                                  defaultValue={teste?.supervisao.id}
+                                  onBlur={handleSupervisaoSelecionada}
                                 >
                                   {!supervisoes ? (
                                     <option value="">Carregando supervisões...</option>
@@ -417,7 +445,9 @@ export default function UpdateCelula({
                                   )}
                                   {supervisoes &&
                                     supervisoes?.map((supervisao) => (
-                                      <option key={supervisao.id} value={supervisao.id}>
+                                      <option
+                                        key={supervisao.id} 
+                                        value={supervisao.id}>
                                         {supervisao.nome}
                                       </option>
                                     ))}
@@ -435,15 +465,18 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('lider')}
+                                  defaultValue={dataCelula?.lider.id}
                                   id="lider"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
                                   <option value="">Selecione</option>
-                                  {supervisaoSelecionada &&
-                                    usersSupervisaoSelecionada?.map((lider) => (
-                                      <option key={lider.id} value={lider.id}>
-                                        {lider.first_name}
+                                  {supervisoes &&
+                                    supervisoes?.map((membros) => (
+                                      membros.membros.map((membro) => (
+                                      <option key={membro.id} value={membro.id}>
+                                        {membro.first_name}
                                       </option>
+                                      ))
                                     ))}
                                 </select>
                               </div>
@@ -463,6 +496,9 @@ export default function UpdateCelula({
                                 <div className="mt-3">
                                   <select
                                     {...register('membros')}
+                                    defaultValue={dataCelula?.membros.map((membro) => (
+                                      membro.id
+                                    ))}
                                     multiple={true}
                                     id="membros"
                                     className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -470,11 +506,13 @@ export default function UpdateCelula({
                                     <option value="">
                                       Selecione
                                     </option>
-                                    {supervisaoSelecionada &&
-                                      usersSupervisaoSelecionada?.map((membro) => (
+                                    {supervisoes &&
+                                      supervisoes?.map((membros) => (
+                                        membros.membros.map((membro) => (
                                         <option key={membro.id} value={membro.id}>
                                           {membro.first_name}
                                         </option>
+                                        ))
                                       ))}
                                   </select>
                                 </div>
@@ -615,7 +653,7 @@ export default function UpdateCelula({
                                 className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                               >
                                 <svg
-                                  className="w-5 h-5 mr-3 text-gray-400 animate-spin"
+                                  className="w-5 h-5 mr-3 text-white animate-spin"
                                   xmlns="http://www.w3.org/2000/svg"
                                   fill="none"
                                   viewBox="0 0 24 24"
@@ -634,14 +672,14 @@ export default function UpdateCelula({
                                     d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                                   ></path>
                                 </svg>
-                                <span>Cadastrando...</span>
+                                <span>Atualizando...</span>
                               </button>
                             ) : (
                               <button
                                 type="submit"
                                 className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                               >
-                                <span>Cadastrar</span>
+                                <span>Atualizar</span>
                               </button>
                             )}
                           </div>

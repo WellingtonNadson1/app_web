@@ -99,6 +99,12 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                               id={celula.id}
                             />
                             )}
+                          {data && (
+                            <UpdateCelula
+                              shouldFetch={shouldFetch}
+                              celulaId={celula.id}
+                            />
+                            )}
                         </div>
                       </td>
                     </tr>
