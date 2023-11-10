@@ -73,13 +73,14 @@ export default function ControlePresencaReuniaoCelula({
   dataCelula: CelulaProps
 }) {
   const { data: session } = useSession()
-  const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
-  const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
-  // const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
-  // const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
-  // const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
+  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  
+  // const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
+  // const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+  // const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoadingCreateReuniaoCelula, setIsLoadingCreateReuniaoCelula] = useState(false)
