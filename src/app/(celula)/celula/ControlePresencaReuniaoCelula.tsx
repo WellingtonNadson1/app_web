@@ -61,15 +61,12 @@ export default function ControlePresencaReuniaoCelula({
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
-  // const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
-  // const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister`
-  // const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoadingCreateReuniaoCelula, setIsLoadingCreateReuniaoCelula] = useState(false)
   const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  const [dataReuniao, setDataReuniao] = useState<ReuniaoCelula>()
+  const [dataReuniao, setDataReuniao] = useState<ReuniaoCelula[]>()
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -116,7 +113,7 @@ export default function ControlePresencaReuniaoCelula({
           const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
           const presencas_membros_reuniao_celula = null
 
-          const response = await axiosAuth.post<ReuniaoCelula>(URLReuniaoCelula, {
+          const response = await axiosAuth.post<ReuniaoCelula[]>(URLReuniaoCelula, {
             status,
             celula,
             data_reuniao,
@@ -126,11 +123,11 @@ export default function ControlePresencaReuniaoCelula({
             return setDataReuniao(dataReuniao)
           } else if (response.status === 409) {
             // Handle conflict here by setting reuniaoIsRegistered to true
-            const { id: ReuniaoCelulaId } = response.data
-            console.log('Id da reunniao marcada:', ReuniaoCelulaId);
-            
-
-            return setReuniaRegisteredId(ReuniaoCelulaId)
+            const { id } = response.data[0]
+            console.log('Id da reunniao marcada:', id);
+            const dataReuniao = response.data
+            setDataReuniao(dataReuniao)
+            return setReuniaRegisteredId(id)
           } else {
             throw new Error(response.status + ': ' + response.statusText)
           }
@@ -147,11 +144,13 @@ export default function ControlePresencaReuniaoCelula({
   const { data: PresenceCelulaExist } = useQuery({
     queryKey: ["presenca"],
     queryFn: async () => {
-      const response = await axiosAuth.post(URLPresencaReuniaoCelulaIsRegiter,{
-        reuniaoRegisteredId
+      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter,{
+        params: {
+          reuniaoRegisteredId
+        }
       })
       const PresenceExistRegistered = await response.data
-      if (response.status === 200) {
+      if (PresenceExistRegistered.status === 200) {
         setPresencaReuniaoIsRegistered(true)
       }
       return PresenceExistRegistered
@@ -167,7 +166,10 @@ export default function ControlePresencaReuniaoCelula({
 
       for (const key in data) {
         const status = data[key].status === 'true'
-        const which_reuniao_celula = dataReuniao?.id
+        const which_reuniao_celula = dataReuniao && dataReuniao.length > 0 ? dataReuniao[0].id : '';
+console.log('Data Id reuniao: ', which_reuniao_celula);
+
+
 
         const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {...data[key], status, which_reuniao_celula})
         if (response.status !== 201) {
