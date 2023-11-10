@@ -1,18 +1,33 @@
 /* eslint-disable camelcase */
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import * as z from 'zod'
 import { CelulaProps } from './schema'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import dayjs from 'dayjs'
+import utc from "dayjs/plugin/utc"
+import timezone from "dayjs/plugin/timezone"
+import { AxiosError } from 'axios'
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+type ReuniaoCelulaSuccessData = {
+  status: string;
+  celula: string;
+  data_reuniao: string;
+  presencas_membros_reuniao_celula: string;
+  id?: string | undefined;
+};
 
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
@@ -24,7 +39,7 @@ const PresencaCultoCelulaSchema = z.object({
 export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
 
 const reuniaoCelulaDataSchema = z.object({
-  id: z.string(),
+  id: z.string().optional(),
   status: z.string(),
   celula: z.string(),
   data_reuniao: z.string(),
@@ -33,14 +48,14 @@ const reuniaoCelulaDataSchema = z.object({
 
 type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
 
-interface ReuniaoCelula {
-  id: string;
-  data_reuniao: string; // Assumindo que a data seja uma string no formato ISO8601
-  status: string;
-  celulaId: string;
-  date_create: string; // Assumindo que a data seja uma string no formato ISO8601
-  date_update: string; // Assumindo que a data seja uma string no formato ISO8601
-}
+const reuniaoCelulaDataSchema2 = z.object({
+  status: z.string(),
+  celula: z.string(),
+  data_reuniao: z.string(),
+  presencas_membros_reuniao_celula: z.string().nullable(),
+})
+
+type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
 
 const attendanceSchema = z.object({
   status: z.string(),
@@ -58,103 +73,97 @@ export default function ControlePresencaReuniaoCelula({
   dataCelula: CelulaProps
 }) {
   const { data: session } = useSession()
-  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
-  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
-  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
+  const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
+  const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+  const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
+  // const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  // const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
+  // const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoadingCreateReuniaoCelula, setIsLoadingCreateReuniaoCelula] = useState(false)
   const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
-  const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  const [dataReuniao, setDataReuniao] = useState<ReuniaoCelula[]>()
+  const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData[]>()
+  const [erro, setErro] = useState<Error>();
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendance[]>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const notify = () =>
-    toast.success('😉 Presenças de Célula Registradas!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
+  const queryClient = useQueryClient()
 
-  const notifyError = (message: string) =>
-    toast.error(`😰 ${message}`, {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
+  const memoizedDataHoje = useMemo(() => dayjs(), [])
+  const memoizedDataHojeString = memoizedDataHoje.tz('America/Sao_Paulo').format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')
 
-  const memoizedDataHoje = useMemo(() => new Date(), [])
-  const memoizedDataHojeString = memoizedDataHoje.toDateString()
+  const status = 'Marcado'
+  const celula = celulaId
+  const data_reuniao = memoizedDataHojeString
+  const presencas_membros_reuniao_celula = null
 
-  const formatDatatoISO8601 = (dataString: string) => {
-    const dataObj = new Date(dataString);
-    return dataObj.toISOString();
+  const dataSend = {
+    status,
+    celula,
+    data_reuniao,
+    presencas_membros_reuniao_celula,
   }
+
+  const createReuniaoCelula= async (dataSend: reuniaoCelulaData2): Promise<reuniaoCelulaData[] | reuniaoCelulaData> => {
+    const response = await axiosAuth.post(URLReuniaoCelula, dataSend)
+    console.log(response)
+    return response.data;
+  }
+
+  const { mutate, data: dataMutate, isSuccess, isError } = useMutation({
+    mutationFn: createReuniaoCelula,
+    onSuccess: async (responseData) => {
+      queryClient.invalidateQueries({ queryKey: ['reuniaocelula']});
+      const {id} = responseData as ReuniaoCelulaSuccessData;
+      setReuniaRegisteredId(id)
+
+      console.log('success mutate', responseData);
+    },
+    onError: async (errorData) => {
+      const axiosError = errorData as AxiosError;
+      if (axiosError.response) {
+        const errorResponseData = axiosError.response.data;
+        if (Array.isArray(errorResponseData) && errorResponseData.length > 0) {
+          // Access the 'id' from the first element in the array (assuming it's the only one)
+          const id = errorResponseData[0].id;
+          setReuniaRegisteredId(id)
+          // Now you can use 'id' in other parts of your code
+          console.log('Error Response ID:', id);
+        }       
+      } else {
+        console.error('Error response is not available');
+      }
+    }
+  })
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
-      const createCelula = async () => {
-        setIsLoadingCreateReuniaoCelula(true)
-        try {
-          const status = 'Marcado'
-          const celula = celulaId
-          const data_reuniao = formatDatatoISO8601(memoizedDataHojeString)
-          const presencas_membros_reuniao_celula = null
+    // setIsLoadingCreateReuniaoCelula(true)
+    mutate(dataSend)
 
-          const response = await axiosAuth.post<ReuniaoCelula[]>(URLReuniaoCelula, {
-            status,
-            celula,
-            data_reuniao,
-            presencas_membros_reuniao_celula,})
-          if (response.status === 201) {
-            const dataReuniao = response.data
-            return setDataReuniao(dataReuniao)
-          } else if (response.status === 409) {
-            // Handle conflict here by setting reuniaoIsRegistered to true
-            const { id } = response.data[0]
-            console.log('Id da reunniao marcada:', id);
-            const dataReuniao = response.data
-            setDataReuniao(dataReuniao)
-            return setReuniaRegisteredId(id)
-          } else {
-            throw new Error(response.status + ': ' + response.statusText)
-          }
-        } catch (error) {
-          if (error instanceof Error && error.message.startsWith('409')) {
-            notifyError('Já existe reunião marcada para hoje!')
-          }
-        }
-        setIsLoadingCreateReuniaoCelula(false)
-      }
-      createCelula()
+    if (isError) {
+      setDataReuniao(dataMutate)
+      setErro(new Error('A reunião já está registrada'));
+      console.error(erro); 
+      setErro(undefined); 
+    }
   }, [])
 
-  const { data: PresenceCelulaExist } = useQuery({
+  const { data: PresenceCelulaExist, isSuccess: succesTrue } = useQuery({
     queryKey: ["presenca"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter,{
-        params: {
-          reuniaoRegisteredId
-        }
-      })
+      const id = reuniaoRegisteredId
+      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
       const PresenceExistRegistered = await response.data
-      if (PresenceExistRegistered.status === 200) {
+      if (response.status === 200) {
         setPresencaReuniaoIsRegistered(true)
       }
       return PresenceExistRegistered
-    }
+    },
+    enabled: !!reuniaoRegisteredId, // A consulta será executada apenas se reuniaoRegisteredId existir
   })
 
   // Funcao para submeter os dados do Formulario Preenchido
@@ -162,27 +171,21 @@ export default function ControlePresencaReuniaoCelula({
     try {
       setIsLoadingSubmitForm(true)
 
-      console.log('Data presenca culto: ', data)
-
       for (const key in data) {
         const status = data[key].status === 'true'
-        const which_reuniao_celula = dataReuniao && dataReuniao.length > 0 ? dataReuniao[0].id : '';
-console.log('Data Id reuniao: ', which_reuniao_celula);
-
-
-
+        const which_reuniao_celula = reuniaoRegisteredId;
         const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {...data[key], status, which_reuniao_celula})
         if (response.status !== 201) {
           throw new Error('Failed to submit dados de presenca')
         }
       }
 
-      notify()
+      success('😉 Presenças de Célula Registradas!')
       setIsLoadingSubmitForm(false)
       reset()
       router.refresh()
     } catch (error) {
-      notifyError('Já existem presenças registradas!')
+      errorCadastro('Já existem presenças registradas!')
       setIsLoadingSubmitForm(false)
     }
   }

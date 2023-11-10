@@ -16,6 +16,7 @@ import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
+import { createReuniao } from './function'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
