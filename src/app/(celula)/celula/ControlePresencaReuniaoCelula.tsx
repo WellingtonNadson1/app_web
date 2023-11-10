@@ -75,7 +75,7 @@ export default function ControlePresencaReuniaoCelula({
   const { data: session } = useSession()
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
-  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister`
+  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
   
   // const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
