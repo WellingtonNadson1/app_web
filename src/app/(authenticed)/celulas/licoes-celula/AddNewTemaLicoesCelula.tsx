@@ -13,6 +13,8 @@ import 'react-toastify/dist/ReactToastify.css'
 import useSWR from 'swr'
 import { z } from 'zod'
 import { AddressProps } from '../../novo-membro/schema'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 const schemaFormCelula = z.object({
     nome: z.string(),
@@ -64,6 +66,8 @@ export default function AddNewTemaLicoesCelula() {
     const router = useRouter()
 
     const { data: session } = useSession()
+    const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
     const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
     const [formSuccess, setFormSuccess] = useState(false)
     const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
@@ -146,14 +150,13 @@ export default function AddNewTemaLicoesCelula() {
         reset()
     }
 
-    const {
-        data: supervisoes,
-        error,
-        isLoading,
-    } = useSWR<SupervisaoData[]>(
-        [URLSupervisoes, `${session?.user.token}`],
-        ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-    )
+    const { data: supervisoes, isError: error, isLoading } = useQuery<SupervisaoData[]>({
+        queryKey: ["supervisoes"],
+        queryFn: async () => {
+          const response = await axiosAuth.get(URLSupervisoes)
+          return await response.data
+        },
+      })
 
     const fetchCelulas = useCallback(async () => {
         try {
@@ -208,8 +211,8 @@ export default function AddNewTemaLicoesCelula() {
 
     if (error)
         return (
-            <div className="z-50 mx-auto w-full px-2 py-2">
-                <div className="mx-auto w-full">
+            <div className="z-50 w-full px-2 py-2 mx-auto">
+                <div className="w-full mx-auto">
                     <div className="text-white">failed to load</div>
                 </div>
             </div>
@@ -217,8 +220,8 @@ export default function AddNewTemaLicoesCelula() {
 
     if (isLoading)
         return (
-            <div className="z-50 mx-auto w-full px-2 py-2">
-                <div className="mx-auto flex w-full items-center gap-2">
+            <div className="z-50 w-full px-2 py-2 mx-auto">
+                <div className="flex items-center w-full gap-2 mx-auto">
                     <div className="text-white">carregando...</div>
                 </div>
             </div>
@@ -235,17 +238,17 @@ export default function AddNewTemaLicoesCelula() {
                         'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
                 }}
             >
-                <div className="relative mx-auto w-full px-2 py-2">
+                <div className="relative w-full px-2 py-2 mx-auto">
                     <div className="flex justify-between">
-                        <div className="relative mx-auto px-2 py-7">
-                            <div className="mx-auto rounded-lg bg-white p-6">
+                        <div className="relative px-2 mx-auto py-7">
+                            <div className="p-6 mx-auto bg-white rounded-lg">
                                 {/* Incio do Forms */}
                                 <form onSubmit={handleSubmit(onSubmit)}>
                                     <div className="pb-3">
-                                        <h2 className="text-sm uppercase leading-normal text-gray-400">
+                                        <h2 className="text-sm leading-normal text-gray-400 uppercase">
                                             Tema de Lições de Célula
                                         </h2>
-                                        <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-9">
+                                        <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
                                             <div className="sm:col-span-3">
                                                 <label
                                                     htmlFor="nome"
@@ -303,16 +306,16 @@ export default function AddNewTemaLicoesCelula() {
                                         </div>
 
                                         {/* Informações para Localização */}
-                                        <div className="mt-3 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                                        <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
                                             <div className="sm:col-span-6">
-                                                <hr className="mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                                                <h2 className="mt-8 text-sm uppercase leading-normal text-gray-400">
+                                                <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
+                                                <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
                                                     Descrição
                                                 </h2>
                                             </div>
                                         </div>
 
-                                        <div className="mt-10 grid grid-cols-1 gap-x-4 gap-y-6 sm:grid-cols-6">
+                                        <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
                                             <div className="sm:col-span-2">
                                                 <label
                                                     htmlFor="cep"
@@ -355,7 +358,7 @@ export default function AddNewTemaLicoesCelula() {
 
 
                                         {/* Botões para submeter Forms */}
-                                        <div className="mt-6 flex items-center justify-end gap-x-6">
+                                        <div className="flex items-center justify-end mt-6 gap-x-6">
                                             <button
                                                 type="button"
                                                 className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
@@ -366,10 +369,10 @@ export default function AddNewTemaLicoesCelula() {
                                                 <button
                                                     type="submit"
                                                     disabled={isLoadingSubmitForm}
-                                                    className="flex items-center justify-between rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                                                    className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                                                 >
                                                     <svg
-                                                        className="mr-3 h-5 w-5 animate-spin text-gray-400"
+                                                        className="w-5 h-5 mr-3 text-gray-400 animate-spin"
                                                         xmlns="http://www.w3.org/2000/svg"
                                                         fill="none"
                                                         viewBox="0 0 24 24"
@@ -393,7 +396,7 @@ export default function AddNewTemaLicoesCelula() {
                                             ) : (
                                                 <button
                                                     type="submit"
-                                                    className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                                                    className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                                                 >
                                                     <span>Cadastrar</span>
                                                 </button>
@@ -410,7 +413,7 @@ export default function AddNewTemaLicoesCelula() {
 
             {/* Cadastrar Nova Célula */}
 
-            <div className="relative z-10 mx-auto w-full px-2 py-2">
+            <div className="relative z-10 w-full px-2 py-2 mx-auto">
                 {isLoading ? (
                     <pre>Loading...</pre>
                 ) : (
