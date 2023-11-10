@@ -1,6 +1,8 @@
 'use client'
 import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { UsersFour } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
@@ -19,6 +21,8 @@ export interface SupervisaoDataCard {
 
 export default function StatsCardSupervisions() {
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   const router = useRouter()
 
   const URL = `${BASE_URL}/supervisoes`
@@ -33,15 +37,13 @@ export default function StatsCardSupervisions() {
     return data
   }
 
-  const {
-    data: supervisoes,
-    error,
-    isValidating,
-    isLoading,
-  } = useSWR<SupervisaoDataCard[]>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, token),
-  )
+  const { data: supervisoes, isError: error, isLoading } = useQuery<SupervisaoDataCard[]>({
+    queryKey: ["supervisoes"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URL)
+      return await response.data
+    },
+  })
 
   if (error) {
     return (
@@ -61,10 +63,6 @@ export default function StatsCardSupervisions() {
         </div>
       </div>
     )
-  }
-
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
   }
 
   const handleSupervisaoSelecionada = (

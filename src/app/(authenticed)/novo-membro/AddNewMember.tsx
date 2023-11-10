@@ -20,6 +20,8 @@ import {
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 function AddNewMember() {
   const hostname = 'app-ibb.onrender.com'
@@ -27,6 +29,8 @@ function AddNewMember() {
   const URLCombinedData = `https://${hostname}/users/all`
 
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const { register, handleSubmit, setValue, reset } = useForm<Member>()
@@ -173,20 +177,21 @@ function AddNewMember() {
     }
   }
 
-  // UseSWR para buscar os dados combinados
-  const {
-    data: combinedData,
-    error,
-    isLoading,
-  } = useSWR<any>(
-    [URLCombinedData, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-  // UseSWR para buscar os dados combinados
-  const { data: queryMembers } = useSWR<Member[]>(
-    [URLUsers, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const { data: combinedData, isError: error, isLoading } = useQuery<any>({
+    queryKey: ["cultossemanais"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCombinedData)
+      return await response.data
+    },
+  })
+
+  const { data: queryMembers } = useQuery<Member[]>({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLUsers)
+      return await response.data
+    },
+  })
 
   const filteredPeople =
     query === ''

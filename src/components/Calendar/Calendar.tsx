@@ -28,6 +28,8 @@ import { Fragment, useState } from 'react'
 import useSWR from 'swr'
 import DeleteCulto from './DeleteCulto'
 import UpdateCulto from './UpdateCulto'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useQuery } from '@tanstack/react-query'
 
 export type meeting = {
   id: string
@@ -48,12 +50,16 @@ function classNames(...classes: string[]) {
 
 export default function Example() {
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  // UseSWR para buscar os dados combinados
-  const { data: meetings } = useSWR<meeting[]>(
-    [URLCultosInd, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+
+  const { data: meetings } = useQuery<meeting[]>({
+    queryKey: ["supervisoes"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCultosInd)
+      return await response.data
+    },
+  })
 
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)
@@ -81,8 +87,8 @@ export default function Example() {
 
   return (
     <div className="pt-4">
-      <div className="rounded-lg bg-white px-2 py-6 shadow-md">
-        <div className="mx-auto max-w-md px-4 sm:px-4 md:max-w-4xl md:px-6">
+      <div className="px-2 py-6 bg-white rounded-lg shadow-md">
+        <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-10">
               <div className="flex items-center">
@@ -95,7 +101,7 @@ export default function Example() {
                   className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Previous month</span>
-                  <ChevronLeftIcon className="h-5 w-5" aria-hidden="true" />
+                  <ChevronLeftIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
                 <button
                   onClick={nextMonth}
@@ -103,10 +109,10 @@ export default function Example() {
                   className="-my-1.5 -mr-1.5 ml-2 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
                 >
                   <span className="sr-only">Next month</span>
-                  <ChevronRightIcon className="h-5 w-5" aria-hidden="true" />
+                  <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
                 </button>
               </div>
-              <div className="mt-9 grid grid-cols-7 text-center text-xs leading-6 text-gray-500">
+              <div className="grid grid-cols-7 text-xs leading-6 text-center text-gray-500 mt-9">
                 <div>D</div>
                 <div>S</div>
                 <div>T</div>
@@ -115,7 +121,7 @@ export default function Example() {
                 <div>S</div>
                 <div>S</div>
               </div>
-              <div className="mt-2 grid grid-cols-7 text-sm">
+              <div className="grid grid-cols-7 mt-2 text-sm">
                 {days.map((day, dayIdx) => (
                   <div
                     key={day.toString()}
@@ -160,18 +166,18 @@ export default function Example() {
                       </time>
                     </button>
                     {/* Pontos de Eventos */}
-                    <div className="mx-auto flex items-center justify-center gap-1">
+                    <div className="flex items-center justify-center gap-1 mx-auto">
                       {meetings &&
                         meetings?.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
-                          <div className="mt-1 h-1 w-1">
-                            <div className="h-1 w-1 rounded-full bg-sky-500"></div>
+                          <div className="w-1 h-1 mt-1">
+                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
                       {isSunday(day) ? (
-                        <div className="mt-1 h-1 w-1">
-                          <div className="h-1 w-1 rounded-full bg-orange-500"></div>
+                        <div className="w-1 h-1 mt-1">
+                          <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
                         </div>
                       ) : (
                         ''
@@ -215,34 +221,34 @@ function Meeting({ meeting }: { meeting: meeting }) {
   const data_termino_culto = parseISO(meeting.data_termino_culto)
 
   return (
-    <li className="group flex items-center space-x-4 rounded-xl px-4 py-2 focus-within:bg-gray-100 hover:bg-gray-100">
+    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       {meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
         <Cross
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Culto de Edificação' ? (
         <BookBookmark
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
         <Student
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       ) : (
         <Church
           width={10}
           height={10}
           weight="thin"
-          className="h-10 w-10 flex-none rounded-full"
+          className="flex-none w-10 h-10 rounded-full"
         />
       )}
 
@@ -265,7 +271,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
         <div>
           <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
             <span className="sr-only">Open options</span>
-            <EllipsisVerticalIcon className="h-6 w-6" aria-hidden="true" />
+            <EllipsisVerticalIcon className="w-6 h-6" aria-hidden="true" />
           </Menu.Button>
         </div>
 
@@ -278,7 +284,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
                 <UpdateCulto

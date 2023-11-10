@@ -1,6 +1,5 @@
 'use client'
 import Modal from '@/components/modal'
-import { fetchWithToken } from '@/functions/functions'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
@@ -9,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import useSWR from 'swr'
 import {
   AddressProps,
   Encontros,
@@ -19,6 +17,8 @@ import {
   SupervisaoData,
 } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useQuery } from '@tanstack/react-query'
 
 function UpdateMember({
   memberId,
@@ -33,6 +33,8 @@ function UpdateMember({
   const URLCombinedData = `https://${hostname}/users/all`
 
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>()
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
@@ -197,21 +199,21 @@ function UpdateMember({
     }
   }
 
-  // UseSWR para buscar os dados combinados
-  const {
-    data: combinedData,
-    error,
-    isLoading,
-  } = useSWR<any>(
-    [URLCombinedData, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
-  // UseSWR para buscar os dados combinados
-  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useSWR<
-    Member[]
-  >([URLUsers, `${session?.user.token}`], ([url, token]: [string, string]) =>
-    fetchWithToken(url, 'GET', token),
-  )
+  const { data: combinedData, isError: error, isLoading } = useQuery<any>({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCombinedData)
+      return await response.data
+    },
+  })
+
+  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<Member[]>({
+    queryKey: ["membersquery"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCombinedData)
+      return await response.data
+    },
+  })
 
   if (isLoading) {
     return null
@@ -221,37 +223,7 @@ function UpdateMember({
     return null
   }
 
-  // if (isLoadingQueryUpdateId) {
-  //   return null
-  // }
-
-  // // Setando valorea para o Input vindas do Component Pai
-  // if (queryMemberId) {
-  //   setValue('cep', queryMemberId.cep)
-  //   setValue('first_name', queryMemberId.first_name)
-  //   setValue('last_name', queryMemberId.last_name)
-  //   setValue('cpf', queryMemberId.cpf)
-  //   setValue('telefone', queryMemberId.telefone)
-  //   setValue('email', queryMemberId.email)
-  //   setValue('date_nascimento', queryMemberId.date_nascimento)
-  //   setValue('sexo', queryMemberId.sexo)
-  //   setValue('escolaridade', queryMemberId.escolaridade)
-  //   setValue('profissao', queryMemberId.profissao)
-  //   setValue('batizado', queryMemberId.batizado)
-  //   setValue('date_batizado', queryMemberId.date_batizado)
-  //   setValue('is_discipulado', queryMemberId.is_discipulado)
-  //   setValue('discipulador', queryMemberId.discipulador)
-  //   setValue('supervisao_pertence', queryMemberId.supervisao_pertence.nome)
-  //   setValue('celula', queryMemberId.celula.nome)
-  //   setValue('escolas', queryMemberId.escolas)
-  //   setValue('encontros', queryMemberId.encontros)
-  //   setValue('cargo_de_lideranca', queryMemberId.cargo_de_lideranca.nome)
-  //   setValue('estado_civil', queryMemberId.estado_civil)
-  //   setValue('nome_conjuge', queryMemberId.nome_conjuge)
-  //   setValue('date_casamento', queryMemberId.date_nascimento)
-  //   setValue('has_filho', queryMemberId.has_filho)
-  //   setValue('quantidade_de_filho', queryMemberId.quantidade_de_filho)
-  // }
+  
 
   const filteredPeople =
     queryUpDate === ''

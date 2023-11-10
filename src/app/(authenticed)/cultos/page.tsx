@@ -16,6 +16,7 @@ import { CultoDaSemana, NewCulto } from './schemaNewCulto'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
+import { useQuery } from '@tanstack/react-query'
 
 export default function Cultos() {
   const { data: session } = useSession()
@@ -66,10 +67,13 @@ export default function Cultos() {
     reset()
   }
 
-  const { data: cultosSemanais, isLoading } = useSWR<CultoDaSemana[]>(
-    [URLCultosSemanais, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const { data: cultosSemanais, isLoading } = useQuery<CultoDaSemana[]>({
+    queryKey: ["cultossemanais"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCultosSemanais)
+      return await response.data
+    },
+  })
 
   const fetchCultos = useCallback(async () => {
     try {
@@ -106,8 +110,8 @@ export default function Cultos() {
     <>
     <ToastContainer />
 
-      <div className="relative mx-auto w-full px-2 py-2">
-        <div className="relative mx-auto mb-4 mt-3 w-full px-2">
+      <div className="relative w-full px-2 py-2 mx-auto">
+        <div className="relative w-full px-2 mx-auto mt-3 mb-4">
           <Calendar />
           <Modal
             titleButton="Cadastrar"
@@ -120,7 +124,7 @@ export default function Cultos() {
           >
             <form onSubmit={handleSubmit(onSubmit)}>
               <div className="pb-10">
-                <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
+                <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-8">
                   <div className="sm:col-span-4">
                     <label
                       htmlFor="data_inicio_culto"
@@ -159,7 +163,7 @@ export default function Cultos() {
                 </div>
 
                 {/* INFORMAÇÕES DO REINO */}
-                <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-6">
+                <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-6">
                   <div className="sm:col-span-3">
                     <label
                       htmlFor="culto_semana"
@@ -221,7 +225,7 @@ export default function Cultos() {
                 </div>
 
                 {/* Botões para submeter Forms */}
-                <div className="mt-6 flex items-center justify-end gap-x-6">
+                <div className="flex items-center justify-end mt-6 gap-x-6">
                   <button
                     type="button"
                     onClick={() => reset()}
@@ -234,10 +238,10 @@ export default function Cultos() {
                       <button
                         type="submit"
                         disabled={isLoadingSubmitForm}
-                        className="flex w-full items-center justify-center gap-2 rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                        className="flex items-center justify-center w-full gap-2 px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                       >
                         <svg
-                          className="mr-3 h-5 w-5 animate-spin text-gray-400"
+                          className="w-5 h-5 mr-3 text-gray-400 animate-spin"
                           xmlns="http://www.w3.org/2000/svg"
                           fill="none"
                           viewBox="0 0 24 24"
@@ -262,7 +266,7 @@ export default function Cultos() {
                   ) : (
                     <button
                       type="submit"
-                      className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <span>Cadastrar</span>
                     </button>

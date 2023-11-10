@@ -1,27 +1,3 @@
 {
-  "pages": {
-    "/(celula)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/layout.css",
-      "static/chunks/app/(celula)/layout.js"
-    ],
-    "/(celula)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/loading.css",
-      "static/chunks/app/(celula)/loading.js"
-    ],
-    "/(celula)/celula/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/celula/page.css",
-      "static/chunks/app/(celula)/celula/page.js"
-    ],
-    "/not-found": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
-    ]
-  }
+  "pages": {}
 }

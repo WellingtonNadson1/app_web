@@ -1,9 +1,9 @@
 'use client'
-import ListMembersCelula, { CelulaData, ListMembersCelulaProps } from '@/components/listMembersCelula'
-import { fetchWithToken } from '@/functions/functions'
+import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
-import useSWR from 'swr'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
@@ -11,24 +11,24 @@ export default function ControleCelulaSupervision({
   params: { celulaId: string }
 }) {
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${celulaId}`
   
-  const {
-    data: celula,
-    error,
-    isValidating,
-    isLoading,
-  } = useSWR<CelulaData>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-    )
+  const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
+    queryKey: ["celula"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URL)
+      return await response.data
+    },
+  })
     
   if (error) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="w-full mx-auto">
           <div>failed to load</div>
         </div>
       </div>
@@ -38,33 +38,28 @@ export default function ControleCelulaSupervision({
 
   if (isLoading) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="flex items-center w-full gap-2 mx-auto">
           <div className="text-white">carregando...</div>
         </div>
       </div>
     )
   }
 
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-    console.log('Celulal Data: ', celula)
-  }
-
   return (
-    <div className="relative mx-auto w-full px-2 py-2">
-      <div className="relative mx-auto w-full">
+    <div className="relative w-full px-2 py-2 mx-auto">
+      <div className="relative w-full mx-auto">
         {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
       </div>
-      <div className="relative mx-auto mb-4 mt-3 w-full px-2">
+      <div className="relative w-full px-2 mx-auto mt-3 mb-4">
         {celula &&
           <ListMembersCelula data={celula} />
         }
       </div>
-      {/* <div className="relative mx-auto mb-4 w-full px-2">
+      {/* <div className="relative w-full px-2 mx-auto mb-4">
         <LicoesCelula />
       </div> */}
-      {/* <div className="relative mx-auto mb-4 w-full px-2">
+      {/* <div className="relative w-full px-2 mx-auto mb-4">
         <ControlePresenca />
       </div> */}
     </div>

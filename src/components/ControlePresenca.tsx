@@ -1,8 +1,8 @@
 'use client'
-import { fetchWithToken } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { UserFocus } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
-import useSWR from 'swr'
 import { z } from 'zod'
 // import { useEffect, useState } from 'react'
 
@@ -40,24 +40,24 @@ type Celula = z.infer<typeof CelulaSchema>
 
 export default function ControlePresenca() {
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
 
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${session?.user?.celulaId}`
 
-  const {
-    data: celula,
-    error,
-    isValidating,
-    isLoading,
-  } = useSWR<Celula>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const { data: celula, isError: error, isLoading } = useQuery<Celula>({
+    queryKey: ["celula"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URL)
+      return await response.data
+    },
+  })
 
   if (error) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto w-full">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="w-full mx-auto">
           <div>failed to load</div>
         </div>
       </div>
@@ -66,42 +66,38 @@ export default function ControlePresenca() {
 
   if (isLoading) {
     return (
-      <div className="mx-auto w-full px-2 py-2">
-        <div className="mx-auto flex w-full items-center gap-2">
+      <div className="w-full px-2 py-2 mx-auto">
+        <div className="flex items-center w-full gap-2 mx-auto">
           <div className="text-white">carregando...</div>
         </div>
       </div>
     )
   }
 
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
-  }
-
   return (
     <>
-      <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
+      <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
         <div className="w-full px-2 py-2 ">
-          <div className="w-full rounded-md px-1 py-2">
+          <div className="w-full px-1 py-2 rounded-md">
             <h2 className="text-lg font-semibold leading-7 text-gray-800">
               Lista de Presença
             </h2>
-            <table className="w-full table-auto border-separate border-spacing-y-6">
+            <table className="w-full border-separate table-auto border-spacing-y-6">
               <thead>
                 <tr className="text-base font-bold ">
-                  <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                     Nome
                   </th>
-                  <th className="border-b-2 border-orange-300 py-2 text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-orange-300">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-gray-800 sm:block">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 sm:block">
                     Cargo
                   </th>
-                  <th className="border-b-2 border-green-300 py-2 text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-green-300">
                     P
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-red-300">
                     F
                   </th>
                 </tr>
@@ -110,7 +106,7 @@ export default function ControlePresenca() {
                 {!isLoading ? (
                   celula?.membros?.map((user) => (
                     <tr
-                      className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
+                      className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}
                     >
                       <td>
@@ -135,7 +131,7 @@ export default function ControlePresenca() {
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden w-full rounded-md border border-gray-200 bg-gray-50 px-2 py-1 text-center ring-gray-500 sm:inline">
+                        <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
@@ -146,7 +142,7 @@ export default function ControlePresenca() {
                           name={user.first_name}
                           value={user.id}
                           type="radio"
-                          className="h-4 w-4 cursor-pointer border-green-300 text-green-600 focus:ring-green-600"
+                          className="w-4 h-4 text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                         />
                       </td>
                       <td className="ml-1 text-center">
@@ -155,7 +151,7 @@ export default function ControlePresenca() {
                           name={user.first_name}
                           value={user.id}
                           type="radio"
-                          className="h-4 w-4 cursor-pointer border-red-300 text-red-600 focus:ring-red-600"
+                          className="w-4 h-4 text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
                         />
                       </td>
                     </tr>

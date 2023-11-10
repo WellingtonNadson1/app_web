@@ -5,6 +5,7 @@ import {
   NewCulto,
 } from '@/app/(authenticed)/cultos/schemaNewCulto'
 import {
+  BASE_URL,
   FetchError,
   errorCadastro,
   fetchWithToken,
@@ -17,6 +18,8 @@ import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useSWR from 'swr'
 import ModalCalendar from './ModalCalendar'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useQuery } from '@tanstack/react-query'
 
 export default function UpdateCulto({
   cultoId,
@@ -26,9 +29,10 @@ export default function UpdateCulto({
   // shouldFetch: boolean
 }) {
   const { data: session } = useSession()
-  const hostname = 'app-ibb.onrender.com'
-  const URLCultosIndividuais = `https://${hostname}/cultosindividuais`
-  const URLCultosSemanais = `/cultossemanais`
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
+  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
+  const URLCultosSemanais = `${BASE_URL}/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
@@ -86,10 +90,13 @@ export default function UpdateCulto({
     reset()
   }
 
-  const { data: cultosSemanais, isLoading } = useSWR<CultoDaSemana[]>(
-    [URLCultosSemanais, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const { data: cultosSemanais, isLoading } = useQuery<CultoDaSemana[]>({
+    queryKey: ["cultossemanais"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URLCultosSemanais)
+      return await response.data
+    },
+  })
 
   const fetchCultos = useCallback(async () => {
     try {
@@ -127,7 +134,7 @@ export default function UpdateCulto({
   return (
     <ModalCalendar
       buttonIcon={
-        <EditActiveIcon className="mr-2 h-5 w-5" aria-hidden="true" />
+        <EditActiveIcon className="w-5 h-5 mr-2" aria-hidden="true" />
       }
       icon={UserMinusIcon}
       titleModal="Atualizar Culto"
@@ -139,7 +146,7 @@ export default function UpdateCulto({
     >
       <form onSubmit={handleSubmit(onSubmit)}>
         <div className="pb-10">
-          <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-8">
+          <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-8">
             <div className="sm:col-span-4">
               <label
                 htmlFor="data_inicio_culto"
@@ -178,7 +185,7 @@ export default function UpdateCulto({
           </div>
 
           {/* INFORMAÇÕES DO REINO */}
-          <div className="mt-10 grid grid-cols-1 gap-x-2 gap-y-4 sm:grid-cols-6">
+          <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-6">
             <div className="sm:col-span-3">
               <label
                 htmlFor="culto_semana"
@@ -237,7 +244,7 @@ export default function UpdateCulto({
           </div>
 
           {/* Botões para submeter Forms */}
-          <div className="mt-6 flex items-center justify-end gap-x-6">
+          <div className="flex items-center justify-end mt-6 gap-x-6">
             <button
               type="button"
               onClick={() => reset()}
@@ -250,10 +257,10 @@ export default function UpdateCulto({
                 <button
                   type="submit"
                   disabled={isLoadingSubmitForm}
-                  className="flex w-full items-center justify-center gap-2 rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                  className="flex items-center justify-center w-full gap-2 px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                 >
                   <svg
-                    className="mr-3 h-5 w-5 animate-spin text-gray-400"
+                    className="w-5 h-5 mr-3 text-gray-400 animate-spin"
                     xmlns="http://www.w3.org/2000/svg"
                     fill="none"
                     viewBox="0 0 24 24"
@@ -278,7 +285,7 @@ export default function UpdateCulto({
             ) : (
               <button
                 type="submit"
-                className="rounded-md bg-green-700 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
               >
                 <span>Atualizar</span>
               </button>

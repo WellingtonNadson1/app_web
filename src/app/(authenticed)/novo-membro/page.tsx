@@ -1,26 +1,27 @@
 'use client'
 import ListMembers from '@/components/listMembers'
-import useSWR from 'swr'
 import { ReturnMembers } from './schema'
 import { useSession } from 'next-auth/react'
-import { BASE_URL, fetchWithToken } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
 
 export default function NovoMembro() {
   const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   const URL = `${BASE_URL}/users`
 
-  const {
-    data: members,
-    error,
-    isValidating,
-    isLoading,
-  } = useSWR<ReturnMembers[]>(
-    [URL, `${session?.user.token}`],
-    ([url, token]: [string, string]) => fetchWithToken(url, 'GET', token),
-  )
+  const { data: members, isError: error, isLoading } = useQuery<ReturnMembers[]>({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const response = await axiosAuth.get(URL)
+      return await response.data
+    },
+  })
 
   if (error) {
     return (
@@ -107,10 +108,6 @@ export default function NovoMembro() {
         </div>
       </>
     )
-  }
-
-  if (isValidating) {
-    console.log('Is Validating', isValidating)
   }
 
   return (
