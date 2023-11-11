@@ -7,7 +7,6 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
 import {
   AddressProps,
   Encontros,
@@ -19,6 +18,7 @@ import {
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 
 function UpdateMember({
   memberId,
@@ -27,10 +27,9 @@ function UpdateMember({
   memberId: string
   shouldFetch: boolean
 }) {
-  const hostname = 'app-ibb.onrender.com'
-  const URLUsersId = `https://${hostname}/users/${memberId}`
-  const URLUsers = `https://${hostname}/users`
-  const URLCombinedData = `https://${hostname}/users/all`
+  const URLUsersId = `${BASE_URL}/users/${memberId}`
+  const URLUsers = `${BASE_URL}/users`
+  const URLCombinedData = `${BASE_URL}/users/all`
 
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -116,31 +115,6 @@ function UpdateMember({
     setValue(`has_filho`, value)
   }
 
-  // Notification sucsses or error Submit Forms
-  const successCadastroMembro = () =>
-    toast.success('Membro Cadastrado!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
-  const errorCadastroMembro = () =>
-    toast.error('Error no Cadastro!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
@@ -148,7 +122,6 @@ function UpdateMember({
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
       const passwordDefault = 'JesusCristoReina'
-      console.log(data.is_discipulado)
 
       const selectedEncontros = data?.encontros?.filter((id) => id !== '')
       const selectedEscolas = data?.escolas?.filter((id) => id !== '')
@@ -174,8 +147,6 @@ function UpdateMember({
 
       setIsLoadingSubmitUpDate(true)
 
-      console.log('Data Form2: ', dataToSend)
-
       const response = await fetch(URLUsersId, {
         method: 'PUT',
         headers: {
@@ -186,32 +157,46 @@ function UpdateMember({
       })
       if (response.ok) {
         setIsLoadingSubmitUpDate(false)
-        successCadastroMembro()
+        success('Membro Cadastrado!')
         reset()
         router.refresh()
       } else {
-        errorCadastroMembro()
+        errorCadastro('Error no Cadastro!')
         setIsLoadingSubmitUpDate(false)
       }
     } catch (error) {
-      errorCadastroMembro()
+      errorCadastro('Error no Cadastro!')
       setIsLoadingSubmitUpDate(false)
     }
   }
 
-  const { data: combinedData, isError: error, isLoading } = useQuery<any>({
-    queryKey: ["members"],
+  const { data: combinedData, isError: error, isLoading } = useQuery<{
+    supervisoes: SupervisaoData[];
+    escolas: Escolas;
+    encontros: Encontros;
+    situacoesNoReino: SituacoesNoReino;
+    cargoLideranca: SituacoesNoReino;
+  }>({
+    queryKey: ["combinedData"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLCombinedData)
-      return await response.data
+      return response.data as {
+        supervisoes: SupervisaoData[];
+        escolas: Escolas;
+        encontros: Encontros;
+        situacoesNoReino: SituacoesNoReino;
+        cargoLideranca: SituacoesNoReino;
+      };
     },
   })
+  console.log('Combinados: ', combinedData);
+  
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<Member[]>({
     queryKey: ["membersquery"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLCombinedData)
-      return await response.data
+      const response = await axiosAuth.get(URLUsers)
+      return response.data
     },
   })
 
@@ -222,8 +207,6 @@ function UpdateMember({
   if (isLoadingQueryUpdate) {
     return null
   }
-
-  
 
   const filteredPeople =
     queryUpDate === ''
@@ -236,11 +219,11 @@ function UpdateMember({
         )
 
   // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
-  const supervisoes: SupervisaoData[] = combinedData?.[0]
-  const escolas: Escolas = combinedData?.[1]
-  const encontros: Encontros = combinedData?.[2]
-  const situacoesNoReino: SituacoesNoReino = combinedData?.[3]
-  const cargoLideranca: SituacoesNoReino = combinedData?.[4]
+  const supervisoes = combinedData?.supervisoes
+  const escolas = combinedData?.escolas
+  const encontros = combinedData?.encontros
+  const situacoesNoReino = combinedData?.situacoesNoReino
+  const cargoLideranca = combinedData?.cargoLideranca
 
   if (error)
     return (
@@ -251,7 +234,7 @@ function UpdateMember({
       </div>
     )
 
-  if (!supervisoes) {
+  if (!{supervisoes}) {
     return (
       <div className="z-50 w-full px-2 py-2 mx-auto">
         <div className="flex items-center w-full gap-2 mx-auto">
@@ -267,9 +250,12 @@ function UpdateMember({
     setSupervisaoSelecionadaUpDate(event.target.value)
   }
 
+  console.log({supervisoes});
+  
   const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao) => supervisao.id === supervisaoSelecionadaUpDate,
   )?.celulas
+
   return (
     <Modal
       icon={UserPlusIcon}

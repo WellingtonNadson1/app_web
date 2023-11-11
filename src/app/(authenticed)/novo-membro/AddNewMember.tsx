@@ -181,7 +181,7 @@ function AddNewMember() {
     queryKey: ["cultossemanais"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLCombinedData)
-      return await response.data
+      return response.data
     },
   })
 
@@ -189,7 +189,7 @@ function AddNewMember() {
     queryKey: ["members"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLUsers)
-      return await response.data
+      return response.data
     },
   })
 

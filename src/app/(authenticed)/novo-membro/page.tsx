@@ -19,7 +19,7 @@ export default function NovoMembro() {
     queryKey: ["members"],
     queryFn: async () => {
       const response = await axiosAuth.get(URL)
-      return await response.data
+      return response.data
     },
   })
 
