@@ -29,8 +29,8 @@ declare module 'next-auth' {
       has_filho: string
       quantidade_de_filho: number
       date_decisao: string | Date
-      situacao_no_reino: string
-      cargo_de_lideranca: string
+      situacaoNoReinoId:  string
+      cargoDeLiderancaId: string
       token: string
       refreshToken: {
         id: string

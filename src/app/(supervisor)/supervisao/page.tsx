@@ -13,8 +13,8 @@ import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
-import HeaderSupervisao from './HeaderCelula'
-import ControlePresencaSupervisor from './ControlePresencaCelula'
+import HeaderSupervisao from './HeaderSupervisao'
+import ControlePresencaSupervisor from './ControlePresencaSupervisor'
 
 export default function ControleSupervisor() {
   const { data: session } = useSession()
@@ -49,7 +49,7 @@ export default function ControleSupervisor() {
 
   return (
     <>
-    {isLoadingCelula ? (
+    {isLoading ? (
       <>
         <HeaderCelulaLoad />
       </>
@@ -70,7 +70,7 @@ export default function ControleSupervisor() {
     ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
       selectedDayMeetings.map((meeting) => (
         isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
-          celula ? (
+          session ? (
             <div key={meeting.id} className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
               <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
                 <div className="flex flex-col items-start justify-start mb-2">

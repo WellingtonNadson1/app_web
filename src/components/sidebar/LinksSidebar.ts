@@ -3,6 +3,7 @@ import {
   Calendar,
   ChartBar,
   Student,
+  Target,
   Users,
   UsersFour,
 } from '@phosphor-icons/react'
@@ -23,5 +24,11 @@ export const sidebarCentral = [
 export const sidebarLiderCelula = [
   // { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Célula', icon: Users, href: '/celula' },
+  // { name: 'Eventos', icon: Calendar, href: '/eventos' },
+]
+
+export const sidebarSupervisor = [
+  // { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
+  { name: 'Presença', icon: Target, href: '/supervisao' },
   // { name: 'Eventos', icon: Calendar, href: '/eventos' },
 ]

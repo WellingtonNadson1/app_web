@@ -24,6 +24,10 @@ export default async function LoginLayout({
     // Signed in
     return redirect('/dashboard', RedirectType.replace)
   }
+  if (session?.user.role === 'USERSUPERVISOR') {
+    // Signed in
+    return redirect('/supervisao', RedirectType.replace)
+  }
   if (session?.user.role === 'USERLIDER') {
     // Signed in
     return redirect('/celula', RedirectType.replace)
