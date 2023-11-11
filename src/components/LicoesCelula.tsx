@@ -35,7 +35,7 @@ export default function LicoesCelula() {
       id: 1,
       title: 'Sabedoria para Administrar o Tempo',
       periodo: '05 a 11 de Nov/2023',
-      status: 'pendente',
+      status: 'ok',
       icon: FilePdf,
       versiculo: 'Sl 90:12',
     },
