@@ -7,7 +7,6 @@ import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
-// import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 
 export const metadata = {
   title: 'App IBB',
@@ -20,7 +19,6 @@ export default async function RootLayout({
   children: React.ReactNode
 }) {
   const session = await getServerSession(authOptions)
-  // const queryClient = new QueryClient()
 
   if (!session) {
     // Signed in
@@ -47,7 +45,7 @@ export default async function RootLayout({
           <ReactQueryProvider>
             <Providers>
               <Sidebar />
-              <div className="mx-auto w-full px-2 py-2">{children}</div>
+              <div className="w-full px-2 py-2 mx-auto">{children}</div>
             </Providers>
           </ReactQueryProvider>
           </div>

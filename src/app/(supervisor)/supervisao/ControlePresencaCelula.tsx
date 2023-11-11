@@ -1,6 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
@@ -8,7 +8,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import * as z from 'zod'
 
@@ -54,8 +54,6 @@ const CelulaSchema = z.object({
   userId: z.string(),
 })
 
-export type CelulaProps = z.infer<typeof CelulaSchema>
-
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
   status: z.boolean(),
@@ -63,12 +61,10 @@ const PresencaCultoCelulaSchema = z.object({
   presenca_culto: z.string(),
 })
 
-export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
-
-interface ControlePresencaCelulaProps {
-  celula: CelulaProps
-  culto: string
-}
+const ControlePresencaSupervisorPropsSchema = z.object({
+  supervisorId: z.string(),
+  culto: z.string()
+})
 
 const attendanceSchema = z.object({
   status: z.string(),
@@ -76,17 +72,19 @@ const attendanceSchema = z.object({
   presenca_culto: z.string(),
 })
 
+export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
+export type ControlePresencaSupervisorProps = z.infer<typeof ControlePresencaSupervisorPropsSchema>
 type attendance = z.infer<typeof attendanceSchema>
 
-export default function ControlePresencaCelula({
+export default function ControlePresencaSupervisor({
   culto,
-  celula,
-}: ControlePresencaCelulaProps) {
+  supervisorId,
+}: ControlePresencaSupervisorProps) {
   const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
-  const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance[]>()
+  const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
 
@@ -104,36 +102,20 @@ export default function ControlePresencaCelula({
 
   const { data:PresenceExistRegister, isLoading  } = result
 
-
-  const notify = () =>
-    toast.success('😉 Presenças Registradas!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
   // Funcao para submeter os dados do Formulario Preenchido
-  const onSubmit: SubmitHandler<attendance[]> = async (data) => {
+  const onSubmit: SubmitHandler<attendance> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
-
       console.log('Data presenca culto: ', data)
 
-      for (const key in data) {
-        const status = data[key].status === 'true'
-        const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
-        const presenceRedister = response.data
-        if (!presenceRedister) {
-          throw new Error('Failed to submit dados de presenca')
-        }
+      const status = data.status === 'true'
+      const response = await axiosAuth.post(URLControlePresenca, { ...data, status })
+      const presenceRedister = response.data
+      if (!presenceRedister) {
+        throw new Error('Failed to submit dados de presenca')
       }
 
-      notify()
+      success('😉 Presenças Registradas!')
       setIsLoadingSubmitForm(false)
       reset()
       router.refresh()
@@ -180,65 +162,63 @@ export default function ControlePresencaCelula({
                         </div>
                       </div>
                       <div className="text-sm font-normal text-gray-700">
-                        {celula.membros.map((user, index) => (
-                          <form key={user.id} id={user.id}>
+                          <form id={'supervisorId'}>
                             <div className="grid grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-5">
                               <input
                                 type="hidden"
-                                value={user.id}
-                                {...register(`${index}.membro`)}
+                                value={supervisorId}
+                                {...register("membro")}
                               />
                               <input
                                 type="hidden"
                                 value={culto}
-                                {...register(`${index}.presenca_culto`)}
+                                {...register("presenca_culto")}
                               />
                               <div className="flex items-center justify-start gap-1 sm:gap-3">
                                 <UserFocus
                                   className="hidden sm:block"
                                   size={28}
                                 />
-                                <h2 className="ml-4">{user.first_name}</h2>
+                                <h2 className="ml-4">{session?.user.first_name}</h2>
                               </div>
                               <div className="hidden sm:block">
                                 <span
-                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === 'Ativo'
+                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${session?.user.situacao_no_reino === 'Ativo'
                                       ? 'border border-green-200 bg-green-100 ring-green-500'
-                                      : user.situacao_no_reino?.nome ===
+                                      : session?.user.situacao_no_reino ===
                                         'Normal'
                                         ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                                        : user.situacao_no_reino?.nome === 'Frio'
+                                        : session?.user.situacao_no_reino === 'Frio'
                                           ? 'border border-orange-200 bg-orange-100 ring-orange-500'
                                           : 'border border-red-200 bg-red-100 ring-red-500'
                                     }`}
                                 >
-                                  {user.situacao_no_reino.nome}
+                                  {session?.user.situacao_no_reino}
                                 </span>
                               </div>
                               <div className="hidden sm:block">
                                 <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
-                                  {user.cargo_de_lideranca.nome}{' '}
+                                  {session?.user.cargo_de_lideranca}{' '}
                                 </span>
                               </div>
                               <input
-                                {...register(`${index}.status` as const, {
+                                {...register("status", {
                                   required: true
                                 })}
                                 value="true"
                                 type="radio"
-                                id={user.id}
+                                id={session?.user.id}
                                 className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                               />
                               <input
-                                {...register(`${index}.status` as const, { required: true })}
+                                {...register("status", { required: true })}
                                 value="false"
                                 type="radio"
-                                id={user.first_name}
+                                id={session?.user.first_name}
                                 className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
                               />
                             </div>
                           </form>
-                        ))}
                         {isLoadingSubmitForm ? (
                           <button
                             type="submit"

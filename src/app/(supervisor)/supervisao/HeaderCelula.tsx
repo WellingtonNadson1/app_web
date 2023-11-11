@@ -9,8 +9,6 @@ import { pt } from 'date-fns/locale'
 import { signOut, useSession } from 'next-auth/react'
 import Image from 'next/image'
 import { Fragment } from 'react'
-// import { signIn } from 'next-auth/react'
-// import Image from 'next/image'
 
 const userNavigation = [
   { name: 'Meu Perfil', href: '#' },
@@ -21,11 +19,11 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
-interface HeaderCelulaProps {
-  headerCelula: string | undefined
+interface HeaderSupervisaoProps {
+  headerSupervisao: string | undefined
 }
 
-export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
+export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoProps) {
   const { data: session, status } = useSession()
 
   const toDay = format(new Date(), 'PP', { locale: pt })
@@ -39,7 +37,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
   if (!isAuthenticated) {
     return (
       <nav className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
-        <h2>Deu não autenticado!</h2>
+        <h2>Não autenticado!</h2>
       </nav>
     )
   }
@@ -51,7 +49,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              Célula {headerCelula}
+              Supervisão {headerSupervisao}
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">

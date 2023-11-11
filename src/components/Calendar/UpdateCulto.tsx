@@ -1,14 +1,11 @@
 'use client'
-
 import {
   CultoDaSemana,
   NewCulto,
 } from '@/app/(authenticed)/cultos/schemaNewCulto'
 import {
   BASE_URL,
-  FetchError,
   errorCadastro,
-  fetchWithToken,
   success,
 } from '@/functions/functions'
 import { UserMinusIcon } from '@heroicons/react/24/outline'
@@ -16,7 +13,6 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import useSWR from 'swr'
 import ModalCalendar from './ModalCalendar'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'

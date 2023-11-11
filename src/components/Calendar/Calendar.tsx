@@ -1,5 +1,4 @@
 'use client'
-import { fetchWithToken } from '@/functions/functions'
 import { Menu, Transition } from '@headlessui/react'
 import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
@@ -14,10 +13,7 @@ import {
   isSameDay,
   isSameMonth,
   isSunday,
-  // isSaturday,
-  // isSunday,
   isToday,
-  // isWednesday,
   parse,
   parseISO,
   startOfToday,
@@ -25,7 +21,6 @@ import {
 import pt from 'date-fns/locale/pt'
 import { useSession } from 'next-auth/react'
 import { Fragment, useState } from 'react'
-import useSWR from 'swr'
 import DeleteCulto from './DeleteCulto'
 import UpdateCulto from './UpdateCulto'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
@@ -289,7 +284,6 @@ function Meeting({ meeting }: { meeting: meeting }) {
               <Menu.Item>
                 <UpdateCulto
                   cultoId={meeting.id}
-                // cultoName={meeting?.culto_semana.nome}
                 />
               </Menu.Item>
               <Menu.Item>
@@ -305,65 +299,6 @@ function Meeting({ meeting }: { meeting: meeting }) {
     </li>
   )
 }
-
-// function EditInactiveIcon(props: any) {
-//   return (
-//     <svg
-//       {...props}
-//       viewBox="0 0 20 20"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <path
-//         d="M4 13V16H7L16 7L13 4L4 13Z"
-//         fill="#67e9a3ec"
-//         stroke="#47c180f7"
-//         strokeWidth="2"
-//       />
-//     </svg>
-//   )
-// }
-
-// function EditActiveIcon(props: any) {
-//   return (
-//     <svg
-//       {...props}
-//       viewBox="0 0 20 20"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <path
-//         d="M4 13V16H7L16 7L13 4L4 13Z"
-//         fill="#47c180f7"
-//         stroke="#87ffbfe6"
-//         strokeWidth="2"
-//       />
-//     </svg>
-//   )
-// }
-
-// function DeleteActiveIcon(props: any) {
-//   return (
-//     <svg
-//       {...props}
-//       viewBox="0 0 20 20"
-//       fill="none"
-//       xmlns="http://www.w3.org/2000/svg"
-//     >
-//       <rect
-//         x="5"
-//         y="6"
-//         width="10"
-//         height="10"
-//         fill="#ffb9b4dc"
-//         stroke="#ffb9b4"
-//         strokeWidth="2"
-//       />
-//       <path d="M3 6H17" stroke="#ffb9b4" strokeWidth="2" />
-//       <path d="M8 6V4H12V6" stroke="#ffb9b4" strokeWidth="2" />
-//     </svg>
-//   )
-// }
 
 const colStartClasses = [
   '',
