@@ -8,111 +8,63 @@ import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
 import { twMerge } from 'tailwind-merge'
-
 import localizedFormat from 'dayjs/plugin/localizedFormat'
+import { GroupedData, GroupedForCulto, MemberData, PresencaForDate } from './schema'
+import { useQuery } from '@tanstack/react-query'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
 
-type PresencaForDate = {
-  id: string;
-  data_inicio_culto: string;
-  presencas_culto: {
-    id: string;
-    status: boolean;
-    membro: {
-      id: string
-      first_name: string
-      presencas_cultos: {
-        status: boolean;
-        cultoIndividualId: string;
-        presenca_culto: {
-            id: string;
-            status: string;
-        }
-      }
-      supervisao_pertence: {
-        id: string
-        nome: string
-      }
-      celula: {
-        id: string
-        nome: string
-      }
-    }
-  }[];
-  culto_semana: {
-    nome: string;
-  };
-};
-
-type MemberData = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  presencas_cultos: {
-    status: boolean;
-    cultoIndividualId: string;
-    date_create: string;
-    presenca_culto: {
-      status: boolean;
-      id: string;
-    }
-  }[];
-  celula: {
-    nome: string;
-  };
-};
-
-type GroupedData = Record<string, MemberData[]>;
-type GroupedForCulto = Record<string, PresencaForDate[]>;
-
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   // eslint-disable-next-line no-unused-vars
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
-  const [groupedData, setGroupedData] = useState<GroupedData | null>(null);
+  const [groupedDataForCell, setGroupedDataForCell] = useState<GroupedData | null>(null);
   const [celulas, setCelulas] = useState<GroupedForCulto | null>(null);
   const [celulas2, setCelulas2] = useState<PresencaForDate[] | null>(null);
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
   const [dataCulto, setDataCulto] = useState<string | null>(null);
   const [corSupervisao, setCorSupervisao] = useState<string | null>(null);
   const [relatorioData, setRelatorioData] = useState<PresencaForDate[]>();
+  const [idCultos, setIdCultos] = useState<string[]>()
 
   useEffect(() => {
     handleRelatorio();
     handlePresenceCulto();
   }, []);
 
-  const handleFunctions = () => {
-    handleRelatorio();
-    handlePresenceCulto();
-  }
-
   const handleRelatorio = async () => {
     try {
-      const response = await axiosAuth.get(URLRelatorioSupervision);
-      const relatorio: MemberData[] = response.data;
+      console.log('Entrei no try');
+      const response = await axiosAuth.get(URLPresencaGeralCultos);
+      console.log(response.data)
+      const presencaGeralCultos = response.data as MemberData[]
+      console.log(presencaGeralCultos)
 
-      if (!relatorio) {
-        console.log('Erro na resposta da API:', response.statusText);
-        return;
+      if (presencaGeralCultos) {
+        const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
+        setGroupedDataForCell(dataGroupedForCell);
       }
+      console.log(groupedDataForCell)
 
-      const dataGrouped: GroupedData = groupDataByCell(relatorio);
-      setGroupedData(dataGrouped);
-
-      console.log('groupedData', groupedData)
-
-      if (relatorio.length > 0 && !dataCulto) {
-        relatorio.map((cultos, index) => {
-          return setDataCulto(cultos.presencas_cultos[index].date_create)
+      
+      if (presencaGeralCultos && presencaGeralCultos?.length > 0) {
+        let ids = new Set<string>();
+        presencaGeralCultos.map((membro, index) => {
+            membro.presencas_cultos.map( (t) => {
+                ids.add(t.cultoIndividualId);
+            })
         })
-      }
+        setIdCultos(Array.from(ids));
+    }
+    
+      console.log(idCultos);
+      
 
     } catch (error) {
       console.log('Erro ao buscar o relatório:', error);
@@ -157,6 +109,11 @@ export default function StatsCardRelatorios() {
     }
   };
 
+  const handleFunctions = () => {
+    console.log('Botão de Relat. Mensal Supervisão clicado');
+    handleRelatorio();
+    handlePresenceCulto();
+  }
 
   const groupDataByCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForCell: GroupedForCulto = {};
@@ -261,7 +218,7 @@ export default function StatsCardRelatorios() {
                         {dayjs(`${cellDateCulto}`).tz().format('DD')}
                       </p>
                       <p>
-                        {dayjs(culto.data_inicio_culto).format('YYYY-MM-DDTHH')}
+                        {culto.id}
                       </p>
                     </div>
                   </th>
@@ -270,53 +227,67 @@ export default function StatsCardRelatorios() {
             </tr>
           </thead>
           <tbody>
-            {groupedData &&
-              Object.keys(groupedData).map((cellName, cellIndex) => (
+            {groupedDataForCell && dateCultoData &&
+              Object.keys(groupedDataForCell).map((cellName, cellIndex) => (
                 // Linha Com dados da Celula
                 <tr key={cellName + cellIndex} className='bg-white border-b'>
                   {/* NOME DA CELULA */}
-                  <td className='px-2 mx-auto text-base font-semibold'>
+                  <td className='px-2 mx-auto text-lg font-semibold text-indigo-600'>
                     {cellName}
                   </td>
                   {/* MEMBROS DA CELULA */}
                   <td>
-                    {groupedData[cellName].length > 0 &&
-                      groupedData[cellName].map((member, index) => (
-                        <div className='ml-3 text-sm leading-8'>
-                          <div className='w-full' key={member.id + index}>{member.first_name.slice(0,9)}</div>
+                    {groupedDataForCell[cellName].length > 0 &&
+                      groupedDataForCell[cellName].map((member, index) => (
+                        <div key={member.id + index} className='ml-3 text-base leading-8'>
+                          <div className='w-full font-semibold' key={member.id + index}>{member.first_name.slice(0,9)}</div>
                         </div>
                       ))}
                   </td>
-                  {Array.from({ length: 12 }, (_, i) => (
-                    <td key={i}>
-                      {groupedData[cellName].length > 0 &&
-                        groupedData[cellName].map((member, index) => (
-                          dateCultoData &&
-                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
+                  {Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
                   dateCultoData[cellDateCulto].length > 0 &&
                     dateCultoData[cellDateCulto].map((culto, index) => (
-                          <div key={member.id} className='mx-auto font-semibold leading-8 text-center'>
-                            {member.presencas_cultos[index] ? (
-                              typeof member.presencas_cultos[index] === 'object' &&
-                                // member.presencas_cultos[index].hasOwnProperty('status') && 
-                                culto.id === member.presencas_cultos[index].cultoIndividualId ? (
-                                member.presencas_cultos[index].status === true ? (
-                                  <p className='text-green-600'>{member.presencas_cultos[index].cultoIndividualId}P</p>
+                      <td key={culto.id}>
+                          <div key={culto.id} className='mx-auto font-semibold leading-8 text-center'>
+                            {
+                                // culto.presencas_cultos[index].hasOwnProperty('status') && 
+                                culto.presencas_culto[cellDateIndex].id ? (
+                                culto.presencas_culto[cellDateIndex].status === true ? (
+                                  <p className='text-green-600'>{culto.presencas_culto[cellDateIndex].membro.first_name}  {culto.id} P</p>
                                 ) : (
-                                  <p className='text-red-600'>{member.presencas_cultos[index].cultoIndividualId}F</p>
+                                  <p className='text-red-600'>{culto.presencas_culto[cellDateIndex].membro.first_name}  {culto.id} F</p>
                                 )
                               ) : (
-                                'N/A'
+                                <p>
+                                  N/A
+                                </p>
                               )
-                            ) : (
-                              'N/A'
-                            )}
+                              }
                           </div>
-
-                    ))))
-                        ))}
                     </td>
-                  ))}
+                    ))))}
+                      {/* {(groupedDataForCell[cellName].length > 0 && idCultos) &&
+                        groupedDataForCell[cellName].map((member, index) => (
+                          <td key={member.id}>
+                          <div key={member.id} className='mx-auto font-semibold leading-8 text-center'>
+                            {
+                                // member.presencas_cultos[index].hasOwnProperty('status') && 
+                                member.presencas_cultos[index].cultoIndividualId === idCultos[index] ? (
+                                member.presencas_cultos[index].status === true ? (
+                                  <p className='text-green-600'>{member.presencas_cultos[index].cultoIndividualId}  {member.first_name} P</p>
+                                ) : (
+                                  <p className='text-red-600'>{member.presencas_cultos[index].cultoIndividualId} {member.first_name} F</p>
+                                )
+                              ) : (
+                                <p>
+                                  N/A
+                                </p>
+                              )
+                              }
+                          </div>
+                    </td>
+
+                        ))} */}
                 </tr>
               ))}
           </tbody>

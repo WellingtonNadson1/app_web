@@ -1,28 +1,5 @@
 {
   "pages": {
-    "/(authenticed)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/layout.css",
-      "static/chunks/app/(authenticed)/layout.js"
-    ],
-    "/(authenticed)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/loading.css",
-      "static/chunks/app/(authenticed)/loading.js"
-    ],
-    "/(authenticed)/celulas/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/celulas/page.css",
-      "static/chunks/app/(authenticed)/celulas/page.js"
-    ],
-    "/(authenticed)/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/page.js"
-    ],
     "/(relatorios)/relatorio-culto-supervisao/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
