@@ -9,6 +9,7 @@ import React, { Fragment, useCallback, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import {
   AddressProps,
+  CargoLidereanca,
   Encontros,
   Escolas,
   Member,
@@ -19,6 +20,7 @@ import { handleCPFNumber, handlePhoneNumber } from './utils'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 
 function UpdateMember({
   memberId,
@@ -49,7 +51,6 @@ function UpdateMember({
         },
       })
       const dataMember = await response.json()
-      console.log('Data in the Update', dataMember)
       return dataMember
     },
   })
@@ -170,27 +171,13 @@ function UpdateMember({
     }
   }
 
-  const { data: combinedData, isError: error, isLoading } = useQuery<{
-    supervisoes: SupervisaoData[];
-    escolas: Escolas;
-    encontros: Encontros;
-    situacoesNoReino: SituacoesNoReino;
-    cargoLideranca: SituacoesNoReino;
-  }>({
+  const { data: combinedData, isError: error, isLoading } = useQuery({
     queryKey: ["combinedData"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLCombinedData)
-      return response.data as {
-        supervisoes: SupervisaoData[];
-        escolas: Escolas;
-        encontros: Encontros;
-        situacoesNoReino: SituacoesNoReino;
-        cargoLideranca: SituacoesNoReino;
-      };
+      return response.data
     },
   })
-  console.log('Combinados: ', combinedData);
-  
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<Member[]>({
     queryKey: ["membersquery"],
@@ -219,11 +206,13 @@ function UpdateMember({
         )
 
   // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
-  const supervisoes = combinedData?.supervisoes
-  const escolas = combinedData?.escolas
-  const encontros = combinedData?.encontros
-  const situacoesNoReino = combinedData?.situacoesNoReino
-  const cargoLideranca = combinedData?.cargoLideranca
+
+    const supervisoes: SupervisaoData[] = combinedData ? combinedData[0] : undefined
+    const escolas: Escolas[] = combinedData ?  combinedData[1] : undefined
+    const encontros: Encontros[] = combinedData ?  combinedData[2] : undefined
+    const situacoesNoReino: SituacoesNoReino[] = combinedData ?  combinedData[3] : undefined
+    const cargoLideranca: CargoLidereanca[] = combinedData ?  combinedData[4] : undefined
+
 
   if (error)
     return (
@@ -234,11 +223,11 @@ function UpdateMember({
       </div>
     )
 
-  if (!{supervisoes}) {
+  if (!supervisoes) {
     return (
       <div className="z-50 w-full px-2 py-2 mx-auto">
         <div className="flex items-center w-full gap-2 mx-auto">
-          <div className="text-white">carregando...</div>
+          <SpinnerButton message={''} />
         </div>
       </div>
     )
@@ -249,11 +238,9 @@ function UpdateMember({
   ) => {
     setSupervisaoSelecionadaUpDate(event.target.value)
   }
-
-  console.log({supervisoes});
   
   const celulasFiltradas = (supervisoes ?? []).find(
-    (supervisao) => supervisao.id === supervisaoSelecionadaUpDate,
+    (supervisao: { id: string | undefined }) => supervisao.id === supervisaoSelecionadaUpDate,
   )?.celulas
 
   return (
@@ -736,7 +723,7 @@ function UpdateMember({
                           Encontros Participados
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
-                          {supervisoes ? (
+                          {{supervisoes} ? (
                             (encontros ?? []).map((encontro) => (
                               <div
                                 key={encontro.id}
@@ -809,7 +796,7 @@ function UpdateMember({
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           {!isLoading ? (
-                            (cargoLideranca ?? []).map((cargo) => (
+                            cargoLideranca?.map((cargo) => (
                               <option key={cargo.id} value={cargo.id}>
                                 {cargo.nome}
                               </option>

@@ -55,23 +55,28 @@ export type AddressProps = {
   localidade: string
 }
 
-interface Celula {
-  id: string
-  nome: string
-}
+const CelulaSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+  })
 
-export interface SupervisaoData {
-  id: string
-  nome: string
-  celulas: Celula[]
-}
+export type Celula = z.infer<typeof CelulaSchema>
+
+const SupervisaoDataSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+    celulas: CelulaSchema.array(),
+  })
+
+export type SupervisaoData = z.infer<typeof SupervisaoDataSchema>
 
 const EscolasSchema = z
   .object({
     id: z.string(),
     nome: z.string(),
   })
-  .array()
 
 export type Escolas = z.infer<typeof EscolasSchema>
 
@@ -80,7 +85,6 @@ const EncontrosSchema = z
     id: z.string(),
     nome: z.string(),
   })
-  .array()
 
 export type Encontros = z.infer<typeof EncontrosSchema>
 
@@ -89,9 +93,16 @@ const SituacoesNoReinoSchema = z
     id: z.string(),
     nome: z.string(),
   })
-  .array()
 
 export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
+
+const CargoLidereancaSchema = z
+  .object({
+    id: z.string(),
+    nome: z.string(),
+  })
+
+export type CargoLidereanca = z.infer<typeof CargoLidereancaSchema>
 
 export interface ReturnMembers {
   id: string
