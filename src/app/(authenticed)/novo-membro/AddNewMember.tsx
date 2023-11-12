@@ -12,6 +12,7 @@ import { toast } from 'react-toastify'
 import useSWR from 'swr'
 import {
   AddressProps,
+  CargoLidereanca,
   Encontros,
   Escolas,
   Member,
@@ -177,7 +178,7 @@ function AddNewMember() {
     }
   }
 
-  const { data: combinedData, isError: error, isLoading } = useQuery<any>({
+  const { data: combinedData, isError: error, isLoading } = useQuery({
     queryKey: ["cultossemanais"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLCombinedData)
@@ -204,11 +205,11 @@ function AddNewMember() {
         )
 
   // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
-  const supervisoes: SupervisaoData[] = combinedData?.[0]
-  const escolas: Escolas = combinedData?.[1]
-  const encontros: Encontros = combinedData?.[2]
-  const situacoesNoReino: SituacoesNoReino = combinedData?.[3]
-  const cargoLideranca: SituacoesNoReino = combinedData?.[4]
+  const supervisoes: SupervisaoData[] = combinedData ? combinedData[0] : undefined
+  const escolas: Escolas[] = combinedData ?  combinedData[1] : undefined
+  const encontros: Encontros[] = combinedData ?  combinedData[2] : undefined
+  const situacoesNoReino: SituacoesNoReino[] = combinedData ?  combinedData[3] : undefined
+  const cargoLideranca: CargoLidereanca[] = combinedData ?  combinedData[4] : undefined
 
   if (error)
     return (
@@ -638,7 +639,7 @@ function AddNewMember() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            (supervisoes ?? []).map((supervisao) => (
+                            supervisoes?.map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
                               </option>
@@ -665,7 +666,7 @@ function AddNewMember() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            (celulasFiltradas ?? []).map((celula) => (
+                            celulasFiltradas?.map((celula) => (
                               <option key={celula.id} value={celula.id}>
                                 {celula.nome}
                               </option>
@@ -687,7 +688,7 @@ function AddNewMember() {
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {!isLoading ? (
-                            (escolas ?? []).map((escola) => (
+                            escolas?.map((escola) => (
                               <div
                                 key={escola.id}
                                 className="relative flex gap-x-3"
@@ -728,7 +729,7 @@ function AddNewMember() {
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {supervisoes ? (
-                            (encontros ?? []).map((encontro) => (
+                            encontros?.map((encontro) => (
                               <div
                                 key={encontro.id}
                                 className="relative flex gap-x-3"
@@ -774,7 +775,7 @@ function AddNewMember() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            (situacoesNoReino ?? []).map((situacao) => (
+                            situacoesNoReino?.map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
                               </option>
@@ -802,7 +803,7 @@ function AddNewMember() {
                         >
                           <option value={''}>Selecione</option>
                           {!isLoading ? (
-                            (cargoLideranca ?? []).map((cargo) => (
+                            cargoLideranca?.map((cargo) => (
                               <option key={cargo.id} value={cargo.id}>
                                 {cargo.nome}
                               </option>
