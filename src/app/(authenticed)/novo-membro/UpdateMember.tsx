@@ -683,7 +683,7 @@ function UpdateMember({
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {!isLoading ? (
-                            (escolas ?? []).map((escola) => (
+                            escolas?.map((escola) => (
                               <div
                                 key={escola.id}
                                 className="relative flex gap-x-3"
@@ -724,7 +724,7 @@ function UpdateMember({
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {{supervisoes} ? (
-                            (encontros ?? []).map((encontro) => (
+                            encontros?.map((encontro) => (
                               <div
                                 key={encontro.id}
                                 className="relative flex gap-x-3"
@@ -769,7 +769,7 @@ function UpdateMember({
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           {!isLoading ? (
-                            (situacoesNoReino ?? []).map((situacao) => (
+                            situacoesNoReino?.map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
                               </option>
