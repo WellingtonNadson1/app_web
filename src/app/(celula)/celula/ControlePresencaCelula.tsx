@@ -3,7 +3,8 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
+import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -83,22 +84,42 @@ export default function ControlePresencaCelula({
   celula,
 }: ControlePresencaCelulaProps) {
   const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
+
   const router = useRouter()
   const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance[]>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const queryClient = useQueryClient()
+
 
   const getPresenceRegistered = async () => {
     const response = await axiosAuth.get(URLPresencaCultoId)
-    const PresenceExistRegistered = await response.data
+    const PresenceExistRegistered = response.data
     return PresenceExistRegistered
   }
 
   const result = useQuery({
     queryKey: ['presence'],
     queryFn: getPresenceRegistered,
+    onSuccess: async (responseData) => {
+      queryClient.invalidateQueries({ queryKey: ['reuniaocelula']});
+      setPresencaReuniaoIsRegistered(true)
+      console.log('success mutate', responseData);
+    },
+    onError: async (errorData) => {
+      const axiosError = errorData as AxiosError;
+      if (axiosError.response) {
+        const errorResponseData = axiosError.response.data;
+      console.log('error mutate', errorResponseData);
+
+   
+      } else {
+        console.error('Error response is not available');
+      }
+    },
     retry: false
   })
 
@@ -148,7 +169,7 @@ export default function ControlePresencaCelula({
         <SpinnerButton message={''}/>
       ) : (
         <>
-          {PresenceExistRegister ? (
+          {presencaReuniaoIsRegistered ? (
             <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
               Presença já cadastrada!
             </p>
