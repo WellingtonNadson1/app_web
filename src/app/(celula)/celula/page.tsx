@@ -95,7 +95,7 @@ export default function ControleCelulaSupervision() {
                                 className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                               />
                             </Disclosure.Button>
-                            <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                            <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                               <ControlePresencaCelula
                                 culto={meeting.id}
                                 celula={celula}
@@ -129,7 +129,7 @@ export default function ControleCelulaSupervision() {
                           className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                         />
                       </Disclosure.Button>
-                      <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                      <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                         <p>Não há Culto hoje.</p>
                       </Disclosure.Panel>
                     </>
@@ -158,7 +158,7 @@ export default function ControleCelulaSupervision() {
                                 className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                               />
                             </Disclosure.Button>
-                            <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                            <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                               <ControlePresencaReuniaoCelula
                                 dataCelula={celula}
                                 celulaId={celula.id}
@@ -187,7 +187,7 @@ export default function ControleCelulaSupervision() {
                                 className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                               />
                             </Disclosure.Button>
-                            <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
+                            <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                               <p>Não há Célula hoje.</p>
                             </Disclosure.Panel>
                           </>

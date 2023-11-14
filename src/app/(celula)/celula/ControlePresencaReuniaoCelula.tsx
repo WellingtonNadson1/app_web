@@ -7,6 +7,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
+import ProgressBar from "@ramonak/react-progress-bar";
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import * as z from 'zod'
@@ -77,6 +78,7 @@ export default function ControlePresencaReuniaoCelula({
   const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
   const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
   const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  const [progress, setProgress] = useState(0);
   
   // const URLControlePresencaReuniaoCelula = `http://localhost:3333/presencareuniaocelulas`
   // const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
@@ -110,7 +112,7 @@ export default function ControlePresencaReuniaoCelula({
 
   const createReuniaoCelula= async (dataSend: reuniaoCelulaData2): Promise<reuniaoCelulaData[] | reuniaoCelulaData> => {
     const response = await axiosAuth.post(URLReuniaoCelula, dataSend)
-    console.log(response)
+    console.debug(response)
     return response.data;
   }
 
@@ -121,7 +123,7 @@ export default function ControlePresencaReuniaoCelula({
       const {id} = responseData as ReuniaoCelulaSuccessData;
       setReuniaRegisteredId(id)
 
-      console.log('success mutate', responseData);
+      console.debug('success mutate', responseData);
     },
     onError: async (errorData) => {
       const axiosError = errorData as AxiosError;
@@ -132,7 +134,7 @@ export default function ControlePresencaReuniaoCelula({
           const id = errorResponseData[0].id;
           setReuniaRegisteredId(id)
           // Now you can use 'id' in other parts of your code
-          console.log('Error Response ID:', id);
+          console.debug('Error Response ID:', id);
         }       
       } else {
         console.error('Error response is not available');
@@ -209,11 +211,16 @@ export default function ControlePresencaReuniaoCelula({
             <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
               <div className="w-full px-2 py-2 ">
                 <div className="w-full px-1 py-2 rounded-md">
-                  <h2 className="mb-3 text-lg font-semibold leading-7 text-gray-800">
+                  <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                     Presença de Reunião de Célula
                   </h2>
+                  {isLoadingSubmitForm ? (
+                      <ProgressBar completed={progress} bgColor='#1e3a8a' baseBgColor='#e2e8f0' animateOnRender={true} />
+                    ) : (
+                      <span className='hidden'></span>
+                    )}
                   <div className="w-full border-separate border-spacing-y-6">
-                    <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
+                    <div className="grid grid-cols-3 text-sm font-medium sm:grid-cols-5">
                       <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                         Nome
                       </div>
@@ -241,7 +248,7 @@ export default function ControlePresencaReuniaoCelula({
                             />
                             <div className="flex items-center justify-start gap-1 sm:gap-3">
                               <UserFocus className="hidden sm:block" size={28} />
-                              <h2 className="ml-4">{user.first_name}</h2>
+                              <h2 className="ml-4 text-sm">{user.first_name}</h2>
                             </div>
                             <div className="hidden sm:block">
                               <span

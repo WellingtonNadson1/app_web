@@ -153,7 +153,7 @@ export default function ControlePresencaCelula({
               <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
                 <div className="w-full px-2 py-2 ">
                   <div className="w-full px-1 py-2 rounded-md">
-                    <h2 className="mb-3 text-lg font-semibold leading-7 text-gray-800">
+                    <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                       Presença de Culto
                     </h2>
                     {isLoadingSubmitForm ? (
