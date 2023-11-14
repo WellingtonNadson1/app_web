@@ -46,19 +46,22 @@ function classNames(...classes: string[]) {
 export default function CalendarLiderCelula() {
   const today = startOfToday()
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
 
-  const { data: session } = useSession()
   if (!session) {
     return <SpinnerButton message={''}/>
   }
 
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
-    queryFn: () => axiosAuth.get(URLCultosInd)
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCultosInd)
+      return result.data
+    },
   })
 
 if (isLoading) {
@@ -80,7 +83,7 @@ if (isLoading) {
     setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
   }
 
-  const selectedDayMeetings = data?.data.filter((meeting) =>
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
 
@@ -167,7 +170,7 @@ if (isLoading) {
                     {/* Pontos de Eventos */}
                     <div className="flex items-center justify-center gap-1 mx-auto">
                       {data &&
-                        data?.data.some((meeting) =>
+                        data?.some((meeting) =>
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="w-1 h-1 mt-1">

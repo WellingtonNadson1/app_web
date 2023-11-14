@@ -16,7 +16,6 @@ import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
-import { createReuniao } from './function'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -26,17 +25,21 @@ export default function ControleCelulaSupervision() {
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
-  // const URLCultosInd = `${BASE_URL}/cultosindividuais`
-  // const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
-    queryFn: () => axiosAuth.get(URLCultosInd)
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCultosInd)
+      return result.data
+    }
   })
 
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
-    queryFn: () => axiosAuth.get(URLCelula),
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCelula)
+      return result.data
+    },
     enabled: !!celulaId,
     retry: false
   })
@@ -47,7 +50,7 @@ export default function ControleCelulaSupervision() {
 
   const today = startOfToday()
 
-  const selectedDayMeetings = data?.data.filter((meeting) =>
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
@@ -63,7 +66,7 @@ export default function ControleCelulaSupervision() {
     ) : (
       <div className="relative w-full px-2 py-2 mx-auto">
         <div className="relative w-full mx-auto">
-          <HeaderCelula headerCelula={celula?.data.nome} />
+          <HeaderCelula headerCelula={celula?.nome} />
         </div>
         <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
           <CalendarLiderCelula />
@@ -95,7 +98,7 @@ export default function ControleCelulaSupervision() {
                             <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                               <ControlePresencaCelula
                                 culto={meeting.id}
-                                celula={celula?.data}
+                                celula={celula}
                               />
                             </Disclosure.Panel>
                           </>
@@ -140,7 +143,7 @@ export default function ControleCelulaSupervision() {
     )}{' '}
   </div>
         <div className="relative w-full px-2 mx-auto mb-4">
-          {celula && Number(celula.data.date_que_ocorre) === dayOfWeek ? (
+          {celula && Number(celula.date_que_ocorre) === dayOfWeek ? (
             <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
               <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
                 <div className="flex flex-col items-start justify-start mb-2">
@@ -158,7 +161,7 @@ export default function ControleCelulaSupervision() {
                             <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500">
                               <ControlePresencaReuniaoCelula
                                 dataCelula={celula}
-                                celulaId={celula.data.id}
+                                celulaId={celula.id}
                               />
                             </Disclosure.Panel>
                           </>

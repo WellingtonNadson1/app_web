@@ -231,7 +231,7 @@ export default function ControlePresencaReuniaoCelula({
                       </div>
                     </div>
                     <div className="text-sm font-normal text-gray-700">
-                      {dataCelula.data.membros.map((user, index) => (
+                      {dataCelula.membros.map((user, index) => (
                         <form key={user.id} id={user.id}>
                           <div className="grid grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-5">
                             <input

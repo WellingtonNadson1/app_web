@@ -29,7 +29,7 @@ export default async function RootLayout({
     <html lang="pt">
       <body>
         <NextTopLoader
-          color="#ffffff"
+          color="#fff"
           initialPosition={0.08}
           crawlSpeed={200}
           height={3}
@@ -37,7 +37,7 @@ export default async function RootLayout({
           showSpinner={false}
           easing="ease"
           speed={200}
-          shadow="0 0 10px #ffffff,0 0 5px #ffffff"
+          shadow="0 0 10px #fff,0 0 5px #fff"
         />
         <div className="overflow-x-auto overflow-y-auto">
           <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>

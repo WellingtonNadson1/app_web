@@ -1,95 +1,32 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
+import { useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer, toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import * as z from 'zod'
-
-const ReuniaoCelulaSchema = z.object({
-  id: z.string(),
-  status: z.string(),
-  celula: z.string(),
-  data_reuniao: z.string(),
-  presencas_reuniao_celula: z.object({}).array(),
-})
-
-const UserSchema = z.object({
-  id: z.string(),
-  first_name: z.string(),
-  situacao_no_reino: z.object({
-    nome: z.string(),
-  }),
-  cargo_de_lideranca: z.object({
-    nome: z.string(),
-  }),
-})
-
-const CelulaSchema = z.object({
-  id: z.string(),
-  nome: z.string(),
-  lider: z.object({
-    first_name: z.string(),
-    id: z.string(),
-  }),
-  supervisao: z.string(),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_que_ocorre: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
-  supervisaoId: z.string(),
-  membros: z.array(UserSchema),
-  reunioes_celula: z.array(ReuniaoCelulaSchema),
-  userId: z.string(),
-})
-
-export type CelulaProps = z.infer<typeof CelulaSchema>
-
-const PresencaCultoCelulaSchema = z.object({
-  id: z.string(),
-  status: z.boolean(),
-  membro: z.string(),
-  presenca_culto: z.string(),
-})
-
-export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
-
-interface ControlePresencaCelulaProps {
-  celula: CelulaProps
-  culto: string
-}
-
-const attendanceSchema = z.object({
-  status: z.string(),
-  membro: z.string(),
-  presenca_culto: z.string(),
-})
-
-type attendance = z.infer<typeof attendanceSchema>
+import { ControlePresencaCelulaProps, attendance } from './schema'
+import ProgressBar from "@ramonak/react-progress-bar";
 
 export default function ControlePresencaCelula({
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
   const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState(false)
+  const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState<boolean>()
+  const [progress, setProgress] = useState(0);
+
 
   const router = useRouter()
-  const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance[]>()
+  const { handleSubmit, register, reset, formState: { errors }, setValue } = useForm<attendance[]>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
   const queryClient = useQueryClient()
@@ -101,21 +38,19 @@ export default function ControlePresencaCelula({
     return PresenceExistRegistered
   }
 
-  const result = useQuery({
+  const { isLoading, isSuccess } = useQuery({
     queryKey: ['presence'],
     queryFn: getPresenceRegistered,
     onSuccess: async (responseData) => {
       queryClient.invalidateQueries({ queryKey: ['reuniaocelula']});
       setPresencaReuniaoIsRegistered(true)
-      console.log('success mutate', responseData);
+      console.debug('success mutate', responseData);
     },
     onError: async (errorData) => {
       const axiosError = errorData as AxiosError;
       if (axiosError.response) {
         const errorResponseData = axiosError.response.data;
-      console.log('error mutate', errorResponseData);
-
-   
+      console.debug('error mutate', errorResponseData);
       } else {
         console.error('Error response is not available');
       }
@@ -123,38 +58,75 @@ export default function ControlePresencaCelula({
     retry: false
   })
 
-  const { data:PresenceExistRegister, isLoading  } = result
+  // List Members
+  // const membersList = useMemo(() => {
+  //   return (
+  //     <div className="text-sm font-normal text-gray-700">
+  //       {celula.membros.map((user, index) => (
+  //         <form key={user.id} id={user.id}>
+  //           {/* ... (código para renderizar os membros) ... */}
+  //         </form>
+  //       ))}
+  //       {isLoadingSubmitForm ? (
+  //         <button
+  //           type="submit"
+  //           disabled={isLoadingSubmitForm}
+  //           className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover-bg-[#1D70B6] focus-visible-outline focus-visible-outline-2 focus-visible-outline-offset-2 focus-visible-outline-[#014874]"
+  //         >
+  //           <svg
+  //             className="w-5 h-5 mr-3 text-white animate-spin"
+  //             xmlns="http://www.w3.org/2000/svg"
+  //             fill="none"
+  //             viewBox="0 0 24 24"
+  //           >
+  //             {/* ... (código do ícone de carregamento) ... */}
+  //           </svg>
+  //           <span>Registrando...</span>
+  //         </button>
+  //       ) : (
+  //         <button
+  //           className="mx-auto mt-3 w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover-bg-[#1D70B6] focus-visible-outline focus-visible-outline-2 focus-visible-outline-offset-2 focus-visible-outline-[#014874]"
+  //           type="submit"
+  //           onClick={handleSubmit(onSubmit)}
+  //         >
+  //           Registrar
+  //         </button>
+  //       )}
+  //     </div>
+  //   );
+  // }, [celula.membros, isLoadingSubmitForm]);
 
-
-  const notify = () =>
-    toast.success('😉 Presenças Registradas!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
 
-      console.log('Data presenca culto: ', data)
+      const totalRecords = Object.keys(data).length;
+      const increment = 100 / totalRecords;
+      let currentProgress = 0;
+
+      console.debug('Data presenca culto: ', data)
 
       for (const key in data) {
         const status = data[key].status === 'true'
         const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
+          // Atualize o progresso com base no incremento
+      currentProgress += increment
+      currentProgress = Math.min(currentProgress, 100)
+      const formattedProgress = currentProgress.toFixed(2);
+      const numericProgress = parseFloat(formattedProgress);
+      setProgress(numericProgress); // Garanta que não exceda 100%
+
+      // Aguarde um pouco antes de continuar para que o progresso seja visível
+        await new Promise(resolve => setTimeout(resolve, 400));
+        
         const presenceRedister = response.data
         if (!presenceRedister) {
           throw new Error('Failed to submit dados de presenca')
         }
       }
-
-      notify()
+      success('😉 Presenças Registradas!')
       setIsLoadingSubmitForm(false)
       reset()
       router.refresh()
@@ -169,6 +141,8 @@ export default function ControlePresencaCelula({
         <SpinnerButton message={''}/>
       ) : (
         <>
+        {isLoading ? (<SpinnerButton message='' />) : (
+          <>
           {presencaReuniaoIsRegistered ? (
             <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
               Presença já cadastrada!
@@ -182,6 +156,11 @@ export default function ControlePresencaCelula({
                     <h2 className="mb-3 text-lg font-semibold leading-7 text-gray-800">
                       Presença de Culto
                     </h2>
+                    {isLoadingSubmitForm ? (
+                      <ProgressBar completed={progress} bgColor='#1e3a8a' baseBgColor='#e2e8f0' animateOnRender={true} />
+                    ) : (
+                      <span className='hidden'></span>
+                    )}
                     <div className="w-full border-separate border-spacing-y-6">
                       <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
                         <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
@@ -303,9 +282,13 @@ export default function ControlePresencaCelula({
                 </div>
               </div>
             </>
-          )}
+            )}
+            </>
+            )}
         </>
       )}
     </>
   )
 }
+
+
