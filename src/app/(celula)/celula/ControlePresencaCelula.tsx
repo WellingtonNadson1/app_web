@@ -103,8 +103,8 @@ export default function ControlePresencaCelula({
       setIsLoadingSubmitForm(true)
 
       const totalRecords = Object.keys(data).length;
-      const increment = 100 / totalRecords;
-      let currentProgress = 0;
+      // const increment = 100 / totalRecords;
+      // let currentProgress = 0;
 
       console.debug('Data presenca culto: ', data)
 
@@ -112,14 +112,14 @@ export default function ControlePresencaCelula({
         const status = data[key].status === 'true'
         const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
           // Atualize o progresso com base no incremento
-      currentProgress += increment
-      currentProgress = Math.min(currentProgress, 100)
-      const formattedProgress = currentProgress.toFixed(2);
-      const numericProgress = parseFloat(formattedProgress);
-      setProgress(numericProgress); // Garanta que não exceda 100%
+      // currentProgress += increment
+      // currentProgress = Math.min(currentProgress, 100)
+      // const formattedProgress = currentProgress.toFixed(2);
+      // const numericProgress = parseFloat(formattedProgress);
+      // setProgress(numericProgress); // Garanta que não exceda 100%
 
       // Aguarde um pouco antes de continuar para que o progresso seja visível
-        await new Promise(resolve => setTimeout(resolve, 400));
+        // await new Promise(resolve => setTimeout(resolve, 400));
         
         const presenceRedister = response.data
         if (!presenceRedister) {
