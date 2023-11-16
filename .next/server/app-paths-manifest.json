@@ -1,4 +1,12 @@
 {
   "/not-found": "app/not-found.js",
+<<<<<<< HEAD
   "/(celula)/celula/page": "app/(celula)/celula/page.js"
+=======
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(authenticed)/page": "app/(authenticed)/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(supervisor)/supervisao/page": "app/(supervisor)/supervisao/page.js"
+>>>>>>> 2d11643 (corretion debug supervisor presence)
 }
