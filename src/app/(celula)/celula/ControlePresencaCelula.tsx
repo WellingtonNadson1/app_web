@@ -102,11 +102,11 @@ export default function ControlePresencaCelula({
     try {
       setIsLoadingSubmitForm(true)
 
-      const totalRecords = Object.keys(data).length;
+      // const totalRecords = Object.keys(data).length;
       // const increment = 100 / totalRecords;
       // let currentProgress = 0;
 
-      console.debug('Data presenca culto: ', data)
+      // console.debug('Data presenca culto: ', data)
 
       for (const key in data) {
         const status = data[key].status === 'true'
