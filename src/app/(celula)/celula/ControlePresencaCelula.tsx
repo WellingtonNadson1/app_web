@@ -156,11 +156,6 @@ export default function ControlePresencaCelula({
                     <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                       Presença de Culto
                     </h2>
-                    {/* {isLoadingSubmitForm ? (
-                      <ProgressBar completed={progress} bgColor='#1e3a8a' baseBgColor='#e2e8f0' animateOnRender={true} />
-                    ) : (
-                      <span className='hidden'></span>
-                    )} */}
                     <div className="w-full border-separate border-spacing-y-6">
                       <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
                         <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
