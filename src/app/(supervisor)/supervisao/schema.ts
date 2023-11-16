@@ -1,8 +1,6 @@
 import { z } from 'zod'
 
 const MeetingSchema = z.object({
-  data: z.array(
-    z.object({
     id: z.string(),
     culto_semana: z.object({
       nome: z.string(),
@@ -10,9 +8,7 @@ const MeetingSchema = z.object({
     imageUrl: z.string(),
     data_inicio_culto: z.string(),
     data_termino_culto: z.string(),
-  })
-)
-})
+}).array()
 
 export type Meeting = z.infer<typeof MeetingSchema>
 
@@ -36,7 +32,6 @@ const UserSchema = z.object({
 })
 
 const CelulaSchema = z.object({
-  data: z.object({
   id: z.string(),
   nome: z.string(),
   lider: z.object({
@@ -56,8 +51,29 @@ const CelulaSchema = z.object({
   supervisaoId: z.string(),
   membros: z.array(UserSchema),
   reunioes_celula: z.array(ReuniaoCelulaSchema),
-  userId: z.string(),
-})
+  userId: z.string()
 })
 
 export type CelulaProps = z.infer<typeof CelulaSchema>
+
+const PresencaCultoCelulaSchema = z.object({
+  id: z.string(),
+  status: z.boolean(),
+  membro: z.string(),
+  presenca_culto: z.string(),
+})
+
+export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
+
+export type ControlePresencaCelulaProps = {
+  celula: CelulaProps
+  culto: string
+}
+
+const attendanceSchema = z.object({
+  status: z.string(),
+  membro: z.string(),
+  presenca_culto: z.string(),
+})
+
+export type attendance = z.infer<typeof attendanceSchema>

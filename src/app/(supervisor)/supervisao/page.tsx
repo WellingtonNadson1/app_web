@@ -27,12 +27,16 @@ export default function ControleSupervisor() {
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
-    queryFn: () => axiosAuth.get(URLCultosInd)
-  })
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCultosInd)
+      return result.data
+  }})
 
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
-    queryFn: () => axiosAuth.get(URLCelula),
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCelula)
+      return result.data },
     enabled: !!celulaId,
     retry: false
   })
@@ -43,7 +47,7 @@ export default function ControleSupervisor() {
 
   const today = startOfToday()
 
-  const selectedDayMeetings = data?.data.filter((meeting) =>
+  const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
