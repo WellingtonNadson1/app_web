@@ -1,6 +1,5 @@
 'use client'
 import Modal from '@/components/modal'
-import { fetchWithToken } from '@/functions/functions'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
@@ -9,7 +8,6 @@ import { useRouter } from 'next/navigation'
 import React, { Fragment, useCallback, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
-import useSWR from 'swr'
 import {
   AddressProps,
   CargoLidereanca,

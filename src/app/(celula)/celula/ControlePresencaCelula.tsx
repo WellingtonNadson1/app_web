@@ -7,7 +7,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useMemo, useState } from 'react'
+import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -23,14 +23,11 @@ export default function ControlePresencaCelula({
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState<boolean>()
   const [progress, setProgress] = useState(0);
-
-
   const router = useRouter()
   const { handleSubmit, register, reset, formState: { errors }, setValue } = useForm<attendance[]>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
   const queryClient = useQueryClient()
-
 
   const getPresenceRegistered = async () => {
     const response = await axiosAuth.get(URLPresencaCultoId)
@@ -58,45 +55,6 @@ export default function ControlePresencaCelula({
     retry: false
   })
 
-  // List Members
-  // const membersList = useMemo(() => {
-  //   return (
-  //     <div className="text-sm font-normal text-gray-700">
-  //       {celula.membros.map((user, index) => (
-  //         <form key={user.id} id={user.id}>
-  //           {/* ... (código para renderizar os membros) ... */}
-  //         </form>
-  //       ))}
-  //       {isLoadingSubmitForm ? (
-  //         <button
-  //           type="submit"
-  //           disabled={isLoadingSubmitForm}
-  //           className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover-bg-[#1D70B6] focus-visible-outline focus-visible-outline-2 focus-visible-outline-offset-2 focus-visible-outline-[#014874]"
-  //         >
-  //           <svg
-  //             className="w-5 h-5 mr-3 text-white animate-spin"
-  //             xmlns="http://www.w3.org/2000/svg"
-  //             fill="none"
-  //             viewBox="0 0 24 24"
-  //           >
-  //             {/* ... (código do ícone de carregamento) ... */}
-  //           </svg>
-  //           <span>Registrando...</span>
-  //         </button>
-  //       ) : (
-  //         <button
-  //           className="mx-auto mt-3 w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover-bg-[#1D70B6] focus-visible-outline focus-visible-outline-2 focus-visible-outline-offset-2 focus-visible-outline-[#014874]"
-  //           type="submit"
-  //           onClick={handleSubmit(onSubmit)}
-  //         >
-  //           Registrar
-  //         </button>
-  //       )}
-  //     </div>
-  //   );
-  // }, [celula.membros, isLoadingSubmitForm]);
-
-
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
@@ -105,8 +63,6 @@ export default function ControlePresencaCelula({
       const totalRecords = Object.keys(data).length;
       const increment = 100 / totalRecords;
       let currentProgress = 0;
-
-      // console.debug('Data presenca culto: ', data)
 
       for (const key in data) {
         const status = data[key].status === 'true'
@@ -117,9 +73,6 @@ export default function ControlePresencaCelula({
       const formattedProgress = currentProgress.toFixed(2);
       const numericProgress = parseFloat(formattedProgress);
       setProgress(numericProgress); // Garanta que não exceda 100%
-
-      // Aguarde um pouco antes de continuar para que o progresso seja visível
-        // await new Promise(resolve => setTimeout(resolve, 400));
 
         const presenceRedister = response.data
         if (!presenceRedister) {

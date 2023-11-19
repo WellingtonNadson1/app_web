@@ -8,7 +8,6 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 
-
 export default function NovoMembro() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)

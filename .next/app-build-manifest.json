@@ -22,34 +22,34 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(login)/login/page.js"
     ],
-    "/(login)/login/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
-    ],
     "/(login)/login/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(login)/login/loading.css",
       "static/chunks/app/(login)/login/loading.js"
     ],
+    "/(login)/login/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(login)/login/layout.css",
+      "static/chunks/app/(login)/login/layout.js"
+    ],
     "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/dashboard/page.js"
-    ],
-    "/(celula)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/loading.css",
-      "static/chunks/app/(celula)/loading.js"
     ],
     "/(celula)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(celula)/layout.css",
       "static/chunks/app/(celula)/layout.js"
+    ],
+    "/(celula)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/loading.css",
+      "static/chunks/app/(celula)/loading.js"
     ],
     "/(celula)/celula/page": [
       "static/chunks/webpack.js",

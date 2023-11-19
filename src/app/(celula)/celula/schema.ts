@@ -77,3 +77,38 @@ const attendanceSchema = z.object({
 })
 
 export type attendance = z.infer<typeof attendanceSchema>
+
+export type ReuniaoCelulaSuccessData = {
+  status: string;
+  celula: string;
+  data_reuniao: string;
+  presencas_membros_reuniao_celula: string;
+  id?: string | undefined;
+};
+
+const reuniaoCelulaDataSchema = z.object({
+  id: z.string().optional(),
+  status: z.string(),
+  celula: z.string(),
+  data_reuniao: z.string(),
+  presencas_membros_reuniao_celula: z.string(),
+})
+
+export type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
+
+const reuniaoCelulaDataSchema2 = z.object({
+  status: z.string(),
+  celula: z.string(),
+  data_reuniao: z.string(),
+  presencas_membros_reuniao_celula: z.string().nullable(),
+})
+
+export type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
+
+const attendanceReuniaCelulaSchema = z.object({
+  status: z.string(),
+  membro: z.string(),
+  which_reuniao_celula: z.string(),
+})
+
+export type attendanceReuniaoCelula = z.infer<typeof attendanceReuniaCelulaSchema>
