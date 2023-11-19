@@ -102,9 +102,9 @@ export default function ControlePresencaCelula({
     try {
       setIsLoadingSubmitForm(true)
 
-      // const totalRecords = Object.keys(data).length;
-      // const increment = 100 / totalRecords;
-      // let currentProgress = 0;
+      const totalRecords = Object.keys(data).length;
+      const increment = 100 / totalRecords;
+      let currentProgress = 0;
 
       // console.debug('Data presenca culto: ', data)
 
@@ -112,15 +112,15 @@ export default function ControlePresencaCelula({
         const status = data[key].status === 'true'
         const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
           // Atualize o progresso com base no incremento
-      // currentProgress += increment
-      // currentProgress = Math.min(currentProgress, 100)
-      // const formattedProgress = currentProgress.toFixed(2);
-      // const numericProgress = parseFloat(formattedProgress);
-      // setProgress(numericProgress); // Garanta que não exceda 100%
+      currentProgress += increment
+      currentProgress = Math.min(currentProgress, 100)
+      const formattedProgress = currentProgress.toFixed(2);
+      const numericProgress = parseFloat(formattedProgress);
+      setProgress(numericProgress); // Garanta que não exceda 100%
 
       // Aguarde um pouco antes de continuar para que o progresso seja visível
         // await new Promise(resolve => setTimeout(resolve, 400));
-        
+
         const presenceRedister = response.data
         if (!presenceRedister) {
           throw new Error('Failed to submit dados de presenca')
@@ -156,6 +156,10 @@ export default function ControlePresencaCelula({
                     <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                       Presença de Culto
                     </h2>
+                    {isLoadingSubmitForm && (
+                        <ProgressBar bgColor='#1e40af' baseBgColor='#e5e7eb' completed={progress}/>
+                      )
+                    }
                     <div className="w-full border-separate border-spacing-y-6">
                       <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
                         <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
