@@ -110,10 +110,9 @@ export default function ControlePresencaReuniaoCelula({
     }
   }, [])
 
-  const { data: PresenceCelulaExist, isSuccess: succesTrue } = useQuery({
+  const { refetch: refetchPresence } = useQuery({
     queryKey: ["presenca"],
     queryFn: async () => {
-      const id = reuniaoRegisteredId
       const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
       const PresenceExistRegistered = await response.data
       if (response.status === 200) {
@@ -122,32 +121,48 @@ export default function ControlePresencaReuniaoCelula({
       return PresenceExistRegistered
     },
     enabled: !!reuniaoRegisteredId, // A consulta será executada apenas se reuniaoRegisteredId existir
+    retry: false
   })
+
+  const mutation = useMutation(async (data: attendanceReuniaoCelula[]) => {
+    // Transforma o objeto data em um array
+    const dataArray = Object.values(data)
+    const totalRecords = dataArray.length;
+    const increment = 100 / totalRecords;
+    let currentProgress = 0;
+
+    // Usa reduce para criar uma cadeia de promises
+    await dataArray.reduce(async (promiseChain, currentData) => {
+      await promiseChain
+      const response = await axiosAuth.post(
+        URLControlePresencaReuniaoCelula,
+        { ...currentData,
+          status: currentData.status === 'true',
+          which_reuniao_celula: reuniaoRegisteredId,
+        })
+      // Atualize o progresso com base no incremento
+      currentProgress += increment;
+      currentProgress = Math.min(currentProgress, 100);
+      const formattedProgress = currentProgress.toFixed(2);
+      const numericProgress = parseFloat(formattedProgress);
+      setProgress(numericProgress); // Garanta que não exceda 100%
+
+      if (!response.data) {
+        throw new Error('Failed to submit dados de presenca');
+      }
+    }, Promise.resolve())
+    }, {
+      onSuccess: async () => {
+        refetchPresence();
+      }
+    })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendanceReuniaoCelula[]> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
 
-      const totalRecords = Object.keys(data).length;
-      const increment = 100 / totalRecords;
-      let currentProgress = 0;
-
-      for (const key in data) {
-        const status = data[key].status === 'true'
-        const which_reuniao_celula = reuniaoRegisteredId;
-        const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, { ...data[key], status, which_reuniao_celula })
-
-        currentProgress += increment
-        currentProgress = Math.min(currentProgress, 100)
-        const formattedProgress = currentProgress.toFixed(2);
-        const numericProgress = parseFloat(formattedProgress);
-        setProgress(numericProgress); // Garanta que não exceda 100%
-
-        if (response.status !== 201) {
-          throw new Error('Failed to submit dados de presenca')
-        }
-      }
+      await mutation.mutateAsync(data)
 
       success('😉 Presenças de Célula Registradas!')
       setIsLoadingSubmitForm(false)
@@ -211,6 +226,13 @@ export default function ControlePresencaReuniaoCelula({
                                 value={user.id}
                                 {...register(`${index}.membro`)}
                               />
+                              {dataMutate && (
+                                <input
+                                  type="hidden"
+                                  value={reuniaoRegisteredId}
+                                  {...register(`${index}.which_reuniao_celula`)}
+                                />
+                              )}
                               <div className="flex items-center justify-start gap-1 sm:gap-3">
                                 <UserFocus className="hidden sm:block" size={28} />
                                 <h2 className="ml-4 text-sm">{user.first_name}</h2>

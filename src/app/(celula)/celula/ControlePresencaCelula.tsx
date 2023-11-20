@@ -3,7 +3,7 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { BASE_URL, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
-import { useQuery, useQueryClient } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
@@ -35,7 +35,7 @@ export default function ControlePresencaCelula({
     return PresenceExistRegistered
   }
 
-  const { isLoading, isSuccess } = useQuery({
+  const { isLoading, refetch: refetchPresence } = useQuery({
     queryKey: ['presence'],
     queryFn: getPresenceRegistered,
     onSuccess: async (responseData) => {
@@ -55,30 +55,47 @@ export default function ControlePresencaCelula({
     retry: false
   })
 
+  const mutation = useMutation(async (data: attendance[]) => {
+    // Transforma o objeto data em um array
+    const dataArray = Object.values(data)
+    const totalRecords = dataArray.length;
+    const increment = 100 / totalRecords;
+    let currentProgress = 0;
+
+    // Usa reduce para criar uma cadeia de promises
+    await dataArray.reduce(async (promiseChain, currentData) => {
+      await promiseChain
+      const response = await axiosAuth.post(
+        URLControlePresenca,
+        { ...currentData,
+          status:
+          currentData.status === 'true'
+        })
+      // Atualize o progresso com base no incremento
+      currentProgress += increment;
+      currentProgress = Math.min(currentProgress, 100);
+      const formattedProgress = currentProgress.toFixed(2);
+      const numericProgress = parseFloat(formattedProgress);
+      setProgress(numericProgress); // Garanta que não exceda 100%
+
+      if (!response.data) {
+        throw new Error('Failed to submit dados de presenca');
+      }
+
+      }, Promise.resolve())
+      }, {
+        onSuccess: async () => {
+          refetchPresence();
+        }
+      })
+
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
 
-      const totalRecords = Object.keys(data).length;
-      const increment = 100 / totalRecords;
-      let currentProgress = 0;
+      await mutation.mutateAsync(data)
 
-      for (const key in data) {
-        const status = data[key].status === 'true'
-        const response = await axiosAuth.post(URLControlePresenca, { ...data[key], status })
-          // Atualize o progresso com base no incremento
-      currentProgress += increment
-      currentProgress = Math.min(currentProgress, 100)
-      const formattedProgress = currentProgress.toFixed(2);
-      const numericProgress = parseFloat(formattedProgress);
-      setProgress(numericProgress); // Garanta que não exceda 100%
-
-        const presenceRedister = response.data
-        if (!presenceRedister) {
-          throw new Error('Failed to submit dados de presenca')
-        }
-      }
       success('😉 Presenças Registradas!')
       setIsLoadingSubmitForm(false)
       reset()
