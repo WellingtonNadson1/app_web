@@ -63,29 +63,35 @@ export default function ControlePresencaCelula({
     let currentProgress = 0;
 
     // Usa reduce para criar uma cadeia de promises
-    await dataArray.reduce(async (promiseChain, currentData) => {
-      await promiseChain
-      const response = await axiosAuth.post(
-        URLControlePresenca,
-        { ...currentData,
-          status:
-          currentData.status === 'true'
-        })
-      // Atualize o progresso com base no incremento
-      currentProgress += increment;
-      currentProgress = Math.min(currentProgress, 100);
-      const formattedProgress = currentProgress.toFixed(2);
-      const numericProgress = parseFloat(formattedProgress);
-      setProgress(numericProgress); // Garanta que não exceda 100%
-
-      if (!response.data) {
-        throw new Error('Failed to submit dados de presenca');
+    for (const currentData of dataArray) {
+      try {
+        const response = await axiosAuth.post(URLControlePresenca, {
+          ...currentData,
+          status: currentData.status === 'true',
+        });
+    
+        // Atualize o progresso com base no incremento
+        currentProgress += increment;
+        currentProgress = Math.min(currentProgress, 100);
+        const formattedProgress = currentProgress.toFixed(2);
+        const numericProgress = parseFloat(formattedProgress);
+        setProgress(numericProgress); // Garanta que não exceda 100%
+    
+        if (!response.data) {
+          throw new Error('Failed to submit dados de presenca');
+        }
+      } catch (error) {
+        console.error('Error submitting member data:', error);
+        // Lide com o erro conforme necessário
       }
-
-      }, Promise.resolve())
+    }
+    
       }, {
         onSuccess: async () => {
-          refetchPresence();
+          success('😉 Presenças Registradas!')
+          setTimeout(() => {
+            refetchPresence();
+          }, 3000);
         }
       })
 
@@ -93,13 +99,8 @@ export default function ControlePresencaCelula({
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
-
       await mutation.mutateAsync(data)
-
-      success('😉 Presenças Registradas!')
       setIsLoadingSubmitForm(false)
-      reset()
-      router.refresh()
     } catch (error) {
       setIsLoadingSubmitForm(false)
     }
