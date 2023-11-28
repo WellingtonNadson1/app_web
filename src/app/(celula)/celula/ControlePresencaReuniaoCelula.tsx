@@ -131,29 +131,35 @@ export default function ControlePresencaReuniaoCelula({
     const increment = 100 / totalRecords;
     let currentProgress = 0;
 
-    // Usa reduce para criar uma cadeia de promises
-    await dataArray.reduce(async (promiseChain, currentData) => {
-      await promiseChain
-      const response = await axiosAuth.post(
-        URLControlePresencaReuniaoCelula,
-        { ...currentData,
+    // Use loop for ...of
+    for (const currentData of dataArray) {
+      try {
+        const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {
+          ...currentData,
           status: currentData.status === 'true',
-          which_reuniao_celula: reuniaoRegisteredId,
-        })
-      // Atualize o progresso com base no incremento
-      currentProgress += increment;
-      currentProgress = Math.min(currentProgress, 100);
-      const formattedProgress = currentProgress.toFixed(2);
-      const numericProgress = parseFloat(formattedProgress);
-      setProgress(numericProgress); // Garanta que não exceda 100%
+        });
 
-      if (!response.data) {
-        throw new Error('Failed to submit dados de presenca');
+        // Atualize o progresso com base no incremento
+        currentProgress += increment;
+        currentProgress = Math.min(currentProgress, 100);
+        const formattedProgress = currentProgress.toFixed(2);
+        const numericProgress = parseFloat(formattedProgress);
+        setProgress(numericProgress); // Garanta que não exceda 100%
+
+        if (!response.data) {
+          throw new Error('Failed to submit dados de presenca');
+        }
+      } catch (error) {
+        console.error('Error submitting member data:', error);
+        // Lide com o erro conforme necessário
       }
-    }, Promise.resolve())
+    }
     }, {
       onSuccess: async () => {
-        refetchPresence();
+        success('😉 Presenças de Célula Registradas!')
+        setTimeout(() => {
+          refetchPresence();
+        }, 3000);
       }
     })
 
@@ -161,13 +167,8 @@ export default function ControlePresencaReuniaoCelula({
   const onSubmit: SubmitHandler<attendanceReuniaoCelula[]> = async (data) => {
     try {
       setIsLoadingSubmitForm(true)
-
       await mutation.mutateAsync(data)
-
-      success('😉 Presenças de Célula Registradas!')
       setIsLoadingSubmitForm(false)
-      reset()
-      router.refresh()
     } catch (error) {
       errorCadastro('Já existem presenças registradas!')
       setIsLoadingSubmitForm(false)

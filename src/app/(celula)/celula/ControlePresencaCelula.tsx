@@ -1,6 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, success } from '@/functions/functions'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -62,21 +62,21 @@ export default function ControlePresencaCelula({
     const increment = 100 / totalRecords;
     let currentProgress = 0;
 
-    // Usa reduce para criar uma cadeia de promises
+    // Use loop for ...of
     for (const currentData of dataArray) {
       try {
         const response = await axiosAuth.post(URLControlePresenca, {
           ...currentData,
           status: currentData.status === 'true',
         });
-    
+
         // Atualize o progresso com base no incremento
         currentProgress += increment;
         currentProgress = Math.min(currentProgress, 100);
         const formattedProgress = currentProgress.toFixed(2);
         const numericProgress = parseFloat(formattedProgress);
         setProgress(numericProgress); // Garanta que não exceda 100%
-    
+
         if (!response.data) {
           throw new Error('Failed to submit dados de presenca');
         }
@@ -85,7 +85,7 @@ export default function ControlePresencaCelula({
         // Lide com o erro conforme necessário
       }
     }
-    
+
       }, {
         onSuccess: async () => {
           success('😉 Presenças Registradas!')
@@ -102,6 +102,7 @@ export default function ControlePresencaCelula({
       await mutation.mutateAsync(data)
       setIsLoadingSubmitForm(false)
     } catch (error) {
+      errorCadastro('Já existem presenças registradas!')
       setIsLoadingSubmitForm(false)
     }
   }
