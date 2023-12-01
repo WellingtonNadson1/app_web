@@ -136,6 +136,7 @@ export default function ControlePresencaReuniaoCelula({
       try {
         const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {
           ...currentData,
+          which_reuniao_celula: reuniaoRegisteredId,
           status: currentData.status === 'true',
         });
 
