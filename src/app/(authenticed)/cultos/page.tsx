@@ -4,14 +4,12 @@ import Modal from '@/components/modal'
 import {
   BASE_URL,
   errorCadastro,
-  fetchWithToken,
   success,
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import useSWR from 'swr'
 import { CultoDaSemana, NewCulto } from './schemaNewCulto'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import 'react-toastify/dist/ReactToastify.css'
@@ -71,8 +69,9 @@ export default function Cultos() {
     queryKey: ["cultossemanais"],
     queryFn: async () => {
       const response = await axiosAuth.get(URLCultosSemanais)
-      return await response.data
+      return response.data
     },
+    retry: false
   })
 
   const fetchCultos = useCallback(async () => {
