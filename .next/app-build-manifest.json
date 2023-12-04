@@ -39,11 +39,23 @@
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/dashboard/page.js"
     ],
-    "/(authenticed)/cultos/page": [
+    "/(celula)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/cultos/page.css",
-      "static/chunks/app/(authenticed)/cultos/page.js"
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
+    ],
+    "/(celula)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/loading.css",
+      "static/chunks/app/(celula)/loading.js"
+    ],
+    "/(celula)/celula/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

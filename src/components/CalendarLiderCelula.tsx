@@ -258,11 +258,11 @@ function Meeting({ meeting }: { meeting: meeting }) {
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting?.data_inicio_culto}>
-            {format(data_inicio_culto, 'h:mm a')}
+            {format(data_inicio_culto,  'H:mm', { locale: pt })}h
           </time>{' '}
           -{' '}
           <time dateTime={meeting?.data_termino_culto}>
-            {format(data_termino_culto, 'h:mm a')}
+            {format(data_termino_culto,  'H:mm', { locale: pt })}h
           </time>
         </p>
       </div>

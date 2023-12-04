@@ -16,6 +16,7 @@ import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
+import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -26,14 +27,6 @@ export default function ControleCelulaSupervision() {
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
-  const { data, isLoading } = useQuery<Meeting>({
-    queryKey: ['meetingsData'],
-    queryFn: async () => {
-      const result = await axiosAuth.get(URLCultosInd)
-      return result.data
-    }
-  })
-
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
     queryFn: async () => {
@@ -43,10 +36,14 @@ export default function ControleCelulaSupervision() {
     enabled: !!celulaId,
     retry: false
   })
-
-  if (isLoading) {
-    return <HeaderCelulaLoad />
-  }
+  
+  const { data, isLoading } = useQuery<Meeting>({
+    queryKey: ['meetingsData'],
+    queryFn: async () => {
+      const result = await axiosAuth.get(URLCultosInd)
+      return result.data
+    }
+  })
 
   const today = startOfToday()
 
@@ -72,10 +69,10 @@ export default function ControleCelulaSupervision() {
           <CalendarLiderCelula />
         </div>
         <div className="relative w-full px-2 mx-auto mb-4">
-          <LicoesCelula />
+          <AvisoLicoesCelula />
         </div>
         <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
-    {selectedDayMeetings === null ? (
+    {isLoading ? (
       <SpinnerButton message={''}/>
     ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
       selectedDayMeetings.map((meeting) => (
