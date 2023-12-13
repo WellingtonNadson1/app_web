@@ -12,16 +12,17 @@ import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { CelulaProps, GroupedData, GroupedForCulto, MemberData, MembroPresencaProps, Pessoa, PresencaForDate } from './schema'
 import { useQuery } from '@tanstack/react-query'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import RelatorioTable from '../relatorioComponet'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
 
 const MembroPresenca: React.FC<MembroPresencaProps> = ({ membro }) => {
-   // Ordenar os cultos por data
-   const presencasOrdenadas = membro.presencas_cultos.sort((a, b) =>
-   new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
- );
+  // Ordenar os cultos por data
+  const presencasOrdenadas = membro.presencas_cultos.sort((a, b) =>
+    new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
+  );
   return (
     <div key={membro.id}>
       <p>{`${membro.first_name} ${membro.last_name}:`}</p>
@@ -52,20 +53,22 @@ const Celula: React.FC<CelulaProps> = ({ celula, membros }) => {
 
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
-  // eslint-disable-next-line no-unused-vars
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
-  const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]>>();
-  const [groupedDataForCell, setGroupedDataForCell] = useState<GroupedData | null>(null);
+  const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  // const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+
+  const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
+  const [groupedDataForCell, setGroupedDataForCell] = useState<Pessoa[] | undefined>();
   const [celulas, setCelulas] = useState<GroupedForCulto | null>(null);
   const [celulas2, setCelulas2] = useState<PresencaForDate[] | null>(null);
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
   const [dataCulto, setDataCulto] = useState<string | null>(null);
   const [corSupervisao, setCorSupervisao] = useState<string | null>(null);
-  const [relatorioData, setRelatorioData] = useState<PresencaForDate[]>();
-  const [idCultos, setIdCultos] = useState<string[]>()
+  const [relatorioData, setRelatorioData] = useState<PresencaForDate[] | undefined>();
+  const [idCultos, setIdCultos] = useState<string[] | undefined>()
 
   useEffect(() => {
     handleRelatorio();
@@ -74,15 +77,12 @@ export default function StatsCardRelatorios() {
 
   const handleRelatorio = async () => {
     try {
-      console.log('Entrei no try');
       const response = await axiosAuth.get(URLPresencaGeralCultos);
-      console.log(response.data)
-      const presencaGeralCultos = response.data as Pessoa[]
-      console.log(presencaGeralCultos)
+      const presencaGeralCultos = response.data as Pessoa[];
 
       if (presencaGeralCultos) {
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
-        setGroupedForCell(dataGroupedForCell)
+        setGroupedForCell(dataGroupedForCell);
         const celulaBetel = dataGroupedForCell["Betel"];
         if (celulaBetel) {
           console.log('Celula Betel', celulaBetel);
@@ -96,7 +96,7 @@ export default function StatsCardRelatorios() {
         presencaGeralCultos.map((membro, index) => {
           // Ordenar os cultos por data
           const presencasOrdenadas = membro.presencas_cultos.sort((a, b) =>
-          new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
+            new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
           );
           presencasOrdenadas.map((t) => {
             ids.add(t.cultoIndividualId);
@@ -112,40 +112,6 @@ export default function StatsCardRelatorios() {
       console.log('Erro ao buscar o relatório:', error);
     }
   };
-
-
-  // const handleRelatorio = async () => {
-  //   try {
-  //     console.log('Entrei no try');
-  //     const response = await axiosAuth.get(URLPresencaGeralCultos);
-  //     console.log(response.data)
-  //     const presencaGeralCultos = response.data as MemberData[]
-  //     console.log(presencaGeralCultos)
-
-  //     if (presencaGeralCultos) {
-  //       const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
-  //       setGroupedDataForCell(dataGroupedForCell);
-  //     }
-  //     console.log(groupedDataForCell)
-
-
-  //     if (presencaGeralCultos && presencaGeralCultos?.length > 0) {
-  //       let ids = new Set<string>();
-  //       presencaGeralCultos.map((membro, index) => {
-  //           membro.presencas_cultos.map( (t) => {
-  //               ids.add(t.cultoIndividualId);
-  //           })
-  //       })
-  //       setIdCultos(Array.from(ids));
-  //   }
-
-  //     console.log(idCultos);
-
-
-  //   } catch (error) {
-  //     console.log('Erro ao buscar o relatório:', error);
-  //   }
-  // };
 
   const handlePresenceCulto = async () => {
     let startDate: string, endDate: string, superVisionId: string
@@ -236,21 +202,6 @@ export default function StatsCardRelatorios() {
 
     return grupos;
   };
-  // const groupDataByCell = (relatorio: MemberData[]) => {
-  //   const groupedData: GroupedData = {};
-
-  //   relatorio.forEach(person => {
-  //     const cellName = person.celula.nome;
-
-  //     if (!groupedData[cellName]) {
-  //       groupedData[cellName] = [];
-  //     }
-
-  //     groupedData[cellName].push(person);
-  //   });
-
-  //   return groupedData;
-  // };
 
   let newCorSupervisao = ''
 
@@ -275,126 +226,139 @@ export default function StatsCardRelatorios() {
   }
 
   return (
-    <div className='w-full'>
-      <div className="px-3 mt-2 mb-3">
-        <button
-          type="submit"
-          onClick={handleFunctions}
-          className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
-        >
-          Relat. Mensal Supervisão
-        </button>
-      </div>
-      <div className='p-2 rounded-md shadow-md max-auto sm:rounded-lg'>
-        <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
-          {/* Cabeçalho da tabela */}
-          <thead className={twMerge('text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300', newCorSupervisao)}>
-            {/* Linha do cabeçalho */}
-            <tr className='mx-auto'>
-              {/* Coluna fixa */}
-              <th className="px-6 py-3 mx-auto">Célula</th>
-              <th className="px-6 py-3 mx-auto">Membros</th>
-              <th className="px-6 py-3 mx-auto text-center">SUPERVISÃO - {corSupervisao}</th>
+    <>
+      <div className='w-full'>
+        <div className="px-3 mt-2 mb-3">
+          <button
+            type="submit"
+            onClick={handleFunctions}
+            className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
+          >
+            Relat. Mensal Supervisão
+          </button>
+        </div>
+        <div className='p-2 rounded-md shadow-md max-auto sm:rounded-lg'>
+          <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
+            {/* Cabeçalho da tabela */}
+            <thead className={twMerge('text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300', newCorSupervisao)}>
+              {/* Linha do cabeçalho */}
+              <tr className='mx-auto'>
+                {/* Coluna fixa */}
+                <th className="px-6 py-3 mx-auto">Célula</th>
+                <th className="px-6 py-3 mx-auto">Membros</th>
+                <th className="px-6 py-3 mx-auto text-center">SUPERVISÃO - {corSupervisao}</th>
 
-              {/* Colunas dinâmicas para cada culto */}
-              {/* {dateCultoData &&
-                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
-                  dateCultoData[cellDateCulto].length > 0 && (
-                    <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
-                      <div className='flex flex-col items-center justify-center gap-2'>
-                        <p>{dayjs(`${cellDateCulto}`).tz().format('ddd')}</p>
-                        <p>{dayjs(`${cellDateCulto}`).tz().format('DD')}</p>
-                        <p>{dateCultoData[cellDateCulto][0].id}</p>
-                      </div>
-                    </th>
-                  )
-                ))} */}
-            </tr>
-          </thead>
-
-          <tbody>
-          {/* {groupedForCell &&
-              Object.keys(groupedForCell).map((cellName, cellIndex) => (
-                <Celula celula={cellName} membros={groupedForCell[cellName]} />
-              ))} */}
-            {groupedForCell && idCultos &&
-              Object.keys(groupedForCell).map((cellName, cellIndex) => (
-                <tr key={cellName + cellIndex}>
-                  {/* Coluna fixa */}
-                  <td className='px-4 border-b bg-gray-50 border-slate-600'>
-                    <p className='mx-auto text-base font-medium text-black'>{cellName}</p>
-                    <p className='mx-auto text-sm text-slate-600'>
-                      Membros: <span>{groupedForCell[cellName].length}</span>
-                    </p>
-                  </td>
-
-                  {/* Coluna para membros */}
-                  <td className='px-4'>
-                    {groupedForCell[cellName].map((member, index) => (
-                      <div className='mx-4 my-[4.75rem]' key={member.id}>
-                        {member.first_name}
-                      </div>
-                    ))}
-                  </td>
-
-                  {/* Colunas dinâmicas para presenças */}
-                  {/* Colunas dinâmicas para presenças */}
-            {groupedForCell[cellName].map((member, index) => (
-              <tr key={member.id}>
-                {idCultos.map((cultoId, indexCulto) => (
-                  <td className='border-b border-slate-600' key={cultoId}>
-                    {member.presencas_cultos.map((presenceCulto, indexPresence) => {
-                      const cultoIndividualId = presenceCulto.cultoIndividualId;
-                      if (cultoId === cultoIndividualId) {
-                        return (
-                          <div className='px-4 mx-4 my-6 text-center ' key={cultoIndividualId}>
-                            {presenceCulto && (
-                              <>
-                                <p className='text-black'>{`${dayjs(presenceCulto.date_create).format('ddd').toUpperCase()}`}</p>
-                              </>
-                            )}
-                            {presenceCulto.status === true && (
-                              <>
-                                <p className='text-green-600'>P</p>
-                                <p className='text-green-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
-                              </>
-                            )}
-                            {presenceCulto.status === false && (
-                              <>
-                                <p className='text-red-600'>F</p>
-                                <p className='text-red-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
-                              </>
-                            )}
-                          </div>
-                        );
-                      }
-                      return <span></span>;
-                    })}
-                  </td>
-                ))}
-              </tr>
-            ))}
-
-                  {/* {groupedForCell[cellName].map((member, index) => (
-                    <td key={member.id}>
-                      {member.presencas_cultos.map((presenceCulto, indexPresence) => (
-                        <div key={presenceCulto.cultoIndividualId}>
-                          {presenceCulto.status === true && presenceCulto.cultoIndividualId === idCultos[indexPresence]
-                            ? (<p className='text-green-600'>{member.first_name} {presenceCulto.cultoIndividualId} P</p>)
-                            : presenceCulto.status === false && presenceCulto.cultoIndividualId === idCultos[indexPresence]
-                              ? (<p className='text-red-600'>{member.first_name} {presenceCulto.cultoIndividualId} F</p>)
-                              : (<p>N/A</p>)
-                          }
+                {/* Colunas dinâmicas para cada culto */}
+                {/* {dateCultoData &&
+                  Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
+                    dateCultoData[cellDateCulto].length > 0 && (
+                      <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
+                        <div className='flex flex-col items-center justify-center gap-2'>
+                          <p>{dayjs(`${cellDateCulto}`).tz().format('ddd')}</p>
+                          <p>{dayjs(`${cellDateCulto}`).tz().format('DD')}</p>
+                          <p>{dateCultoData[cellDateCulto][0].id}</p>
                         </div>
-                      ))}
-                    </td>
+                      </th>
+                    )
                   ))} */}
-                </tr>
-              ))}
-          </tbody>
-        </table>
+              </tr>
+            </thead>
+
+            <tbody>
+              {groupedForCell && idCultos &&
+                Object.keys(groupedForCell).map((cellName, cellIndex) => (
+
+                  <tr className='border-b border-slate-600' key={cellName + cellIndex}>
+                    {/* Coluna fixa */}
+                    <td className='px-4 bg-gray-50'>
+                      <p className='text-base font-medium text-black'>{cellName}</p>
+                      <p className='text-sm text-slate-600'>
+                        Membros: <span>{groupedForCell[cellName].length}</span>
+                      </p>
+                    </td>
+
+                    {/* Coluna para membros */}
+                    <div className='flex items-start justify-center gap-6'>
+                      <div className='h-24 w-28'>
+                        <div className='flex flex-col justify-center gap-y-10'>
+                          {groupedForCell[cellName].map((member, index) => (
+                            <div className='h-24 px-4' key={member.id}>
+                              {member.first_name.slice(0, 10)}
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+
+
+                      {/* Colunas dinâmicas para presenças */}
+                      <div className='flex items-start justify-between gap-4 px-4'>
+                        {idCultos.map((cultoId, indexCulto) => (
+                          <div className='mx-4 mb-4 text-center' key={cultoId}>
+                            {groupedForCell[cellName].map((member, indexMember) => {
+                              const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
+
+                              return (
+                                <div className='w-24 h-24'  key={cultoId + indexMember}>
+                                  {presenceCulto ? (
+                                    <>
+                                      <p className='text-center text-black'>{`${dayjs(presenceCulto.date_create).format('ddd').toUpperCase()}`}</p>
+                                      {presenceCulto.status === true && (
+                                        <>
+                                          <p className='text-green-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
+                                          <p className='text-green-600'>P</p>
+                                          {/* <p>{member.first_name.slice(0, 10)}</p> */}
+
+                                        </>
+                                      )}
+                                      {presenceCulto.status === false && (
+                                        <>
+                                          <p className='text-red-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
+                                          <p className='text-red-600'>F</p>
+                                          {/* <p>{member.first_name.slice(0, 10)}</p> */}
+                                        </>
+                                      )}
+                                    </>
+                                  ) : (
+                                    <p key={indexMember}>
+                                      <>
+                                        <p className='text-slate-600'>S.L</p>
+                                        <p className='text-slate-600'>N/A</p>
+                                        <p className='text-slate-600'>{`${dayjs().format('DD/MM')}`}</p>
+                                      </>
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            })}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+
+
+
+                    {/* {groupedForCell[cellName].map((member, index) => (
+                      <td key={member.id}>
+                        {member.presencas_cultos.map((presenceCulto, indexPresence) => (
+                          <div key={presenceCulto.cultoIndividualId}>
+                            {presenceCulto.status === true && presenceCulto.cultoIndividualId === idCultos[indexPresence]
+                              ? (<p className='text-green-600'>{member.first_name} {presenceCulto.cultoIndividualId} P</p>)
+                              : presenceCulto.status === false && presenceCulto.cultoIndividualId === idCultos[indexPresence]
+                                ? (<p className='text-red-600'>{member.first_name} {presenceCulto.cultoIndividualId} F</p>)
+                                : (<p>N/A</p>)
+                            }
+                          </div>
+                        ))}
+                      </td>
+                    ))} */}
+                  </tr>
+                ))}
+            </tbody>
+          </table>
+        </div>
       </div>
-    </div>
+
+    </>
   )
 }
-

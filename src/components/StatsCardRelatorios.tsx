@@ -1,4 +1,5 @@
 'use client'
+import { GroupedForCulto, PresencaForDate } from '@/app/(relatorios)/relatorio-culto-supervisao/[id]/schema'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import {
@@ -7,6 +8,7 @@ import {
   HandsPraying,
   UsersFour,
 } from '@phosphor-icons/react'
+import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -32,16 +34,90 @@ export default function StatsCardRelatorios() {
   // eslint-disable-next-line no-unused-vars
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  const [celula, setCelula] = useState<GroupedForCulto | null>(null);
+  const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
+
+
+
 
   const [groupedData, setGroupedData] = useState<GroupedData | null>(null); // Estado para os dados agrupados
   const [celulas, setCelulas] = useState<GroupedData>(); // Estado para os dados agrupados
 
+  const handlePresenceCulto = async () => {
+    let startDate: string, endDate: string, superVisionId: string
+    try {
+      const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
+        startDate: "2023-10-01T00:00:00.000Z",
+        endDate: "2023-10-19T00:00:00.000Z",
+        superVisionId: "5e392d1b-f425-4865-a730-5191bc0821cd"
+      });
+      const relatorio: PresencaForDate[] = response.data;
+
+      if (!relatorio) {
+        console.log('Erro na resposta da API:', response.statusText);
+        return;
+      }
+
+      const dataGroupedForCulto: GroupedForCulto = groupDataByCulto(relatorio);
+
+      setCelula(dataGroupedForCulto)
+
+      const dataGroupedForDateCulto: GroupedForCulto = groupDataByDateCulto(relatorio);
+      setDateCultoData(dataGroupedForDateCulto)
+
+      console.log('Data dataGroupedForCulto: ', dataGroupedForCulto)
+      console.log('Data dataGroupedForDateCulto: ', dataGroupedForDateCulto)
+
+      if (!dateCultoData) {
+        console.log('Ainda sem Date Cuto!');
+        return
+      }
+      console.log(dateCultoData[0]);
+    } catch (error) {
+      console.log('Erro ao buscar o relatório:', error);
+    }
+  };
+
+  const groupDataByCulto = (relatorio: PresencaForDate[]) => {
+    const groupedDataForCell: GroupedForCulto = {};
+
+    relatorio.forEach(entry => {
+      const celulaId = entry.presencas_culto[0]?.membro.celula.id;
+      if (celulaId) {
+        if (!groupedDataForCell[celulaId]) {
+          groupedDataForCell[celulaId] = [];
+        }
+        groupedDataForCell[celulaId].push(entry);
+      }
+    });
+    return groupedDataForCell;
+  };
+
+  const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
+    const groupedDataForDateCulto: GroupedForCulto = {};
+
+    relatorio.forEach(entry => {
+      const dateCultoId = entry.data_inicio_culto
+      if (dateCultoId) {
+        if (!groupedDataForDateCulto[dateCultoId]) {
+          groupedDataForDateCulto[dateCultoId] = [];
+        }
+        groupedDataForDateCulto[dateCultoId].push(entry);
+      }
+    });
+    return groupedDataForDateCulto;
+  };
+
   useEffect(() => {
     handleRelatorio();
+    handlePresenceCulto();
   }, []);
 
   const handleRelatorio = async () => {
     try {
+    handlePresenceCulto();
+
       const response = await axiosAuth.get(URLRelatorioSupervision);
       const relatorio: MemberData[] = response.data;
 
@@ -147,7 +223,7 @@ export default function StatsCardRelatorios() {
               <th className="px-6 py-3">Membros</th>
 
               {/* data do culto */}
-              {groupedData &&
+              {/* {groupedData &&
                 Object.keys(groupedData).map((cellName, cellIndex) => (
                   <th key={cellName + cellIndex} className='bg-white border-b '>
                     {Array.from({ length: groupedData[cellName].length }, (_, i) => (
@@ -174,8 +250,22 @@ export default function StatsCardRelatorios() {
                       </th>
                     ))}
                   </th>
+                ))} */}
+
+                {/* Colunas dinâmicas para cada culto */}
+              {dateCultoData &&
+                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
+                  dateCultoData[cellDateCulto].length > 0 && (
+                    <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
+                      <div className='flex flex-col items-center justify-center gap-2'>
+                        <p>{dayjs(`${cellDateCulto}`).format('ddd')}</p>
+                        <p>{dayjs(`${cellDateCulto}`).format('DD')}</p>
+                        <p>{dateCultoData[cellDateCulto][0].id}</p>
+                      </div>
+                    </th>
+                  )
                 ))}
-              
+
             </tr>
           </thead>
           <tbody>
@@ -200,9 +290,11 @@ export default function StatsCardRelatorios() {
                               typeof member.presencas_cultos[i] === 'object' &&
                                 member.presencas_cultos[i].hasOwnProperty('status') ? (
                                 member.presencas_cultos[i].status === true ? (
-                                  <p className='text-green-600'>P</p>
+                                <>
+                                  <p className='text-green-600'>{member.presencas_cultos[i].cultoIndividualId} P</p>
+                                </>
                                 ) : (
-                                  <p className='text-red-600'>F</p>
+                                  <p className='text-red-600'>{member.presencas_cultos[i].cultoIndividualId} F</p>
                                 )
                               ) : (
                                 'N/A'

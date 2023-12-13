@@ -24,6 +24,7 @@ const MembroSchema = z.object({
 const PresencaCultoSchema = z.object({
     id: z.string(),
     status: z.boolean(),
+    date_create: z.string(),
     membro: MembroSchema
 })
 
@@ -51,6 +52,7 @@ const MemberDataSchema = z.object({
     })
   }).array(),
   celula: z.object({
+    id: z.string(),
     nome: z.string()
   })
 })
@@ -63,8 +65,12 @@ export interface Pessoa {
     status: boolean;
     cultoIndividualId: string;
     date_create: string;
+    presenca_culto: {
+      data_inicio_culto: string;
+    }
   }[];
   celula: {
+    id: string;
     nome: string;
   };
 }
