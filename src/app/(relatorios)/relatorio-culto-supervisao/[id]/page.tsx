@@ -18,39 +18,6 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
 
-const MembroPresenca: React.FC<MembroPresencaProps> = ({ membro }) => {
-  // Ordenar os cultos por data
-  const presencasOrdenadas = membro.presencas_cultos.sort((a, b) =>
-    new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
-  );
-  return (
-    <div key={membro.id}>
-      <p>{`${membro.first_name} ${membro.last_name}:`}</p>
-      <ul>
-        {presencasOrdenadas.map((presenca, index) => (
-          <li key={index}>
-            {`Culto ID: ${presenca.cultoIndividualId}, Status: ${presenca.status ? 'Presente' : 'Ausente'
-              }, Data: ${presenca.date_create}`}
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-};
-
-
-// Componente para representar uma célula e seus membros
-const Celula: React.FC<CelulaProps> = ({ celula, membros }) => {
-  return (
-    <div>
-      <h2>{`Célula ${celula}`}</h2>
-      {membros.map((membro) => (
-        <MembroPresenca key={membro.id} membro={membro} />
-      ))}
-    </div>
-  );
-};
-
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -69,6 +36,8 @@ export default function StatsCardRelatorios() {
   const [corSupervisao, setCorSupervisao] = useState<string | null>(null);
   const [relatorioData, setRelatorioData] = useState<PresencaForDate[] | undefined>();
   const [idCultos, setIdCultos] = useState<string[] | undefined>()
+  const [datasUnic, setDatasUnic] = useState<string[] | undefined>()
+  const [numberOfRowsCell, setNumberOfRowsCell] = useState<number[] | undefined>();
 
   useEffect(() => {
     handleRelatorio();
@@ -79,8 +48,22 @@ export default function StatsCardRelatorios() {
     try {
       const response = await axiosAuth.get(URLPresencaGeralCultos);
       const presencaGeralCultos = response.data as Pessoa[];
+      setGroupedDataForCell(presencaGeralCultos)
 
       if (presencaGeralCultos) {
+        // Pegando as datas unicas para o THeader
+        const datasUnicas = new Set<string>();
+
+        presencaGeralCultos.forEach(membro => {
+          membro.presencas_cultos.forEach(presenca => {
+            datasUnicas.add(presenca.presenca_culto.data_inicio_culto);
+          });
+        });
+
+        const datasArray: string[] = Array.from(datasUnicas).sort();
+        setDatasUnic(datasArray);
+        // PFim do egando as datas unicas para o THeader
+
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
         setGroupedForCell(dataGroupedForCell);
         const celulaBetel = dataGroupedForCell["Betel"];
@@ -96,18 +79,39 @@ export default function StatsCardRelatorios() {
         presencaGeralCultos.map((membro, index) => {
           // Ordenar os cultos por data
           const presencasOrdenadas = membro.presencas_cultos.sort((a, b) =>
-            new Date(a.date_create).getTime() - new Date(b.date_create).getTime()
+            new Date(a.presenca_culto.data_inicio_culto).getTime() - new Date(b.presenca_culto.data_inicio_culto).getTime()
           );
           presencasOrdenadas.map((t) => {
             ids.add(t.cultoIndividualId);
           })
         })
-        setIdCultos(Array.from(ids));
+
+        // Converter Set para Array e ordenar pelos timestamps de data
+        const sortedIds = Array.from(ids).sort((a, b) => {
+          const cultoA = presencaGeralCultos.find(membro =>
+            membro.presencas_cultos.some(presenca => presenca.cultoIndividualId === a)
+          );
+          const cultoB = presencaGeralCultos.find(membro =>
+            membro.presencas_cultos.some(presenca => presenca.cultoIndividualId === b)
+          );
+
+          const dataInicioA = cultoA?.presencas_cultos.find(presenca => presenca.cultoIndividualId === a)?.presenca_culto.data_inicio_culto;
+          const dataInicioB = cultoB?.presencas_cultos.find(presenca => presenca.cultoIndividualId === b)?.presenca_culto.data_inicio_culto;
+
+          // Verificar se dataInicioA e dataInicioB não são undefined antes de comparar
+          if (dataInicioA && dataInicioB) {
+            return new Date(dataInicioA).getTime() - new Date(dataInicioB).getTime();
+          } else {
+            // Lógica de tratamento para valores undefined
+            return 0; // ou outra lógica adequada
+          }
+
+        });
+
+        setIdCultos(sortedIds);
+        idCultos && console.log('IDS: ', idCultos);
+
       }
-
-      console.log(idCultos);
-
-
     } catch (error) {
       console.log('Erro ao buscar o relatório:', error);
     }
@@ -118,7 +122,7 @@ export default function StatsCardRelatorios() {
     try {
       const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
         startDate: "2023-10-01T00:00:00.000Z",
-        endDate: "2023-10-19T00:00:00.000Z",
+        endDate: "2023-10-28T00:00:00.000Z",
         superVisionId: "5e392d1b-f425-4865-a730-5191bc0821cd"
       });
       const relatorio: PresencaForDate[] = response.data;
@@ -223,10 +227,106 @@ export default function StatsCardRelatorios() {
       break;
     default:
       break;
+
   }
+  const col = datasUnic && `grid grid-cols-${2 + datasUnic?.length}`
+  const span = datasUnic && `col-span-${2 + datasUnic?.length}`
+
+  useEffect(() => {
+    let rowsCellName = new Set<number>();
+    let rowsNameCell: number[] = (groupedForCell && idCultos &&
+      Object.keys(groupedForCell)?.map((cellName, cellIndex) => {
+        const length = groupedForCell[cellName].length;
+        rowsCellName.add(length);
+        return length; // Return the length to populate the array
+      })) || [];
+
+    setNumberOfRowsCell(rowsNameCell);
+  }, [groupedForCell, idCultos]); // Add dependencies to useEffect
+
+  numberOfRowsCell
+
+
+  console.log('Rows', numberOfRowsCell);
+
+
 
   return (
     <>
+    {/* {datasUnic &&
+      <div className={twMerge(`${newCorSupervisao} p-2`, 'flex flex-col items-center')}> */}
+
+        {/* HEADER SUPERVISION */}
+        {/* <div className={twMerge(`p-2 mb-2 w-full`, '')}>
+          <h1 className='p-2 font-bold text-center uppercase'>SUPERVISÃO - {corSupervisao}</h1>
+        </div> */}
+
+        {/* HEADER SUBTITELS */}
+        {/* <div className='flex items-center justify-between w-full'>
+          <div className="p-2 font-bold uppercase">Célula</div>
+          <div className="p-2 font-bold uppercase">Membros</div>
+          {groupedForCell && datasUnic &&
+            datasUnic.map((dataCulto, dataCultoIndex) => (
+              <div className='p-2 font-bold ' key={dataCultoIndex}>
+                <div className='mx-4 text-center text-white'>
+                  <p className='text-center'>{`${dayjs(dataCulto).format('ddd').toUpperCase()}`}</p>
+                  <p className='text-center'>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
+                </div>
+              </div>
+            ))
+          }
+        </div> */}
+
+          {/* BODY TABLE */}
+          {/* NAME CELL */}
+          {/* <div className="grid grid-rows-10">
+            {groupedForCell && numberOfRowsCell && numberOfRowsCell.length === Object.keys(groupedForCell).length &&
+              Object.keys(groupedForCell).map((cellName, cellIndex) => (
+                <div key={cellName + cellIndex} className={twMerge(`${newCorSupervisao} p-2`, `row-span-${numberOfRowsCell[cellIndex]}`)}>
+                  <div className="p-2 font-bold uppercase border-b bg-gray-50 border-slate-600">
+                    <div className='px-4 '>
+                      <p className='text-base font-medium text-black'>{cellName}</p>
+                      <p className='text-sm text-slate-600'>
+                        Membros: <span>{groupedForCell[cellName].length}</span>
+                      </p>
+                    </div>
+                  </div>
+                </div>
+              ))}
+          </div> */}
+
+
+
+          {/* NAME MEBERS */}
+          {/* <div>
+          {groupedForCell && numberOfRowsCell &&
+            Object.keys(groupedForCell).map((cellName, cellIndex) => (
+              groupedForCell[cellName].map((member) => (
+              <div key={cellName + cellIndex}>
+                <div className="p-2 px-4 font-bold text-black uppercase">
+                  {member.first_name}
+                </div>
+              </div>
+              ))
+            ))}
+          </div> */}
+
+          {/* PRESENCES */}
+
+          {/* {groupedForCell && idCultos &&
+            Object.keys(groupedForCell).map((cellName, cellIndex) => (
+              groupedForCell[cellName].map((member) => (
+              <div className="p-2 font-bold uppercase border-b border-slate-600">
+                <div className='px-4 bg-gray-50'>
+                {member.first_name}
+                </div>
+          </div>
+              ))
+          ))} */}
+
+      {/* </div>
+    } */}
+
       <div className='w-full'>
         <div className="px-3 mt-2 mb-3">
           <button
@@ -237,38 +337,43 @@ export default function StatsCardRelatorios() {
             Relat. Mensal Supervisão
           </button>
         </div>
-        <div className='p-2 rounded-md shadow-md max-auto sm:rounded-lg'>
+        <div >
+        <div className={twMerge(`w-full p-2 text-center text-white`, newCorSupervisao)}>
+                <div className='p-2'>
+                  <h1 className='p-2 font-bold uppercase'>SUPERVISÃO - {corSupervisao}</h1>
+                </div>
+              </div>
           <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
             {/* Cabeçalho da tabela */}
-            <thead className={twMerge('text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300', newCorSupervisao)}>
-              {/* Linha do cabeçalho */}
-              <tr className='mx-auto'>
-                {/* Coluna fixa */}
-                <th className="px-6 py-3 mx-auto">Célula</th>
-                <th className="px-6 py-3 mx-auto">Membros</th>
-                <th className="px-6 py-3 mx-auto text-center">SUPERVISÃO - {corSupervisao}</th>
-
-                {/* Colunas dinâmicas para cada culto */}
-                {/* {dateCultoData &&
-                  Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
-                    dateCultoData[cellDateCulto].length > 0 && (
-                      <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
-                        <div className='flex flex-col items-center justify-center gap-2'>
-                          <p>{dayjs(`${cellDateCulto}`).tz().format('ddd')}</p>
-                          <p>{dayjs(`${cellDateCulto}`).tz().format('DD')}</p>
-                          <p>{dateCultoData[cellDateCulto][0].id}</p>
-                        </div>
-                      </th>
-                    )
-                  ))} */}
+            <thead className='p-2 text-center'>
+              <>
+              <tr className={twMerge(`mx-4 mb-4 p-2`, newCorSupervisao)}>
+                <th className={twMerge(`p-2 mb-4`, '')}>
+                  <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULA</h1>
+                </th>
+              <th className={twMerge(`p-2 mb-4`, '')}>
+                <h1 className='font-bold text-center uppercase text-whitep-2'>MEMBROS</h1>
+              </th>
+              {groupedForCell && datasUnic &&
+                datasUnic.map((dataCulto, dataCultoIndex) => (
+                  <th className='flex-col items-center justify-center w-24 h-24 p-2 mb-4 text-white' key={dataCultoIndex}>
+                    <div className=''>
+                      <p>{`${dayjs(dataCulto).format('ddd').toUpperCase()}`}</p>
+                      <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
+                    </div>
+                  </th>
+                ))
+              }
               </tr>
+              </>
             </thead>
+
 
             <tbody>
               {groupedForCell && idCultos &&
                 Object.keys(groupedForCell).map((cellName, cellIndex) => (
 
-                  <tr className='border-b border-slate-600' key={cellName + cellIndex}>
+                  <tr className={`border-b border-slate-600`} key={cellName + cellIndex}>
                     {/* Coluna fixa */}
                     <td className='px-4 bg-gray-50'>
                       <p className='text-base font-medium text-black'>{cellName}</p>
@@ -278,34 +383,29 @@ export default function StatsCardRelatorios() {
                     </td>
 
                     {/* Coluna para membros */}
-                    <div className='flex items-start justify-center gap-6'>
-                      <div className='h-24 w-28'>
-                        <div className='flex flex-col justify-center gap-y-10'>
-                          {groupedForCell[cellName].map((member, index) => (
-                            <div className='h-24 px-4' key={member.id}>
-                              {member.first_name.slice(0, 10)}
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-
-
+                    <td className='px-4'>
+                      {groupedForCell[cellName].map((member) => (
+                        <tr className='h-24 py-4 w-28' key={member.id}>
+                          {member.first_name}
+                        </tr>
+                      ))}
+                    </td>
 
                       {/* Colunas dinâmicas para presenças */}
-                      <div className='flex items-start justify-between gap-4 px-4'>
                         {idCultos.map((cultoId, indexCulto) => (
-                          <div className='mx-4 mb-4 text-center' key={cultoId}>
+                          <td className='mx-4 mb-4 text-center' key={cultoId + indexCulto}>
                             {groupedForCell[cellName].map((member, indexMember) => {
+
                               const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
 
                               return (
-                                <div className='w-24 h-24'  key={cultoId + indexMember}>
+                                <div className='flex flex-col justify-center w-24 h-24' key={cultoId + indexMember}>
                                   {presenceCulto ? (
                                     <>
-                                      <p className='text-center text-black'>{`${dayjs(presenceCulto.date_create).format('ddd').toUpperCase()}`}</p>
+                                      <p className='text-center text-black'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('ddd').toUpperCase()}`}</p>
                                       {presenceCulto.status === true && (
                                         <>
-                                          <p className='text-green-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
+                                          <p className='text-green-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p>
                                           <p className='text-green-600'>P</p>
                                           {/* <p>{member.first_name.slice(0, 10)}</p> */}
 
@@ -313,7 +413,7 @@ export default function StatsCardRelatorios() {
                                       )}
                                       {presenceCulto.status === false && (
                                         <>
-                                          <p className='text-red-600'>{`${dayjs(presenceCulto.date_create).format('DD/MM')}`}</p>
+                                          <p className='text-red-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p>
                                           <p className='text-red-600'>F</p>
                                           {/* <p>{member.first_name.slice(0, 10)}</p> */}
                                         </>
@@ -331,34 +431,14 @@ export default function StatsCardRelatorios() {
                                 </div>
                               );
                             })}
-                          </div>
+                          </td>
                         ))}
-                      </div>
-                    </div>
-
-
-
-                    {/* {groupedForCell[cellName].map((member, index) => (
-                      <td key={member.id}>
-                        {member.presencas_cultos.map((presenceCulto, indexPresence) => (
-                          <div key={presenceCulto.cultoIndividualId}>
-                            {presenceCulto.status === true && presenceCulto.cultoIndividualId === idCultos[indexPresence]
-                              ? (<p className='text-green-600'>{member.first_name} {presenceCulto.cultoIndividualId} P</p>)
-                              : presenceCulto.status === false && presenceCulto.cultoIndividualId === idCultos[indexPresence]
-                                ? (<p className='text-red-600'>{member.first_name} {presenceCulto.cultoIndividualId} F</p>)
-                                : (<p>N/A</p>)
-                            }
-                          </div>
-                        ))}
-                      </td>
-                    ))} */}
                   </tr>
                 ))}
             </tbody>
           </table>
         </div>
       </div>
-
     </>
   )
 }

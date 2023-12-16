@@ -1,15 +1,15 @@
 {
   "pages": {
-    "/(relatorios)/relatorio-culto-supervisao/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
-    ],
     "/(relatorios)/relatorio-culto-supervisao/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(relatorios)/relatorio-culto-supervisao/layout.css",
       "static/chunks/app/(relatorios)/relatorio-culto-supervisao/layout.js"
+    ],
+    "/(relatorios)/relatorio-culto-supervisao/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
     ]
   }
 }
