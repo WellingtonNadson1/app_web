@@ -249,6 +249,28 @@ export default function StatsCardRelatorios() {
 
   console.log('Rows', numberOfRowsCell);
 
+  const percent = (cellName: string) => {
+    idCultos && groupedForCell && idCultos.map((cultoId, indexCulto) => (
+      groupedForCell[cellName].map((member, indexMember) => {
+
+        const totalCultos = idCultos.length
+
+        const countPresencasTrue = member.presencas_cultos.reduce((count, pessoa) => {
+          // Verifica se o status é true
+          if (pessoa.status === true) {
+              // Se a condição for atendida, incrementa o contador
+              return count + 1;
+          } else {
+              // Se a condição não for atendida, retorna o contador sem incrementar
+              return count;
+          }
+      }, 0);
+
+        const percentPresence = countPresencasTrue * 100 / totalCultos
+
+        return percentPresence
+
+    })))}
 
 
   return (
@@ -340,7 +362,7 @@ export default function StatsCardRelatorios() {
         <div >
         <div className={twMerge(`w-full p-2 text-center text-white`, newCorSupervisao)}>
                 <div className='p-2'>
-                  <h1 className='p-2 font-bold uppercase'>SUPERVISÃO - {corSupervisao}</h1>
+                  <h1 className='p-2 font-bold uppercase'>RELATÓRIO MENSAL - SUPERVISÃO - {corSupervisao}</h1>
                 </div>
               </div>
           <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
@@ -349,11 +371,16 @@ export default function StatsCardRelatorios() {
               <>
               <tr className={twMerge(`mx-4 mb-4 p-2`, newCorSupervisao)}>
                 <th className={twMerge(`p-2 mb-4`, '')}>
-                  <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULA</h1>
+                  <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
                 </th>
               <th className={twMerge(`p-2 mb-4`, '')}>
-                <h1 className='font-bold text-center uppercase text-whitep-2'>MEMBROS</h1>
+                <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
               </th>
+              <th className='flex-col items-center justify-center w-24 h-24 p-2 mb-4 text-black bg-white'>
+                    <div className=''>
+                      <h1 className='font-bold text-center uppercase'>% PRES.</h1>
+                    </div>
+                  </th>
               {groupedForCell && datasUnic &&
                 datasUnic.map((dataCulto, dataCultoIndex) => (
                   <th className='flex-col items-center justify-center w-24 h-24 p-2 mb-4 text-white' key={dataCultoIndex}>
@@ -386,7 +413,18 @@ export default function StatsCardRelatorios() {
                     <td className='px-4'>
                       {groupedForCell[cellName].map((member) => (
                         <tr className='h-24 py-4 w-28' key={member.id}>
-                          {member.first_name}
+                          <div className='flex flex-col justify-center w-24 h-24'>
+                            {member.first_name}
+                          </div>
+                        </tr>
+                      ))}
+                    </td>
+                    <td className='px-4'>
+                      {groupedForCell[cellName].map((member) => (
+                        <tr className='h-24 py-4 w-28' key={member.id}>
+                          <div className='flex flex-col items-center justify-center w-24 h-24'>
+                            -
+                          </div>
                         </tr>
                       ))}
                     </td>
@@ -399,13 +437,13 @@ export default function StatsCardRelatorios() {
                               const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
 
                               return (
-                                <div className='flex flex-col justify-center w-24 h-24' key={cultoId + indexMember}>
+                                <div className='flex flex-col justify-center w-24 h-24 font-bold' key={cultoId + indexMember}>
                                   {presenceCulto ? (
                                     <>
-                                      <p className='text-center text-black'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('ddd').toUpperCase()}`}</p>
+                                      {/* <p className='text-center text-black'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('ddd').toUpperCase()}`}</p> */}
                                       {presenceCulto.status === true && (
                                         <>
-                                          <p className='text-green-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p>
+                                          {/* <p className='text-green-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
                                           <p className='text-green-600'>P</p>
                                           {/* <p>{member.first_name.slice(0, 10)}</p> */}
 
@@ -413,7 +451,7 @@ export default function StatsCardRelatorios() {
                                       )}
                                       {presenceCulto.status === false && (
                                         <>
-                                          <p className='text-red-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p>
+                                          {/* <p className='text-red-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
                                           <p className='text-red-600'>F</p>
                                           {/* <p>{member.first_name.slice(0, 10)}</p> */}
                                         </>
@@ -422,9 +460,9 @@ export default function StatsCardRelatorios() {
                                   ) : (
                                     <p key={indexMember}>
                                       <>
-                                        <p className='text-slate-600'>S.L</p>
-                                        <p className='text-slate-600'>N/A</p>
-                                        <p className='text-slate-600'>{`${dayjs().format('DD/MM')}`}</p>
+                                        {/* <p className='text-slate-600'>S.L</p> */}
+                                        <p className='font-normal text-slate-600'>N/A</p>
+                                        {/* <p className='text-slate-600'>{`${dayjs().format('DD/MM')}`}</p> */}
                                       </>
                                     </p>
                                   )}
