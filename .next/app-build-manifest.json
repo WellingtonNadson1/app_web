@@ -4,7 +4,6 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/page.js"
-<<<<<<< HEAD
     ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
@@ -18,63 +17,22 @@
       "static/css/app/(authenticed)/loading.css",
       "static/chunks/app/(authenticed)/loading.js"
     ],
-    "/(login)/login/page": [
+    "/(authenticed)/relatorios/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(login)/login/page.js"
+      "static/css/app/(authenticed)/relatorios/page.css",
+      "static/chunks/app/(authenticed)/relatorios/page.js"
     ],
-    "/(login)/login/layout": [
+    "/(authenticed)/supervisoes/[supervisaoId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
+      "static/chunks/app/(authenticed)/supervisoes/[supervisaoId]/page.js"
     ],
-    "/(login)/login/loading": [
+    "/(relatorios)/relatorio-culto-supervisao/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/loading.css",
-      "static/chunks/app/(login)/login/loading.js"
-    ],
-    "/(authenticed)/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
-    ],
-    "/(celula)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/layout.css",
-      "static/chunks/app/(celula)/layout.js"
-    ],
-    "/(celula)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/loading.css",
-      "static/chunks/app/(celula)/loading.js"
-    ],
-    "/(celula)/celula/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/celula/page.css",
-      "static/chunks/app/(celula)/celula/page.js"
-    ],
-    "/not-found": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
-=======
-    ],
-    "/(authenticed)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/layout.css",
-      "static/chunks/app/(authenticed)/layout.js"
-    ],
-    "/(authenticed)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(authenticed)/loading.css",
-      "static/chunks/app/(authenticed)/loading.js"
+      "static/css/app/(relatorios)/relatorio-culto-supervisao/page.css",
+      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/page.js"
     ],
     "/(relatorios)/relatorio-culto-supervisao/layout": [
       "static/chunks/webpack.js",
@@ -85,8 +43,13 @@
     "/(relatorios)/relatorio-culto-supervisao/[id]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
+      "static/css/app/(relatorios)/relatorio-culto-supervisao/[id]/page.css",
       "static/chunks/app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
->>>>>>> relatorio_presence_supervision
+    ],
+    "/not-found": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/not-found.js"
     ]
   }
 }

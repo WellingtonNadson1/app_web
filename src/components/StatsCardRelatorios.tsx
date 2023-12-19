@@ -3,15 +3,11 @@ import { GroupedForCulto, PresencaForDate } from '@/app/(relatorios)/relatorio-c
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import {
-  FishSimple,
-  Footprints,
-  HandsPraying,
-  Heart,
-  UserGear,
+  GraduationCap,
+  HandHeart,
   Users,
   UsersFour,
 } from '@phosphor-icons/react'
-import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
@@ -155,35 +151,34 @@ export default function StatsCardRelatorios() {
 
   const escolasIbb = [
     {
-      title: 'Presença1',
-      supervisor: 'Células',
-      icon: Footprints,
-      color: 'bg-[#F55343]',
+      title: 'Presença',
+      supervisor: 'Supervisões',
+      icon: UsersFour,
+      color: 'bg-[#1e3a8a]',
     },
     {
       title: 'Presença',
-      supervisor: 'Supervisões',
-      icon: FishSimple,
-      color: 'bg-[#43a2f5]',
+      supervisor: 'Células',
+      icon: Users,
+      color: 'bg-[#1e3a8a]',
     },
     {
       title: 'Supervisores',
-      icon: UsersFour,
-      color: 'bg-[#e2de5f]',
+      icon: GraduationCap,
+      color: 'bg-[#1e3a8a]',
     },
     {
       title: 'Discipulados',
       supervisor: '',
-      icon: HandsPraying,
-      color: 'bg-[#f58224]',
+      icon: HandHeart,
+      color: 'bg-[#1e3a8a]',
     },
   ]
   return (
-    <>
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {escolasIbb.map((stat) => (
-            <Link key={stat.title} href="/supervisoes/celulas">
+            <Link key={stat.title} href="/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd">
               <div
                 className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
               >
@@ -205,117 +200,7 @@ export default function StatsCardRelatorios() {
               </div>
             </Link>
           ))}
-
-          <div className="mt-2">
-            <button
-              type="submit"
-              onClick={handleRelatorio}
-              className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
-            >
-              Relat. Mensal Supervisão
-            </button>
           </div>
-
         </div>
-      </div>
-      <div className='rounded-sm shadow-md max-auto sm:rounded-lg'>
-        <table className='w-full text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
-          <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-300'>
-            <tr>
-              <th className="px-6 py-3">Célula</th>
-              <th className="px-6 py-3">Membros</th>
-
-              {/* data do culto */}
-              {/* {groupedData &&
-                Object.keys(groupedData).map((cellName, cellIndex) => (
-                  <th key={cellName + cellIndex} className='bg-white border-b '>
-                    {Array.from({ length: groupedData[cellName].length }, (_, i) => (
-                      <th key={i}>
-                        {groupedData[cellName].length > 0 &&
-                          groupedData[cellName].map((member, index) => (
-                            <div className='mx-auto font-semibold text-center'>
-                              {member.presencas_cultos[i] ? (
-                                typeof member.presencas_cultos[i] === 'object' &&
-                                  member.presencas_cultos[i].hasOwnProperty('status') ? (
-                                  member.presencas_cultos[i].date_create ? (
-                                    <th className='text-green-600'>{member.presencas_cultos[i].date_create}</th>
-                                  ) : (
-                                    <th className='text-red-600'>F</th>
-                                  )
-                                ) : (
-                                  'N/A'
-                                )
-                              ) : (
-                                'N/A'
-                              )}
-                            </div>
-                          ))}
-                      </th>
-                    ))}
-                  </th>
-                ))} */}
-
-                {/* Colunas dinâmicas para cada culto */}
-              {dateCultoData &&
-                Object.keys(dateCultoData).map((cellDateCulto, cellDateIndex) => (
-                  dateCultoData[cellDateCulto].length > 0 && (
-                    <th key={cellDateCulto + cellDateIndex} className="px-6 py-3 mx-auto">
-                      <div className='flex flex-col items-center justify-center gap-2'>
-                        <p>{dayjs(`${cellDateCulto}`).format('ddd')}</p>
-                        <p>{dayjs(`${cellDateCulto}`).format('DD')}</p>
-                        <p>{dateCultoData[cellDateCulto][0].id}</p>
-                      </div>
-                    </th>
-                  )
-                ))}
-
-            </tr>
-          </thead>
-          <tbody>
-            {groupedData &&
-              Object.keys(groupedData).map((cellName, cellIndex) => (
-                <tr key={cellName + cellIndex} className='bg-white border-b '>
-                  <td>
-                    {cellName}
-                  </td>
-                  <td>
-                    {groupedData[cellName].length > 0 &&
-                      groupedData[cellName].map((member, index) => (
-                        <div key={member.id}>{member.first_name}</div>
-                      ))}
-                  </td>
-                  {Array.from({ length: groupedData[cellName].length }, (_, i) => (
-                    <td key={i}>
-                      {groupedData[cellName].length > 0 &&
-                        groupedData[cellName].map((member, index) => (
-                          <div className='mx-auto font-semibold text-center'>
-                            {member.presencas_cultos[i] ? (
-                              typeof member.presencas_cultos[i] === 'object' &&
-                                member.presencas_cultos[i].hasOwnProperty('status') ? (
-                                member.presencas_cultos[i].status === true ? (
-                                <>
-                                  <p className='text-green-600'>{member.presencas_cultos[i].cultoIndividualId} P</p>
-                                </>
-                                ) : (
-                                  <p className='text-red-600'>{member.presencas_cultos[i].cultoIndividualId} F</p>
-                                )
-                              ) : (
-                                'N/A'
-                              )
-                            ) : (
-                              'N/A'
-                            )}
-                          </div>
-                        ))}
-                    </td>
-                  ))}
-                </tr>
-              ))}
-
-          </tbody>
-
-        </table>
-      </div>
-    </>
   )
 }
