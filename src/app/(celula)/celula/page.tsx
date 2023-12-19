@@ -63,17 +63,29 @@ export default function ControleCelulaSupervision() {
     ) : (
       <div className="relative w-full px-2 py-2 mx-auto">
         <div className="relative w-full mx-auto">
+<<<<<<< HEAD
           <HeaderCelula headerCelula={celula?.nome} />
+=======
+          <HeaderCelula headerCelula={celula?.data.nome} />
+>>>>>>> relatorio_presence_supervision
         </div>
         <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
           <CalendarLiderCelula />
         </div>
         <div className="relative w-full px-2 mx-auto mb-4">
+<<<<<<< HEAD
           <AvisoLicoesCelula />
         </div>
         <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
     {isLoading ? (
       <SpinnerButton message={''}/>
+=======
+          <LicoesCelula />
+        </div>
+        <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
+    {selectedDayMeetings === null ? (
+      <SpinnerButton />
+>>>>>>> relatorio_presence_supervision
     ) : selectedDayMeetings && selectedDayMeetings.length > 0 ? (
       selectedDayMeetings.map((meeting) => (
         isSameDay(parseISO(meeting.data_inicio_culto), today) ? (
@@ -140,7 +152,11 @@ export default function ControleCelulaSupervision() {
     )}{' '}
   </div>
         <div className="relative w-full px-2 mx-auto mb-4">
+<<<<<<< HEAD
           {celula && Number(celula.date_que_ocorre) === dayOfWeek ? (
+=======
+          {celula && Number(celula.data.date_que_ocorre) === dayOfWeek ? (
+>>>>>>> relatorio_presence_supervision
             <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
               <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
                 <div className="flex flex-col items-start justify-start mb-2">
