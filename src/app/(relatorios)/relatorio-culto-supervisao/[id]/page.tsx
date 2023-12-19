@@ -229,8 +229,6 @@ export default function StatsCardRelatorios() {
       break;
 
   }
-  const col = datasUnic && `grid grid-cols-${2 + datasUnic?.length}`
-  const span = datasUnic && `col-span-${2 + datasUnic?.length}`
 
   useEffect(() => {
     let rowsCellName = new Set<number>();
@@ -246,9 +244,6 @@ export default function StatsCardRelatorios() {
 
   numberOfRowsCell
 
-
-  console.log('Rows', numberOfRowsCell);
-
   const percent = (cellName: string) => {
     idCultos && groupedForCell && idCultos.map((cultoId, indexCulto) => (
       groupedForCell[cellName].map((member, indexMember) => {
@@ -258,97 +253,23 @@ export default function StatsCardRelatorios() {
         const countPresencasTrue = member.presencas_cultos.reduce((count, pessoa) => {
           // Verifica se o status é true
           if (pessoa.status === true) {
-              // Se a condição for atendida, incrementa o contador
-              return count + 1;
+            // Se a condição for atendida, incrementa o contador
+            return count + 1;
           } else {
-              // Se a condição não for atendida, retorna o contador sem incrementar
-              return count;
+            // Se a condição não for atendida, retorna o contador sem incrementar
+            return count;
           }
-      }, 0);
+        }, 0);
 
         const percentPresence = countPresencasTrue * 100 / totalCultos
 
         return percentPresence
 
-    })))}
-
+      })))
+  }
 
   return (
     <>
-    {/* {datasUnic &&
-      <div className={twMerge(`${newCorSupervisao} p-2`, 'flex flex-col items-center')}> */}
-
-        {/* HEADER SUPERVISION */}
-        {/* <div className={twMerge(`p-2 mb-2 w-full`, '')}>
-          <h1 className='p-2 font-bold text-center uppercase'>SUPERVISÃO - {corSupervisao}</h1>
-        </div> */}
-
-        {/* HEADER SUBTITELS */}
-        {/* <div className='flex items-center justify-between w-full'>
-          <div className="p-2 font-bold uppercase">Célula</div>
-          <div className="p-2 font-bold uppercase">Membros</div>
-          {groupedForCell && datasUnic &&
-            datasUnic.map((dataCulto, dataCultoIndex) => (
-              <div className='p-2 font-bold ' key={dataCultoIndex}>
-                <div className='mx-4 text-center text-white'>
-                  <p className='text-center'>{`${dayjs(dataCulto).format('ddd').toUpperCase()}`}</p>
-                  <p className='text-center'>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
-                </div>
-              </div>
-            ))
-          }
-        </div> */}
-
-          {/* BODY TABLE */}
-          {/* NAME CELL */}
-          {/* <div className="grid grid-rows-10">
-            {groupedForCell && numberOfRowsCell && numberOfRowsCell.length === Object.keys(groupedForCell).length &&
-              Object.keys(groupedForCell).map((cellName, cellIndex) => (
-                <div key={cellName + cellIndex} className={twMerge(`${newCorSupervisao} p-2`, `row-span-${numberOfRowsCell[cellIndex]}`)}>
-                  <div className="p-2 font-bold uppercase border-b bg-gray-50 border-slate-600">
-                    <div className='px-4 '>
-                      <p className='text-base font-medium text-black'>{cellName}</p>
-                      <p className='text-sm text-slate-600'>
-                        Membros: <span>{groupedForCell[cellName].length}</span>
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              ))}
-          </div> */}
-
-
-
-          {/* NAME MEBERS */}
-          {/* <div>
-          {groupedForCell && numberOfRowsCell &&
-            Object.keys(groupedForCell).map((cellName, cellIndex) => (
-              groupedForCell[cellName].map((member) => (
-              <div key={cellName + cellIndex}>
-                <div className="p-2 px-4 font-bold text-black uppercase">
-                  {member.first_name}
-                </div>
-              </div>
-              ))
-            ))}
-          </div> */}
-
-          {/* PRESENCES */}
-
-          {/* {groupedForCell && idCultos &&
-            Object.keys(groupedForCell).map((cellName, cellIndex) => (
-              groupedForCell[cellName].map((member) => (
-              <div className="p-2 font-bold uppercase border-b border-slate-600">
-                <div className='px-4 bg-gray-50'>
-                {member.first_name}
-                </div>
-          </div>
-              ))
-          ))} */}
-
-      {/* </div>
-    } */}
-
       <div className='w-full'>
         <div className="px-3 mt-2 mb-3">
           <button
@@ -360,38 +281,38 @@ export default function StatsCardRelatorios() {
           </button>
         </div>
         <div >
-        <div className={twMerge(`w-full p-2 text-center text-white`, newCorSupervisao)}>
-                <div className='p-2'>
-                  <h1 className='p-2 font-bold uppercase'>RELATÓRIO MENSAL - SUPERVISÃO - {corSupervisao}</h1>
-                </div>
-              </div>
+          <div className={twMerge(`w-full text-center text-white`, newCorSupervisao)}>
+            <div className='p-2'>
+              <h1 className='p-2 font-bold uppercase'>RELATÓRIO MENSAL - SUPERVISÃO - {corSupervisao}</h1>
+            </div>
+          </div>
           <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
             {/* Cabeçalho da tabela */}
             <thead className='p-2 text-center'>
               <>
-              <tr className={twMerge(`mx-4 mb-4 p-2`, newCorSupervisao)}>
-                <th className={twMerge(`p-2 mb-4`, '')}>
-                  <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
-                </th>
-              <th className={twMerge(`p-2 mb-4`, '')}>
-                <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
-              </th>
-              <th className='flex-col items-center justify-center w-24 h-24 p-2 mb-4 text-black bg-white'>
-                    <div className=''>
+                <tr className={twMerge(`mx-4 mb-2 p-2`, newCorSupervisao)}>
+                  <th className={twMerge(`p-2 mb-2`, '')}>
+                    <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
+                  </th>
+                  <th className={twMerge(`p-2 mb-2`, '')}>
+                    <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
+                  </th>
+                  <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white w-14'>
+                    <div>
                       <h1 className='font-bold text-center uppercase'>% PRES.</h1>
                     </div>
                   </th>
-              {groupedForCell && datasUnic &&
-                datasUnic.map((dataCulto, dataCultoIndex) => (
-                  <th className='flex-col items-center justify-center w-24 h-24 p-2 mb-4 text-white' key={dataCultoIndex}>
-                    <div className=''>
-                      <p>{`${dayjs(dataCulto).format('ddd').toUpperCase()}`}</p>
-                      <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
-                    </div>
-                  </th>
-                ))
-              }
-              </tr>
+                  {groupedForCell && datasUnic &&
+                    datasUnic.map((dataCulto, dataCultoIndex) => (
+                      <th className='flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white' key={dataCultoIndex}>
+                        <div className=''>
+                          <p>{`${dayjs(dataCulto).format('ddd').toUpperCase()}`}</p>
+                          <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
+                        </div>
+                      </th>
+                    ))
+                  }
+                </tr>
               </>
             </thead>
 
@@ -429,48 +350,48 @@ export default function StatsCardRelatorios() {
                       ))}
                     </td>
 
-                      {/* Colunas dinâmicas para presenças */}
-                        {idCultos.map((cultoId, indexCulto) => (
-                          <td className='mx-4 mb-4 text-center' key={cultoId + indexCulto}>
-                            {groupedForCell[cellName].map((member, indexMember) => {
+                    {/* Colunas dinâmicas para presenças */}
+                    {idCultos.map((cultoId, indexCulto) => (
+                      <td className='mx-4 mb-4 text-center' key={cultoId + indexCulto}>
+                        {groupedForCell[cellName].map((member, indexMember) => {
 
-                              const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
+                          const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
 
-                              return (
-                                <div className='flex flex-col justify-center w-24 h-24 font-bold' key={cultoId + indexMember}>
-                                  {presenceCulto ? (
+                          return (
+                            <div className='flex flex-col justify-center w-24 h-24 font-bold' key={cultoId + indexMember}>
+                              {presenceCulto ? (
+                                <>
+                                  {/* <p className='text-center text-black'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('ddd').toUpperCase()}`}</p> */}
+                                  {presenceCulto.status === true && (
                                     <>
-                                      {/* <p className='text-center text-black'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('ddd').toUpperCase()}`}</p> */}
-                                      {presenceCulto.status === true && (
-                                        <>
-                                          {/* <p className='text-green-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
-                                          <p className='text-green-600'>P</p>
-                                          {/* <p>{member.first_name.slice(0, 10)}</p> */}
+                                      {/* <p className='text-green-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
+                                      <p className='text-green-600'>P</p>
+                                      {/* <p>{member.first_name.slice(0, 10)}</p> */}
 
-                                        </>
-                                      )}
-                                      {presenceCulto.status === false && (
-                                        <>
-                                          {/* <p className='text-red-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
-                                          <p className='text-red-600'>F</p>
-                                          {/* <p>{member.first_name.slice(0, 10)}</p> */}
-                                        </>
-                                      )}
                                     </>
-                                  ) : (
-                                    <p key={indexMember}>
-                                      <>
-                                        {/* <p className='text-slate-600'>S.L</p> */}
-                                        <p className='font-normal text-slate-600'>N/A</p>
-                                        {/* <p className='text-slate-600'>{`${dayjs().format('DD/MM')}`}</p> */}
-                                      </>
-                                    </p>
                                   )}
-                                </div>
-                              );
-                            })}
-                          </td>
-                        ))}
+                                  {presenceCulto.status === false && (
+                                    <>
+                                      {/* <p className='text-red-600'>{`${dayjs(presenceCulto.presenca_culto.data_inicio_culto).format('DD/MM')}`}</p> */}
+                                      <p className='text-red-600'>F</p>
+                                      {/* <p>{member.first_name.slice(0, 10)}</p> */}
+                                    </>
+                                  )}
+                                </>
+                              ) : (
+                                <p key={indexMember}>
+                                  <>
+                                    {/* <p className='text-slate-600'>S.L</p> */}
+                                    <p className='font-normal text-slate-600'>N/A</p>
+                                    {/* <p className='text-slate-600'>{`${dayjs().format('DD/MM')}`}</p> */}
+                                  </>
+                                </p>
+                              )}
+                            </div>
+                          );
+                        })}
+                      </td>
+                    ))}
                   </tr>
                 ))}
             </tbody>
