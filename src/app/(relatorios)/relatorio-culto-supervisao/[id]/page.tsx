@@ -22,10 +22,10 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  // const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
+  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
   const [groupedDataForCell, setGroupedDataForCell] = useState<Pessoa[] | undefined>();
