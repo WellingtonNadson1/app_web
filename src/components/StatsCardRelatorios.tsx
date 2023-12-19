@@ -1,21 +1,18 @@
 'use client'
-<<<<<<< HEAD
-=======
 import { GroupedForCulto, PresencaForDate } from '@/app/(relatorios)/relatorio-culto-supervisao/[id]/schema'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
->>>>>>> relatorio_presence_supervision
 import {
+  FishSimple,
+  Footprints,
+  HandsPraying,
   Heart,
   UserGear,
   Users,
   UsersFour,
 } from '@phosphor-icons/react'
-<<<<<<< HEAD
-=======
 import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
->>>>>>> relatorio_presence_supervision
 import Link from 'next/link'
 import { useEffect, useState } from 'react'
 
@@ -36,33 +33,6 @@ type MemberData = {
 type GroupedData = Record<string, MemberData[]>;
 
 export default function StatsCardRelatorios() {
-<<<<<<< HEAD
-
-  const escolasIbb = [
-    {
-      title: 'Presenças',
-      supervisor: 'Supervisões',
-      icon: UsersFour,
-      color: 'bg-blue-950',
-    },
-    {
-      title: 'Presenças',
-      supervisor: 'Células',
-      icon: Users,
-      color: 'bg-blue-950',
-    },
-    {
-      title: 'Presenças',
-      supervisor: 'Supervisores',
-      icon: UserGear,
-      color: 'bg-blue-950',
-    },
-    {
-      title: 'Presenças',
-      supervisor: 'Discipulados',
-      icon: Heart,
-      color: 'bg-blue-950',
-=======
   const { data: session } = useSession()
   // eslint-disable-next-line no-unused-vars
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
@@ -206,20 +176,14 @@ export default function StatsCardRelatorios() {
       supervisor: '',
       icon: HandsPraying,
       color: 'bg-[#f58224]',
->>>>>>> relatorio_presence_supervision
     },
   ]
   return (
     <>
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
-<<<<<<< HEAD
-          {escolasIbb.map((stat, i) => (
-            <Link key={stat.title + i} href="/supervisoes/celulas">
-=======
           {escolasIbb.map((stat) => (
             <Link key={stat.title} href="/supervisoes/celulas">
->>>>>>> relatorio_presence_supervision
               <div
                 className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
               >
@@ -241,8 +205,6 @@ export default function StatsCardRelatorios() {
               </div>
             </Link>
           ))}
-<<<<<<< HEAD
-=======
 
           <div className="mt-2">
             <button
@@ -254,7 +216,6 @@ export default function StatsCardRelatorios() {
             </button>
           </div>
 
->>>>>>> relatorio_presence_supervision
         </div>
       </div>
       <div className='rounded-sm shadow-md max-auto sm:rounded-lg'>
