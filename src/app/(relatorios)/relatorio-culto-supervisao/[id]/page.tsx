@@ -304,7 +304,7 @@ export default function StatsCardRelatorios() {
             <form onSubmit={handleSubmit(handleFunctions)}>
               <div className="p-3">
                 <h2 className="text-sm leading-normal text-gray-400 uppercase">
-                  Relatório
+                  Relatório de Supervisão
                 </h2>
 
                 <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
@@ -405,14 +405,14 @@ export default function StatsCardRelatorios() {
                               d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
                             ></path>
                           </svg>
-                          <span>Gerando...</span>
+                          <span>Gerando Relat...</span>
                         </button>
                       ) : (
                         <button
                           type="submit"
                           className="px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                         >
-                          <span>Relat. Mensal Supervisão</span>
+                          <span>Relat. Supervisão</span>
                         </button>
                       )}
                     </div>
@@ -420,19 +420,12 @@ export default function StatsCardRelatorios() {
                 </div>
               </div>
             </form>
-            {/* <button
-              type="submit"
-              onClick={handleFunctions}
-              className="px-2 py-1 text-white rounded-md hover:gb-sky-500 bg-sky-600"
-            >
-              Relat. Mensal Supervisão
-            </button> */}
           </>
         </div>
         <div >
           <div className={twMerge(`w-full text-center text-white`, newCorSupervisao)}>
             <div className='p-2'>
-              <h1 className='p-2 font-bold uppercase'>RELATÓRIO MENSAL - SUPERVISÃO - {corSupervisao}</h1>
+              <h1 className='p-2 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
             </div>
           </div>
           <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
