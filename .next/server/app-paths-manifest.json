@@ -1,8 +1,6 @@
 {
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/not-found": "app/not-found.js",
+  "/(authenticed)/page": "app/(authenticed)/page.js",
   "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
-  "/(authenticed)/supervisoes/[supervisaoId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/page.js",
-  "/(relatorios)/relatorio-culto-supervisao/page": "app/(relatorios)/relatorio-culto-supervisao/page.js",
   "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
 }

@@ -37,6 +37,12 @@ export const PresencaForDateSchema = z.object({
     })
 })
 
+export const FormRelatorioDataSchema = z.object({
+  superVisionId: z.string(),
+  startDate: z.string(),
+  endDate: z.string(),
+})
+
 
 const MemberDataSchema = z.object({
   id: z.string(),
@@ -75,6 +81,24 @@ export interface Pessoa {
   };
 }
 
+export interface ISupervisoes {
+  id: string;
+  nome: string;
+  membros: {
+      id: string;
+      first_name: string;
+  }[];
+  cor: string;
+  celulas: {
+      id: string;
+      nome: string;
+  }[];
+  supervisor: {
+      id: string;
+      first_name: string;
+  } | null;
+}
+
 export interface CelulaProps {
   celula: string;
   membros: Pessoa[];
@@ -88,5 +112,6 @@ export interface MembroPresencaProps {
 
 export type MemberData = z.infer<typeof MemberDataSchema>
 export type GroupedData = Record<string, MemberData[]>;
-export type PresencaForDate = z.infer<typeof PresencaForDateSchema>
+export type PresencaForDate = z.infer<typeof PresencaForDateSchema>;
+export type FormRelatorioSchema = z.infer<typeof FormRelatorioDataSchema>;
 export type GroupedForCulto = Record<string, PresencaForDate[]>;

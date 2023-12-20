@@ -23,17 +23,6 @@
       "static/css/app/(authenticed)/relatorios/page.css",
       "static/chunks/app/(authenticed)/relatorios/page.js"
     ],
-    "/(authenticed)/supervisoes/[supervisaoId]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/supervisoes/[supervisaoId]/page.js"
-    ],
-    "/(relatorios)/relatorio-culto-supervisao/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-culto-supervisao/page.css",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/page.js"
-    ],
     "/(relatorios)/relatorio-culto-supervisao/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
