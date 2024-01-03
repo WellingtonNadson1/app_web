@@ -14,6 +14,7 @@ import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
 import LoadingListCelula from './LoadingListCelula'
+import { handleZipCode } from '@/functions/zipCodeUtils'
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -72,40 +73,9 @@ export default function AddNewCelula() {
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
-    let value = e.currentTarget.value
-    value = value.replace(/\D/g, '')
-    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-    e.currentTarget.value = value
-
-    if (value.length === 9) {
-      await handleFetchCep(value)
-    }
-  }
-
-  const handleSetDataAddress = useCallback(
-    (data: AddressProps) => {
-      setValue('cidade', data.localidade)
-      setValue('endereco', data.logradouro)
-      setValue('estado', data.uf)
-      setValue('bairro', data.bairro)
-    },
-    [setValue],
-  )
-
-  const handleFetchCep = useCallback(
-    async (zipCode: string) => {
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${zipCode}/json/`)
-        const result = response.data
-        handleSetDataAddress(result)
-      } catch (error) {
-        console.error('Erro ao buscar CEP:', error)
-      }
-    },
-    [handleSetDataAddress],
-  )
+  const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
+    handleZipCode(e, setValue);
+  };
 
   const onSubmit: SubmitHandler<FormCelula> = async ({
     nome,
@@ -133,7 +103,7 @@ export default function AddNewCelula() {
       date_inicio = formatDatatoISO8601(date_inicio)
       date_multipicar = formatDatatoISO8601(date_multipicar)
 
-      const response = await axiosAuth.post(URLCelulas, { 
+      const response = await axiosAuth.post(URLCelulas, {
         nome,
         lider,
         supervisao,
@@ -448,7 +418,7 @@ export default function AddNewCelula() {
                                 <input
                                   {...register('cep')}
                                   maxLength={9}
-                                  onKeyUp={handleZipCode}
+                                  onKeyUp={handleZipCodeChange}
                                   type="text"
                                   name="cep"
                                   id="cep"

@@ -151,34 +151,39 @@ export default function StatsCardRelatorios() {
 
   const escolasIbb = [
     {
-      title: 'Presença',
+      title: 'Presença nos Cultos',
       supervisor: 'Supervisões',
       icon: UsersFour,
       color: 'bg-[#1e3a8a]',
+      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
     {
-      title: 'Presença',
+      title: 'Presença nos Cultos',
       supervisor: 'Células',
       icon: Users,
       color: 'bg-[#1e3a8a]',
+      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
     {
-      title: 'Supervisores',
+      title: 'Presença nos Cultos',
+      supervisor: 'Supervisores',
       icon: GraduationCap,
       color: 'bg-[#1e3a8a]',
+      href: "/relatorio-culto-supervisor"
     },
     {
-      title: 'Discipulados',
-      supervisor: '',
+      title: 'Registro',
+      supervisor: 'Discipulados Realizados',
       icon: HandHeart,
       color: 'bg-[#1e3a8a]',
+      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
   ]
   return (
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {escolasIbb.map((stat) => (
-            <Link key={stat.title} href="/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd">
+            <Link key={stat.title} href={stat.href}>
               <div
                 className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
               >

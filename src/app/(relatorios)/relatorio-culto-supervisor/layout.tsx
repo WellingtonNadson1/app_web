@@ -7,15 +7,15 @@ import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React, { Suspense } from 'react'
 import './globals.css'
-import { LoaderHeader } from '@/app/(authenticed)/loading'
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
+import { LoaderHeaderSupervisor } from './loading'
 
 export const metadata = {
   title: 'App IBB',
   description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
 }
 
-export default async function RootLayout({
+export default async function RootLayoutSupervisor({
   children,
 }: {
   children: React.ReactNode
@@ -46,8 +46,13 @@ export default async function RootLayout({
           <div className="flex min-h-screen bg-slate-100">
             <ReactQueryProvider>
               <Providers>
-
+                <Sidebar />
+                <div className="w-full px-2 py-2 mx-auto">
+                  <Suspense fallback={<LoaderHeaderSupervisor />}>
+                    <Header />
+                  </Suspense>
                   {children}
+                </div>
               </Providers>
             </ReactQueryProvider>
           </div>

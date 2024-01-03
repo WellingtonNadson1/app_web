@@ -15,6 +15,7 @@ import { z } from 'zod'
 import { AddressProps } from '../../novo-membro/schema'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { handleZipCode } from '@/functions/zipCodeUtils'
 
 const schemaFormCelula = z.object({
     nome: z.string(),
@@ -77,42 +78,9 @@ export default function AddNewTemaLicoesCelula() {
     const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
     const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
-    const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-        e.currentTarget.maxLength = 9
-        let value = e.currentTarget.value
-        value = value.replace(/\D/g, '')
-        value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-        e.currentTarget.value = value
-
-        if (value.length === 9) {
-            await handleFetchCep(value)
-        }
-    }
-
-    const handleSetDataAddress = useCallback(
-        (data: AddressProps) => {
-            setValue('cidade', data.localidade)
-            setValue('endereco', data.logradouro)
-            setValue('estado', data.uf)
-            setValue('bairro', data.bairro)
-        },
-        [setValue],
-    )
-
-    const handleFetchCep = useCallback(
-        async (zipCode: string) => {
-            try {
-                const response = await fetch(
-                    `https://viacep.com.br/ws/${zipCode}/json/`,
-                )
-                const result = await response.json()
-                handleSetDataAddress(result)
-            } catch (error) {
-                console.error('Erro ao buscar CEP:', error)
-            }
-        },
-        [handleSetDataAddress],
-    )
+    const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
+      handleZipCode(e, setValue);
+    };
 
     const onSubmit: SubmitHandler<FormCelula> = async (data) => {
         try {
@@ -327,7 +295,7 @@ export default function AddNewTemaLicoesCelula() {
                                                     <input
                                                         {...register('cep')}
                                                         maxLength={9}
-                                                        onKeyUp={handleZipCode}
+                                                        onKeyUp={handleZipCodeChange}
                                                         type="text"
                                                         name="cep"
                                                         id="cep"

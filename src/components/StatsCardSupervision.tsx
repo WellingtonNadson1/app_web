@@ -1,6 +1,6 @@
 import { ISupervisaoData } from '@/app/(authenticed)/supervisoes/[supervisaoId]/page'
 import { UsersFour } from '@phosphor-icons/react'
-import ListCelulas from './ListCelulas'
+import { twMerge } from 'tailwind-merge'
 
 interface ISupervisaoProps {
   supervisao?: ISupervisaoData
@@ -10,17 +10,17 @@ export default function StatsCardSupervision({ supervisao }: ISupervisaoProps) {
   return (
     <>
       {supervisao && (
-        <div className="relative z-10 mx-auto w-full py-2">
-          <div className="relative z-10 mx-auto mt-3 grid w-full grid-cols-1 flex-wrap items-center justify-between gap-4 p-2 sm:grid-cols-2 md:flex-nowrap">
+        <div className="relative z-10 w-full py-2 mx-auto">
+          <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
             <div
               className={`flex-warp relative w-full flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
             >
-              <div className="flex w-full items-center justify-between">
-                <div className="mb-0 font-sans text-sm font-semibold uppercase leading-normal">
+              <div className="flex items-center justify-between w-full">
+                <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
                   {supervisao.nome}
                 </div>
                 <div
-                  className={`rounded-full ${supervisao.cor} p-2 drop-shadow-md`}
+                  className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${supervisao.cor}`)}
                 >
                   <UsersFour width={24} height={24} color="#fff" />
                 </div>

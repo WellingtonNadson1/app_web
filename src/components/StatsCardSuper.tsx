@@ -18,7 +18,7 @@ export interface SupervisaoDataCard {
   }
 }
 
-export default function StatsCardSupervisions() {
+export default function StatsCardSuper() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
@@ -82,10 +82,10 @@ export default function StatsCardSupervisions() {
               onClick={handleSupervisaoSelecionada}
               key={supervisao.id}
               id={supervisao.id}
-              className={twMerge(`flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md bg-white hover:bg-opacity-95`, ``)}
+              className={twMerge(`flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md `, `bg-white hover:bg-${supervisao.cor}-95`)}
             >
               <div className="flex items-center justify-between w-full">
-                <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
+                <div className="text-lg font-semibold uppercase">
                   {supervisao.nome}
                 </div>
                 <div
@@ -96,7 +96,7 @@ export default function StatsCardSupervisions() {
               </div>
               <div className="flex items-center">
                 <span className="text-lg font-semibold">
-                  {supervisao.supervisor?.first_name}
+                {/* {supervisao.nome} */}
                 </span>
               </div>
               <div className="flex items-center">

@@ -5,7 +5,7 @@ import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { Fragment, useCallback, useState } from 'react'
+import React, { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import {
@@ -21,9 +21,13 @@ import { handleCPFNumber, handlePhoneNumber } from './utils'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { handleZipCode } from '@/functions/zipCodeUtils'
 
 function AddNewMember() {
   const hostname = 'app-ibb.onrender.com'
+  // const hostnameLocal = 'localhost:3333'
+  // const URLUsers = `http://${hostnameLocal}/users`
+  // const URLCombinedData = `http://${hostnameLocal}/users/all`
   const URLUsers = `https://${hostname}/users`
   const URLCombinedData = `https://${hostname}/users/all`
 
@@ -38,43 +42,6 @@ function AddNewMember() {
   // Combobox Autocomplete
   const [selected, setSelected] = useState<Member>()
   const [query, setQuery] = useState('')
-
-  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
-    let value = e.currentTarget.value
-    value = value.replace(/\D/g, '')
-    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-    e.currentTarget.value = value
-
-    if (value.length === 9) {
-      await handleFetchCep(value)
-    }
-  }
-
-  const handleSetDataAddress = useCallback(
-    (data: AddressProps) => {
-      setValue('cidade', data.localidade)
-      setValue('endereco', data.logradouro)
-      setValue('estado', data.uf)
-      setValue('bairro', data.bairro)
-    },
-    [setValue],
-  )
-
-  const handleFetchCep = useCallback(
-    async (zipCode: string) => {
-      try {
-        const response = await fetch(
-          `https://viacep.com.br/ws/${zipCode}/json/`,
-        )
-        const result = await response.json()
-        handleSetDataAddress(result)
-      } catch (error) {
-        console.error('Erro ao buscar CEP:', error)
-      }
-    },
-    [handleSetDataAddress],
-  )
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const value = e.target.value === 'true'
@@ -92,6 +59,10 @@ function AddNewMember() {
     const value = e.target.value === 'true'
     setValue(`has_filho`, value)
   }
+
+  const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
+    handleZipCode(e, setValue);
+  };
 
   // Notification sucsses or error Submit Forms
   const successCadastroMembro = () =>
@@ -531,18 +502,23 @@ function AddNewMember() {
 
                     <div className="sm:col-span-4">
                       <label
-                        htmlFor="discipulador"
+                        htmlFor="discipuladorId"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Discipulador
                       </label>
                       <div className="mt-3">
-                        <Combobox value={selected} onChange={setSelected}>
+                        <Combobox value={selected} onChange={(selectedOption) => {
+                            // Armazenar o objeto completo (com id) no estado
+                            setSelected(selectedOption);
+                            // Definir o valor do campo discipuladorId no React Hook Form
+                            setValue('discipuladorId', selectedOption?.id);
+                          }}>
                           <div className="relative">
                             <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                               <Combobox.Input
-                                {...register('discipulador')}
-                                id="discipulador"
+                                {...register('discipuladorId')}
+                                id="discipuladorId"
                                 className="w-full rounded-md border-none py-1.5 pl-3 pr-10 text-sm leading-5 text-gray-900 ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 displayValue={(person: Member) =>
                                   person.first_name
@@ -949,7 +925,7 @@ function AddNewMember() {
                           {...register('cep')}
                           type="text"
                           id="cep"
-                          onKeyUp={handleZipCode}
+                          onKeyUp={handleZipCodeChange}
                           maxLength={9}
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         />

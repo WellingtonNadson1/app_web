@@ -18,7 +18,7 @@ dayjs.extend(timezone);
 dayjs.locale(ptBr);
 dayjs.tz.setDefault('America/Sao_Paulo')
 
-export default function StatsCardRelatorios() {
+export default function StatsCardRelatorioSupervisores() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
@@ -298,7 +298,7 @@ export default function StatsCardRelatorios() {
 
   return (
     <>
-      <div className='relative z-40 w-full bg-white rounded-sm'>
+      <div className='w-full'>
         <div className="px-3 mt-2 mb-3">
           <>
             <form onSubmit={handleSubmit(handleFunctions)}>

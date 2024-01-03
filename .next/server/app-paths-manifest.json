@@ -1,6 +1,9 @@
 {
   "/not-found": "app/not-found.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/(authenticed)/page": "app/(authenticed)/page.js",
-  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
-  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(authenticed)/supervisoes/page": "app/(authenticed)/supervisoes/page.js",
+  "/(authenticed)/novo-membro/page": "app/(authenticed)/novo-membro/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js"
 }

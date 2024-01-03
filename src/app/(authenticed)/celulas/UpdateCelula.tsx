@@ -14,6 +14,7 @@ import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
+import { handleZipCode } from '@/functions/zipCodeUtils'
 
 interface Member {
   id: string;
@@ -94,11 +95,11 @@ interface Celula {
 interface User {
   id: string
   first_name?: string
-  cargo_de_lideranca: { 
-    id: string, 
+  cargo_de_lideranca: {
+    id: string,
     nome: string },
-  situacao_no_reino: { 
-    id: string, 
+  situacao_no_reino: {
+    id: string,
     nome: string
   }
 }
@@ -155,40 +156,9 @@ export default function UpdateCelula({
 
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
-  const handleZipCode = async (e: React.FormEvent<HTMLInputElement>) => {
-    e.currentTarget.maxLength = 9
-    let value = e.currentTarget.value
-    value = value.replace(/\D/g, '')
-    value = value.replace(/^(\d{5})(\d)/, '$1-$2')
-    e.currentTarget.value = value
-
-    if (value.length === 9) {
-      await handleFetchCep(value)
-    }
-  }
-
-  const handleSetDataAddress = useCallback(
-    (data: AddressProps) => {
-      setValue('cidade', data.localidade)
-      setValue('endereco', data.logradouro)
-      setValue('estado', data.uf)
-      setValue('bairro', data.bairro)
-    },
-    [setValue],
-  )
-
-  const handleFetchCep = useCallback(
-    async (zipCode: string) => {
-      try {
-        const response = await axios.get(`https://viacep.com.br/ws/${zipCode}/json/`)
-        const result = response.data
-        handleSetDataAddress(result)
-      } catch (error) {
-        console.error('Erro ao buscar CEP:', error)
-      }
-    },
-    [handleSetDataAddress],
-  )
+  const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
+    handleZipCode(e, setValue);
+  };
 
   const onSubmit: SubmitHandler<FormCelula> = async ({
     nome,
@@ -213,13 +183,13 @@ export default function UpdateCelula({
 
       date_inicio = dayjs(date_inicio).toISOString()
       date_multipicar = dayjs(date_multipicar).toISOString()
-      
+
       console.log(date_inicio)
       console.log(date_multipicar)
 
-      
 
-      const response = await axiosAuth.put(URLCelulaId, { 
+
+      const response = await axiosAuth.put(URLCelulaId, {
         nome,
         lider,
         supervisao,
@@ -446,7 +416,7 @@ export default function UpdateCelula({
                                   {supervisoes &&
                                     supervisoes?.map((supervisao) => (
                                       <option
-                                        key={supervisao.id} 
+                                        key={supervisao.id}
                                         value={supervisao.id}>
                                         {supervisao.nome}
                                       </option>
@@ -542,7 +512,7 @@ export default function UpdateCelula({
                                 <input
                                   {...register('cep')}
                                   maxLength={9}
-                                  onKeyUp={handleZipCode}
+                                  onKeyUp={handleZipCodeChange}
                                   type="text"
                                   id="cep"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"

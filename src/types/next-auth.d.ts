@@ -20,7 +20,7 @@ declare module 'next-auth' {
       batizado: string
       date_batizado: string | Date
       is_discipulado: string
-      discipulador: string
+      discipuladorId: string
       supervisao: string
       celulaId: string
       estado_civil: string

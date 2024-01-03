@@ -238,7 +238,7 @@ function UpdateMember({
   ) => {
     setSupervisaoSelecionadaUpDate(event.target.value)
   }
-  
+
   const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao: { id: string | undefined }) => supervisao.id === supervisaoSelecionadaUpDate,
   )?.celulas
@@ -527,7 +527,7 @@ function UpdateMember({
 
                     <div className="sm:col-span-4">
                       <label
-                        htmlFor="discipulador"
+                        htmlFor="discipuladorId"
                         className="block text-sm font-medium leading-6 text-slate-700"
                       >
                         Discipulador
@@ -540,8 +540,8 @@ function UpdateMember({
                           <div className="relative">
                             <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                               <Combobox.Input
-                                {...register('discipulador')}
-                                id="discipulador"
+                                {...register('discipuladorId')}
+                                id="discipuladorId"
                                 className="w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 border-none rounded-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 displayValue={(person: Member) =>
                                   person.first_name
