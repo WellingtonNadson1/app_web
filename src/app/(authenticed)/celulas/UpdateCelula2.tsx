@@ -5,105 +5,11 @@ import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
-import { z } from 'zod'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-
-interface Member {
-  id: string;
-  first_name: string;
-  cargo_de_lideranca: {
-    id: string;
-    nome: string;
-  };
-  situacao_no_reino: {
-    id: string;
-    nome: string;
-  };
-}
-
-interface Lider {
-  id: string;
-  first_name: string;
-}
-
-interface Supervisao {
-  id: string;
-  nome: string;
-}
-
-interface ReuniaoCelula {
-  id: string;
-  data_reuniao: string;
-  status: string;
-  presencas_membros_reuniao_celula: any[]; // You can replace 'any' with the appropriate type if needed
-}
-
-interface DataCelula {
-  id: string;
-  nome: string;
-  membros: Member[];
-  lider: Lider;
-  supervisao: Supervisao;
-  date_que_ocorre: string;
-  reunioes_celula: ReuniaoCelula[];
-}
-
-const schemaFormCelulaDate = z.object({
-  id: z.string(),
-  date_que_ocorre: z.string().datetime(),
-})
-
-type FormCelulaDate = z.infer<typeof schemaFormCelulaDate>
-
-const schemaFormCelula = z.object({
-  id: z.string(),
-  nome: z.string(),
-  lider: z.string().uuid(),
-  supervisao: z.string().uuid(),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
-  date_que_ocorre: z.string().datetime(),
-  membros: z.string().uuid().array(),
-})
-
-type FormCelula = z.infer<typeof schemaFormCelula>
-
-interface Celula {
-  id: string
-  nome: string
-  lider: {
-    id: string
-    first_name: string
-  }
-}
-
-interface User {
-  id: string
-  first_name?: string
-  cargo_de_lideranca: { 
-    id: string, 
-    nome: string },
-  situacao_no_reino: { 
-    id: string, 
-    nome: string
-  }
-}
-
-export interface SupervisaoData {
-  id: string
-  nome: string
-  membros: User[]
-  celulas: Celula[]
-}
+import { FormCelula, SupervisaoData, User } from './schema'
 
 export default function UpdateCelula2({
   id,
@@ -142,12 +48,12 @@ export default function UpdateCelula2({
     try {
       setIsLoadingSubmitForm(true)
 
-      const response = await axiosAuth.put(URLCelulas, { 
+      const response = await axiosAuth.put(URLCelulas, {
         id , date_que_ocorre
       })
       const celulaRegister = response.data
       console.log('Dados da celula, date: ', celulaRegister);
-      
+
 
       if (celulaRegister) {
         setIsLoadingSubmitForm(false)
@@ -156,7 +62,7 @@ export default function UpdateCelula2({
         setTimeout(() => {
           window.location.reload()
         }, 2500);
-        
+
       } else {
         errorCadastro('Erro ao Atualizar Célula')
       }

@@ -5,55 +5,14 @@ import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
-import { z } from 'zod'
-import { AddressProps } from '../novo-membro/schema'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
-import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
 import LoadingListCelula from './LoadingListCelula'
 import { handleZipCode } from '@/functions/zipCodeUtils'
-
-const schemaFormCelula = z.object({
-  nome: z.string(),
-  lider: z.string().uuid(),
-  supervisao: z.string().uuid(),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
-  date_que_ocorre: z.string().datetime(),
-  membros: z.string().uuid().array(),
-})
-
-type FormCelula = z.infer<typeof schemaFormCelula>
-
-interface Celula {
-  id: string
-  nome: string
-  lider: {
-    id: string
-    first_name: string
-  }
-}
-
-interface User {
-  id: string
-  first_name?: string
-}
-
-export interface SupervisaoData {
-  id: string
-  nome: string
-  celulas: Celula[]
-  membros: User[]
-}
+import { FormCelula, SupervisaoData, User } from './schema'
 
 export default function AddNewCelula() {
   const URLSupervisoes = `${BASE_URL}/supervisoes`

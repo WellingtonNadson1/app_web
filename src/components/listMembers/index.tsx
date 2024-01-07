@@ -6,7 +6,6 @@ import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema'
 import { UserFocus } from '@phosphor-icons/react'
 import { useEffect, useState } from 'react'
 import Pagination from '../Pagination'
-// import { useEffect, useState } from 'react'
 
 interface ListMembersProps {
   members: ReturnMembers[];
@@ -42,49 +41,49 @@ export default function ListMembers({ members }: ListMembersProps) {
   const endIndex = startIndex + itemsPerPage
   const displayedMembers = members?.slice(startIndex, endIndex)
 
-    return (
+  return (
     <>
-      <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
+      <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
         <div className="w-full px-2 py-2 ">
-          <div className="w-full rounded-md px-1 py-2">
+          <div className="w-full px-1 py-2 rounded-md">
             <div className="flex items-center justify-between w-full gap-3">
-              <div className='flex items-center justify-between sm:justify-start gap-3 w-full'>
-                <h2 className="line-clamp-1 text-lg py-6 font-semibold leading-7 text-gray-800">
+              <div className='flex items-center justify-between w-full gap-3 sm:justify-start'>
+                <h2 className="py-6 text-lg font-semibold leading-7 text-gray-800 line-clamp-1">
                   Lista de Membros IBB
                 </h2>
-                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-blue-50  text-sky-700 ring-blue-600/20 sm:block'>
-                  <p className='flex items-center justify-between'>Total <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{members?.length}</span></p>
+                <div className='items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block'>
+                  <p className='flex items-center justify-between'>Total <span className='px-1 py-1 ml-2 text-white rounded-md bg-sky-700'>{members?.length}</span></p>
                 </div>
-                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-green-50  text-sky-700 ring-blue-600/20 sm:block'>
-                  <p className='flex items-center justify-between'>Ativos <span className='text-white ml-2 rounded-md px-1 py-1 bg-green-700'>{memberAtivo?.length}</span></p>
+                <div className='items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block'>
+                  <p className='flex items-center justify-between'>Ativos <span className='px-1 py-1 ml-2 text-white bg-green-700 rounded-md'>{memberAtivo?.length}</span></p>
                 </div>
-                <div className='hidden items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset bg-sky-50  text-sky-700 ring-blue-600/20 md:block'>
-                  <p className='flex items-center justify-between'>Normal <span className='text-white ml-2 rounded-md px-1 py-1 bg-sky-700'>{memberNormal?.length}</span></p>
+                <div className='items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-sky-50 text-sky-700 ring-blue-600/20 md:block'>
+                  <p className='flex items-center justify-between'>Normal <span className='px-1 py-1 ml-2 text-white rounded-md bg-sky-700'>{memberNormal?.length}</span></p>
                 </div>
-                </div>
-              <div className='sm:w-2/5 w-full'>
-                <AddNewMember />              
+              </div>
+              <div className='w-full sm:w-2/5'>
+                <AddNewMember />
               </div>
             </div>
-            <table className="w-full table-auto border-separate border-spacing-y-3">
+            <table className="w-full border-separate table-auto border-spacing-y-3">
               <thead>
                 <tr className="text-base font-bold ">
-                  <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                     Nome
                   </th>
-                  <th className="hidden border-b-2 border-orange-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-orange-300 text-start sm:table-cell">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
                     Cargo
                   </th>
-                  <th className="hidden border-b-2 border-blue-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
                     Supervisão
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
                     Célula
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-center text-gray-800">
+                  <th className="py-2 text-center text-gray-800 border-b-2 border-red-300">
                     Opções
                   </th>
                 </tr>
@@ -93,7 +92,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                 {members ? (
                   displayedMembers?.map((user, index) => (
                     <tr
-                      className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
+                      className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}
                     >
                       <td>
@@ -104,31 +103,30 @@ export default function ListMembers({ members }: ListMembersProps) {
                       </td>
                       <td className="hidden text-center sm:table-cell">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
-                            user.situacao_no_reino?.nome === 'Ativo'
-                              ? 'bg-green-100  text-green-700 ring-green-600/20'
-                              : user.situacao_no_reino?.nome === 'Normal'
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
+                            ? 'bg-green-100  text-green-700 ring-green-600/20'
+                            : user.situacao_no_reino?.nome === 'Normal'
                               ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
                               : user.situacao_no_reino?.nome === 'Frio'
-                              ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
-                              : 'bg-red-100  text-red-700 ring-red-600/20'
-                          }`}
+                                ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
+                                : 'bg-red-100  text-red-700 ring-red-600/20'
+                            }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
+                      <td className="hidden text-center sm:table-cell">
+                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
+                      <td className="hidden text-center sm:table-cell">
+                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.supervisao_pertence?.nome}
                         </span>
                       </td>
-                      <td className="hidden sm:table-cell text-center">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
+                      <td className="hidden text-center sm:table-cell">
+                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.celula?.nome}
                         </span>
                       </td>
@@ -138,14 +136,12 @@ export default function ListMembers({ members }: ListMembersProps) {
                           member={user.id}
                           memberName={user.first_name}
                         />
-                        <div onClick={() => setShouldFetch(true)}>
-                          {members && (
-                            <UpdateMember
-                              shouldFetch={shouldFetch}
-                              memberId={user.id}
-                            />
-                          )}
-                        </div>
+                        {/* <div onClick={() => setShouldFetch(true)}> */}
+                        <UpdateMember
+                          // shouldFetch={shouldFetch}
+                          memberId={user.id}
+                        />
+                        {/* </div> */}
                       </td>
                     </tr>
                   ))

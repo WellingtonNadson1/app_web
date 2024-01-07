@@ -5,111 +5,14 @@ import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
-import { z } from 'zod'
-import { AddressProps } from '../novo-membro/schema'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import axios from '@/lib/axios'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ToastContainer } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { handleZipCode } from '@/functions/zipCodeUtils'
-
-interface Member {
-  id: string;
-  first_name: string;
-  cargo_de_lideranca: {
-    id: string;
-    nome: string;
-  };
-  situacao_no_reino: {
-    id: string;
-    nome: string;
-  };
-}
-
-interface Lider {
-  id: string;
-  first_name: string;
-}
-
-interface Supervisao {
-  id: string;
-  nome: string;
-}
-
-interface ReuniaoCelula {
-  id: string;
-  data_reuniao: string;
-  status: string;
-  presencas_membros_reuniao_celula: any[]; // You can replace 'any' with the appropriate type if needed
-}
-
-interface DataCelula {
-  id: string;
-  nome: string;
-  membros: Member[];
-  lider: Lider;
-  supervisao: Supervisao;
-  date_que_ocorre: string;
-  reunioes_celula: ReuniaoCelula[];
-}
-
-const schemaFormCelula = z.object({
-  nome: z.string(),
-  lider: z.object({
-    id: z.string().uuid(),
-    first_name: z.string(),
-  }),
-  supervisao: z.object({
-    id: z.string().uuid(),
-    nome: z.string(),
-  }),
-  cep: z.string(),
-  cidade: z.string(),
-  estado: z.string(),
-  bairro: z.string(),
-  endereco: z.string(),
-  numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
-  date_que_ocorre: z.string().datetime(),
-  membros: z.object({
-    id: z.string().uuid(),
-    first_name: z.string(),
-  }).array(),
-})
-
-type FormCelula = z.infer<typeof schemaFormCelula>
-
-interface Celula {
-  id: string
-  nome: string
-  lider: {
-    id: string
-    first_name: string
-  }
-}
-
-interface User {
-  id: string
-  first_name?: string
-  cargo_de_lideranca: {
-    id: string,
-    nome: string },
-  situacao_no_reino: {
-    id: string,
-    nome: string
-  }
-}
-
-export interface SupervisaoData {
-  id: string
-  nome: string
-  membros: User[]
-  celulas: Celula[]
-}
+import { FormCelula, Member, SupervisaoData, User } from './schema'
 
 export default function UpdateCelula({
   celulaId,
@@ -126,14 +29,13 @@ export default function UpdateCelula({
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisaoDefault, setSupervisaoDefault] = useState<string>()
   const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>()
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const [teste, setTeste] = useState<FormCelula>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
   const {data: dataCelula} = useQuery<FormCelula>({
     queryKey: ['celulas', celulaId],
@@ -152,9 +54,6 @@ export default function UpdateCelula({
       return dataCelula
     }
   })
-
-
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
     handleZipCode(e, setValue);
@@ -183,11 +82,6 @@ export default function UpdateCelula({
 
       date_inicio = dayjs(date_inicio).toISOString()
       date_multipicar = dayjs(date_multipicar).toISOString()
-
-      console.log(date_inicio)
-      console.log(date_multipicar)
-
-
 
       const response = await axiosAuth.put(URLCelulaId, {
         nome,

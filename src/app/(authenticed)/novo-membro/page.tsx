@@ -18,7 +18,8 @@ export default function NovoMembro() {
     queryKey: ["members"],
     queryFn: async () => {
       const response = await axiosAuth.get(URL)
-      return response.data
+      const result = await response.data
+      return result
     },
   })
 
@@ -87,19 +88,19 @@ export default function NovoMembro() {
                 {isLoading ? ( // Verificando se está em estado de carregamento
                   // Renderizar o esqueleto de carregamento
                   Array.from({ length: 5 }).map((_, index) => ( // Suponhamos que você queira renderizar 5 linhas de esqueleto
-                <tr key={index} className="py-8 border-b border-gray-200">
-                  <td>
-                    <div className="flex items-center gap-3">
-                      <UserFocus size={24} />
-                      <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
-                    </div>
-                  </td>
-                  {/* ... Outras células de esqueleto ... */}
-                </tr>
-              ))
+                    <tr key={index} className="py-8 border-b border-gray-200">
+                      <td>
+                        <div className="flex items-center gap-3">
+                          <UserFocus size={24} />
+                          <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
+                        </div>
+                      </td>
+                      {/* ... Outras células de esqueleto ... */}
+                    </tr>
+                  ))
                 ) : (
                   // Renderizar a lista de membros
-                  <SpinnerButton message={'Carregando'}/>
+                  <SpinnerButton message={'Carregando'} />
                 )}
               </tbody>
             </table>

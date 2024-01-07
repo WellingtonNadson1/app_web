@@ -7,9 +7,9 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { Fragment, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { toast } from 'react-toastify'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
-  AddressProps,
   CargoLidereanca,
   Encontros,
   Escolas,
@@ -22,6 +22,7 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { handleZipCode } from '@/functions/zipCodeUtils'
+import { errorCadastro, success } from '@/functions/functions'
 
 function AddNewMember() {
   const hostname = 'app-ibb.onrender.com'
@@ -64,31 +65,6 @@ function AddNewMember() {
     handleZipCode(e, setValue);
   };
 
-  // Notification sucsses or error Submit Forms
-  const successCadastroMembro = () =>
-    toast.success('Membro Cadastrado!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
-  const errorCadastroMembro = () =>
-    toast.error('Error no Cadastro!', {
-      position: 'top-right',
-      autoClose: 5000,
-      hideProgressBar: false,
-      closeOnClick: true,
-      pauseOnHover: false,
-      draggable: true,
-      progress: undefined,
-      theme: 'light',
-    })
-
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
@@ -96,8 +72,6 @@ function AddNewMember() {
       const selectedHasFilho = Boolean(data.has_filho)
       const selectedBatizado = Boolean(data.batizado)
       const passwordDefault = 'JesusCristoReina'
-      console.log(data.is_discipulado)
-
       const selectedEncontros = data?.encontros?.filter((id) => id !== '')
       const selectedEscolas = data?.escolas?.filter((id) => id !== '')
 
@@ -112,6 +86,7 @@ function AddNewMember() {
 
       const dataToSend = {
         ...data,
+        discipuladorId: selected?.id,
         encontros: encontrosToSend,
         escolas: escolasToSend,
         is_discipulado: selectedIsDiscipulado,
@@ -134,15 +109,15 @@ function AddNewMember() {
       })
       if (response.ok) {
         setIsLoadingSubmitForm(false)
-        successCadastroMembro()
+        success('👍🏻 Membro Cadastrado!')
         reset()
         router.refresh()
       } else {
-        errorCadastroMembro()
+        errorCadastro('👎🏻 Erro no Cadastro!')
         setIsLoadingSubmitForm(false)
       }
     } catch (error) {
-      errorCadastroMembro()
+      errorCadastro('👎🏻 Erro no Cadastro!')
       setIsLoadingSubmitForm(false)
     }
   }
@@ -215,6 +190,8 @@ function AddNewMember() {
     (supervisao) => supervisao.id === supervisaoSelecionada,
   )?.celulas
   return (
+    <>
+    <ToastContainer />
     <Modal
       icon={UserPlusIcon}
       titleModal="Cadastro de Membro"
@@ -508,12 +485,7 @@ function AddNewMember() {
                         Discipulador
                       </label>
                       <div className="mt-3">
-                        <Combobox value={selected} onChange={(selectedOption) => {
-                            // Armazenar o objeto completo (com id) no estado
-                            setSelected(selectedOption);
-                            // Definir o valor do campo discipuladorId no React Hook Form
-                            setValue('discipuladorId', selectedOption?.id);
-                          }}>
+                        <Combobox value={selected} onChange={(newValue) => setSelected(newValue)}>
                           <div className="relative">
                             <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                               <Combobox.Input
@@ -1072,6 +1044,7 @@ function AddNewMember() {
         </div>
       </div>
     </Modal>
+    </>
   )
 }
 
