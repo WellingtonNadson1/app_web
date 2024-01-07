@@ -40,7 +40,7 @@ export interface ListMembersCelulaProps {
 }
 
 
-export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
+export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
   const [shouldFetch, setShouldFetch] = useState<boolean>(false)
 
   const handlePageChange = (newPage: number) => {
@@ -57,33 +57,33 @@ export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
   console.log('Member Celula: ', displayedMembers);
 
 
-    return (
+  return (
     <>
-      <div className="relative mx-auto w-full rounded-xl bg-white px-4 py-2 shadow-lg">
+      <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
         <div className="w-full px-2 py-2 ">
-          <div className="w-full rounded-md px-1 py-2">
+          <div className="w-full px-1 py-2 rounded-md">
             <div className="flex items-center justify-between">
               <h2 className="text-lg font-semibold leading-7 text-gray-800">
                 Membros da Célula {data.nome}
               </h2>
               <AddNewMember />
             </div>
-            <table className="w-full table-auto border-separate border-spacing-y-3">
+            <table className="w-full border-separate table-auto border-spacing-y-3">
               <thead>
                 <tr className="text-base font-bold ">
-                  <th className="border-b-2 border-blue-300 py-2 text-start text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                     Nome
                   </th>
-                  <th className="hidden border-b-2 border-orange-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-orange-300 text-start sm:table-cell">
                     Status
                   </th>
-                  <th className="hidden border-b-2 border-indigo-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
                     Cargo
                   </th>
-                  <th className="hidden border-b-2 border-blue-300 py-2 text-start text-gray-800 sm:table-cell">
+                  <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
                     Supervisão
                   </th>
-                  <th className="border-b-2 border-red-300 py-2 text-start text-gray-800">
+                  <th className="py-2 text-gray-800 border-b-2 border-red-300 text-start">
                     Opções
                   </th>
                 </tr>
@@ -92,7 +92,7 @@ export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
                 {data.membros ? (
                   displayedMembers?.map((user, index) => (
                     <tr
-                      className="border-b border-gray-200 py-8 hover:bg-gray-100/90"
+                      className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}
                     >
                       <td>
@@ -103,26 +103,25 @@ export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
-                            user.situacao_no_reino?.nome === 'Ativo'
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
                               ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                              ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
-                              : 'bg-red-100  text-red-700 ring-red-600/20'
-                          }`}
+                                ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
+                                : user.situacao_no_reino?.nome === 'Frio'
+                                  ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
+                                  : 'bg-red-100  text-red-700 ring-red-600/20'
+                            }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
+                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {user.cargo_de_lideranca?.nome}
                         </span>
                       </td>
                       <td className="text-center">
-                        <span className="hidden items-center rounded-md bg-gray-50 px-2 py-1 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
+                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {data.supervisao?.nome}
                         </span>
                       </td>
@@ -133,12 +132,9 @@ export default function ListMembersCelula({ data }:  ListMembersCelulaProps) {
                           memberName={user.first_name}
                         />
                         <div onClick={() => setShouldFetch(true)}>
-                          {data.membros && (
-                            <UpdateMember
-                              shouldFetch={shouldFetch}
-                              memberId={user.id}
-                            />
-                          )}
+                          <UpdateMember
+                            memberId={user.id}
+                          />
                         </div>
                       </td>
                     </tr>

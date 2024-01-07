@@ -136,12 +136,9 @@ export default function ListMembers({ members }: ListMembersProps) {
                           member={user.id}
                           memberName={user.first_name}
                         />
-                        {/* <div onClick={() => setShouldFetch(true)}> */}
                         <UpdateMember
-                          // shouldFetch={shouldFetch}
                           memberId={user.id}
                         />
-                        {/* </div> */}
                       </td>
                     </tr>
                   ))
