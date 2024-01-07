@@ -28,8 +28,8 @@ export default function LicoesCelula() {
     return <div>Erro ao carregar os dados.</div>
   }
 
-  const temaMesCelula = 'Tempo'
-  const subTemaMesCelula = 'Ensina-nos a contar os nossos dias... Salmos 90.12'
+  const temaMesCelula = 'Sacrifico-me'
+  const subTemaMesCelula = 'Que seja um sacrifício vivo e santo... Rm 12.1'
   const statusLicoes = [
     {
       id: 1,
