@@ -21,6 +21,7 @@ import { useQuery } from '@tanstack/react-query'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { handleZipCode } from '@/functions/zipCodeUtils'
+import axios from 'axios'
 
 function UpdateMember({
   memberId,
@@ -39,19 +40,30 @@ function UpdateMember({
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>()
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const { register, handleSubmit, setValue, reset } = useForm<Member>({
-    defaultValues: async () => {
+  const Members = async () => {
+    try {
       if (!memberId) return {}
 
       const response = await axiosAuth.get(URLUsersId)
       const dataMember = await response.data
       if (dataMember) {
-        console.log("Member Updae:", dataMember);
+        console.log("Member Update:", dataMember);
+      }
+      return dataMember
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
       }
 
-      return dataMember
-    },
+    }
+  }
+
+  const { register, handleSubmit, setValue, reset } = useForm<Member>({
+    defaultValues: Members
   })
+
   const cancelButtonRef = useRef(null)
 
   const router = useRouter()
@@ -130,20 +142,41 @@ function UpdateMember({
     }
   }
 
+  const DataCombineted = async () => {
+    try {
+      const response = await axiosAuth.get(URLCombinedData)
+      return await response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
   const { data: combinedData, isError: error, isLoading } = useQuery({
     queryKey: ["combinedData"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLCombinedData)
-      return response.data
-    },
+    queryFn: DataCombineted,
   })
+
+  const AllMembers = async () => {
+    try {
+      const response = await axiosAuth.get(URLUsers)
+      return await response.data
+    }
+    catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<Member[]>({
     queryKey: ["membersquery"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLUsers)
-      return response.data
-    },
+    queryFn: AllMembers,
   })
 
   if (isLoadingQueryUpdate) {

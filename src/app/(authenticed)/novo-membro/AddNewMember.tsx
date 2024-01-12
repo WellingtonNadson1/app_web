@@ -122,20 +122,24 @@ function AddNewMember() {
     }
   }
 
+  const DataCombineted = async () => {
+    const response = await axiosAuth.get(URLCombinedData)
+    return await response.data
+  }
+
   const { data: combinedData, isError: error, isLoading } = useQuery({
     queryKey: ["cultossemanais"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLCombinedData)
-      return response.data
-    },
+    queryFn: DataCombineted,
   })
+
+  const AllUsers = async () => {
+    const response = await axiosAuth.get(URLUsers)
+    return await response.data
+  }
 
   const { data: queryMembers } = useQuery<Member[]>({
     queryKey: ["members"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLUsers)
-      return response.data
-    },
+    queryFn: AllUsers,
   })
 
   const filteredPeople =
@@ -535,8 +539,8 @@ function AddNewMember() {
                                           <>
                                             <span
                                               className={`block truncate ${selected
-                                                  ? 'font-medium'
-                                                  : 'font-normal'
+                                                ? 'font-medium'
+                                                : 'font-normal'
                                                 }`}
                                             >
                                               {person.first_name}
@@ -544,8 +548,8 @@ function AddNewMember() {
                                             {selected ? (
                                               <span
                                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
-                                                    ? 'text-white'
-                                                    : 'text-teal-600'
+                                                  ? 'text-white'
+                                                  : 'text-teal-600'
                                                   }`}
                                               >
                                                 <CheckIcon
