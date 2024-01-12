@@ -26,12 +26,12 @@ import { errorCadastro, success } from '@/functions/functions'
 import axios from 'axios'
 
 function AddNewMember() {
+  // const hostnameLocal = 'localhost:3333'
+  // const URLUsers = `http://${hostnameLocal}/users`
+  // const URLCombinedData = `http://${hostnameLocal}/users/all`
   const hostname = 'app-ibb.onrender.com'
-  const hostnameLocal = 'localhost:3333'
-  const URLUsers = `http://${hostnameLocal}/users`
-  const URLCombinedData = `http://${hostnameLocal}/users/all`
-  // const URLUsers = `https://${hostname}/users`
-  // const URLCombinedData = `https://${hostname}/users/all`
+  const URLUsers = `https://${hostname}/users`
+  const URLCombinedData = `https://${hostname}/users/all`
 
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)

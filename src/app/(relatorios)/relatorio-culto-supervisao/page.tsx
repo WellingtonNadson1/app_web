@@ -19,7 +19,9 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const { register, handleSubmit, reset } = useForm()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
+  const hostname = 'app-ibb.onrender.com'
+  const URLPresencaGeralCultos = `https://${hostname}/relatorio/presencacultos`
+  // const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
 

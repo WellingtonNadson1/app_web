@@ -21,8 +21,11 @@ export const createReuniao = (celulaId: string) => {
 
 const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
-const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
+const hostname = 'app-ibb.onrender.com'
+const URLPresencaReuniaoCelulaIsRegiter = `https://${hostname}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
+// const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+// const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
 
 const queryClient = useQueryClient()
 
