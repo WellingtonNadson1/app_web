@@ -1,17 +1,5 @@
 import { z } from 'zod'
 
-const MeetingSchema = z.object({
-    id: z.string(),
-    culto_semana: z.object({
-      nome: z.string(),
-    }),
-    imageUrl: z.string(),
-    data_inicio_culto: z.string(),
-    data_termino_culto: z.string(),
-}).array()
-
-export type Meeting = z.infer<typeof MeetingSchema>
-
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
   status: z.string(),

@@ -7,6 +7,7 @@ import { UserFocus } from '@phosphor-icons/react'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import axios from 'axios'
 
 export default function NovoMembro() {
   const { data: session } = useSession()
@@ -14,13 +15,23 @@ export default function NovoMembro() {
 
   const URL = `${BASE_URL}/users`
 
-  const { data: members, isError: error, isLoading } = useQuery<ReturnMembers[]>({
-    queryKey: ["members"],
-    queryFn: async () => {
+  const Members = async () => {
+    try {
       const response = await axiosAuth.get(URL)
       const result = await response.data
       return result
-    },
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
+  const { data: members, isError: error, isLoading } = useQuery<ReturnMembers[]>({
+    queryKey: ["members"],
+    queryFn: Members
   })
 
   if (error) {

@@ -16,7 +16,8 @@ import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
-import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
+// import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
+import axios from 'axios'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -27,22 +28,42 @@ export default function ControleCelulaSupervision() {
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
+  const CelulaData = async () => {
+    try {
+      const result = await axiosAuth.get(URLCelula)
+      return await result.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
-    queryFn: async () => {
-      const result = await axiosAuth.get(URLCelula)
-      return result.data
-    },
+    queryFn: CelulaData,
     enabled: !!celulaId,
     retry: false
   })
 
+  const MeetingsData = async () => {
+    try {
+      const result = await axiosAuth.get(URLCultosInd)
+      return await result.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
-    queryFn: async () => {
-      const result = await axiosAuth.get(URLCultosInd)
-      return result.data
-    }
+    queryFn: MeetingsData
   })
 
   const today = startOfToday()

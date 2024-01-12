@@ -56,7 +56,6 @@ function UpdateMember({
       } else {
         console.error(error)
       }
-
     }
   }
 

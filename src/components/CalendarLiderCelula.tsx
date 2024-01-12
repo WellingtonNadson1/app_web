@@ -1,5 +1,4 @@
 'use client'
-import { Meeting } from '@/app/(celula)/celula/schema'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
@@ -25,6 +24,7 @@ import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
+import { Meeting } from '@/app/(celula)/celula/schema'
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -36,7 +36,7 @@ const meetingSchema = z.object({
   data_termino_culto: z.string(),
 })
 
-export type meeting = z.infer<typeof meetingSchema>
+export type meetingsch = z.infer<typeof meetingSchema>
 
 
 function classNames(...classes: string[]) {
@@ -53,7 +53,7 @@ export default function CalendarLiderCelula() {
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
 
   if (!session) {
-    return <SpinnerButton message={''}/>
+    return <SpinnerButton message={''} />
   }
 
   const { data, isLoading } = useQuery<Meeting>({
@@ -64,8 +64,9 @@ export default function CalendarLiderCelula() {
     },
   })
 
-if (isLoading) {
-  return <SpinnerButton message={''}/>}
+  if (isLoading) {
+    return <SpinnerButton message={''} />
+  }
   const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
 
   const days = eachDayOfInterval({
@@ -202,7 +203,7 @@ if (isLoading) {
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
                 {selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
                   selectedDayMeetings?.map((meeting) => (
-                    <Meeting meeting={meeting} key={meeting.id} />
+                    <MeetingComponent meeting={meeting} key={meeting.id} />
                   ))
                 ) : (
                   <p>Sem Eventos hoje.</p>
@@ -216,7 +217,7 @@ if (isLoading) {
   )
 }
 
-function Meeting({ meeting }: { meeting: meeting }) {
+function MeetingComponent({ meeting }: { meeting: meetingsch }) {
   // eslint-disable-next-line camelcase
   const data_inicio_culto = parseISO(meeting?.data_inicio_culto)
   // eslint-disable-next-line camelcase
@@ -258,11 +259,11 @@ function Meeting({ meeting }: { meeting: meeting }) {
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting?.data_inicio_culto}>
-            {format(data_inicio_culto,  'H:mm', { locale: pt })}h
+            {format(data_inicio_culto, 'H:mm', { locale: pt })}h
           </time>{' '}
           -{' '}
           <time dateTime={meeting?.data_termino_culto}>
-            {format(data_termino_culto,  'H:mm', { locale: pt })}h
+            {format(data_termino_culto, 'H:mm', { locale: pt })}h
           </time>
         </p>
       </div>

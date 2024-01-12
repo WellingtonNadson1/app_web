@@ -23,6 +23,7 @@ import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import { errorCadastro, success } from '@/functions/functions'
+import axios from 'axios'
 
 function AddNewMember() {
   const hostname = 'app-ibb.onrender.com'
@@ -123,8 +124,16 @@ function AddNewMember() {
   }
 
   const DataCombineted = async () => {
-    const response = await axiosAuth.get(URLCombinedData)
-    return await response.data
+    try {
+      const response = await axiosAuth.get(URLCombinedData)
+      return await response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   const { data: combinedData, isError: error, isLoading } = useQuery({
@@ -133,8 +142,16 @@ function AddNewMember() {
   })
 
   const AllUsers = async () => {
-    const response = await axiosAuth.get(URLUsers)
-    return await response.data
+    try {
+      const response = await axiosAuth.get(URLUsers)
+      return await response.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
   }
 
   const { data: queryMembers } = useQuery<Member[]>({

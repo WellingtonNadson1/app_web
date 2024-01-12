@@ -12,7 +12,6 @@ interface ListMembersProps {
 }
 
 export default function ListMembers({ members }: ListMembersProps) {
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
 
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
