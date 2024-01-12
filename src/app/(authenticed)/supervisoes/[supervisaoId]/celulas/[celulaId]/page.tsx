@@ -34,7 +34,7 @@ export default function ControleCelulaSupervision({
   const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
     queryKey: ["celula"],
     queryFn: CelulaDataQuery,
-    retry: false
+    retry: 3
   })
 
   if (error) {
