@@ -2,6 +2,7 @@
 import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { useParams } from 'next/navigation'
 
@@ -16,15 +17,25 @@ export default function ControleCelulaSupervision({
   console.log(useParams())
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${celulaId}`
-  
-  const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
-    queryKey: ["celula"],
-    queryFn: async () => {
+
+  const CelulaData = async () => {
+    try {
       const response = await axiosAuth.get(URL)
       return await response.data
-    },
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
+  const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
+    queryKey: ["celula"],
+    queryFn: CelulaData
   })
-    
+
   if (error) {
     return (
       <div className="w-full px-2 py-2 mx-auto">
