@@ -18,10 +18,10 @@ export default function ControleCelulaSupervision({
   const hostname = 'app-ibb.onrender.com'
   const URL = `https://${hostname}/celulas/${celulaId}`
 
-  const CelulaData = async () => {
+  const CelulaDataQuery = async () => {
     try {
       const response = await axiosAuth.get(URL)
-      return await response.data
+      return response.data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data)
@@ -33,7 +33,8 @@ export default function ControleCelulaSupervision({
 
   const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
     queryKey: ["celula"],
-    queryFn: CelulaData
+    queryFn: CelulaDataQuery,
+    retry: false
   })
 
   if (error) {
@@ -45,7 +46,6 @@ export default function ControleCelulaSupervision({
       </div>
     )
   }
-  console.log(JSON.stringify(celula))
 
   if (isLoading) {
     return (
