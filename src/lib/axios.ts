@@ -24,14 +24,13 @@ export default axios.create({
 
 // const tokenUser = Token()
 
-// export const axiosAuth = axios.create({
-//   baseURL: BASE_URL,
-//   headers: {
-//     'Authorization': `Bearer ${tokenUser.finally}`,
-//     'Content-Type': 'application/json',
-//     'Accept': 'application/json'
-//   }
-// })
+export const axiosAuth = axios.create({
+  baseURL: BASE_URL,
+  headers: {
+    'Content-Type': 'application/json',
+    'Accept': 'application/json'
+  }
+})
 
 // export const api = async () => {
 //   const session = await getServerSession(authOptions)
