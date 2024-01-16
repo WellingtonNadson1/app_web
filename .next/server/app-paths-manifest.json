@@ -1,8 +1,8 @@
 {
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(authenticed)/supervisoes/page": "app/(authenticed)/supervisoes/page.js",
+  "/not-found": "app/not-found.js",
   "/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
   "/(authenticed)/supervisoes/[supervisaoId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/page.js",
-  "/(authenticed)/celulas/page": "app/(authenticed)/celulas/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js",
   "/(authenticed)/novo-membro/page": "app/(authenticed)/novo-membro/page.js"
 }

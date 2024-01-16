@@ -1,3 +1,4 @@
+import { authOptions } from '../api/auth/[...nextauth]/auth'
 import Header from '@/components/Header'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers, ReactQueryProvider } from '@/providers/providers'
@@ -6,7 +7,6 @@ import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React, { Suspense } from 'react'
-import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
 import { LoaderHeader } from './loading'
 

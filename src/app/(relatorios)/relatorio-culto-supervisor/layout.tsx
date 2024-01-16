@@ -1,3 +1,4 @@
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import Header from '@/components/Header'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers, ReactQueryProvider } from '@/providers/providers'
@@ -7,7 +8,6 @@ import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React, { Suspense } from 'react'
 import './globals.css'
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { LoaderHeaderSupervisor } from './loading'
 
 export const metadata = {

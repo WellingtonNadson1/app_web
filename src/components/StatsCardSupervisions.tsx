@@ -1,74 +1,18 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { UsersFour } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import React from 'react'
+import { UsersFour } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
 import { twMerge } from 'tailwind-merge'
-
-export interface SupervisaoDataCard {
-  id: string
-  nome: string
-  cor: string
-  supervisor: {
-    id: string
-    first_name: string
-  }
-}
+import { useCombinetedStore } from '@/store/DataCombineted'
 
 export default function StatsCardSupervisions() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-
+  const { supervisoes } = useCombinetedStore.getState().state
   const router = useRouter()
-
-  const URL = `${BASE_URL}/supervisoes`
-
-  async function fetchWithToken(url: string, token: string) {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    const data = await response.json()
-    return data
-  }
-
-  const { data: supervisoes, isError: error, isLoading } = useQuery<SupervisaoDataCard[]>({
-    queryKey: ["supervisoes"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URL)
-      return await response.data
-    },
-  })
-
-  if (error) {
-    return (
-      <div className="w-full px-2 py-2 mx-auto">
-        <div className="w-full mx-auto">
-          <div>failed to load</div>
-        </div>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <div className="w-full px-2 py-2 mx-auto">
-        <div className="flex items-center w-full gap-2 mx-auto">
-          <div className="text-white">carregando...</div>
-        </div>
-      </div>
-    )
-  }
 
   const handleSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
     const id = event.currentTarget.id
-    console.log('Esta aqui o ID clicado', id)
     router.push(`/supervisoes/${id}`)
   }
 
@@ -77,38 +21,38 @@ export default function StatsCardSupervisions() {
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {supervisoes &&
-          (supervisoes?.map((supervisao) => (
-            <div
-              onClick={handleSupervisaoSelecionada}
-              key={supervisao.id}
-              id={supervisao.id}
-              className={twMerge(`flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md bg-white hover:bg-opacity-95`, ``)}
-            >
-              <div className="flex items-center justify-between w-full">
-                <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
-                  {supervisao.nome}
+            (supervisoes?.map((supervisao) => (
+              <div
+                onClick={handleSupervisaoSelecionada}
+                key={supervisao.id}
+                id={supervisao.id}
+                className={twMerge(`flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md bg-white hover:bg-opacity-95`, ``)}
+              >
+                <div className="flex items-center justify-between w-full">
+                  <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
+                    {supervisao.nome}
+                  </div>
+                  <div
+                    className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${supervisao.cor}`)}
+                  >
+                    <UsersFour width={24} height={24} color="#fff" />
+                  </div>
                 </div>
-                <div
-                  className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${supervisao.cor}`)}
-                >
-                  <UsersFour width={24} height={24} color="#fff" />
+                <div className="flex items-center">
+                  <span className="text-lg font-semibold">
+                    {supervisao.supervisor?.first_name}
+                  </span>
+                </div>
+                <div className="flex items-center">
+                  <span className="text-sm font-bold leading-normal text-emerald-500">
+                    {/* {supervisao.nivel} */}
+                  </span>
+                  <span className="ml-2 text-sm font-bold leading-normal text-gray-500">
+                    {/* {supervisao.nivel} */}
+                  </span>
                 </div>
               </div>
-              <div className="flex items-center">
-                <span className="text-lg font-semibold">
-                  {supervisao.supervisor?.first_name}
-                </span>
-              </div>
-              <div className="flex items-center">
-                <span className="text-sm font-bold leading-normal text-emerald-500">
-                  {/* {supervisao.nivel} */}
-                </span>
-                <span className="ml-2 text-sm font-bold leading-normal text-gray-500">
-                  {/* {supervisao.nivel} */}
-                </span>
-              </div>
-            </div>
-          )))}
+            )))}
         </div>
       </div>
     </>

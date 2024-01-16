@@ -1,40 +1,31 @@
 'use client'
+import React, { Fragment, useState } from 'react'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useQuery } from '@tanstack/react-query'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import Modal from '@/components/modal'
 import { Combobox, Transition } from '@headlessui/react'
+import { useCombinetedStore } from '@/store/DataCombineted'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import React, { Fragment, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import {
-  CargoLidereanca,
-  Encontros,
-  Escolas,
-  Member,
-  SituacoesNoReino,
-  SupervisaoData,
-} from './schema'
+import { Member } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { useQuery } from '@tanstack/react-query'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { handleZipCode } from '@/functions/zipCodeUtils'
-import { errorCadastro, success } from '@/functions/functions'
-import axios from 'axios'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 
 function AddNewMember() {
-  // const hostnameLocal = 'localhost:3333'
-  // const URLUsers = `http://${hostnameLocal}/users`
-  // const URLCombinedData = `http://${hostnameLocal}/users/all`
-  const hostname = 'app-ibb.onrender.com'
-  const URLUsers = `https://${hostname}/users`
-  const URLCombinedData = `https://${hostname}/users/all`
-
+  // const URLUsers = `${BASE_URL_LOCAL}/users`
+  // const URLCombinedData = `${BASE_URL_LOCAL}/users/all`
+  const URLUsers = `${BASE_URL}/users`
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  // Zustand Store
+  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
 
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
@@ -123,24 +114,6 @@ function AddNewMember() {
     }
   }
 
-  const DataCombineted = async () => {
-    try {
-      const response = await axiosAuth.get(URLCombinedData)
-      return await response.data
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
-      } else {
-        console.error(error)
-      }
-    }
-  }
-
-  const { data: combinedData, isError: error, isLoading } = useQuery({
-    queryKey: ["cultossemanais"],
-    queryFn: DataCombineted,
-  })
-
   const AllUsers = async () => {
     try {
       const response = await axiosAuth.get(URLUsers)
@@ -168,38 +141,6 @@ function AddNewMember() {
           .replace(/\s+/g, '')
           .includes(query.toLowerCase().replace(/\s+/g, '')),
       )
-
-  // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
-  const supervisoes: SupervisaoData[] = combinedData ? combinedData[0] : undefined
-  const escolas: Escolas[] = combinedData ? combinedData[1] : undefined
-  const encontros: Encontros[] = combinedData ? combinedData[2] : undefined
-  const situacoesNoReino: SituacoesNoReino[] = combinedData ? combinedData[3] : undefined
-  const cargoLideranca: CargoLidereanca[] = combinedData ? combinedData[4] : undefined
-
-  if (error)
-    return (
-      <div className="w-full px-2 py-2 mx-auto">
-        <div className="w-full mx-auto">
-          <div>Falha ao carregar, atualize a página.</div>
-        </div>
-      </div>
-    )
-
-  if (!supervisoes) {
-    return (
-      <div className="z-50 w-full px-2 py-2 mx-auto">
-        <div className="flex items-center w-full gap-2 mx-auto">
-          <SpinnerButton message={''} />
-        </div>
-      </div>
-    )
-  }
-
-  if (isLoading) {
-    return (
-      <SpinnerButton message={'Carregando'} />
-    )
-  }
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -602,7 +543,7 @@ function AddNewMember() {
                             onChange={handleSupervisaoSelecionada}
                           >
                             <option value={''}>Selecione</option>
-                            {!isLoading ? (
+                            {supervisoes ? (
                               supervisoes?.map((supervisao) => (
                                 <option key={supervisao.id} value={supervisao.id}>
                                   {supervisao.nome}
@@ -629,7 +570,7 @@ function AddNewMember() {
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
                             <option value={''}>Selecione</option>
-                            {!isLoading ? (
+                            {supervisoes ? (
                               celulasFiltradas?.map((celula) => (
                                 <option key={celula.id} value={celula.id}>
                                   {celula.nome}
@@ -651,7 +592,7 @@ function AddNewMember() {
                             Escolas Feitas
                           </legend>
                           <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
-                            {!isLoading ? (
+                            {supervisoes ? (
                               escolas?.map((escola) => (
                                 <div
                                   key={escola.id}
@@ -738,7 +679,7 @@ function AddNewMember() {
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
                             <option value={''}>Selecione</option>
-                            {!isLoading ? (
+                            {supervisoes ? (
                               situacoesNoReino?.map((situacao) => (
                                 <option key={situacao.id} value={situacao.id}>
                                   {situacao.nome}
@@ -766,7 +707,7 @@ function AddNewMember() {
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
                             <option value={''}>Selecione</option>
-                            {!isLoading ? (
+                            {supervisoes ? (
                               cargoLideranca?.map((cargo) => (
                                 <option key={cargo.id} value={cargo.id}>
                                   {cargo.nome}

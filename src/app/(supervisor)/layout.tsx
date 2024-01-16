@@ -1,3 +1,4 @@
+import { authOptions } from '../api/auth/[...nextauth]/auth'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers, ReactQueryProvider } from '@/providers/providers'
 import { getServerSession } from 'next-auth'
@@ -5,7 +6,6 @@ import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
-import { authOptions } from '../api/auth/[...nextauth]/auth'
 import './globals.css'
 
 export const metadata = {
@@ -42,12 +42,12 @@ export default async function RootLayout({
         <div className="overflow-x-auto overflow-y-auto">
           <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
-          <ReactQueryProvider>
-            <Providers>
-              <Sidebar />
-              <div className="w-full px-2 py-2 mx-auto">{children}</div>
-            </Providers>
-          </ReactQueryProvider>
+            <ReactQueryProvider>
+              <Providers>
+                <Sidebar />
+                <div className="w-full px-2 py-2 mx-auto">{children}</div>
+              </Providers>
+            </ReactQueryProvider>
           </div>
         </div>
       </body>

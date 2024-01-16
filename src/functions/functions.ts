@@ -8,6 +8,9 @@ export interface FetchError extends AxiosError {}
 const hostname = 'app-ibb.onrender.com'
 export const BASE_URL = `https://${hostname}`
 
+const hostnameLocal = 'localhost:3333'
+export const BASE_URL_LOCAL = `http://${hostnameLocal}`
+
 export async function fetchWithToken(
   url: string,
   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos

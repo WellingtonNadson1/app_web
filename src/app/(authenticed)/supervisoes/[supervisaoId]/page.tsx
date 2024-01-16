@@ -1,11 +1,8 @@
 'use client'
-// import Header from '@/components/Header'
 import { ICelula } from '@/components/ListCelulas'
 import ListCelulasSupervision from '@/components/ListCelulasSupervision'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
+import { useCombinetedStore } from '@/store/DataCombineted'
 
 interface IUser {
   id: string
@@ -32,33 +29,19 @@ export default function Supervisao({
 }: {
   params: { supervisaoId: string }
 }) {
-  console.log('Id da Supervisao aqui', supervisaoId)
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-
-
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/supervisoes/${supervisaoId}`
-
-  const { data: supervisao, isError: error, isLoading } = useQuery<ISupervisaoData>({
-    queryKey: ["supervisao"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URL)
-      return await response.data
-    },
-  })
-
-  if (error) return <div>failed to load</div>
-  if (isLoading) return <div>loading...</div>
+  const { supervisoes } = useCombinetedStore.getState().state
+  const supervisao = supervisoes?.filter(supervisao => supervisao.id === supervisaoId)
 
   return (
     <div className="w-full px-2 py-2 mx-auto">
       <div className="w-full mx-auto">
-        {/* <Header titlePage={`${!error}` && `Supervisão ${supervisao.nome}`} /> */}
       </div>
-      <StatsCardSupervision supervisao={supervisao} />
-      {supervisao && 
-        <ListCelulasSupervision data={supervisao?.celulas} />
+      <StatsCardSupervision
+        nome={supervisao[0].nome}
+        cor={supervisao[0].cor}
+        supervisor={supervisao[0].supervisor} />
+      {supervisao &&
+        <ListCelulasSupervision data={supervisao[0].celulas} />
       }
 
     </div>

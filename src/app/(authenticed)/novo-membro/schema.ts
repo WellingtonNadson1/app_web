@@ -59,6 +59,10 @@ const CelulaSchema = z
   .object({
     id: z.string(),
     nome: z.string(),
+    lider: z.object({
+      id: z.string(),
+      first_name: z.string(),
+    }),
   })
 
 export type Celula = z.infer<typeof CelulaSchema>
@@ -67,6 +71,11 @@ const SupervisaoDataSchema = z
   .object({
     id: z.string(),
     nome: z.string(),
+    cor: z.string(),
+    supervisor: z.object({
+      id: z.string(),
+      first_name: z.string(),
+    }),
     celulas: CelulaSchema.array(),
   })
 

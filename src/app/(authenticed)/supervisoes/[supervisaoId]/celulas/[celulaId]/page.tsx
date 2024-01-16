@@ -1,10 +1,10 @@
 'use client'
 import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
@@ -14,9 +14,7 @@ export default function ControleCelulaSupervision({
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  console.log(useParams())
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${celulaId}`
+  const URL = `${BASE_URL}/celulas/${celulaId}`
 
   const CelulaDataQuery = async () => {
     try {
@@ -31,7 +29,7 @@ export default function ControleCelulaSupervision({
     }
   }
 
-  const { data: celula, isError: error, isLoading } = useQuery<CelulaData>({
+  const { data: celula, isError: error, isLoading, isSuccess } = useQuery<CelulaData>({
     queryKey: ["celula"],
     queryFn: CelulaDataQuery,
     retry: 3
@@ -63,7 +61,7 @@ export default function ControleCelulaSupervision({
         {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
       </div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
-        {celula &&
+        {isSuccess &&
           <ListMembersCelula data={celula} />
         }
       </div>

@@ -77,8 +77,8 @@ export default function Cultos() {
   const fetchCultos = useCallback(async () => {
     try {
       if (session?.user) {
-      const response = await axiosAuth.get(URLCultosIndividuais)
-      const cultosIndividuais = response.data
+        const response = await axiosAuth.get(URLCultosIndividuais)
+        const cultosIndividuais = response.data
         if (!cultosIndividuais) {
           console.log('Failed to fetch get Cultos.')
         }
@@ -107,7 +107,7 @@ export default function Cultos() {
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
 
       <div className="relative w-full px-2 py-2 mx-auto">
         <div className="relative w-full px-2 mx-auto mt-3 mb-4">

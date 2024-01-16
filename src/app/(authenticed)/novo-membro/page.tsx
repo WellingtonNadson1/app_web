@@ -17,9 +17,8 @@ export default function NovoMembro() {
 
   const Members = async () => {
     try {
-      const response = await axiosAuth.get(URL)
-      const result = await response.data
-      return result
+      const { data } = await axiosAuth.get(URL)
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data)
@@ -29,7 +28,7 @@ export default function NovoMembro() {
     }
   }
 
-  const { data: members, isError: error, isLoading } = useQuery<ReturnMembers[]>({
+  const { data: members, isError: error, isLoading, isSuccess } = useQuery<ReturnMembers[]>({
     queryKey: ["members"],
     queryFn: Members
   })
@@ -124,7 +123,7 @@ export default function NovoMembro() {
   return (
     <>
       <div className="relative w-full px-2 mx-auto mt-4 mb-4">
-        {members &&
+        {isSuccess &&
           <ListMembers members={members} />
         }
       </div>

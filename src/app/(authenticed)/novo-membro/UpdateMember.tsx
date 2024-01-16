@@ -7,14 +7,7 @@ import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { Fragment, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import {
-  CargoLidereanca,
-  Encontros,
-  Escolas,
-  Member,
-  SituacoesNoReino,
-  SupervisaoData,
-} from './schema'
+import { Member } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
@@ -22,6 +15,7 @@ import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import axios from 'axios'
+import { useCombinetedStore } from '@/store/DataCombineted'
 
 function UpdateMember({
   memberId,
@@ -32,24 +26,23 @@ function UpdateMember({
 }) {
   const URLUsersId = `${BASE_URL}/users/${memberId}`
   const URLUsers = `${BASE_URL}/users`
-  const URLCombinedData = `${BASE_URL}/users/all`
 
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
+  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
+
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>()
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
+
   const Members = async () => {
     try {
       if (!memberId) return {}
 
-      const response = await axiosAuth.get(URLUsersId)
-      const dataMember = await response.data
-      if (dataMember) {
-        console.log("Member Update:", dataMember);
-      }
-      return dataMember
+      const { data } = await axiosAuth.get(URLUsersId)
+      return data
+
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data)
@@ -59,8 +52,13 @@ function UpdateMember({
     }
   }
 
+  const { data: members } = useQuery({
+    queryKey: ['members'],
+    queryFn: Members
+  })
+
   const { register, handleSubmit, setValue, reset } = useForm<Member>({
-    defaultValues: Members
+    defaultValues: members
   })
 
   const cancelButtonRef = useRef(null)
@@ -141,28 +139,10 @@ function UpdateMember({
     }
   }
 
-  const DataCombineted = async () => {
-    try {
-      const response = await axiosAuth.get(URLCombinedData)
-      return await response.data
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
-      } else {
-        console.error(error)
-      }
-    }
-  }
-
-  const { data: combinedData, isError: error, isLoading } = useQuery({
-    queryKey: ["combinedData"],
-    queryFn: DataCombineted,
-  })
-
   const AllMembers = async () => {
     try {
-      const response = await axiosAuth.get(URLUsers)
-      return await response.data
+      const { data } = await axiosAuth.get(URLUsers)
+      return data
     }
     catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -176,6 +156,7 @@ function UpdateMember({
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<Member[]>({
     queryKey: ["membersquery"],
     queryFn: AllMembers,
+    retry: 3,
   })
 
   if (isLoadingQueryUpdate) {
@@ -192,34 +173,6 @@ function UpdateMember({
           .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
       )
 
-  // Agora você pode acessar os diferentes conjuntos de dados a partir de combinedData
-
-  const supervisoes: SupervisaoData[] = combinedData ? combinedData[0] : undefined
-  const escolas: Escolas[] = combinedData ? combinedData[1] : undefined
-  const encontros: Encontros[] = combinedData ? combinedData[2] : undefined
-  const situacoesNoReino: SituacoesNoReino[] = combinedData ? combinedData[3] : undefined
-  const cargoLideranca: CargoLidereanca[] = combinedData ? combinedData[4] : undefined
-
-
-  if (error)
-    return (
-      <div className="w-full px-2 py-2 mx-auto">
-        <div className="w-full mx-auto">
-          <div>failed to load</div>
-        </div>
-      </div>
-    )
-
-  if (!supervisoes) {
-    return (
-      <div className="z-50 w-full px-2 py-2 mx-auto">
-        <div className="flex items-center w-full gap-2 mx-auto">
-          <SpinnerButton message={''} />
-        </div>
-      </div>
-    )
-  }
-
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
@@ -231,7 +184,7 @@ function UpdateMember({
   )?.celulas
 
   return (
-    isLoading ?
+    isLoadingQueryUpdate ?
       (
         <SpinnerButton message='' />
       )
@@ -623,7 +576,7 @@ function UpdateMember({
                               className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                               onChange={handleSupervisaoSelecionada}
                             >
-                              {!isLoading ? (
+                              {supervisoes ? (
                                 (supervisoes ?? []).map((supervisao) => (
                                   <option key={supervisao.id} value={supervisao.id}>
                                     {supervisao.nome}
@@ -649,7 +602,7 @@ function UpdateMember({
                               id="celula"
                               className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             >
-                              {!isLoading ? (
+                              {supervisoes ? (
                                 (celulasFiltradas ?? []).map((celula) => (
                                   <option key={celula.id} value={celula.id}>
                                     {celula.nome}
@@ -671,7 +624,7 @@ function UpdateMember({
                               Escolas Feitas
                             </legend>
                             <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
-                              {!isLoading ? (
+                              {supervisoes ? (
                                 escolas?.map((escola) => (
                                   <div
                                     key={escola.id}
@@ -757,7 +710,7 @@ function UpdateMember({
                               id="situacao_no_reino"
                               className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             >
-                              {!isLoading ? (
+                              {supervisoes ? (
                                 situacoesNoReino?.map((situacao) => (
                                   <option key={situacao.id} value={situacao.id}>
                                     {situacao.nome}
@@ -784,7 +737,7 @@ function UpdateMember({
                               id="cargo_de_lideranca"
                               className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             >
-                              {!isLoading ? (
+                              {supervisoes ? (
                                 cargoLideranca?.map((cargo) => (
                                   <option key={cargo.id} value={cargo.id}>
                                     {cargo.nome}
