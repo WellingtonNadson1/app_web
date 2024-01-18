@@ -8,9 +8,7 @@ import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
 
 
-const ResponseSchema = z.object({
-  data: z.string().array()
-})
+const ResponseSchema = z.string().array()
 
 type ApiResponse = z.infer<typeof ResponseSchema>
 
@@ -18,16 +16,20 @@ export default function LicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const LicoesCelula = async () => {
+    const { data: licoes } = await axiosAuth.get(URLLicoesCelula)
+    console.log('licoes', licoes)
+    return licoes
+  }
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
-    queryFn: () =>
-      axiosAuth.get(URLLicoesCelula),
+    queryFn: LicoesCelula
   })
   if (isLoading) return <SpinnerButton message={''} />
   if (isError) {
     return <div>Erro ao carregar os dados.</div>
   }
-
+  console.log('data', data)
   const temaMesCelula = 'Sacrifico-me'
   const subTemaMesCelula = 'Que seja um sacrifício vivo e santo... Rm 12.1'
   const statusLicoes = [
@@ -89,7 +91,7 @@ export default function LicoesCelula() {
           {statusLicoes.map((stat, index) => (
             data ? (
               <a
-                href={`${data.data[index]}`}
+                href={`${data?.[index]}`}
                 target="_blank"
                 key={stat.id}
                 className="rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100/80"
