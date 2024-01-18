@@ -34,7 +34,8 @@ export const PresencaForDateSchema = z.object({
     presencas_culto: PresencaCultoSchema.array(),
     culto_semana: z.object({
         nome: z.string()
-    })
+    }),
+    totalCultosPeriodo: z.number()
 })
 
 export const FormRelatorioDataSchema = z.object({
@@ -78,7 +79,13 @@ export interface Pessoa {
   celula: {
     id: string;
     nome: string;
+    lider: {
+      id: string;
+      first_name: string;
+    }
   };
+  quantidadeCultos: number;
+  porcentagemPresenca: number;
 }
 
 export interface ISupervisoes {

@@ -39,6 +39,7 @@ export default function StatsCardRelatorios() {
   const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [totalCultos, setTotalCultos] = useState<number>(0)
 
 
   const { data: supervisoes, isError: error, isLoading } = useQuery<ISupervisoes[]>({
@@ -49,19 +50,20 @@ export default function StatsCardRelatorios() {
     },
   })
 
-  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async (data) => {
+  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
     try {
+      setIsLoadingSubmitForm(true)
 
-      const startDate = dayjs(data.startDate).tz("America/Sao_Paulo").toISOString();
-      const endDate = dayjs(data.endDate).tz("America/Sao_Paulo").toISOString();
-      const superVisionId = data.superVisionId
 
-      const response = await axiosAuth.post(URLPresencaGeralCultos, {
+      dayjs(startDate).tz("America/Sao_Paulo").toISOString();
+      dayjs(endDate).tz("America/Sao_Paulo").toISOString();
+
+      const { data } = await axiosAuth.post(URLPresencaGeralCultos, {
         startDate,
         endDate,
         superVisionId
       });
-      const presencaGeralCultos = response.data as Pessoa[];
+      const presencaGeralCultos = data as Pessoa[];
 
       if (presencaGeralCultos) {
         // Pegando as datas unicas para o THeader
@@ -75,7 +77,7 @@ export default function StatsCardRelatorios() {
 
         const datasArray: string[] = Array.from(datasUnicas).sort();
         setDatasUnic(datasArray);
-        // PFim do egando as datas unicas para o THeader
+        // Fim do get for datas unicas para o THeader
 
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
         setGroupedForCell(dataGroupedForCell);
@@ -117,9 +119,7 @@ export default function StatsCardRelatorios() {
           } else {
             return 0;
           }
-
         });
-
         setIdCultos(sortedIds);
         idCultos && console.log('IDS: ', idCultos);
       }
@@ -128,37 +128,32 @@ export default function StatsCardRelatorios() {
     }
   };
 
-  const handlePresenceCulto: SubmitHandler<FormRelatorioSchema> = async (data) => {
+  const handlePresenceCulto: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
     try {
       setIsLoadingSubmitForm(true)
 
-      const startDate = dayjs(data.startDate).tz("America/Sao_Paulo").toISOString();
-      const endDate = dayjs(data.endDate).tz("America/Sao_Paulo").toISOString();
-      const superVisionId = data.superVisionId
+      dayjs(startDate).tz("America/Sao_Paulo").toISOString();
+      dayjs(endDate).tz("America/Sao_Paulo").toISOString();
 
-      console.log('Data inicio: ', startDate);
-
-      const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
+      const { data } = await axiosAuth.post(URLRelatorioPresenceCulto, {
         superVisionId,
         startDate,
         endDate
       });
-      const relatorio: PresencaForDate[] = response.data;
+      const relatorio: PresencaForDate[] = Object.values(data);
 
       if (!relatorio) {
-        console.log('Erro na resposta da API:', response.statusText);
+        console.log('Erro na resposta da API:', data.statusText);
         return;
       }
 
-      const dataGroupedForCulto: GroupedForCulto = groupDataByCulto(relatorio);
-
       setCorSupervisao(relatorio[0].presencas_culto[0].membro.supervisao_pertence.nome)
+      const Cultos = relatorio.pop()
+      setTotalCultos(Cultos as unknown as number)
 
       const dataGroupedForDateCulto: GroupedForCulto = groupDataByDateCulto(relatorio);
       setDateCultoData(dataGroupedForDateCulto)
 
-      console.log('Data dataGroupedForCulto: ', dataGroupedForCulto)
-      console.log('Data dataGroupedForDateCulto: ', dataGroupedForDateCulto)
 
       if (!dateCultoData) {
         console.log('Ainda sem Date Cuto!');
@@ -173,29 +168,9 @@ export default function StatsCardRelatorios() {
   };
 
   const handleFunctions = (data: FormRelatorioSchema) => {
-    console.log('Botão de Relat. Mensal Supervisão clicado');
     handleRelatorio(data);
     handlePresenceCulto(data);
   }
-
-  const groupDataByCulto = (relatorio: PresencaForDate[]) => {
-    const groupedDataForCell: GroupedForCulto = {};
-
-    relatorio.forEach(entry => {
-      const celulaId = entry.presencas_culto[0]?.membro?.celula?.id;
-
-      if (celulaId) {
-        if (!groupedDataForCell[celulaId]) {
-          groupedDataForCell[celulaId] = [];
-        }
-        groupedDataForCell[celulaId].push(entry);
-      }
-    });
-
-    return groupedDataForCell;
-  };
-
-
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForDateCulto: GroupedForCulto = {};
 
@@ -263,32 +238,6 @@ export default function StatsCardRelatorios() {
 
     setNumberOfRowsCell(rowsNameCell);
   }, [groupedForCell, idCultos]); // Add dependencies to useEffect
-
-  numberOfRowsCell
-
-  const percent = (cellName: string) => {
-    idCultos && groupedForCell && idCultos.map((cultoId, indexCulto) => (
-      groupedForCell[cellName].map((member, indexMember) => {
-
-        const totalCultos = idCultos.length
-
-        const countPresencasTrue = member.presencas_cultos.reduce((count, pessoa) => {
-          // Verifica se o status é true
-          if (pessoa.status === true) {
-            // Se a condição for atendida, incrementa o contador
-            return count + 1;
-          } else {
-            // Se a condição não for atendida, retorna o contador sem incrementar
-            return count;
-          }
-        }, 0);
-
-        const percentPresence = countPresencasTrue * 100 / totalCultos
-
-        return percentPresence
-
-      })))
-  }
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -424,8 +373,13 @@ export default function StatsCardRelatorios() {
         </div>
         <div >
           <div className={twMerge(`w-full text-center text-white`, newCorSupervisao)}>
-            <div className='p-2'>
-              <h1 className='p-2 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
+            <div className='pt-2 pb-0'>
+              <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
+            </div>
+            <div className='pb-2 pl-2'>
+              {totalCultos &&
+                <h1 className='p-2 font-bold uppercase text-start'>QUANTIDADE DE CULTOS NO PERÍODO: {totalCultos}</h1>
+              }
             </div>
           </div>
           <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
@@ -482,7 +436,7 @@ export default function StatsCardRelatorios() {
                       {groupedForCell[cellName].map((member) => (
                         <tr className='' key={member.id}>
                           <div className='flex flex-col items-center justify-center w-24 h-24 border-b'>
-                            -
+                            {member.porcentagemPresenca} %
                           </div>
                         </tr>
                       ))}
