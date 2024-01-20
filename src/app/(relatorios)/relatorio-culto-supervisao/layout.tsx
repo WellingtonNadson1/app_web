@@ -42,7 +42,7 @@ export default async function RootLayout({
           shadow="0 0 10px #fff,0 0 5px #fff"
         />
         <div className="overflow-x-auto overflow-y-auto">
-          <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
+          <div className="absolute top-0 min-h-[18.75rem]"></div>
           <div className="flex min-h-screen bg-slate-100">
             <ReactQueryProvider>
               <Providers>
