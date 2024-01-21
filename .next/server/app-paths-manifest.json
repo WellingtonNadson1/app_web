@@ -1,5 +1,4 @@
 {
-  "/(authenticed)/page": "app/(authenticed)/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/not-found": "app/not-found.js",
   "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
 }

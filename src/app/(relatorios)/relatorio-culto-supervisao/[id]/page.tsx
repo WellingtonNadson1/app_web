@@ -235,7 +235,7 @@ export default function StatsCardRelatorios() {
 
   return (
     <>
-      <div className='relative z-40 w-full p-2 bg-white rounded-sm'>
+      <div className='relative z-40 p-2 bg-white rounded-sm'>
         <div className="px-3 mt-2 mb-3">
           <>
             <form onSubmit={handleSubmit(handleFunctions)}>
@@ -373,7 +373,7 @@ export default function StatsCardRelatorios() {
           </>
         </div>
         {/* Inicio Relatorio */}
-        <div className={twMerge(`w-full text-center text-white`, newCorSupervisao)}>
+        <div className={twMerge(`text-center text-white`, newCorSupervisao)}>
           <div className='pt-2 pb-0'>
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
           </div>
@@ -430,58 +430,62 @@ export default function StatsCardRelatorios() {
         </div>
         <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
           {/* Cabeçalho da tabela */}
-          <thead className={twMerge(`p-2 text-center w-full text-white`, newCorSupervisao)}>
+          <thead className={twMerge(`p-2 text-center text-white`, newCorSupervisao)}>
             <>
-              <tr className={twMerge(`mx-4 mb-2 p-2 w-full`, newCorSupervisao)}>
-                <th className={twMerge(`p-2 mb-2`, 'w-1/4')}>
+              <tr className={twMerge(`mx-4 p-2`, newCorSupervisao)}>
+                <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
                 </th>
-                <th className={twMerge(`p-2 mb-2`, 'w-1/5')}>
+                <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
+                <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% PRES. TOTAL</h1>
                   </div>
                 </th>
                 {
                   totalCultosPrimicias && (
-                    <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
+                    <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
-                        <h1 className='font-bold text-center uppercase'>% PRIMICIAS</h1>
+                        <h1 className='font-bold text-center uppercase'>%</h1>
+                        <h1 className='font-bold text-center uppercase'>PRIMICIAS</h1>
                       </div>
                     </th>
                   )
                 }
                 {
                   totalCultosSacrificio && (
-                    <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
+                    <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
-                        <h1 className='font-bold text-center uppercase'>% SACRIFICIO</h1>
+                        <h1 className='font-bold text-center uppercase'>%</h1>
+                        <h1 className='font-bold text-center uppercase'>SACRIFICIO</h1>
                       </div>
                     </th>
                   )
                 }
-
-
-                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
-                  <div>
-                    <h1 className='font-bold text-center uppercase'>% DOM M.</h1>
+                <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                  <div className='text-center'>
+                    <h1 className='font-bold text-center uppercase'>%</h1>
+                    <h1 className='font-bold text-center uppercase'>DOM M.</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
-                  <div>
-                    <h1 className='font-bold text-center uppercase'>% DOM T.</h1>
+                <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                  <div className='text-center'>
+                    <h1 className='font-bold text-center uppercase'>%</h1>
+                    <h1 className='font-bold text-center uppercase'>DOM T.</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
-                  <div>
-                    <h1 className='font-bold text-center uppercase'>% CPD</h1>
+                <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                  <div className='text-center'>
+                    <h1 className='font-bold text-center uppercase'>%</h1>
+                    <h1 className='font-bold text-center uppercase'>CPD</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
-                  <div>
-                    <h1 className='font-bold text-center uppercase'>% QUARTA</h1>
+                <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                  <div className='text-center'>
+                    <h1 className='font-bold text-center uppercase'>%</h1>
+                    <h1 className='font-bold text-center uppercase'>QUARTA</h1>
                   </div>
                 </th>
                 {groupedForCell && datasUnic &&
@@ -505,14 +509,17 @@ export default function StatsCardRelatorios() {
                   <td className='px-4 bg-gray-50'>
                     <p className='text-base font-medium text-black'>{cellName}</p>
                     <p className='text-sm text-slate-600'>
+                      Líder: <span>{groupedForCell[cellName][0].celula.lider.first_name}</span>
+                    </p>
+                    <p className='text-sm text-slate-600'>
                       Membros: <span>{groupedForCell[cellName].length}</span>
                     </p>
                   </td>
                   {/* Coluna para membros */}
                   <td className='px-4'>
                     {groupedForCell[cellName].map((member) => (
-                      <tr className='h-24 py-4 w-28' key={member.id}>
-                        <div className='flex flex-col justify-center h-24'>
+                      <tr className='w-20 h-20 py-4' key={member.id}>
+                        <div className='flex flex-col justify-center h-20'>
                           {member.first_name}
                         </div>
                       </tr>
@@ -521,7 +528,7 @@ export default function StatsCardRelatorios() {
                   <td className='border'>
                     {groupedForCell[cellName].map((member) => (
                       <tr className='' key={member.id}>
-                        <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                        <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                           {member.cultos.porcentagemPresencaTotal} %
                         </div>
                       </tr>
@@ -532,7 +539,7 @@ export default function StatsCardRelatorios() {
                       <td className='border'>
                         {groupedForCell[cellName].map((member) => (
                           <tr className='' key={member.id}>
-                            <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                            <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                               {member.cultos.porcentagemPresencaPrimicia} %
                             </div>
                           </tr>
@@ -548,7 +555,7 @@ export default function StatsCardRelatorios() {
                       <td className='border'>
                         {groupedForCell[cellName].map((member) => (
                           <tr className='' key={member.id}>
-                            <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                            <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                               {member.cultos.porcentagemPresencaDomingoSacrificio} %
                             </div>
                           </tr>
@@ -559,12 +566,10 @@ export default function StatsCardRelatorios() {
                         <div className='hidden'></div>
                       )
                   }
-
-
                   <td className='border'>
                     {groupedForCell[cellName].map((member) => (
                       <tr className='' key={member.id}>
-                        <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                        <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                           {member.cultos.porcentagemPresencaTotalDomingoManha} %
                         </div>
                       </tr>
@@ -573,7 +578,7 @@ export default function StatsCardRelatorios() {
                   <td className='border'>
                     {groupedForCell[cellName].map((member) => (
                       <tr className='' key={member.id}>
-                        <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                        <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                           {member.cultos.porcentagemPresencaTotalDomingoTarde} %
                         </div>
                       </tr>
@@ -582,7 +587,7 @@ export default function StatsCardRelatorios() {
                   <td className='border'>
                     {groupedForCell[cellName].map((member) => (
                       <tr className='' key={member.id}>
-                        <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                        <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                           {member.cultos.porcentagemPresencaSabado} %
                         </div>
                       </tr>
@@ -591,7 +596,7 @@ export default function StatsCardRelatorios() {
                   <td className='border'>
                     {groupedForCell[cellName].map((member) => (
                       <tr className='' key={member.id}>
-                        <div className='flex flex-col items-center justify-center w-24 h-24 border-b bg-slate-50'>
+                        <div className='flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50'>
                           {member.cultos.porcentagemPresencaQuarta} %
                         </div>
                       </tr>
@@ -603,7 +608,7 @@ export default function StatsCardRelatorios() {
                       {groupedForCell[cellName].map((member, indexMember) => {
                         const presenceCulto = member.presencas_cultos.find(p => p.cultoIndividualId === cultoId);
                         return (
-                          <div className='flex flex-col justify-center w-24 h-24 font-bold border-b border-zinc-200' key={cultoId + indexMember}>
+                          <div className='flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200' key={cultoId + indexMember}>
                             {presenceCulto ? (
                               <>
                                 {presenceCulto.status === true && (
