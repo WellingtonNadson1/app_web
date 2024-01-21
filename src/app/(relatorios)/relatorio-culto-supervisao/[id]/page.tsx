@@ -24,13 +24,13 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  // const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
-  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLSupervisoes = `http://localhost:3333/supervisoes`
+  const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  const URLSupervisoes = `http://localhost:3333/supervisoes`
 
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  // const URLSupervisoes = `${BASE_URL}/supervisoes`
+  // const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
@@ -49,13 +49,14 @@ export default function StatsCardRelatorios() {
   const [totalCultosDomingoManha, setTotalCultosDomingoManha] = useState<number>(0)
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] = useState<number>(0)
 
+  const DataSupervisoes = async () => {
+    const { data } = await axiosAuth.get(URLSupervisoes)
+    return data
+  }
 
-  const { data: supervisoes, isError: error, isLoading } = useQuery<ISupervisoes[]>({
+  const { data: supervisoes, isLoading } = useQuery<ISupervisoes[]>({
     queryKey: ["supervisoes"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLSupervisoes)
-      return await response.data
-    },
+    queryFn: DataSupervisoes,
   })
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
@@ -70,8 +71,14 @@ export default function StatsCardRelatorios() {
         endDate,
         superVisionId
       });
+
+      const { data: relatorioData } = await axiosAuth.post(URLRelatorioPresenceCulto, {
+        superVisionId,
+        startDate,
+        endDate
+      });
+
       const presencaGeralCultos = data as Pessoa[];
-      console.log('presencaGeralCultos', presencaGeralCultos)
 
       if (presencaGeralCultos) {
         // Pegando as datas unicas para o THeader
@@ -85,18 +92,11 @@ export default function StatsCardRelatorios() {
 
         const datasArray: string[] = Array.from(datasUnicas).sort();
         setDatasUnic(datasArray);
-        console.log('datasUnic', datasUnic)
         // Fim do get for datas unicas para o THeader
 
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
 
         setGroupedForCell(dataGroupedForCell);
-        const celulaBetel = dataGroupedForCell["Betel"];
-        if (celulaBetel) {
-          console.log('Celula Betel', celulaBetel);
-        }
-        console.log('Dados por Celula', groupedForCell);
-
       }
 
       if (presencaGeralCultos && dateCultoData && presencaGeralCultos?.length > 0) {
@@ -133,27 +133,12 @@ export default function StatsCardRelatorios() {
         setIdCultos(sortedIds);
         idCultos && console.log('IDS: ', idCultos);
       }
-    } catch (error) {
-      console.log('Erro ao buscar o relatório:', error);
-    }
-  };
 
-  const handlePresenceCulto: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
-    try {
-      setIsLoadingSubmitForm(true)
-
-      dayjs(startDate).tz("America/Sao_Paulo").toISOString();
-      dayjs(endDate).tz("America/Sao_Paulo").toISOString();
-
-      const { data } = await axiosAuth.post(URLRelatorioPresenceCulto, {
-        superVisionId,
-        startDate,
-        endDate
-      });
-      const relatorio: PresencaForDate[] = Object.values(data);
+      // Inicio do Trecho que busca os dados do Relatorio por data
+      const relatorio: PresencaForDate[] = Object.values(relatorioData);
 
       if (!relatorio) {
-        console.log('Erro na resposta da API:', data.statusText);
+        console.log('Erro na resposta da API:', relatorioData.statusText);
         return;
       }
       const dataGroupedForDateCulto: GroupedForCulto = groupDataByDateCulto(relatorio);
@@ -184,23 +169,18 @@ export default function StatsCardRelatorios() {
 
       setDateCultoData(dataGroupedForDateCulto)
 
+      setIsLoadingSubmitForm(false)
 
-      if (!dateCultoData) {
-        console.log('Ainda sem Date Cuto!');
-        return
-      }
-      setIsLoadingSubmitForm(false)
-      console.log(dateCultoData[0]);
     } catch (error) {
-      console.log('Erro ao buscar o relatório:', error);
       setIsLoadingSubmitForm(false)
+      console.log('Erro ao buscar o relatório:', error);
     }
   };
 
   const handleFunctions = (data: FormRelatorioSchema) => {
     handleRelatorio(data);
-    handlePresenceCulto(data);
   }
+
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForDateCulto: GroupedForCulto = {};
 
@@ -229,7 +209,6 @@ export default function StatsCardRelatorios() {
         grupos[cellName].push(person);
       }
     });
-
     return grupos;
   };
 
@@ -256,7 +235,7 @@ export default function StatsCardRelatorios() {
 
   return (
     <>
-      <div className='relative z-40 w-full bg-white rounded-sm'>
+      <div className='relative z-40 w-full p-2 bg-white rounded-sm'>
         <div className="px-3 mt-2 mb-3">
           <>
             <form onSubmit={handleSubmit(handleFunctions)}>
@@ -394,7 +373,6 @@ export default function StatsCardRelatorios() {
           </>
         </div>
         {/* Inicio Relatorio */}
-
         <div className={twMerge(`w-full text-center text-white`, newCorSupervisao)}>
           <div className='pt-2 pb-0'>
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
@@ -402,50 +380,50 @@ export default function StatsCardRelatorios() {
           {
             totalCultos && (
               <div className='pb-2 pl-2'>
-                <p className='p-2 font-bold uppercase text-start'>SUPERVISOR(ES): {Supervisor}</p>
+                <p className='p-2 font-medium uppercase text-start'>SUPERVISOR(ES): {Supervisor}</p>
               </div>
             )
           }
-          <div className='flex items-center justify-between gap-1 pb-2 pl-2 text-black bg-slate-50'>
+          <div className='flex items-center justify-between gap-1 pb-2 pl-2 text-zinc-700 bg-slate-50'>
             {
               totalCultos && (
                 <div>
-                  <p className='p-2 font-bold uppercase text-start'>TOTAL DE CULTOS: {totalCultos}</p>
+                  <p className='p-2 uppercase text-start'>TOTAL DE CULTOS: {totalCultos}</p>
                 </div>
               )
             }
             {
               totalCultosPrimicias && (
                 <div>
-                  <p className='p-2 font-bold uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
+                  <p className='p-2 uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
                 </div>
               )
             }
             {
               totalCultosSacrificio && (
                 <div>
-                  <p className='p-2 font-bold uppercase text-start'>DOMINGO DE SACRIFÍCIO: {totalCultosSacrificio}</p>
+                  <p className='p-2 uppercase text-start'>DOMINGO DE SACRIFÍCIO: {totalCultosSacrificio}</p>
                 </div>
               )
             }
             <div>
               {totalCultosDomingoManha &&
-                <p className='p-2 font-bold uppercase text-start'>DOMINGO MANHÃ: {totalCultosDomingoManha}</p>
+                <p className='p-2 uppercase text-start'>DOMINGO MANHÃ: {totalCultosDomingoManha}</p>
               }
             </div>
             <div>
               {totalCultosDomingoTarde &&
-                <p className='p-2 font-bold uppercase text-start'>DOMINGO TARDE: {totalCultosDomingoTarde}</p>
+                <p className='p-2 uppercase text-start'>DOMINGO TARDE: {totalCultosDomingoTarde}</p>
               }
             </div>
             <div>
               {totalCultosSabado &&
-                <p className='p-2 font-bold uppercase text-start'>SÁBADO (CPD): {totalCultosSabado}</p>
+                <p className='p-2 uppercase text-start'>SÁBADO (CPD): {totalCultosSabado}</p>
               }
             </div>
             <div>
               {totalCultosQuarta &&
-                <p className='p-2 font-bold uppercase text-start'>CULTOS DE QUARTA: {totalCultosQuarta}</p>
+                <p className='p-2 uppercase text-start'>CULTOS DE QUARTA: {totalCultosQuarta}</p>
               }
             </div>
           </div>
@@ -461,14 +439,14 @@ export default function StatsCardRelatorios() {
                 <th className={twMerge(`p-2 mb-2`, 'w-1/5')}>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% PRES. TOTAL</h1>
                   </div>
                 </th>
                 {
                   totalCultosPrimicias && (
-                    <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                    <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>% PRIMICIAS</h1>
                       </div>
@@ -477,7 +455,7 @@ export default function StatsCardRelatorios() {
                 }
                 {
                   totalCultosSacrificio && (
-                    <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                    <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>% SACRIFICIO</h1>
                       </div>
@@ -486,22 +464,22 @@ export default function StatsCardRelatorios() {
                 }
 
 
-                <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% DOM M.</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% DOM T.</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% CPD</h1>
                   </div>
                 </th>
-                <th className='flex-col items-center justify-center h-20 p-2 text-black bg-white border w-14'>
+                <th className='flex-col items-center justify-center h-20 p-2 bg-white border text-zinc-700 w-14'>
                   <div>
                     <h1 className='font-bold text-center uppercase'>% QUARTA</h1>
                   </div>
