@@ -80,11 +80,6 @@ Para usar o aplicativo, siga estas etapas:
 2. Faça login com seu nome de usuário e senha.
 3. Use as funcionalidades do aplicativo conforme sua necessidade.
 
-## Outros detalhes
-
-* O aplicativo está documentado em Documentação: docs/README.md.
-* Exemplos de uso do aplicativo estão disponíveis em Exemplos: examples/README.md.
-
 ## Créditos
 
 * [[Wellington Nadson]]
@@ -93,7 +88,7 @@ Para usar o aplicativo, siga estas etapas:
 2. Entre na pasta do projeto:
 
 ```
-cd front-end-app-igreja-batista-betania
+cd app_web
 ```
 
 3. Instale as dependências:
