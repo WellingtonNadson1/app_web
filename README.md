@@ -49,13 +49,13 @@ Para instalar o aplicativo, siga estas etapas:
 
 1. Clone o repositório do GitHub:
 
-```git clone https://github.com/[seu-usuário]/front-end-app-igreja-batista-betania.git
+```git clone https://github.com/WellingtonNadson1/app_web.git
 ```
 
 2. Entre na pasta do projeto:
 
 ```
-cd front-end-app-igreja-batista-betania
+cd app_web
 ```
 
 3. Instale as dependências:
@@ -87,8 +87,7 @@ Para usar o aplicativo, siga estas etapas:
 
 ## Créditos
 
-* [[seu-nome]]
-* [Igreja Batista Betânia].git
+* [[Wellington Nadson]]
 ```
 
 2. Entre na pasta do projeto:
@@ -119,12 +118,6 @@ Para usar o aplicativo, siga estas etapas:
 2. Faça login com seu nome de usuário e senha.
 3. Use as funcionalidades do aplicativo conforme sua necessidade.
 
-## Outros detalhes
-
-* O aplicativo está documentado em Documentação: docs/README.md.
-* Exemplos de uso do aplicativo estão disponíveis em Exemplos: examples/README.md.
-
 ## Créditos
 
-* [[seu-nome]]
-* [Igreja Batista Betânia]
+* [Wellington Nadson]
