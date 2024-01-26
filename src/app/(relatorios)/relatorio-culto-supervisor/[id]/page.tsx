@@ -355,7 +355,7 @@ export default function StatsCardRelatoriosSupervisores() {
                           >
                             <div className="flex items-center h-6">
                               <input
-                                {...register('cargoLideranca')}
+                                {...register('cargoLideranca'), { required: true }}
                                 id={caargo.id}
                                 value={caargo.id}
                                 type="checkbox"
