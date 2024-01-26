@@ -348,26 +348,26 @@ export default function StatsCardRelatoriosSupervisores() {
 
                     <div className="flex items-center justify-between mt-4 gap-x-6">
                       {supervisoes ? (
-                        cargoLiderancaFilter?.map((caargo) => (
+                        cargoLiderancaFilter?.map((cargo) => (
                           <div
-                            key={caargo.id}
+                            key={cargo.id}
                             className="flex gap-x-3"
                           >
                             <div className="flex items-center h-6">
                               <input
                                 {...register('cargoLideranca'), { required: true }}
-                                id={caargo.id}
-                                value={caargo.id}
+                                id={cargo.id}
+                                value={cargo.id}
                                 type="checkbox"
                                 className="w-4 h-4 text-blue-600 border-gray-300 rounded shadow-sm focus:ring-blue-600"
                               />
                             </div>
                             <div className="text-sm leading-6">
                               <label
-                                htmlFor={caargo.id}
+                                htmlFor={cargo.id}
                                 className="font-medium text-slate-700"
                               >
-                                {caargo.nome}
+                                {cargo.nome}
                               </label>
                             </div>
                           </div>
