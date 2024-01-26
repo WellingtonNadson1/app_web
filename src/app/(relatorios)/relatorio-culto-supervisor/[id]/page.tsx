@@ -26,13 +26,13 @@ export default function StatsCardRelatoriosSupervisores() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
-  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  const URLSupervisoes = `http://localhost:3333/supervisoes`
+  // const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
+  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  // const URLSupervisoes = `http://localhost:3333/supervisoes`
 
-  // const URLSupervisoes = `${BASE_URL}/supervisoes`
-  // const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
-  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
