@@ -6,7 +6,7 @@ import { useSession } from 'next-auth/react'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { useQuery } from '@tanstack/react-query'
 
-function FormRelatorioSupervisor() {
+function FormRelatorio() {
   const { data: session } = useSession()
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
@@ -220,4 +220,4 @@ function FormRelatorioSupervisor() {
   )
 }
 
-export default FormRelatorioSupervisor
+export default FormRelatorio

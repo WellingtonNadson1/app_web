@@ -1,4 +1,3 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
+  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
 }

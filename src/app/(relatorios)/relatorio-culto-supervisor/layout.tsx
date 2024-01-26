@@ -1,6 +1,6 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import Header from '@/components/Header'
 import Sidebar from '@/components/sidebar/Sidebar'
+import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { Providers, ReactQueryProvider } from '@/providers/providers'
 import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
@@ -8,14 +8,14 @@ import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React, { Suspense } from 'react'
 import './globals.css'
-import { LoaderHeaderSupervisor } from './loading'
+import { LoaderHeader } from '@/app/(authenticed)/loading'
 
 export const metadata = {
   title: 'App IBB',
   description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
 }
 
-export default async function RootLayoutSupervisor({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
@@ -42,17 +42,12 @@ export default async function RootLayoutSupervisor({
           shadow="0 0 10px #fff,0 0 5px #fff"
         />
         <div className="overflow-x-auto overflow-y-auto">
-          <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
-          <div className="flex min-h-screen bg-slate-100">
+          <div className="absolute top-0 min-h-[18.75rem]"></div>
+          <div className="flex min-h-screen bg-white">
             <ReactQueryProvider>
               <Providers>
-                <Sidebar />
-                <div className="w-full px-2 py-2 mx-auto">
-                  <Suspense fallback={<LoaderHeaderSupervisor />}>
-                    <Header />
-                  </Suspense>
-                  {children}
-                </div>
+
+                {children}
               </Providers>
             </ReactQueryProvider>
           </div>

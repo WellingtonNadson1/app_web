@@ -34,11 +34,20 @@ export const PresencaForDateSchema = z.object({
     presencas_culto: PresencaCultoSchema.array(),
     culto_semana: z.object({
         nome: z.string()
-    })
+    }),
+    cultos: z.object({
+      totalCultosPrimicias: z.number(),
+      totalCultosQuarta: z.number(),
+      totalCultosSabado: z.number(),
+      totalCultosDomingoManha: z.number(),
+      totalCultosDomingoTarde: z.number(),
+      totalCultosPeriodo: z.number(),
+    }),
 })
 
 export const FormRelatorioDataSchema = z.object({
   superVisionId: z.string(),
+  cargoLideranca: z.string().array(),
   startDate: z.string(),
   endDate: z.string(),
 })
@@ -63,6 +72,22 @@ const MemberDataSchema = z.object({
   })
 })
 
+export interface CultoSemana {
+  id: string
+}
+
+export interface PresencaCulto {
+  data_inicio_culto: string
+  culto_semana: CultoSemana
+}
+
+export interface Relatorio {
+  status: boolean
+  cultoIndividualId: string
+  date_create: string
+  presenca_culto: PresencaCulto
+}
+
 export interface Pessoa {
   id: string;
   first_name: string;
@@ -73,11 +98,33 @@ export interface Pessoa {
     date_create: string;
     presenca_culto: {
       data_inicio_culto: string;
+      culto_semana: {
+        id: string
+      }
     }
   }[];
-  celula: {
-    id: string;
+  cargo_de_lideranca: {
     nome: string;
+  };
+  presencasFiltradas: {
+    status: boolean;
+    cultoIndividualId: string;
+    date_create: string;
+    presenca_culto: {
+        data_inicio_culto: string;
+        culto_semana: {
+            id: string;
+        };
+    };
+  }[],
+  cultos: {
+    porcentagemPresencaDomingoSacrificio: number,
+    porcentagemPresencaPrimicia: number,
+    porcentagemPresencaQuarta: number,
+    porcentagemPresencaSabado: number,
+    porcentagemPresencaTotal: number;
+    porcentagemPresencaTotalDomingoManha: number,
+    porcentagemPresencaTotalDomingoTarde: number,
   };
 }
 

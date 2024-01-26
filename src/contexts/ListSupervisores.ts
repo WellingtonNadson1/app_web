@@ -1,49 +1,24 @@
-export const ListSupervisores = (supervisao: string | null) => {
-  let supervisores = ''
-
-  switch (supervisao) {
-    case "Vermelha":
-      supervisores = "Ana Ceila"
-      break;
-    case "Azul":
-      supervisores = "Zedequias"
-      break;
-    case "Verde":
-      supervisores = "Alécio e Iraneide"
-      break;
-    case "Laranja":
-      supervisores = "Paulo e Patrícia"
-      break;
-    case "Amarela":
-      supervisores = "Carlos e Thaísa"
-      break;
-    default:
-      break;
-  }
+export const ListSupervisores = (supervisao: string) => {
+  const supervisores = {
+    vermelha:"Ana Ceila",
+    azul:"Zedequias",
+    verde:"Alécio e Iraneide",
+    laranja: "Paulo e Patrícia",
+    amarela: "Carlos e Thaísa",
+  } [supervisao] || "Falha ao carregar";
   return supervisores
 }
 
-export const CorSupervision = (corSupervisao: string | null) => {
-  let newCorSupervisao = ''
+export const CorSupervision = (corSupervisao: string) => {
+  const newCorSupervisao = {
+    // Mapeamento de cores para classes CSS
+    vermelha: "w-full bg-red-500 dark:bg-red-500",
+    azul: "w-full bg-blue-500 dark:bg-blue-500",
+    verde: "w-full bg-green-500 dark:bg-green-500",
+    laranja: "w-full bg-orange-500 dark:bg-orange-500",
+    amarela: "w-full bg-yellow-400 dark:bg-yellow-400",
+  }[corSupervisao] || "w-full bg-gray-200 dark:bg-gray-700"; // Valor padrão
 
-    switch (corSupervisao) {
-      case "Vermelha":
-        newCorSupervisao = "w-full bg-red-500 dark:bg-red-500 dark:text-gray-100"
-        break;
-      case "Azul":
-        newCorSupervisao = "w-full bg-blue-500 dark:bg-blue-500 dark:text-gray-100"
-        break;
-      case "Verde":
-        newCorSupervisao = "w-full bg-green-500 dark:bg-green-500 dark:text-gray-100"
-        break;
-      case "Laranja":
-        newCorSupervisao = "w-full bg-orange-500 dark:bg-orange-500 dark:text-gray-100"
-        break;
-      case "Amarela":
-        newCorSupervisao = "w-full bg-yellow-500 dark:bg-yellow-500 dark:text-gray-100"
-        break;
-      default:
-        break;
-    }
-    return newCorSupervisao
-}
+  return newCorSupervisao;
+};
+

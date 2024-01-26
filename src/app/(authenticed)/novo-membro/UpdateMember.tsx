@@ -39,10 +39,8 @@ function UpdateMember({
   const Members = async () => {
     try {
       if (!memberId) return {}
-
       const { data } = await axiosAuth.get(URLUsersId)
       return data
-
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data)

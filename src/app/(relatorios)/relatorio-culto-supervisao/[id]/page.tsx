@@ -7,13 +7,13 @@ import React, { useEffect, useState } from 'react'
 import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
-import { twMerge } from 'tailwind-merge'
 import localizedFormat from 'dayjs/plugin/localizedFormat'
 import { FormRelatorioSchema, GroupedForCulto, ISupervisoes, Pessoa, PresencaForDate } from './schema'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
 import Image from 'next/image'
+import { cn } from '@/lib/utils'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -24,17 +24,17 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  // const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
-  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLSupervisoes = `http://localhost:3333/supervisoes`
+  const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  const URLSupervisoes = `http://localhost:3333/supervisoes`
 
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  // const URLSupervisoes = `${BASE_URL}/supervisoes`
+  // const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
-  const [corSupervisao, setCorSupervisao] = useState<string | null>(null);
+  const [corSupervisao, setCorSupervisao] = useState<string>('');
   const [idCultos, setIdCultos] = useState<string[] | undefined>()
   const [datasUnic, setDatasUnic] = useState<string[] | undefined>()
   const [numberOfRowsCell, setNumberOfRowsCell] = useState<number[] | undefined>();
@@ -373,7 +373,7 @@ export default function StatsCardRelatorios() {
           </>
         </div>
         {/* Inicio Relatorio */}
-        <div className={twMerge(`text-center text-white`, newCorSupervisao)}>
+        <div className={cn(`text-center text-white`, `${newCorSupervisao}`)}>
           <div className='pt-2 pb-0'>
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
           </div>
@@ -430,9 +430,9 @@ export default function StatsCardRelatorios() {
         </div>
         <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
           {/* Cabeçalho da tabela */}
-          <thead className={twMerge(`p-2 text-center text-white`, newCorSupervisao)}>
+          <thead className={cn(`p-2 text-center text-white`, `${newCorSupervisao}`)}>
             <>
-              <tr className={twMerge(`mx-4 p-2`, newCorSupervisao)}>
+              <tr className={cn(`mx-4 p-2`, `${newCorSupervisao}`)}>
                 <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
                 </th>
@@ -449,7 +449,7 @@ export default function StatsCardRelatorios() {
                     <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>%</h1>
-                        <h1 className='font-bold text-center uppercase'>PRIMICIAS</h1>
+                        <h1 className='font-bold text-center uppercase'>PRIMI.</h1>
                       </div>
                     </th>
                   )
@@ -459,7 +459,7 @@ export default function StatsCardRelatorios() {
                     <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>%</h1>
-                        <h1 className='font-bold text-center uppercase'>SACRIFICIO</h1>
+                        <h1 className='font-bold text-center uppercase'>SACRIFI.</h1>
                       </div>
                     </th>
                   )

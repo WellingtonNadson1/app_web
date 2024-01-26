@@ -1,5 +1,6 @@
 'use client'
 import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
+import ListMembersDiscipulados from '@/components/listMembersDicipulados'
 import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
@@ -62,7 +63,7 @@ export default function ControleCelulaSupervision({
       </div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
         {isSuccess &&
-          <ListMembersCelula data={celula} />
+          <ListMembersDiscipulados data={celula} />
         }
       </div>
       {/* <div className="relative w-full px-2 mx-auto mb-4">

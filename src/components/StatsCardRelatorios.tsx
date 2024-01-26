@@ -115,7 +115,7 @@ export default function StatsCardRelatorios() {
 
   const handleRelatorio = async () => {
     try {
-    handlePresenceCulto();
+      handlePresenceCulto();
 
       const response = await axiosAuth.get(URLRelatorioSupervision);
       const relatorio: MemberData[] = response.data;
@@ -169,7 +169,7 @@ export default function StatsCardRelatorios() {
       supervisor: 'Supervisores',
       icon: GraduationCap,
       color: 'bg-[#1e3a8a]',
-      href: "/relatorio-culto-supervisor"
+      href: "/relatorio-culto-supervisor/2a9cbf21-4def-4ba7-9909-104b874ed896"
     },
     {
       title: 'Registro',
@@ -180,32 +180,32 @@ export default function StatsCardRelatorios() {
     },
   ]
   return (
-      <div className="relative z-10 w-full py-2 mx-auto">
-        <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
-          {escolasIbb.map((stat) => (
-            <Link key={stat.title} href={stat.href}>
-              <div
-                className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
-              >
-                <div className="flex items-center justify-between w-full">
-                  <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
-                    {stat.title}
-                  </div>
-                  <div
-                    className={`rounded-full ${stat.color} p-2 drop-shadow-md`}
-                  >
-                    <stat.icon width={24} height={24} color="#fff" />
-                  </div>
+    <div className="relative z-10 w-full py-2 mx-auto">
+      <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
+        {escolasIbb.map((stat) => (
+          <Link key={stat.title} href={stat.href}>
+            <div
+              className={`flex-warp relative w-full cursor-pointer flex-col rounded-lg bg-white p-4 shadow-md hover:bg-white/95`}
+            >
+              <div className="flex items-center justify-between w-full">
+                <div className="mb-0 font-sans text-sm font-semibold leading-normal uppercase">
+                  {stat.title}
                 </div>
-                <div className="flex items-center">
-                  <span className="text-lg font-semibold">
-                    {stat.supervisor}
-                  </span>
+                <div
+                  className={`rounded-full ${stat.color} p-2 drop-shadow-md`}
+                >
+                  <stat.icon width={24} height={24} color="#fff" />
                 </div>
               </div>
-            </Link>
-          ))}
-          </div>
-        </div>
+              <div className="flex items-center">
+                <span className="text-lg font-semibold">
+                  {stat.supervisor}
+                </span>
+              </div>
+            </div>
+          </Link>
+        ))}
+      </div>
+    </div>
   )
 }

@@ -18,9 +18,8 @@ export default function Sidebar() {
   return (
     <div className="shadow">
       <aside
-        className={`relative h-full ${
-          open ? 'w-48' : 'w-[4.8rem]'
-        } bg-white px-4  py-6 duration-500`}
+        className={`relative h-full ${open ? 'w-48' : 'w-[4.8rem]'
+          } bg-white px-4  py-6 duration-500`}
       >
         <Image
           src="/images/logo-ibb-1.svg"
@@ -28,20 +27,17 @@ export default function Sidebar() {
           width={54}
           height={54}
           alt="logo ibb"
-          className={`cursor-pointer ${
-            !open ? 'mx-auto' : 'mx-2'
-          } transition-all duration-200`}
+          className={`cursor-pointer ${!open ? 'mx-auto' : 'mx-2'
+            } transition-all duration-200`}
         />
         <div
-          className={`absolute top-[3.8rem] z-50 flex cursor-pointer justify-end rounded-full border border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${
-            open ? 'ml-[10.2rem]' : 'ml-[3.04rem] rotate-45'
-          } `}
+          className={`absolute top-[3.8rem] z-50 flex cursor-pointer justify-end rounded-full border border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[10.2rem]' : 'ml-[3.04rem] rotate-45'
+            } `}
           onClick={() => setOpen(!open)}
         >
           <X
-            className={`${
-              !open ? 'mx-auto' : 'justify-end'
-            } transition-all duration-200`}
+            className={`${!open ? 'mx-auto' : 'justify-end'
+              } transition-all duration-200`}
             size={14}
           />
         </div>
@@ -66,16 +62,14 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && 'translate-x-28 overflow-hidden opacity-0'
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && 'hidden'
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
@@ -99,16 +93,14 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && 'translate-x-28 overflow-hidden opacity-0'
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && 'hidden'
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
@@ -132,29 +124,27 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && 'translate-x-28 overflow-hidden opacity-0'
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && 'hidden'
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
                 </li>
               ))
             ) :
-             (
-              <div></div>
-            )}
+              (
+                <div></div>
+              )}
           </ul>
         ) : (
           <div className='mt-7'>
-            <SpinnerButton message={''}/>
+            <SpinnerButton message={''} />
           </div>
         )}
 
@@ -171,16 +161,14 @@ export default function Sidebar() {
                 size={`${open ? 24 : 26}`}
               />
               <span
-                className={`whitespace-pre duration-150 ${
-                  !open && 'translate-x-28 overflow-hidden opacity-0'
-                }`}
+                className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                  }`}
               >
                 Sair
               </span>
               <span
-                className={`${
-                  open && 'hidden'
-                } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                className={`${open && 'hidden'
+                  } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
               >
                 Sair
               </span>
@@ -188,7 +176,7 @@ export default function Sidebar() {
           </ul>
         ) : (
           <div className='mt-[21rem]'>
-            <SpinnerButton message={''}/>
+            <SpinnerButton message={''} />
           </div>
         )}
       </aside>
