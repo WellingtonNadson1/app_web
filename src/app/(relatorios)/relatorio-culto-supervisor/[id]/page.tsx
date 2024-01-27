@@ -25,13 +25,13 @@ export default function StatsCardRelatoriosSupervisores() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
-  const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  const URLSupervisoes = `http://localhost:3333/supervisoes`
+  // const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
+  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
+  // const URLSupervisoes = `http://localhost:3333/supervisoes`
 
-  // const URLSupervisoes = `${BASE_URL}/supervisoes`
-  // const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
-  // const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
+  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
@@ -283,7 +283,7 @@ export default function StatsCardRelatoriosSupervisores() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('startDate')}
+                            {...register('startDate', { required: true })}
                             type="datetime-local"
                             name="startDate"
                             id="startDate"
@@ -301,7 +301,7 @@ export default function StatsCardRelatoriosSupervisores() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('endDate')}
+                            {...register('endDate', { required: true })}
                             type="datetime-local"
                             name="endDate"
                             id="endDate"
@@ -320,7 +320,7 @@ export default function StatsCardRelatoriosSupervisores() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register('superVisionId')}
+                            {...register('superVisionId', { required: true })}
                             id="superVisionId"
                             name="superVisionId"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"

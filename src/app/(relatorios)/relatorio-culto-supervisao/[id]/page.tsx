@@ -267,7 +267,7 @@ export default function StatsCardRelatorios() {
                     </label>
                     <div className="mt-3">
                       <input
-                        {...register('startDate')}
+                        {...register('startDate', { required: true })}
                         type="datetime-local"
                         name="startDate"
                         id="startDate"
@@ -285,7 +285,7 @@ export default function StatsCardRelatorios() {
                     </label>
                     <div className="mt-3">
                       <input
-                        {...register('endDate')}
+                        {...register('endDate', { required: true })}
                         type="datetime-local"
                         name="endDate"
                         id="endDate"
@@ -304,7 +304,7 @@ export default function StatsCardRelatorios() {
                     </label>
                     <div className="mt-3">
                       <select
-                        {...register('superVisionId')}
+                        {...register('superVisionId', { required: true })}
                         id="superVisionId"
                         name="superVisionId"
                         className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
