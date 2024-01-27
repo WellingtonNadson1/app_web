@@ -14,10 +14,10 @@ export const CorSupervision = (corSupervisao: string) => {
     // Mapeamento de cores para classes CSS
     vermelha: "w-full bg-red-500 dark:bg-red-500",
     azul: "w-full bg-blue-500 dark:bg-blue-500",
+    amarela: "w-full bg-yellow-500 dark:bg-yellow-500",
     verde: "w-full bg-green-500 dark:bg-green-500",
     laranja: "w-full bg-orange-500 dark:bg-orange-500",
-    amarela: "w-full bg-yellow-400 dark:bg-yellow-400",
-  }[corSupervisao] || "w-full bg-gray-200 dark:bg-gray-700"; // Valor padrão
+  }[corSupervisao] || "w-full bg-gray-400 dark:bg-gray-400"; // Valor padrão
 
   return newCorSupervisao;
 };

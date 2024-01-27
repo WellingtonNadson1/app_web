@@ -3,7 +3,7 @@ import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
-import React, { useEffect, useState } from 'react'
+import React, { Fragment, useEffect, useState } from 'react'
 import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
@@ -234,10 +234,10 @@ export default function StatsCardRelatorios() {
   }
 
   return (
-    <>
+    <Fragment>
       <div className='relative z-40 p-2 bg-white rounded-sm'>
         <div className="px-3 mt-2 mb-3">
-          <>
+          <Fragment>
             <form onSubmit={handleSubmit(handleFunctions)}>
               <div className="p-3">
                 <div className='flex items-center justify-start gap-4'>
@@ -370,7 +370,7 @@ export default function StatsCardRelatorios() {
                 </div>
               </div>
             </form>
-          </>
+          </Fragment>
         </div>
         {/* Inicio Relatorio */}
         <div className={cn(`text-center text-white`, `${newCorSupervisao}`)}>
@@ -378,52 +378,80 @@ export default function StatsCardRelatorios() {
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
           </div>
           {
-            totalCultos && (
+            totalCultos ? (
               <div className='pb-2 pl-2'>
-                <p className='p-2 font-medium uppercase text-start'>SUPERVISOR(ES): {Supervisor}</p>
+                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>{Supervisor}</span></p>
+              </div>
+            ) : (
+              <div className='pb-2 pl-2'>
+                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>Sem Dados</span></p>
               </div>
             )
           }
           <div className='flex items-center justify-between gap-1 pb-2 pl-2 text-zinc-700 bg-slate-50'>
             {
-              totalCultos && (
+              totalCultos ? (
                 <div>
-                  <p className='p-2 uppercase text-start'>TOTAL DE CULTOS: {totalCultos}</p>
+                  <p className='p-2 text-base font-bold uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>{totalCultos}</span></p>
+                </div>
+              ) : (
+                <div>
+                  <p className='p-2 text-base font-bold uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>Sem Registro</span></p>
                 </div>
               )
             }
             {
-              totalCultosPrimicias && (
+              totalCultosPrimicias ? (
                 <div>
+                  <p className='p-2 uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
+                </div>
+              ) : (
+                <div className='hidden'>
                   <p className='p-2 uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
                 </div>
               )
             }
             {
-              totalCultosSacrificio && (
+              totalCultosSacrificio ? (
                 <div>
                   <p className='p-2 uppercase text-start'>DOMINGO DE SACRIFÍCIO: {totalCultosSacrificio}</p>
+                </div>
+              ) : (
+                <div className='hidden'>
+                  <p className='p-2 uppercase text-start'>DOMINGO DE SACRIFÍCIO: Sem Registro</p>
                 </div>
               )
             }
             <div>
-              {totalCultosDomingoManha &&
+              {totalCultosDomingoManha ? (
                 <p className='p-2 uppercase text-start'>DOMINGO MANHÃ: {totalCultosDomingoManha}</p>
+              ) : (
+                <p className='p-2 uppercase text-start'>DOMINGO MANHÃ: Sem Registro</p>
+              )
               }
             </div>
             <div>
-              {totalCultosDomingoTarde &&
+              {totalCultosDomingoTarde ? (
                 <p className='p-2 uppercase text-start'>DOMINGO TARDE: {totalCultosDomingoTarde}</p>
+              ) : (
+                <p className='p-2 uppercase text-start'>DOMINGO TARDE: Sem Registro</p>
+              )
               }
             </div>
             <div>
-              {totalCultosSabado &&
+              {totalCultosSabado ? (
                 <p className='p-2 uppercase text-start'>SÁBADO (CPD): {totalCultosSabado}</p>
+              ) : (
+                <p className='p-2 uppercase text-start'>SÁBADO (CPD): Sem Registro</p>
+              )
               }
             </div>
             <div>
-              {totalCultosQuarta &&
+              {totalCultosQuarta ? (
                 <p className='p-2 uppercase text-start'>CULTOS DE QUARTA: {totalCultosQuarta}</p>
+              ) : (
+                <p className='p-2 uppercase text-start'>CULTOS DE QUARTA: Sem Registro</p>
+              )
               }
             </div>
           </div>
@@ -431,7 +459,7 @@ export default function StatsCardRelatorios() {
         <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
           {/* Cabeçalho da tabela */}
           <thead className={cn(`p-2 text-center text-white`, `${newCorSupervisao}`)}>
-            <>
+            <Fragment>
               <tr className={cn(`mx-4 p-2`, `${newCorSupervisao}`)}>
                 <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
@@ -445,23 +473,27 @@ export default function StatsCardRelatorios() {
                   </div>
                 </th>
                 {
-                  totalCultosPrimicias && (
+                  totalCultosPrimicias ? (
                     <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>%</h1>
                         <h1 className='font-bold text-center uppercase'>PRIMI.</h1>
                       </div>
                     </th>
+                  ) : (
+                    <th className='hidden'></th>
                   )
                 }
                 {
-                  totalCultosSacrificio && (
+                  totalCultosSacrificio ? (
                     <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                       <div>
                         <h1 className='font-bold text-center uppercase'>%</h1>
                         <h1 className='font-bold text-center uppercase'>SACRIFI.</h1>
                       </div>
                     </th>
+                  ) : (
+                    <th className='hidden'></th>
                   )
                 }
                 <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
@@ -499,7 +531,7 @@ export default function StatsCardRelatorios() {
                   ))
                 }
               </tr>
-            </>
+            </Fragment>
           </thead>
           <tbody>
             {groupedForCell && idCultos &&
@@ -610,14 +642,14 @@ export default function StatsCardRelatorios() {
                         return (
                           <div className='flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200' key={cultoId + indexMember}>
                             {presenceCulto ? (
-                              <>
+                              <Fragment>
                                 {presenceCulto.status === true && (
                                   <p className='text-green-600'>P</p>
                                 )}
                                 {presenceCulto.status === false && (
                                   <p className='text-red-600'>F</p>
                                 )}
-                              </>
+                              </Fragment>
                             ) : (
                               <p key={indexMember}>
                                 <p className='font-normal text-slate-600'>-</p>
@@ -633,6 +665,6 @@ export default function StatsCardRelatorios() {
           </tbody>
         </table>
       </div>
-    </>
+    </Fragment>
   )
 }
