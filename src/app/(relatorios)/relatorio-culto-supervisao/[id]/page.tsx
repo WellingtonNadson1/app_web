@@ -14,6 +14,8 @@ import { useQuery } from '@tanstack/react-query'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
 import Image from 'next/image'
 import { cn } from '@/lib/utils'
+import { useCombinetedStore } from '@/store/DataCombineted'
+import Link from 'next/link'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -49,15 +51,7 @@ export default function StatsCardRelatorios() {
   const [totalCultosDomingoManha, setTotalCultosDomingoManha] = useState<number>(0)
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] = useState<number>(0)
 
-  const DataSupervisoes = async () => {
-    const { data } = await axiosAuth.get(URLSupervisoes)
-    return data
-  }
-
-  const { data: supervisoes, isLoading } = useQuery<ISupervisoes[]>({
-    queryKey: ["supervisoes"],
-    queryFn: DataSupervisoes,
-  })
+  const { supervisoes } = useCombinetedStore.getState().state
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
     try {
@@ -213,6 +207,7 @@ export default function StatsCardRelatorios() {
   };
 
   const newCorSupervisao = CorSupervision(corSupervisao)
+  console.log('newCorSupervisao', newCorSupervisao)
   const Supervisor = ListSupervisores(corSupervisao)
 
   useEffect(() => {
@@ -241,12 +236,14 @@ export default function StatsCardRelatorios() {
             <form onSubmit={handleSubmit(handleFunctions)}>
               <div className="p-3">
                 <div className='flex items-center justify-start gap-4'>
-                  <Image
-                    src="/images/logo-ibb-1.svg"
-                    width={62}
-                    height={64}
-                    alt="Logo IBB"
-                  />
+                  <Link href={'/dashboard'}>
+                    <Image
+                      src="/images/logo-ibb-1.svg"
+                      width={62}
+                      height={64}
+                      alt="Logo IBB"
+                    />
+                  </Link>
                   <div>
                     <h1 className="text-base leading-normal text-gray-600 uppercase">
                       Igreja Batista Betânia - Lugar do derramar de Deus
@@ -310,7 +307,7 @@ export default function StatsCardRelatorios() {
                         className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         onChange={handleSupervisaoSelecionada}
                       >
-                        {isLoading ? (
+                        {!supervisoes ? (
                           <option value="">Carregando supervisões...</option>
                         ) : (
                           <option value="">
@@ -336,7 +333,7 @@ export default function StatsCardRelatorios() {
                           className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                         >
                           <svg
-                            className="w-5 h-5 mr-3 text-gray-400 animate-spin"
+                            className="w-5 h-5 mr-3 text-white animate-spin"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -380,7 +377,7 @@ export default function StatsCardRelatorios() {
           {
             totalCultos ? (
               <div className='pb-2 pl-2'>
-                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>{Supervisor}</span></p>
+                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal'>{Supervisor}</span></p>
               </div>
             ) : (
               <div className='pb-2 pl-2'>
@@ -388,33 +385,32 @@ export default function StatsCardRelatorios() {
               </div>
             )
           }
-          <div className='flex items-center justify-between gap-1 pb-2 pl-2 text-zinc-700 bg-slate-50'>
+          <div className='flex items-center justify-between gap-2 pb-2 pl-2 text-zinc-700 bg-slate-50'>
             {
               totalCultos ? (
                 <div>
-                  <p className='p-2 text-base font-bold uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>{totalCultos}</span></p>
+                  <p className='p-2 text-base font-medium uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>{totalCultos}</span></p>
                 </div>
               ) : (
                 <div>
-                  <p className='p-2 text-base font-bold uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>Sem Registro</span></p>
+                  <p className='p-2 text-base font-medium uppercase text-start'>TOTAL DE CULTOS: <span className='font-normal '>Sem Registro</span></p>
                 </div>
               )
             }
             {
               totalCultosPrimicias ? (
                 <div>
-                  <p className='p-2 uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
+                  <p className='p-2 font-medium uppercase text-start'>CULTOS DE PRIMÍCIAS: <span className='font-normal'>{totalCultosPrimicias}</span></p>
                 </div>
               ) : (
                 <div className='hidden'>
-                  <p className='p-2 uppercase text-start'>CULTOS DE PRIMÍCIAS: {totalCultosPrimicias}</p>
                 </div>
               )
             }
             {
               totalCultosSacrificio ? (
                 <div>
-                  <p className='p-2 uppercase text-start'>DOMINGO DE SACRIFÍCIO: {totalCultosSacrificio}</p>
+                  <p className='p-2 font-medium uppercase text-start'>DOMINGO DE SACRIFÍCIO: <span className='font-normal'>{totalCultosSacrificio}</span></p>
                 </div>
               ) : (
                 <div className='hidden'>
@@ -424,33 +420,33 @@ export default function StatsCardRelatorios() {
             }
             <div>
               {totalCultosDomingoManha ? (
-                <p className='p-2 uppercase text-start'>DOMINGO MANHÃ: {totalCultosDomingoManha}</p>
+                <p className='p-2 font-medium uppercase text-start'>DOMINGO MANHÃ: <span className='font-normal'>{totalCultosDomingoManha}</span></p>
               ) : (
-                <p className='p-2 uppercase text-start'>DOMINGO MANHÃ: Sem Registro</p>
+                <p className='p-2 font-medium uppercase text-start'>DOMINGO MANHÃ: <span className='font-normal'>Sem Registro</span></p>
               )
               }
             </div>
             <div>
               {totalCultosDomingoTarde ? (
-                <p className='p-2 uppercase text-start'>DOMINGO TARDE: {totalCultosDomingoTarde}</p>
+                <p className='p-2 font-medium uppercase text-start'>DOMINGO TARDE: <span className='font-normal'>{totalCultosDomingoTarde}</span></p>
               ) : (
-                <p className='p-2 uppercase text-start'>DOMINGO TARDE: Sem Registro</p>
+                <p className='p-2 font-medium uppercase text-start'>DOMINGO TARDE: <span className='font-normal'>Sem Registro</span></p>
               )
               }
             </div>
             <div>
               {totalCultosSabado ? (
-                <p className='p-2 uppercase text-start'>SÁBADO (CPD): {totalCultosSabado}</p>
+                <p className='p-2 font-medium uppercase text-start'>SÁBADO (CPD): <span className='font-normal'>{totalCultosSabado}</span></p>
               ) : (
-                <p className='p-2 uppercase text-start'>SÁBADO (CPD): Sem Registro</p>
+                <p className='p-2 font-medium uppercase text-start'>SÁBADO (CPD): <span className='font-normal'>Sem Registro</span></p>
               )
               }
             </div>
             <div>
               {totalCultosQuarta ? (
-                <p className='p-2 uppercase text-start'>CULTOS DE QUARTA: {totalCultosQuarta}</p>
+                <p className='p-2 font-medium uppercase text-start'>CULTOS DE QUARTA: <span className='font-normal'>{totalCultosQuarta}</span></p>
               ) : (
-                <p className='p-2 uppercase text-start'>CULTOS DE QUARTA: Sem Registro</p>
+                <p className='p-2 font-medium uppercase text-start'>CULTOS DE QUARTA: <span className='font-normal'>Sem Registro</span></p>
               )
               }
             </div>
@@ -458,9 +454,9 @@ export default function StatsCardRelatorios() {
         </div>
         <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
           {/* Cabeçalho da tabela */}
-          <thead className={cn(`p-2 text-center text-white`, `${newCorSupervisao}`)}>
+          <thead className={cn(`p-2 text-center`, `${newCorSupervisao}`)}>
             <Fragment>
-              <tr className={cn(`mx-4 p-2`, `${newCorSupervisao}`)}>
+              <tr className={`mx-4 p-2`}>
                 <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULAS</h1>
                 </th>
@@ -540,8 +536,8 @@ export default function StatsCardRelatorios() {
                   {/* Coluna fixa */}
                   <td className='px-4 bg-gray-50'>
                     <p className='text-base font-medium text-black'>{cellName}</p>
-                    <p className='text-sm text-slate-600'>
-                      Líder: <span>{groupedForCell[cellName][0].celula.lider.first_name}</span>
+                    <p className='text-sm font-medium text-slate-600'>
+                      Líder: <span className='font-normal'>{groupedForCell[cellName][0].celula.lider.first_name}</span>
                     </p>
                     <p className='text-sm text-slate-600'>
                       Membros: <span>{groupedForCell[cellName].length}</span>

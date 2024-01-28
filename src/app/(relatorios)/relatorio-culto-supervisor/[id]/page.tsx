@@ -8,13 +8,13 @@ import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { FormRelatorioSchema, GroupedForCulto, ISupervisoes, Pessoa, PresencaForDate } from './schema'
+import { FormRelatorioSchema, GroupedForCulto, Pessoa, PresencaForDate } from './schema'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import { useQuery } from '@tanstack/react-query'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
 import Image from 'next/image'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { cn } from '@/lib/utils'
+import Link from 'next/link'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -50,12 +50,7 @@ export default function StatsCardRelatoriosSupervisores() {
   const [totalCultosDomingoManha, setTotalCultosDomingoManha] = useState<number>(0)
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] = useState<number>(0)
 
-  // const DataSupervisoes = async () => {
-  //   const { data } = await axiosAuth.get(URLSupervisoes)
-  //   return data
-  // }
-
-  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
+  const { supervisoes, cargoLideranca } = useCombinetedStore.getState().state
 
   const cargoLiderancaFilter = cargoLideranca.filter(cargo =>
     cargo.nome !== "Pastor" &&
@@ -64,10 +59,6 @@ export default function StatsCardRelatoriosSupervisores() {
     cargo.nome !== "Líder Auxiliar" &&
     cargo.nome !== "Líder de Célula Supervisor"
   )
-  // const { data: supervisoes, isLoading } = useQuery<ISupervisoes[]>({
-  //   queryKey: ["supervisoes"],
-  //   queryFn: DataSupervisoes,
-  // })
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId, cargoLideranca }) => {
     try {
@@ -255,12 +246,14 @@ export default function StatsCardRelatoriosSupervisores() {
             <form onSubmit={handleSubmit(handleFunctions)}>
               <div className="flex flex-col gap-4 p-3">
                 <div className='flex items-center justify-start gap-4'>
-                  <Image
-                    src="/images/logo-ibb-1.svg"
-                    width={62}
-                    height={64}
-                    alt="Logo IBB"
-                  />
+                  <Link href={'/dashboard'}>
+                    <Image
+                      src="/images/logo-ibb-1.svg"
+                      width={62}
+                      height={64}
+                      alt="Logo IBB"
+                    />
+                  </Link>
                   <div>
                     <h1 className="text-base leading-normal text-gray-600 uppercase">
                       Igreja Batista Betânia - Lugar do derramar de Deus
@@ -386,7 +379,7 @@ export default function StatsCardRelatoriosSupervisores() {
                           className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                         >
                           <svg
-                            className="w-5 h-5 mr-3 text-gray-400 animate-spin"
+                            className="w-5 h-5 mr-3 text-white animate-spin"
                             xmlns="http://www.w3.org/2000/svg"
                             fill="none"
                             viewBox="0 0 24 24"
@@ -508,7 +501,7 @@ export default function StatsCardRelatoriosSupervisores() {
           {/* Cabeçalho da tabela */}
           <thead className={cn(`p-2 text-center text-white`, newCorSupervisao)}>
             <Fragment>
-              <tr className={cn(`mx-4 p-2`, newCorSupervisao)}>
+              <tr className={`mx-4 p-2`}>
                 <th>
                   <h1 className='p-2 font-bold text-center text-white uppercase'>TIPO</h1>
                 </th>

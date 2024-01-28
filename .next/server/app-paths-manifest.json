@@ -1,4 +1,7 @@
 {
+  "/(authenticed)/page": "app/(authenticed)/page.js",
+  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
   "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js"
+  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
 }

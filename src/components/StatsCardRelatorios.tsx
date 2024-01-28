@@ -1,181 +1,42 @@
 'use client'
-import { GroupedForCulto, PresencaForDate } from '@/app/(relatorios)/relatorio-culto-supervisao/[id]/schema'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
 import {
   GraduationCap,
   HandHeart,
   Users,
   UsersFour,
 } from '@phosphor-icons/react'
-import { useSession } from 'next-auth/react'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
-
-type MemberData = {
-  id: string;
-  first_name: string;
-  last_name: string;
-  presencas_cultos: {
-    status: boolean;
-    cultoIndividualId: string;
-    date_create: string;
-  }[];
-  celula: {
-    nome: string;
-  };
-};
-
-type GroupedData = Record<string, MemberData[]>;
 
 export default function StatsCardRelatorios() {
-  const { data: session } = useSession()
-  // eslint-disable-next-line no-unused-vars
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const URLRelatorioSupervision = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
-  const [celula, setCelula] = useState<GroupedForCulto | null>(null);
-  const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(null);
-
-
-
-
-  const [groupedData, setGroupedData] = useState<GroupedData | null>(null); // Estado para os dados agrupados
-  const [celulas, setCelulas] = useState<GroupedData>(); // Estado para os dados agrupados
-
-  const handlePresenceCulto = async () => {
-    let startDate: string, endDate: string, superVisionId: string
-    try {
-      const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
-        startDate: "2023-10-01T00:00:00.000Z",
-        endDate: "2023-10-19T00:00:00.000Z",
-        superVisionId: "5e392d1b-f425-4865-a730-5191bc0821cd"
-      });
-      const relatorio: PresencaForDate[] = response.data;
-
-      if (!relatorio) {
-        console.log('Erro na resposta da API:', response.statusText);
-        return;
-      }
-
-      const dataGroupedForCulto: GroupedForCulto = groupDataByCulto(relatorio);
-
-      setCelula(dataGroupedForCulto)
-
-      const dataGroupedForDateCulto: GroupedForCulto = groupDataByDateCulto(relatorio);
-      setDateCultoData(dataGroupedForDateCulto)
-
-      console.log('Data dataGroupedForCulto: ', dataGroupedForCulto)
-      console.log('Data dataGroupedForDateCulto: ', dataGroupedForDateCulto)
-
-      if (!dateCultoData) {
-        console.log('Ainda sem Date Cuto!');
-        return
-      }
-      console.log(dateCultoData[0]);
-    } catch (error) {
-      console.log('Erro ao buscar o relatório:', error);
-    }
-  };
-
-  const groupDataByCulto = (relatorio: PresencaForDate[]) => {
-    const groupedDataForCell: GroupedForCulto = {};
-
-    relatorio.forEach(entry => {
-      const celulaId = entry.presencas_culto[0]?.membro.celula.id;
-      if (celulaId) {
-        if (!groupedDataForCell[celulaId]) {
-          groupedDataForCell[celulaId] = [];
-        }
-        groupedDataForCell[celulaId].push(entry);
-      }
-    });
-    return groupedDataForCell;
-  };
-
-  const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
-    const groupedDataForDateCulto: GroupedForCulto = {};
-
-    relatorio.forEach(entry => {
-      const dateCultoId = entry.data_inicio_culto
-      if (dateCultoId) {
-        if (!groupedDataForDateCulto[dateCultoId]) {
-          groupedDataForDateCulto[dateCultoId] = [];
-        }
-        groupedDataForDateCulto[dateCultoId].push(entry);
-      }
-    });
-    return groupedDataForDateCulto;
-  };
-
-  useEffect(() => {
-    handleRelatorio();
-    handlePresenceCulto();
-  }, []);
-
-  const handleRelatorio = async () => {
-    try {
-      handlePresenceCulto();
-
-      const response = await axiosAuth.get(URLRelatorioSupervision);
-      const relatorio: MemberData[] = response.data;
-
-      if (!relatorio) {
-        console.log('Erro na resposta da API:', response.statusText);
-        return;
-      }
-
-      const dataGrouped: GroupedData = groupDataByCell(relatorio);
-      setGroupedData(dataGrouped);
-      console.log('dataGrouped', dataGrouped)
-    } catch (error) {
-      console.log('Erro ao buscar o relatório:', error);
-    }
-  };
-
-  const groupDataByCell = (relatorio: MemberData[]) => {
-    const groupedData: GroupedData = {};
-
-    relatorio.forEach(person => {
-      const cellName = person.celula.nome;
-
-      if (!groupedData[cellName]) {
-        groupedData[cellName] = [];
-      }
-
-      groupedData[cellName].push(person);
-    });
-
-    return groupedData;
-  };
 
   const escolasIbb = [
     {
       title: 'Presença nos Cultos',
       supervisor: 'Supervisões',
       icon: UsersFour,
-      color: 'bg-[#1e3a8a]',
+      color: 'bg-sky-800',
       href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
     {
       title: 'Presença nos Cultos',
       supervisor: 'Células',
       icon: Users,
-      color: 'bg-[#1e3a8a]',
+      color: 'bg-sky-800',
       href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
     {
       title: 'Presença nos Cultos',
       supervisor: 'Supervisores',
       icon: GraduationCap,
-      color: 'bg-[#1e3a8a]',
+      color: 'bg-sky-800',
       href: "/relatorio-culto-supervisor/2a9cbf21-4def-4ba7-9909-104b874ed896"
     },
     {
       title: 'Registro',
       supervisor: 'Discipulados Realizados',
       icon: HandHeart,
-      color: 'bg-[#1e3a8a]',
+      color: 'bg-sky-800',
       href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
     },
   ]
@@ -192,7 +53,7 @@ export default function StatsCardRelatorios() {
                   {stat.title}
                 </div>
                 <div
-                  className={`rounded-full ${stat.color} p-2 drop-shadow-md`}
+                  className={cn(`rounded-full p-2 drop-shadow-md`, `${stat.color}`)}
                 >
                   <stat.icon width={24} height={24} color="#fff" />
                 </div>
