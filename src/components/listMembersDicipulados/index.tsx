@@ -2,9 +2,10 @@
 import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
 import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
 import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember'
-import { UserFocus } from '@phosphor-icons/react'
+import { User, UserFocus, UserSwitch } from '@phosphor-icons/react'
 import { useState } from 'react'
 import Pagination from '../Pagination'
+import { CircleUserRound } from 'lucide'
 
 interface Membro {
   id: string;
@@ -98,8 +99,10 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                       key={user.id}
                     >
                       <td>
-                        <div className="flex items-center justify-start gap-3">
-                          <UserFocus size={24} />
+                        <div className="flex items-center justify-start gap-2">
+                          <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
+                            <User size={24} />
+                          </div>
                           <h2 className="ml-4">{user.first_name}</h2>
                         </div>
                       </td>
@@ -128,11 +131,7 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                         </span>
                       </td> */}
 
-                      <td className="flex items-center justify-center gap-2 text-center">
-                        {/* <DeleteMember
-                          member={user.id}
-                          memberName={user.first_name}
-                        /> */}
+                      <td className="text-center">
                         <div onClick={() => setShouldFetch(true)}>
                           <UpdateMember
                             memberId={user.id}
