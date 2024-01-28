@@ -1,7 +1,8 @@
 {
-  "/(authenticed)/page": "app/(authenticed)/page.js",
-  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
+  "/not-found": "app/not-found.js",
+  "/(authenticed)/discipulados/page": "app/(authenticed)/discipulados/page.js",
+  "/(authenticed)/discipulados/[dicipuladosupervisaoId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/page.js",
   "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
-  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js",
-  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
+  "/(authenticed)/escolas/page": "app/(authenticed)/escolas/page.js",
+  "/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js"
 }

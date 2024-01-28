@@ -18,10 +18,11 @@ interface ListCelulasProps {
 export default function ListCelulasSupervision({ data }: ListCelulasProps) {
   const router = useRouter()
   const contextParamsSupervisaoId = useSupervisaoContext()
+  const dataSort = data.sort((a, b) => a.nome.localeCompare(b.nome))
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
     const idCelula = event.currentTarget.id
-    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
+    router.push(`/discipulados/${contextParamsSupervisaoId}/celulas/${idCelula}`)
   }
   return (
     <div>
@@ -44,7 +45,7 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
                   </tr>
                 </thead>
                 <tbody className="px-4">
-                  {data?.map((celula, index) => (
+                  {dataSort?.map((celula, index) => (
                     <tr
                       className="rounded-lg hover:bg-gray-100/90"
                       key={celula.id}

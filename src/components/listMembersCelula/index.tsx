@@ -13,6 +13,10 @@ interface Membro {
     id: string;
     nome: string;
   };
+  user: {
+    id: string;
+    first_name: string;
+  };
   situacao_no_reino: {
     id: string;
     nome: string;
@@ -53,6 +57,8 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const displayedMembers = data.membros?.slice(startIndex, endIndex)
+  const membersSort = displayedMembers.sort((a, b) => a.first_name.localeCompare(b.first_name))
+
 
   return (
     <>
@@ -87,7 +93,7 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
                 {data.membros ? (
-                  displayedMembers?.map((user, index) => (
+                  membersSort?.map((user, index) => (
                     <tr
                       className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}

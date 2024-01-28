@@ -1,9 +1,9 @@
-import StatsCardSupervisions from '@/components/StatsCardSupervisions'
+import StatsDiscipuladosCardSupervisions from '@/components/StatsCardDiscipuladoSupervisions'
 
-export default function Supervisoes() {
+export default function DiscipuladosSupervisoes() {
   return (
-    <div className="mx-auto w-full px-2 py-2">
-      <StatsCardSupervisions />
+    <div className="w-full px-2 py-2 mx-auto">
+      <StatsDiscipuladosCardSupervisions />
     </div>
   )
 }

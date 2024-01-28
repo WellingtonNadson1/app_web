@@ -13,6 +13,10 @@ interface Membro {
     id: string;
     nome: string;
   };
+  user: {
+    id: string;
+    first_name: string;
+  };
   situacao_no_reino: {
     id: string;
     nome: string;
@@ -45,6 +49,7 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
+  console.log('dataCelula', data)
 
   // Pagination
   const itemsPerPage = 10
@@ -53,6 +58,7 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const displayedMembers = data.membros?.slice(startIndex, endIndex)
+  const membersSort = displayedMembers.sort((a, b) => a.first_name.localeCompare(b.first_name))
 
   return (
     <>
@@ -74,11 +80,11 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                     Status
                   </th>
                   <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
-                    Cargo
+                    Discipulador
                   </th>
-                  <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
-                    Supervisão
-                  </th>
+                  {/* <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
+                    Discípulo
+                  </th> */}
                   <th className="py-2 text-gray-800 border-b-2 border-red-300 text-start">
                     Opções
                   </th>
@@ -86,7 +92,7 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
                 {data.membros ? (
-                  displayedMembers?.map((user, index) => (
+                  membersSort?.map((user, index) => (
                     <tr
                       className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}
@@ -113,20 +119,20 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                       </td>
                       <td className="text-center">
                         <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
-                          {user.cargo_de_lideranca?.nome}
+                          {user.user.first_name}
                         </span>
                       </td>
-                      <td className="text-center">
+                      {/* <td className="text-center">
                         <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
                           {data.supervisao?.nome}
                         </span>
-                      </td>
+                      </td> */}
 
                       <td className="flex items-center justify-center gap-2 text-center">
-                        <DeleteMember
+                        {/* <DeleteMember
                           member={user.id}
                           memberName={user.first_name}
-                        />
+                        /> */}
                         <div onClick={() => setShouldFetch(true)}>
                           <UpdateMember
                             memberId={user.id}
