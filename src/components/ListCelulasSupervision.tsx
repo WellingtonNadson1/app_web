@@ -22,7 +22,7 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
     const idCelula = event.currentTarget.id
-    router.push(`/discipulados/${contextParamsSupervisaoId}/celulas/${idCelula}`)
+    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
   }
   return (
     <div>
