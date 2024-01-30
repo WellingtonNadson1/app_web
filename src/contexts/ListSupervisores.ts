@@ -11,8 +11,8 @@ export const ListSupervisores = (supervisao: string) => {
 
 export const CorSupervision = (corSupervisao: string) => {
   switch (corSupervisao) {
-    case "amarela":
-      return "w-full !bg-yellow-500 !dark:bg-yellow-500";
+    // case "amarela":
+    //   return "w-full !bg-yellow-500 !dark:bg-yellow-500";
     case "azul":
       return "w-full bg-blue-500 dark:bg-blue-500";
     case "laranja":
@@ -22,7 +22,7 @@ export const CorSupervision = (corSupervisao: string) => {
     case "vermelha":
       return "w-full bg-red-500 dark:bg-red-500";
     default:
-      return "w-full bg-gray-400 dark:bg-gray-400";
+      return "w-full bg-yellow-500 dark:bg-yellow-500";
   }
 };
 

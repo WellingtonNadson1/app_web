@@ -15,6 +15,7 @@ import Image from 'next/image'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
+import { useQuery } from '@tanstack/react-query'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -60,6 +61,22 @@ export default function StatsCardRelatoriosSupervisores() {
     cargo.nome !== "Líder de Célula Supervisor"
   )
 
+  const DataGeralCultos = async (
+    startDate: string,
+    endDate: string,
+    superVisionId: string,
+    cargoLideranca: string[]
+  ) => {
+    const { data } = await axiosAuth.post(URLPresencaGeralCultos, {
+      startDate,
+      endDate,
+      superVisionId,
+      cargoLideranca
+    });
+    return data
+  }
+
+
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId, cargoLideranca }) => {
     try {
       setIsLoadingSubmitForm(true)
@@ -67,12 +84,12 @@ export default function StatsCardRelatoriosSupervisores() {
       dayjs(startDate).tz("America/Sao_Paulo").toISOString();
       dayjs(endDate).tz("America/Sao_Paulo").toISOString();
 
-      const { data } = await axiosAuth.post(URLPresencaGeralCultos, {
+      const data = await DataGeralCultos(
         startDate,
         endDate,
         superVisionId,
         cargoLideranca
-      });
+      );
 
       const { data: relatorioData } = await axiosAuth.post(URLRelatorioPresenceCulto, {
         superVisionId,
@@ -80,7 +97,7 @@ export default function StatsCardRelatoriosSupervisores() {
         endDate
       });
 
-      const presencaGeralCultos = data as Pessoa[];
+      const presencaGeralCultos = data as unknown as Pessoa[];
 
       if (presencaGeralCultos) {
         // Pegando as datas unicas para o THeader
@@ -181,9 +198,9 @@ export default function StatsCardRelatoriosSupervisores() {
     }
   };
 
-  const handleFunctions = (data: FormRelatorioSchema) => {
-    handleRelatorio(data);
-  }
+  // const handleFunctions = (data: FormRelatorioSchema) => {
+  //   handleRelatorio(data);
+  // }
 
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForDateCulto: GroupedForCulto = {};
@@ -243,7 +260,7 @@ export default function StatsCardRelatoriosSupervisores() {
       <div className='relative z-40 p-2 bg-white rounded-sm'>
         <div className="px-3 mt-2 mb-3">
           <Fragment>
-            <form onSubmit={handleSubmit(handleFunctions)}>
+            <form onSubmit={handleSubmit(handleRelatorio)}>
               <div className="flex flex-col gap-4 p-3">
                 <div className='flex items-center justify-start gap-4'>
                   <Link href={'/dashboard'}>
@@ -418,9 +435,13 @@ export default function StatsCardRelatoriosSupervisores() {
           </Fragment>
         </div>
         {/* Inicio Relatorio */}
-        <div className={cn(`text-center text-white`, newCorSupervisao)}>
+        <div className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400`, newCorSupervisao)}>
           <div className='pt-2 pb-0'>
-            <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISORES - {corSupervisao}</h1>
+            {corSupervisao ? (
+              <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISORES - {corSupervisao}</h1>
+            ) : (
+              <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISORES - Sem Dados</h1>
+            )}
           </div>
           {
             totalCultos ? (
