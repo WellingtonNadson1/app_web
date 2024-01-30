@@ -38,8 +38,8 @@ export default function ListMembers({ members }: ListMembersProps) {
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const displayedMembers = members?.slice(startIndex, endIndex)
-  const membersSort = displayedMembers.sort((a, b) => a.first_name.localeCompare(b.first_name))
+  const membersSort = members.sort((a, b) => a.first_name.localeCompare(b.first_name))
+  const displayedMembers = membersSort?.slice(startIndex, endIndex)
 
 
   return (
@@ -91,7 +91,7 @@ export default function ListMembers({ members }: ListMembersProps) {
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
                 {members ? (
-                  membersSort?.map((user, index) => (
+                  displayedMembers?.map((user, index) => (
                     <tr
                       className="py-8 border-b border-gray-200 hover:bg-gray-100/90"
                       key={user.id}
