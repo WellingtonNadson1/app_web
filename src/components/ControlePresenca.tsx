@@ -1,5 +1,6 @@
 'use client'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
 import { UserFocus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
@@ -40,7 +41,9 @@ type Celula = z.infer<typeof CelulaSchema>
 
 export default function ControlePresenca() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
 
   const hostname = 'app-ibb.onrender.com'
@@ -117,15 +120,14 @@ export default function ControlePresenca() {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`inline w-full rounded-md px-2 py-1 text-center ${
-                            user.situacao_no_reino?.nome === 'Ativo'
+                          className={`inline w-full rounded-md px-2 py-1 text-center ${user.situacao_no_reino?.nome === 'Ativo'
                               ? 'border border-green-200 bg-green-100 ring-green-500'
                               : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                              ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                              : 'border border-red-200 bg-red-100 ring-red-500'
-                          }`}
+                                ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                                : user.situacao_no_reino?.nome === 'Frio'
+                                  ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                  : 'border border-red-200 bg-red-100 ring-red-500'
+                            }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>

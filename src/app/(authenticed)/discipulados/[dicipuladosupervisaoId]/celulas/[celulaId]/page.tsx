@@ -3,17 +3,18 @@ import { CelulaData } from '@/components/listMembersCelula'
 import ListMembersDiscipulados from '@/components/listMembersDicipulados'
 import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
-import { useSession } from 'next-auth/react'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
 }: {
   params: { celulaId: string }
 }) {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const URL = `${BASE_URL}/celulas/${celulaId}`
 

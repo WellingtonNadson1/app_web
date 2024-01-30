@@ -13,6 +13,7 @@ import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import { FormCelula, Member, SupervisaoData, User } from './schema'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function UpdateCelula({
   celulaId,
@@ -24,7 +25,8 @@ export default function UpdateCelula({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const { data: session } = useSession()
+  const { token } = useUserDataStore.getState().state
+
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
@@ -34,23 +36,23 @@ export default function UpdateCelula({
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(token)
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
-  const {data: dataCelula} = useQuery<FormCelula>({
+  const { data: dataCelula } = useQuery<FormCelula>({
     queryKey: ['celulas', celulaId],
     queryFn: async () => {
       const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula =  response.data
+      const dataCelula = response.data
       return dataCelula
     }
   })
 
-  const {data: dataLider} = useQuery<Member>({
+  const { data: dataLider } = useQuery<Member>({
     queryKey: ['celulas', celulaId],
     queryFn: async () => {
       const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula =  response.data
+      const dataCelula = response.data
       return dataCelula
     }
   })
@@ -96,7 +98,8 @@ export default function UpdateCelula({
         date_inicio,
         date_multipicar,
         date_que_ocorre,
-        membros })
+        membros
+      })
       const celulaRUpdated = response.data
 
       if (celulaRUpdated) {
@@ -138,7 +141,7 @@ export default function UpdateCelula({
     } catch (error) {
       console.log(error)
     }
-  }, [session?.user.token])
+  }, [token])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
@@ -337,9 +340,9 @@ export default function UpdateCelula({
                                   {supervisoes &&
                                     supervisoes?.map((membros) => (
                                       membros.membros.map((membro) => (
-                                      <option key={membro.id} value={membro.id}>
-                                        {membro.first_name}
-                                      </option>
+                                        <option key={membro.id} value={membro.id}>
+                                          {membro.first_name}
+                                        </option>
                                       ))
                                     ))}
                                 </select>
@@ -373,9 +376,9 @@ export default function UpdateCelula({
                                     {supervisoes &&
                                       supervisoes?.map((membros) => (
                                         membros.membros.map((membro) => (
-                                        <option key={membro.id} value={membro.id}>
-                                          {membro.first_name}
-                                        </option>
+                                          <option key={membro.id} value={membro.id}>
+                                            {membro.first_name}
+                                          </option>
                                         ))
                                       ))}
                                   </select>

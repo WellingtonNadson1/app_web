@@ -13,13 +13,15 @@ import { ToastContainer } from 'react-toastify'
 import LoadingListCelula from './LoadingListCelula'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import { FormCelula, SupervisaoData, User } from './schema'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function AddNewCelula() {
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulas = `${BASE_URL}/celulas`
   const router = useRouter()
 
-  const { data: session } = useSession()
+  const { token } = useUserDataStore.getState().state
+
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
@@ -30,7 +32,7 @@ export default function AddNewCelula() {
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(token)
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
     handleZipCode(e, setValue);
@@ -75,7 +77,8 @@ export default function AddNewCelula() {
         date_inicio,
         date_multipicar,
         date_que_ocorre,
-        membros })
+        membros
+      })
       const celulaRegister = response.data
 
       if (celulaRegister) {
@@ -117,7 +120,7 @@ export default function AddNewCelula() {
     } catch (error) {
       console.log(error)
     }
-  }, [session?.user.token])
+  }, [token])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
@@ -153,7 +156,7 @@ export default function AddNewCelula() {
 
   return (
     <>
-    <ToastContainer />
+      <ToastContainer />
       <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
         <div className="w-full px-2 py-2 bg-white shadow-lg rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">

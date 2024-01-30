@@ -3,7 +3,6 @@ import Modal from '@/components/modal'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
 import React, { Fragment, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
@@ -14,6 +13,7 @@ import axios from 'axios'
 import { Member } from '@/app/(authenticed)/novo-membro/schema'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 type dataUpdateDiscipulador = {
   id: string,
@@ -46,8 +46,9 @@ function UpdateDisicipulador({
   console.log('memberBtnUpdateDiscipulador', member)
   const URLUsers = `${BASE_URL}/users`
 
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
   const [nome, setNome] = useState(member.user.first_name);

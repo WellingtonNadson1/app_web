@@ -1,4 +1,5 @@
 import axios from '@/lib/axios'
+import { useUserDataStore } from '@/store/UserDataStore'
 import type { NextAuthOptions } from 'next-auth'
 import CredentialProvider from 'next-auth/providers/credentials'
 import GoogleProvider from 'next-auth/providers/google'
@@ -28,6 +29,20 @@ export const authOptions: NextAuthOptions = {
 
         if (user) {
           console.log(JSON.stringify(user))
+
+
+          useUserDataStore.setState({
+            state: {
+              id: user.id,
+              role: user.role,
+              email: user.email,
+              image_url: user.image_url,
+              first_name: user.first_name,
+              token: user.token,
+              refreshToken: user.refreshToken,
+            }
+          })
+
           return user
         }
         return null

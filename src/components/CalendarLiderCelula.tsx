@@ -25,6 +25,7 @@ import { useState } from 'react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
 import { Meeting } from '@/app/(celula)/celula/schema'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -46,13 +47,14 @@ function classNames(...classes: string[]) {
 export default function CalendarLiderCelula() {
   const today = startOfToday()
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
 
-  if (!session) {
+  if (!token) {
     return <SpinnerButton message={''} />
   }
 

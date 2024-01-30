@@ -1,7 +1,7 @@
 'use client'
 import Modal from '@/components/modal'
+import { useUserDataStore } from '@/store/UserDataStore'
 import { UserMinusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import { useRef, useState } from 'react'
 
@@ -17,7 +17,7 @@ function DeleteMember({
 
   const cancelButtonRef = useRef(null)
 
-  const { data: session } = useSession()
+  const { token } = useUserDataStore.getState().state
 
   const router = useRouter()
 
@@ -28,7 +28,7 @@ function DeleteMember({
       method: 'DELETE',
       headers: {
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${session?.user.token}`,
+        Authorization: `Bearer ${token}`,
       },
     })
     if (response.ok) {

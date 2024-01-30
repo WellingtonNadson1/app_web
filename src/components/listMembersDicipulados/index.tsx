@@ -47,8 +47,6 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
-  console.log('dataCelula', data)
-
   // Pagination
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)

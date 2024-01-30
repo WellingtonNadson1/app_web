@@ -7,7 +7,6 @@ import {
   success,
 } from '@/functions/functions'
 import { PencilSquareIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
 import { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { CultoDaSemana, NewCulto } from './schemaNewCulto'
@@ -15,16 +14,18 @@ import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function Cultos() {
-  const { data: session } = useSession()
+  const { token } = useUserDataStore.getState().state
+
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
   const URLCultosSemanais = `${BASE_URL}/cultossemanais`
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
   const [dataCultos, setDataCultos] = useState<NewCulto[]>()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(token)
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
 
@@ -76,7 +77,7 @@ export default function Cultos() {
 
   const fetchCultos = useCallback(async () => {
     try {
-      if (session?.user) {
+      if (token) {
         const response = await axiosAuth.get(URLCultosIndividuais)
         const cultosIndividuais = response.data
         if (!cultosIndividuais) {
@@ -87,7 +88,7 @@ export default function Cultos() {
     } catch (error) {
       console.log(error)
     }
-  }, [URLCultosIndividuais, session?.user])
+  }, [URLCultosIndividuais, token])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {

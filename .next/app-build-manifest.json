@@ -12,16 +12,33 @@
       "static/css/app/(authenticed)/loading.css",
       "static/chunks/app/(authenticed)/loading.js"
     ],
+    "/(authenticed)/dashboard/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(authenticed)/dashboard/page.js"
+    ],
     "/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.css",
       "static/chunks/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js"
     ],
-    "/(authenticed)/dashboard/page": [
+    "/(login)/login/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/dashboard/page.js"
+      "static/css/app/(login)/login/loading.css",
+      "static/chunks/app/(login)/login/loading.js"
+    ],
+    "/(login)/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(login)/login/page.js"
+    ],
+    "/(login)/login/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(login)/login/layout.css",
+      "static/chunks/app/(login)/login/layout.js"
     ],
     "/(authenticed)/discipulados/page": [
       "static/chunks/webpack.js",
@@ -32,6 +49,24 @@
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/chunks/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/page.js"
+    ],
+    "/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.css",
+      "static/chunks/app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.js"
+    ],
+    "/(authenticed)/novo-membro/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/novo-membro/page.css",
+      "static/chunks/app/(authenticed)/novo-membro/page.js"
+    ],
+    "/(authenticed)/celulas/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(authenticed)/celulas/page.css",
+      "static/chunks/app/(authenticed)/celulas/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

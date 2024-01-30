@@ -6,6 +6,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 
 const ResponseSchema = z.string().array()
@@ -14,8 +15,9 @@ type ApiResponse = z.infer<typeof ResponseSchema>
 
 export default function LicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
   const LicoesCelula = async () => {
     const { data: licoes } = await axiosAuth.get(URLLicoesCelula)
     console.log('licoes', licoes)
@@ -53,7 +55,7 @@ export default function LicoesCelula() {
       id: 3,
       title: 'A Oferta de Abel',
       periodo: '21 a 27 de Jan/2024',
-      status: 'pendente',
+      status: 'ok',
       icon: FilePdf,
       versiculo: 'Gn 4:3-4',
     },

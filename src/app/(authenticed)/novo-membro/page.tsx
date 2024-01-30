@@ -1,17 +1,18 @@
 'use client'
 import ListMembers from '@/components/listMembers'
 import { ReturnMembers } from './schema'
-import { useSession } from 'next-auth/react'
 import { BASE_URL } from '@/functions/functions'
 import { UserFocus } from '@phosphor-icons/react'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { useQuery } from '@tanstack/react-query'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import axios from 'axios'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function NovoMembro() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const URL = `${BASE_URL}/users`
 

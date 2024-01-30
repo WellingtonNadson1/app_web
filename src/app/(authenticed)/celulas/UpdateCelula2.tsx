@@ -10,6 +10,7 @@ import { UserPlusIcon } from '@heroicons/react/24/outline'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { FormCelula, SupervisaoData, User } from './schema'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function UpdateCelula2({
   id,
@@ -21,7 +22,7 @@ export default function UpdateCelula2({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${id}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const { data: session } = useSession()
+  const { token } = useUserDataStore.getState().state
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)
@@ -31,13 +32,13 @@ export default function UpdateCelula2({
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(token)
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>({
     defaultValues: async () => {
       if (!id) return {}
 
       const response = await axiosAuth.get(URLCelulaId)
-      const dataCelula =  response.data
+      const dataCelula = response.data
       return dataCelula
     },
   })
@@ -49,7 +50,7 @@ export default function UpdateCelula2({
       setIsLoadingSubmitForm(true)
 
       const response = await axiosAuth.put(URLCelulas, {
-        id , date_que_ocorre
+        id, date_que_ocorre
       })
       const celulaRegister = response.data
       console.log('Dados da celula, date: ', celulaRegister);
@@ -98,7 +99,7 @@ export default function UpdateCelula2({
     } catch (error) {
       console.log(error)
     }
-  }, [session?.user.token])
+  }, [token])
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {

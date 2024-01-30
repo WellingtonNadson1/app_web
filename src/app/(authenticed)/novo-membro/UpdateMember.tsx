@@ -3,7 +3,6 @@ import Modal from '@/components/modal'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React, { Fragment, useRef, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
@@ -16,6 +15,7 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import axios from 'axios'
 import { useCombinetedStore } from '@/store/DataCombineted'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 function UpdateMember({
   memberId,
@@ -27,8 +27,9 @@ function UpdateMember({
   const URLUsersId = `${BASE_URL}/users/${memberId}`
   const URLUsers = `${BASE_URL}/users`
 
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
 

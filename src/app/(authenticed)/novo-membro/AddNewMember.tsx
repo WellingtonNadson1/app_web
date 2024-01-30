@@ -2,7 +2,6 @@
 import React, { Fragment, useState } from 'react'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import axios from 'axios'
-import { useSession } from 'next-auth/react'
 import { useQuery } from '@tanstack/react-query'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Modal from '@/components/modal'
@@ -17,15 +16,17 @@ import { Member } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 function AddNewMember() {
   // const URLUsers = `${BASE_URL_LOCAL}/users`
   // const URLCombinedData = `${BASE_URL_LOCAL}/users/all`
   const URLUsers = `${BASE_URL}/users`
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   // Zustand Store
+  const { token } = useUserDataStore.getState().state
   const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
@@ -95,7 +96,7 @@ function AddNewMember() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dataToSend),
       })

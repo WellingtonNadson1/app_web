@@ -5,10 +5,18 @@ import MainSide from '@/components/MainSide'
 import axios from 'axios';
 import { useCombinetedStore } from '@/store/DataCombineted';
 import { InitializerStore } from '@/store/InitializerStore';
+import { InitializerUserStore } from '@/store/InitializerUserStore';
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
+  const id = session?.user.id
+  const role = session?.user.role
+  const email = session?.user.token
+  const image_url = session?.user.image_url
+  const first_name = session?.user.first_name
   const token = session?.user.token
+  const refreshToken = session?.user.refreshToken
+
   const axiosAuth = axios.create({
     baseURL: 'https://app-ibb.onrender.com',
     headers: {
@@ -52,6 +60,15 @@ export default async function Dashboard() {
           encontros={result[2] ?? []}
           situacoesNoReino={result[3] ?? []}
           cargoLideranca={result[4] ?? []}
+        />
+        <InitializerUserStore
+          id={id ?? ''}
+          role={role ?? ''}
+          email={email ?? ''}
+          image_url={image_url ?? ''}
+          first_name={first_name ?? ''}
+          token={token ?? ''}
+          refreshToken={refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }}
         />
         <MainSide />
       </div>

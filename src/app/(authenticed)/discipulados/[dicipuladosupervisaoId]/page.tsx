@@ -1,6 +1,7 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
 import ListCelulasSupervision from '@/components/ListCelulasSupervision'
+import ListDisicipuladoCelulasSupervision from '@/components/ListDisicipuladoCelulasSupervision'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { useParams } from 'next/navigation'
@@ -33,9 +34,6 @@ export default function Supervisao({
   const id = useParams()
   const { supervisoes } = useCombinetedStore.getState().state
   const supervisao = supervisoes?.filter(supervisao => supervisao.id === id.dicipuladosupervisaoId)
-  console.log('supervisoes', supervisoes)
-  console.log('supervisaoId', id.dicipuladosupervisaoId)
-  console.log('supervisao', supervisao)
 
   return (
     <div className="w-full px-2 py-2 mx-auto">
@@ -46,7 +44,7 @@ export default function Supervisao({
         cor={supervisao[0].cor}
         supervisor={supervisao[0].supervisor} />
       {supervisao &&
-        <ListCelulasSupervision data={supervisao[0].celulas} />
+        <ListDisicipuladoCelulasSupervision data={supervisao[0].celulas} />
       }
 
     </div>

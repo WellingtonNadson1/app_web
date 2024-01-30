@@ -64,9 +64,9 @@ export default function Login() {
           />
         </div>
         {/* Login Container */}
-        <div className="flex max-w-3xl items-center rounded-2xl bg-white p-6 shadow-lg">
+        <div className="flex items-center max-w-3xl p-6 bg-white shadow-lg rounded-2xl">
           <div className="px-6 py-1.5 md:w-1/2">
-            <h2 className="mt-4 text-center text-2xl font-bold text-gray-900 md:text-left">
+            <h2 className="mt-4 text-2xl font-bold text-center text-gray-900 md:text-left">
               Seja Bem-vindo!
             </h2>
             <p className="mt-2 text-sm text-gray-900">
@@ -126,7 +126,7 @@ export default function Login() {
                 <div className="flex items-center justify-between">
                   <div className="flex items-center justify-center gap-x-3">
                     <div className="relative flex">
-                      <div className="flex h-6 items-center">
+                      <div className="flex items-center h-6">
                         <input
                           id="lembrar"
                           name="lembrar"
@@ -161,7 +161,7 @@ export default function Login() {
                       className="flex w-full items-center justify-center gap-2 rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                     >
                       <svg
-                        className="mr-3 h-5 w-5 animate-spin text-white"
+                        className="w-5 h-5 mr-3 text-white animate-spin"
                         xmlns="http://www.w3.org/2000/svg"
                         fill="none"
                         viewBox="0 0 24 24"
@@ -191,10 +191,10 @@ export default function Login() {
                     </button>
                   )}
                   <div className='mx-auto mt-2 text-center'>
-                    {isLoadingFaield && <span className="text-red-400 text-sm">Senha ou e-mail inválido!</span>}
+                    {isLoadingFaield && <span className="text-sm text-red-400">Senha ou e-mail inválido!</span>}
                   </div>
                   <div className='mx-auto mt-2 text-center'>
-                    {isLoading504 && <span className="text-red-400 text-sm">Tente novamente!</span>}
+                    {isLoading504 && <span className="text-sm text-red-400">Tente novamente!</span>}
                   </div>
                 </div>
               </form>
@@ -212,7 +212,7 @@ export default function Login() {
                 </span>
               </button> */}
 
-              {/* <p className="mb-4 mt-8 text-center text-sm text-gray-500">
+              {/* <p className="mt-8 mb-4 text-sm text-center text-gray-500">
                 Não tem uma conta?{' '}
                 <Link
                   href="#"
@@ -225,7 +225,7 @@ export default function Login() {
           </div>
 
           {/* image */}
-          <div className="hidden w-1/2 items-center justify-center px-14 md:block">
+          <div className="items-center justify-center hidden w-1/2 px-14 md:block">
             <Image
               src="/images/Logo-IBB-Name.svg"
               width={500}
