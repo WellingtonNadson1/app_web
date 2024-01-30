@@ -15,7 +15,8 @@ import Image from 'next/image'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { cn } from '@/lib/utils'
 import Link from 'next/link'
-import { useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery } from '@tanstack/react-query'
+import { useUserDataStore } from '@/store/UserDataStore'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -23,8 +24,9 @@ dayjs.locale(ptBr);
 dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function StatsCardRelatoriosSupervisores() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   // const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
   // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
@@ -75,7 +77,6 @@ export default function StatsCardRelatoriosSupervisores() {
     });
     return data
   }
-
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId, cargoLideranca }) => {
     try {
@@ -152,7 +153,6 @@ export default function StatsCardRelatoriosSupervisores() {
           }
         });
         setIdCultos(sortedIds);
-        idCultos && console.log('IDS: ', idCultos);
       }
 
       // Inicio do Trecho que busca os dados do Relatorio por data

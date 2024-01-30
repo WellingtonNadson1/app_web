@@ -1,7 +1,4 @@
 {
   "/not-found": "app/not-found.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(authenticed)/page": "app/(authenticed)/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
   "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
 }
