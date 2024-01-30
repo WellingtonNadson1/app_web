@@ -1,5 +1,5 @@
 'use client'
-import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
+import { CelulaData } from '@/components/listMembersCelula'
 import ListMembersDiscipulados from '@/components/listMembersDicipulados'
 import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'

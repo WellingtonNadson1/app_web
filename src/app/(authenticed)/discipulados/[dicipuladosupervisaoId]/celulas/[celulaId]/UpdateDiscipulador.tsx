@@ -44,7 +44,7 @@ function UpdateDisicipulador({
 }) {
 
   console.log('memberBtnUpdateDiscipulador', member)
-  const URLUsers = `${BASE_URL_LOCAL}/users`
+  const URLUsers = `${BASE_URL}/users`
 
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)

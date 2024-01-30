@@ -1,11 +1,7 @@
 'use client'
-import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember'
-import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember'
-import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember'
-import { User, UserFocus, UserSwitch } from '@phosphor-icons/react'
+import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
 import Pagination from '../Pagination'
-import { CircleUserRound } from 'lucide'
 import UpdateDisicipulador from '@/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
 
 interface Membro {
