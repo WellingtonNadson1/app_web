@@ -21,6 +21,10 @@ export const MemberSchema = z.object({
   batizado: z.boolean(),
   date_batizado: z.string().datetime().optional(),
   is_discipulado: z.boolean(),
+  user: z.object({
+    id: z.string(),
+    first_name: z.string()
+  }),
   discipuladorId: z.string().optional(),
   estado_civil: z.string(),
   nome_conjuge: z.string().optional(),

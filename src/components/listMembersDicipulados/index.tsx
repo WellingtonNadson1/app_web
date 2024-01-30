@@ -6,6 +6,7 @@ import { User, UserFocus, UserSwitch } from '@phosphor-icons/react'
 import { useState } from 'react'
 import Pagination from '../Pagination'
 import { CircleUserRound } from 'lucide'
+import UpdateDisicipulador from '@/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
 
 interface Membro {
   id: string;
@@ -133,8 +134,8 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
 
                       <td className="text-center">
                         <div onClick={() => setShouldFetch(true)}>
-                          <UpdateMember
-                            memberId={user.id}
+                          <UpdateDisicipulador
+                            member={user}
                           />
                         </div>
                       </td>

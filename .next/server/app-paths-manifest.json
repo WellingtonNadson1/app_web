@@ -1,8 +1,7 @@
 {
   "/not-found": "app/not-found.js",
-  "/(authenticed)/discipulados/page": "app/(authenticed)/discipulados/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
   "/(authenticed)/discipulados/[dicipuladosupervisaoId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/page.js",
-  "/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js",
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/(authenticed)/discipulados/page": "app/(authenticed)/discipulados/page.js",
+  "/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js"
 }
