@@ -370,7 +370,7 @@ export default function StatsCardRelatorios() {
           </Fragment>
         </div>
         {/* Inicio Relatorio */}
-        <div className={cn(`text-center text-white`, `${newCorSupervisao}`)}>
+        <div className={cn(`bg-yellow-400 dark:bg-yellow-400 text-center text-white`, `${newCorSupervisao}`)}>
           <div className='pt-2 pb-0'>
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
           </div>

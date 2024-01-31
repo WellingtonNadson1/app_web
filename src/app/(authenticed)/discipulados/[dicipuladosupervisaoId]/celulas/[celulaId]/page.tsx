@@ -60,19 +60,12 @@ export default function ControleCelulaSupervision({
   return (
     <div className="relative w-full px-2 py-2 mx-auto">
       <div className="relative w-full mx-auto">
-        {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
       </div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
         {isSuccess &&
           <ListMembersDiscipulados data={celula} />
         }
       </div>
-      {/* <div className="relative w-full px-2 mx-auto mb-4">
-        <LicoesCelula />
-      </div> */}
-      {/* <div className="relative w-full px-2 mx-auto mb-4">
-        <ControlePresenca />
-      </div> */}
     </div>
   )
 }

@@ -51,7 +51,7 @@ function UpdateDisicipulador({
   const axiosAuth = useAxiosAuthToken(token)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [nome, setNome] = useState(member.user.first_name);
+  const [nome, setNome] = useState(member?.user?.first_name);
   const queryClient = useQueryClient()
 
   const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
@@ -73,20 +73,23 @@ function UpdateDisicipulador({
 
   const { mutateAsync: updateDiscipuladorFn } = useMutation({
     mutationFn: UpdateDiscipuladorFunction,
-    onSuccess(_, variables) {
+    onSuccess(data, variables) {
       const cached = queryClient.getQueryData(["celula"])
 
       // Atualizando o cached da lista de membros e discipuladores atraves do HTTPState
-      queryClient.setQueryData(["celula"], (data: any) => {
-        console.log('selectedMember', selectedMember)
+      queryClient.setQueryData(["celula"], (cachedData: any) => {
         return {
-          ...data,
-          user: {
-            id: selectedMember?.id,
-            first_name: selectedMember?.first_name,
-          }
-        }
-      })
+          ...cachedData,
+          membros: cachedData.membros.map((membro: any) =>
+            membro.id === member.id ? {
+              ...membro, user: {
+                id: selectedMember?.id,
+                first_name: selectedMember?.first_name,
+              }
+            } : membro
+          )
+        };
+      });
     },
   })
 
@@ -158,7 +161,7 @@ function UpdateDisicipulador({
             titleButton="Editar"
             buttonProps={{
               className:
-                'z-10 rounded-md bg-green-500 text-white mt-2 px-4 py-2 text-sm font-medium text-white hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 sm:w-full',
+                'z-10 rounded-md bg-green-500 text-white px-4 py-2 my-1 text-sm font-medium text-white hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600 sm:w-full',
             }}
           >
             {/* Incio do Forms */}
@@ -230,9 +233,10 @@ function UpdateDisicipulador({
                                 <div className="relative">
                                   <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                                     <Combobox.Input
-                                      {...register('discipuladorId')}
+                                      {...register('discipuladorId', { required: true })}
                                       id="discipuladorId"
-                                      className="w-full py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 border-none rounded-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                      autoComplete='off'
+                                      className="w-full py-1.5 pl-3 pr-10 text-sm leading-5 text-gray-900 border-none rounded-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                       displayValue={(person: Member) =>
                                         person.first_name
                                       }
@@ -266,7 +270,7 @@ function UpdateDisicipulador({
                                             key={person.id}
                                             className={({ active }) =>
                                               `relative cursor-default select-none py-2 pl-10 pr-4 ${active
-                                                ? 'bg-teal-600 text-white'
+                                                ? 'bg-[#E5F3FF] text-black'
                                                 : 'text-gray-900'
                                               }`
                                             }

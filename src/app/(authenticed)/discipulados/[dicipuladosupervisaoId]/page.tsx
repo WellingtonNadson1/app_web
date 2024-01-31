@@ -1,6 +1,5 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
-import ListCelulasSupervision from '@/components/ListCelulasSupervision'
 import ListDisicipuladoCelulasSupervision from '@/components/ListDisicipuladoCelulasSupervision'
 import StatsCardSupervision from '@/components/StatsCardSupervision'
 import { useCombinetedStore } from '@/store/DataCombineted'

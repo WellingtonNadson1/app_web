@@ -1,4 +1,8 @@
 {
   "/not-found": "app/not-found.js",
-  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
+  "/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/celulas/[celulaId]/page.js",
+  "/(authenticed)/supervisoes/[supervisaoId]/page": "app/(authenticed)/supervisoes/[supervisaoId]/page.js",
+  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
+  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js",
+  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
 }

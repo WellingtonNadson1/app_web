@@ -454,6 +454,7 @@ function AddNewMember() {
                                 <Combobox.Input
                                   {...register('discipuladorId')}
                                   id="discipuladorId"
+                                  autoComplete='off'
                                   className="w-full rounded-md border-none py-1.5 pl-3 pr-10 text-sm leading-5 text-gray-900 ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   displayValue={(person: Member) =>
                                     person.first_name
@@ -476,10 +477,10 @@ function AddNewMember() {
                                 leaveTo="opacity-0"
                                 afterLeave={() => setQuery('')}
                               >
-                                <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
+                                <Combobox.Options className="absolute w-full py-1.5 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
                                     query !== '' ? (
-                                    <div className="relative px-4 py-2 text-gray-700 cursor-default select-none">
+                                    <div className="relative px-4 py-1.5 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
                                   ) : (
@@ -487,8 +488,8 @@ function AddNewMember() {
                                       <Combobox.Option
                                         key={person.id}
                                         className={({ active }) =>
-                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${active
-                                            ? 'bg-teal-600 text-white'
+                                          `relative cursor-default select-none py-1.5 pl-10 pr-4 ${active
+                                            ? 'bg-[#E5F3FF] text-black'
                                             : 'text-gray-900'
                                           }`
                                         }

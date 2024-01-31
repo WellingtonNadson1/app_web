@@ -177,7 +177,7 @@ export default function UpdateCelula({
   return (
     <>
       <ToastContainer />
-      <div className="relative mx-auto ">
+      <div className="relative">
         <div className="w-full rounded-xl ">
           <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
             <Modal
@@ -186,7 +186,7 @@ export default function UpdateCelula({
               titleButton="Editar"
               buttonProps={{
                 className:
-                  'z-10 rounded-md bg-orange-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-orange-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700',
+                  'z-10 rounded-md bg-[#6F8598] text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700',
               }}
             >
               <div className="relative w-full px-2 py-2 mx-auto">

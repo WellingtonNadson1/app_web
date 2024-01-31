@@ -71,26 +71,26 @@ export default function NovoMembro() {
                 <button className='h-4 w-35 animate-pulse'></button>
               </div>
             </div>
-            <table className="w-full border-separate table-auto border-spacing-y-3">
+            <table className="w-full border-separate table-auto">
               {/* ... Cabeçalho da tabela ... */}
-              <thead>
-                <tr className="text-base font-bold ">
-                  <th className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
+              <thead className='bg-[#F8FAFC]'>
+                <tr>
+                  <th className="px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
                     Nome
                   </th>
-                  <th className="hidden py-2 text-gray-800 border-b-2 border-orange-300 text-start sm:table-cell">
+                  <th className="hidden px-2 py-3 font-medium text-[#6D8396] border-b-2 border-orange-300 text-start sm:table-cell">
                     Status
                   </th>
-                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
+                  <th className="hidden px-2 py-3 font-medium text-[#6D8396] border-b-2 border-indigo-300 text-start sm:table-cell">
                     Cargo
                   </th>
-                  <th className="hidden py-2 text-gray-800 border-b-2 border-blue-300 text-start sm:table-cell">
+                  <th className="hidden px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start sm:table-cell">
                     Supervisão
                   </th>
-                  <th className="hidden py-2 text-gray-800 border-b-2 border-indigo-300 text-start sm:table-cell">
+                  <th className="hidden px-2 py-3 font-medium text-[#6D8396] border-b-2 border-indigo-300 text-start sm:table-cell">
                     Célula
                   </th>
-                  <th className="py-2 text-center text-gray-800 border-b-2 border-red-300">
+                  <th className="px-2 py-3 font-medium text-[#6D8396] text-center border-b-2 border-red-300">
                     Opções
                   </th>
                 </tr>

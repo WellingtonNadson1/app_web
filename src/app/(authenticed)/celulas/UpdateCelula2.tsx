@@ -134,7 +134,7 @@ export default function UpdateCelula2({
             <Modal
               icon={UserPlusIcon}
               titleModal="Atalização de Céula"
-              titleButton="Editar"
+              titleButton="Data"
               buttonProps={{
                 className:
                   'z-10 rounded-md bg-blue-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700',
