@@ -3,11 +3,12 @@
 import { cn } from '@/lib/utils'
 import { SignOut, X } from '@phosphor-icons/react'
 import { signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sidebarCentral, sidebarLiderCelula, sidebarSupervisor } from './LinksSidebar'
 import SpinnerButton from '../spinners/SpinnerButton'
+import ThemeImage from '../theme-image'
 
 export default function Sidebar() {
   const [open, setOpen] = useState(false)
@@ -21,7 +22,17 @@ export default function Sidebar() {
         className={`relative h-full ${open ? 'w-48' : 'w-[4.8rem]'
           } bg-white px-4  py-6 duration-500`}
       >
-        <Image
+        <ThemeImage
+          alt="Logo IBB"
+          srcLight="images/logo-ibb-1.svg"
+          srcDark="images/logo-mini-dark.svg"
+          onClick={() => route.push('/dashboard')}
+          width={54}
+          height={54}
+          className={`cursor-pointer ${!open ? 'mx-auto' : 'mx-2'
+            } transition-all duration-200`}
+        />
+        {/* <Image
           src="/images/logo-ibb-1.svg"
           onClick={() => route.push('/dashboard')}
           width={54}
@@ -29,7 +40,7 @@ export default function Sidebar() {
           alt="logo ibb"
           className={`cursor-pointer ${!open ? 'mx-auto' : 'mx-2'
             } transition-all duration-200`}
-        />
+        /> */}
         <div
           className={`absolute top-[3.8rem] z-50 flex cursor-pointer justify-end rounded-full border border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[10.2rem]' : 'ml-[3.04rem] rotate-45'
             } `}

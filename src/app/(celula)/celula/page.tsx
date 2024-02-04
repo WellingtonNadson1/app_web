@@ -18,12 +18,15 @@ import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
 // import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
 import axios from 'axios'
+import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
 
   const celulaId = session?.user.celulaId
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const { token } = useUserDataStore.getState().state
+
+  const axiosAuth = useAxiosAuthToken(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`

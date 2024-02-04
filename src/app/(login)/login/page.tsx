@@ -1,4 +1,5 @@
 'use client'
+import ThemeImage from '@/components/theme-image'
 // import { GoogleLogo } from '@phosphor-icons/react'
 import { signIn } from 'next-auth/react'
 import Image from 'next/image'
@@ -56,12 +57,19 @@ export default function Login() {
       <section className="flex min-h-screen flex-col items-center justify-center gap-4 bg-[#F5F7F9]">
         {/* image */}
         <div className="flex items-center justify-center md:hidden">
-          <Image
-            src="/images/logo-ibb-1.svg"
+          <ThemeImage
+            alt="Logo IBB"
+            srcLight="images/logo-ibb-1.svg"
+            srcDark="images/logo-mini-dark.svg"
+            width={54}
+            height={54}
+          />
+          {/* <Image
+            src="/images/logo-mini-dark.svg"
             width={54}
             height={54}
             alt="Logo IBB"
-          />
+          /> */}
         </div>
         {/* Login Container */}
         <div className="flex items-center max-w-3xl p-6 bg-white shadow-lg rounded-2xl">
@@ -227,7 +235,7 @@ export default function Login() {
           {/* image */}
           <div className="items-center justify-center hidden w-1/2 px-14 md:block">
             <Image
-              src="/images/Logo-IBB-Name.svg"
+              src="/images/logo.svg"
               width={500}
               height={500}
               alt="Logo IBB"

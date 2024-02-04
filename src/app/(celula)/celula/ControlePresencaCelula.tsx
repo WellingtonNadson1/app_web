@@ -134,8 +134,8 @@ export default function ControlePresencaCelula({
                         )
                         }
                         <div className="w-full border-separate border-spacing-y-6">
-                          <div className="grid grid-cols-3 text-base font-bold sm:grid-cols-5">
-                            <div className="py-2 text-gray-800 border-b-2 border-blue-300 text-start">
+                          <div className="flex items-center justify-between">
+                            <div className="py-2 w-full text-gray-800 border-b-2 border-blue-300 text-start">
                               Nome
                             </div>
                             <div className="hidden py-2 text-center text-gray-800 border-b-2 border-orange-300 sm:block">
@@ -144,17 +144,20 @@ export default function ControlePresencaCelula({
                             <div className="hidden py-2 text-center text-gray-800 border-b-2 border-indigo-300 sm:block">
                               Cargo
                             </div>
-                            <div className="py-2 text-center text-gray-800 border-b-2 border-green-300">
-                              P
+                            <div className='flex items-center justify-between'>
+                              <div className="py-2 text-center text-gray-800 w-full px-2 border-b-2 border-green-300">
+                                P
+                              </div>
+                              <div className="py-2 text-center text-gray-800 w-full px-2 border-b-2 border-red-300">
+                                F
+                              </div>
                             </div>
-                            <div className="py-2 text-center text-gray-800 border-b-2 border-red-300">
-                              F
-                            </div>
+
                           </div>
                           <div className="text-sm font-normal text-gray-700">
                             {celulaSort.map((user, index) => (
                               <form key={user.id} id={user.id}>
-                                <div className="grid grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-5">
+                                <div className="flex items-center justify-between">
                                   <input
                                     type="hidden"
                                     value={user.id}
@@ -165,7 +168,7 @@ export default function ControlePresencaCelula({
                                     value={culto}
                                     {...register(`${index}.presenca_culto`)}
                                   />
-                                  <div className="flex items-center justify-start gap-1 sm:gap-3">
+                                  <div className="mr-2 my-2 flex items-center justify-start gap-1 sm:gap-3">
                                     <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
                                       <User size={20} />
                                     </div>
@@ -191,22 +194,29 @@ export default function ControlePresencaCelula({
                                       {user.cargo_de_lideranca.nome}{' '}
                                     </span>
                                   </div>
-                                  <input
-                                    {...register(`${index}.status` as const, {
-                                      required: true
-                                    })}
-                                    value="true"
-                                    type="radio"
-                                    id={user.id}
-                                    className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
-                                  />
-                                  <input
-                                    {...register(`${index}.status` as const, { required: true })}
-                                    value="false"
-                                    type="radio"
-                                    id={user.first_name}
-                                    className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
-                                  />
+                                  <div className='flex items-center justify-end gap-3.5'>
+                                    <div>
+                                      <input
+                                        {...register(`${index}.status` as const, {
+                                          required: true
+                                        })}
+                                        value="true"
+                                        type="radio"
+                                        id={user.id}
+                                        className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
+                                      />
+                                    </div>
+                                    <div>
+                                      <input
+                                        {...register(`${index}.status` as const, { required: true })}
+                                        value="false"
+                                        type="radio"
+                                        id={user.first_name}
+                                        className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
+                                      />
+                                    </div>
+                                  </div>
+
                                 </div>
                               </form>
                             ))}
@@ -261,5 +271,3 @@ export default function ControlePresencaCelula({
     </>
   )
 }
-
-
