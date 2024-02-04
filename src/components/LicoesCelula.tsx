@@ -32,45 +32,46 @@ export default function LicoesCelula() {
     return <div>Erro ao carregar os dados.</div>
   }
   console.log('data', data)
-  const temaMesCelula = 'Sacrifico-me'
-  const subTemaMesCelula = 'Que seja um sacrifício vivo e santo... Rm 12.1'
+  const temaMesCelula = 'Aviva-nos'
+  const subTemaMesCelula = 'Ouvi, Senhor, a tua palavra, e temi; aviva, ó Senhor, a tua obra no meio dos anos, no meio dos anos faze-a conhecida; na tua ira lembra-te da misericórdia. Hb 3.2'
+
   const statusLicoes = [
     {
       id: 1,
-      title: 'Sacrifício Vivo',
-      periodo: '07 a 13 de Jan/2024',
+      title: 'O que é avivamento',
+      periodo: '04 a 10 de Fev/2024',
       status: 'ok',
       icon: FilePdf,
-      versiculo: 'Rm 12:01',
+      versiculo: 'Tg 4: 8-10',
     },
     {
       id: 2,
-      title: 'Sacrifício de Louvor',
-      periodo: '14 a 20 de Jan/2024',
+      title: 'Jejum vs Despertar Espiritual',
+      periodo: '11 a 17 de Fev/2024',
       status: 'ok',
       icon: FilePdf,
-      versiculo: 'Hb 13:15',
+      versiculo: 'Joel 2:12',
     },
     {
       id: 3,
-      title: 'A Oferta de Abel',
-      periodo: '21 a 27 de Jan/2024',
+      title: 'Avivamento vs Palavra de Deus',
+      periodo: '18 a 24 de Fev/2024',
       status: 'ok',
       icon: FilePdf,
-      versiculo: 'Gn 4:3-4',
+      versiculo: 'Ne 8:1-3',
     },
     {
       id: 4,
-      title: 'O que move o Coração de Deus',
-      periodo: '28 de Jan a 03 de Fev/2024',
+      title: 'Tempo de Arrempendimento',
+      periodo: '25 de Fev a 02 de Mar/2024',
       status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Sl 51:17',
+      versiculo: 'Jn 3:1-10',
     },
     // {
     //   id: 5,
     //   title: 'O Cuidado de Deus',
-    //   periodo: '29 de Out a 04 de Jan/2024',
+    //   periodo: '29 de Out a 04 de Fev/2024',
     //   status: 'pendente',
     //   icon: FilePdf,
     //   versiculo: 'Ez 34:11-12',
