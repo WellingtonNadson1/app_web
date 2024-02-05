@@ -1,6 +1,3 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/(login)/login/page": "app/(login)/login/page.js"
 }

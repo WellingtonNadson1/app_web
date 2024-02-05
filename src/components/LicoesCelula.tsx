@@ -18,29 +18,30 @@ export default function LicoesCelula() {
   const { token } = useUserDataStore.getState().state
 
   const axiosAuth = useAxiosAuthToken(token)
-  const LicoesCelula = async () => {
-    const { data: licoes } = await axiosAuth.get(URLLicoesCelula)
-    console.log('licoes', licoes)
-    return licoes
+
+  const LicoesCelulaData = async () => {
+    const { data } = await axiosAuth.get(URLLicoesCelula)
+    console.log('licoes', data)
+    return data
   }
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
-    queryFn: LicoesCelula
+    queryFn: LicoesCelulaData
   })
   if (isLoading) return <SpinnerButton message={''} />
   if (isError) {
-    return <div>Erro ao carregar os dados.</div>
+    return <div>Atualize a página para carregar os dados.</div>
   }
   console.log('data', data)
   const temaMesCelula = 'Aviva-nos'
-  const subTemaMesCelula = 'Ouvi, Senhor, a tua palavra, e temi; aviva, ó Senhor, a tua obra no meio dos anos, no meio dos anos faze-a conhecida; na tua ira lembra-te da misericórdia. Hb 3.2'
+  const subTemaMesCelula = 'Ouvi, Senhor, a tua palavra, e temi; aviva, ó Senhor, a tua obra no meio dos anos, no meio dos anos faze-a conhecida; na tua ira lembra-te da misericórdia. Hc 3.2'
 
   const statusLicoes = [
     {
       id: 1,
       title: 'O que é avivamento',
       periodo: '04 a 10 de Fev/2024',
-      status: 'ok',
+      status: 'pendente',
       icon: FilePdf,
       versiculo: 'Tg 4: 8-10',
     },
@@ -48,15 +49,15 @@ export default function LicoesCelula() {
       id: 2,
       title: 'Jejum vs Despertar Espiritual',
       periodo: '11 a 17 de Fev/2024',
-      status: 'ok',
+      status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Joel 2:12',
+      versiculo: 'Jl 2:12',
     },
     {
       id: 3,
       title: 'Avivamento vs Palavra de Deus',
       periodo: '18 a 24 de Fev/2024',
-      status: 'ok',
+      status: 'pendente',
       icon: FilePdf,
       versiculo: 'Ne 8:1-3',
     },

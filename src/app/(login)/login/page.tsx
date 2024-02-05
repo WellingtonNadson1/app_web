@@ -2,7 +2,6 @@
 import ThemeImage from '@/components/theme-image'
 // import { GoogleLogo } from '@phosphor-icons/react'
 import { signIn } from 'next-auth/react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
@@ -64,12 +63,6 @@ export default function Login() {
             width={54}
             height={54}
           />
-          {/* <Image
-            src="/images/logo-mini-dark.svg"
-            width={54}
-            height={54}
-            alt="Logo IBB"
-          /> */}
         </div>
         {/* Login Container */}
         <div className="flex items-center max-w-3xl p-6 bg-white shadow-lg rounded-2xl">
@@ -234,11 +227,12 @@ export default function Login() {
 
           {/* image */}
           <div className="items-center justify-center hidden w-1/2 px-14 md:block">
-            <Image
-              src="/images/logo.svg"
+            <ThemeImage
+              alt="Logo IBB"
+              srcLight="images/Logo-IBB-Name.svg"
+              srcDark="images/logo.svg"
               width={500}
               height={500}
-              alt="Logo IBB"
             />
           </div>
         </div>
