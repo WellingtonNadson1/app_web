@@ -127,6 +127,6 @@ export const useUserDataStore = create(persist<UserDataStore>(
   }),
   {
     name: 'data-user',
-    storage: createJSONStorage(() => sessionStorage)
+    storage: createJSONStorage(() => localStorage)
   }
 ))

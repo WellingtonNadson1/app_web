@@ -79,6 +79,6 @@ export const useCombinetedStore = create(persist<CombinedDataStore>(
   }),
   {
     name: 'data-combinated',
-    storage: createJSONStorage(() => sessionStorage)
+    storage: createJSONStorage(() => localStorage)
   }
 ))

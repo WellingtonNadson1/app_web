@@ -1,5 +1,5 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
@@ -20,7 +20,6 @@ import {
   startOfToday,
 } from 'date-fns'
 import pt from 'date-fns/locale/pt'
-import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
@@ -39,14 +38,13 @@ const meetingSchema = z.object({
 
 export type meetingsch = z.infer<typeof meetingSchema>
 
-
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
 export default function CalendarLiderCelula() {
   const today = startOfToday()
-  const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
   const { token } = useUserDataStore.getState().state
 
   const axiosAuth = useAxiosAuthToken(token)
@@ -58,11 +56,20 @@ export default function CalendarLiderCelula() {
     return <SpinnerButton message={''} />
   }
 
+  const dataHoje = new Date()
+  const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
+  const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
+
+  const params = {
+    firstDayOfMonth: firstDayOfMonth,
+    lastDayOfMonth: lastDayOfMonth
+  }
+
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: async () => {
-      const result = await axiosAuth.get(URLCultosInd)
-      return result.data
+      const { data } = await axiosAuth.get(URLCultosInd, { params })
+      return data
     },
   })
 

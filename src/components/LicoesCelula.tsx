@@ -21,7 +21,6 @@ export default function LicoesCelula() {
 
   const LicoesCelulaData = async () => {
     const { data } = await axiosAuth.get(URLLicoesCelula)
-    console.log('licoes', data)
     return data
   }
   const { data, isLoading, isError } = useQuery<ApiResponse>({
@@ -32,7 +31,7 @@ export default function LicoesCelula() {
   if (isError) {
     return <div>Atualize a página para carregar os dados.</div>
   }
-  console.log('data', data)
+
   const temaMesCelula = 'Aviva-nos'
   const subTemaMesCelula = 'Ouvi, Senhor, a tua palavra, e temi; aviva, ó Senhor, a tua obra no meio dos anos, no meio dos anos faze-a conhecida; na tua ira lembra-te da misericórdia. Hc 3.2'
 

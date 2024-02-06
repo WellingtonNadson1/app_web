@@ -3,7 +3,7 @@
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
@@ -28,7 +28,7 @@ export default function ControleCelulaSupervision() {
 
   const axiosAuth = useAxiosAuthToken(token)
 
-  const URLCultosInd = `${BASE_URL}/cultosindividuais`
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const CelulaData = async () => {
@@ -51,10 +51,20 @@ export default function ControleCelulaSupervision() {
     retry: false
   })
 
+  const dataHoje = new Date()
+  const dayOfWeek = dataHoje.getDay()
+  const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
+  const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
+
   const MeetingsData = async () => {
     try {
-      const result = await axiosAuth.get(URLCultosInd)
-      return await result.data
+      const params = {
+        firstDayOfMonth: firstDayOfMonth,
+        lastDayOfMonth: lastDayOfMonth
+      }
+      console.log('params', params)
+      const { data } = await axiosAuth.get(URLCultosInd, { params })
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
         console.error(error.response.data)
@@ -64,19 +74,20 @@ export default function ControleCelulaSupervision() {
     }
   }
 
-  const { data, isLoading } = useQuery<Meeting>({
+  const { data, isLoading, isSuccess } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
-    queryFn: MeetingsData
+    queryFn: MeetingsData,
   })
+
+  if (isSuccess) {
+    console.log('data', data)
+  }
 
   const today = startOfToday()
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
-
-  const dataHoje = new Date()
-  const dayOfWeek = dataHoje.getDay()
 
   return (
     <>
