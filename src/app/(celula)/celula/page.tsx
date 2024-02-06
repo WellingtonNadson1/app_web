@@ -28,7 +28,7 @@ export default function ControleCelulaSupervision() {
 
   const axiosAuth = useAxiosAuthToken(token)
 
-  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
+  const URLCultosInd = `${BASE_URL_LOCAL}/cultosindividuais/perperiodo`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const CelulaData = async () => {
@@ -58,12 +58,10 @@ export default function ControleCelulaSupervision() {
 
   const MeetingsData = async () => {
     try {
-      const params = {
-        firstDayOfMonth: firstDayOfMonth,
-        lastDayOfMonth: lastDayOfMonth
-      }
-      console.log('params', params)
-      const { data } = await axiosAuth.get(URLCultosInd, { params })
+      const { data } = await axiosAuth.post(URLCultosInd, {
+        firstDayOfMonth,
+        lastDayOfMonth
+      })
       return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

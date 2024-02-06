@@ -20,12 +20,12 @@ export const authOptions: NextAuthOptions = {
           return null
         }
 
-        const response = await axios.post('/login', {
+        const  result = await axios.post('/login', {
           email: credentials?.email,
           password: credentials?.password,
         });
 
-        const user = response.data
+        const user = result.data
 
         if (user) {
           console.log(JSON.stringify(user))

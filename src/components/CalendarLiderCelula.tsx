@@ -44,7 +44,7 @@ function classNames(...classes: string[]) {
 
 export default function CalendarLiderCelula() {
   const today = startOfToday()
-  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
+  const URLCultosInd = `${BASE_URL_LOCAL}/cultosindividuais/perperiodo`
   const { token } = useUserDataStore.getState().state
 
   const axiosAuth = useAxiosAuthToken(token)
@@ -60,15 +60,13 @@ export default function CalendarLiderCelula() {
   const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
   const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
 
-  const params = {
-    firstDayOfMonth: firstDayOfMonth,
-    lastDayOfMonth: lastDayOfMonth
-  }
-
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: async () => {
-      const { data } = await axiosAuth.get(URLCultosInd, { params })
+      const { data } = await axiosAuth.post(URLCultosInd, {
+        firstDayOfMonth,
+        lastDayOfMonth
+      })
       return data
     },
   })
