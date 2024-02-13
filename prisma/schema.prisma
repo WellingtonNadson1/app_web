@@ -148,26 +148,26 @@ model discipulador_usuario {
 }
 
 model Encontros {
-  id            String   @id @default(uuid())
-  nome          String
-  descricao     String?
-  date_create   DateTime @default(now())
-  date_update   DateTime @updatedAt
-  participantes User[]   @relation("EncontrosToUser")
+  id              String            @id @default(uuid())
+  nome            String
+  descricao       String?
+  date_create     DateTime          @default(now())
+  date_update     DateTime          @updatedAt
+  EncontrosToUser EncontrosToUser[]
 
   @@map("encontros")
 }
 
 model Escola {
-  id          String        @id @default(uuid())
-  nome        String
-  descricao   String?
-  userId      String?
-  date_create DateTime      @default(now())
-  date_update DateTime      @updatedAt
-  lider       User?         @relation("LiderEscola", fields: [userId], references: [id])
-  turmas      TurmaEscola[]
-  alunos      User[]        @relation("EscolaToUser")
+  id           String         @id @default(uuid())
+  nome         String
+  descricao    String?
+  userId       String?
+  date_create  DateTime       @default(now())
+  date_update  DateTime       @updatedAt
+  EscolaToUser EscolaToUser[]
+  lider        User?          @relation("LiderEscola", fields: [userId], references: [id])
+  turmas       TurmaEscola[]
 
   @@map("escola")
 }
@@ -177,13 +177,13 @@ model LicaoCelula {
   titulo               String
   versiculo_chave      String
   link_objeto_aws      String?
-  licao_lancando_redes Boolean          @default(false)
   data_inicio          DateTime
   data_termino         DateTime
   date_create          DateTime         @default(now())
   date_update          DateTime         @updatedAt
-  TemaLicaoCelula      TemaLicaoCelula? @relation(fields: [temaLicaoCelulaId], references: [id], onDelete: Cascade)
   temaLicaoCelulaId    String?
+  licao_lancando_redes Boolean?         @default(false)
+  TemaLicaoCelula      TemaLicaoCelula? @relation(fields: [temaLicaoCelulaId], references: [id], onDelete: Cascade)
 
   @@map("licao_celula")
 }
@@ -266,17 +266,17 @@ model Supervisao {
 }
 
 model TemaLicaoCelula {
-  status          Boolean       @default(false)
   id              String        @id @default(uuid())
-  tema            String?
-  folderName      String?
-  versiculo_chave String?
+  tema            String
   link_folder_aws String?
   data_inicio     DateTime
   data_termino    DateTime
-  licoes_celula   LicaoCelula[]
   date_create     DateTime      @default(now())
   date_update     DateTime      @updatedAt
+  folderName      String?
+  status          Boolean       @default(false)
+  versiculo_chave String?       @default("versiculo")
+  licoes_celula   LicaoCelula[]
 
   @@map("tema_licao_celula")
 }
@@ -350,6 +350,8 @@ model User {
   presencas_cultos         PresencaCulto[]
   presencas_aulas_escolas  PresencaEscola[]
   presencas_reuniao_celula PresencaReuniaoCelula[]
+  EncontrosToUser          EncontrosToUser[]
+  EscolaToUser             EscolaToUser[]
   celula_lidera            Celula[]                @relation("LiderCelula")
   discipulos               discipulador_usuario[]  @relation("discipulos")
   discipulador             discipulador_usuario[]  @relation("discipulador")
@@ -366,8 +368,6 @@ model User {
   supervisao_pertence      Supervisao?             @relation(fields: [supervisaoId], references: [id])
   TurmaEscola              TurmaEscola?            @relation(fields: [turmaEscolaId], references: [id])
   user_roles               user_roles[]
-  encontros                Encontros[]             @relation("EncontrosToUser")
-  escolas                  Escola[]                @relation("EscolaToUser")
 
   @@map("user")
 }
@@ -381,6 +381,39 @@ model user_roles {
   @@id([user_id, role_id])
 }
 
+model EncontrosToUser {
+  A         String
+  B         String
+  encontros Encontros @relation(fields: [A], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@id([A, B], map: "_EncontrosToUser_AB_pkey")
+  @@index([B], map: "_EncontrosToUser_B_index")
+  @@map("_EncontrosToUser")
+}
+
+model EscolaToUser {
+  A      String
+  B      String
+  escola Escola @relation(fields: [A], references: [id], onDelete: Cascade)
+  user   User   @relation(fields: [B], references: [id], onDelete: Cascade)
+
+  @@id([A, B], map: "_EscolaToUser_AB_pkey")
+  @@index([B], map: "_EscolaToUser_B_index")
+  @@map("_EscolaToUser")
+}
+
+model agenda {
+  status       Boolean  @default(false)
+  id           String   @id @default(uuid())
+  title        String?
+  description  String?
+  data_inicio  DateTime
+  data_termino DateTime
+  date_create  DateTime @default(now())
+  date_update  DateTime @updatedAt
+}
+
 enum Role {
   USERLIDER
   USERSUPERVISOR
@@ -388,6 +421,8 @@ enum Role {
   USERPASTOR
   MEMBER
   ADMIN
+  OUTRAIGREJA
+  AFASTADO
 }
 
 enum TokenType {
@@ -401,4 +436,6 @@ enum role {
   USERPASTOR
   MEMBER
   ADMIN
+  OUTRAIGREJA
+  AFASTADO
 }

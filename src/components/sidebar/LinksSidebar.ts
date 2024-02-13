@@ -4,10 +4,11 @@ import {
   ChartBar,
   HandHeart,
   Heart,
+  Megaphone,
   Student,
   Target,
   Users,
-  UsersFour,
+  UsersFour
 } from '@phosphor-icons/react'
 
 import { LayoutDashboard } from 'lucide-react'
@@ -21,6 +22,7 @@ export const sidebarCentral = [
   { name: 'Escolas', icon: Student, href: '/escolas' },
   { name: 'Relatórios', icon: ChartBar, href: '/relatorios' },
   { name: 'Cultos', icon: Calendar, href: '/cultos' },
+  { name: 'Agenda', icon: Megaphone, href: '/agenda-igreja' },
   // { name: 'Fincanceiro', icon: Wallet, href: '/financeiro' },
 ]
 
