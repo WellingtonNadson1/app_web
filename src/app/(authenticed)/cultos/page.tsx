@@ -17,7 +17,7 @@ import { useQuery } from '@tanstack/react-query'
 import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function Cultos() {
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const { register, handleSubmit, reset } = useForm<NewCulto>()
   const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`

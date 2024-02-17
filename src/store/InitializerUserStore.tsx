@@ -1,10 +1,11 @@
 "use client"
 import { useRef } from "react";
-import { useUserDataStore } from "./UserDataStore";
+import { UserRoles, useUserDataStore } from "./UserDataStore";
 
 type InitializerUserStoreProps = {
   id: string
   role: string
+  user_roles: UserRoles[]
   email: string
   image_url: string
   first_name: string
@@ -16,14 +17,12 @@ type InitializerUserStoreProps = {
   }
 }
 
-export const InitializerUserStore = ({ id, role, email, image_url, first_name, token, refreshToken }: InitializerUserStoreProps) => {
+export const InitializerUserStore = ({ id, role, user_roles, email, image_url, first_name, token, refreshToken }: InitializerUserStoreProps) => {
   const initializerUser = useRef(false)
 
   if (!initializerUser.current) {
     useUserDataStore.setState({
-      state: {
-        id, role, email, image_url, first_name, token, refreshToken
-      }
+      id, role, user_roles, email, image_url, first_name, token, refreshToken
     })
   }
   return null

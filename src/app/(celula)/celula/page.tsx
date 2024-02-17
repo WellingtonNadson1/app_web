@@ -24,12 +24,12 @@ export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
 
   const celulaId = session?.user.celulaId
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
-  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+  const URLCelula = `${BASE_URL_LOCAL}/celulas/${celulaId}`
 
   const CelulaData = async () => {
     try {
@@ -48,6 +48,7 @@ export default function ControleCelulaSupervision() {
     queryKey: ['celula', celulaId],
     queryFn: CelulaData,
     enabled: !!celulaId,
+    refetchOnWindowFocus: false,
     retry: false
   })
 
@@ -75,6 +76,7 @@ export default function ControleCelulaSupervision() {
   const { data, isLoading, isSuccess } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: MeetingsData,
+    refetchOnWindowFocus: false,
   })
 
   if (isSuccess) {

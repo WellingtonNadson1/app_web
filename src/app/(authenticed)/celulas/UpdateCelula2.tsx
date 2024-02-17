@@ -22,7 +22,7 @@ export default function UpdateCelula2({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${id}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [formSuccess, setFormSuccess] = useState(false)

@@ -4,10 +4,10 @@ import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
 import Modal from '@/components/modal'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
@@ -25,7 +25,7 @@ export default function UpdateCelula({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)

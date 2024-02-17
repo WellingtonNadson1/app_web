@@ -7,6 +7,11 @@ declare module 'next-auth' {
     user: {
       id: string
       role: string
+      user_roles: {
+        rolenew: {
+          name: string
+        }
+      }[],
       email: string
       image_url: string
       first_name: string
@@ -33,18 +38,18 @@ declare module 'next-auth' {
       has_filho: string
       quantidade_de_filho: number
       date_decisao: string | Date
-      situacaoNoReinoId:  string
+      situacaoNoReinoId: string
       cargoDeLiderancaId: string
       token: string
       refreshToken: {
         id: string
         expiresIn: number
-		    userIdRefresh: string
+        userIdRefresh: string
       }
       newRefreshToken: {
         id: string
         expiresIn: number
-		    userIdRefresh: string
+        userIdRefresh: string
       }
     }
   }

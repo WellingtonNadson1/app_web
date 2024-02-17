@@ -12,7 +12,7 @@ export default function ControleCelulaSupervision({
 }: {
   params: { celulaId: string }
 }) {
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

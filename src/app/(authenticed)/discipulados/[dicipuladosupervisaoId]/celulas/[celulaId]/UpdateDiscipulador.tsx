@@ -14,6 +14,7 @@ import { Member } from '@/app/(authenticed)/novo-membro/schema'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useUserDataStore } from '@/store/UserDataStore'
+import { CelulaData } from '@/components/listMembersCelula'
 
 type dataUpdateDiscipulador = {
   id: string,
@@ -27,6 +28,18 @@ interface Membro {
     id: string;
     nome: string;
   };
+  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
+    user_discipulador_usuario_discipulador_idTouser: {
+      id: string,
+      first_name: string
+    },
+  }[],
+  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
+    user_discipulador_usuario_usuario_idTouser: {
+      id: string,
+      first_name: string
+    },
+  }[],
   user: {
     id: string;
     first_name: string;
@@ -46,12 +59,12 @@ function UpdateDisicipulador({
   console.log('memberBtnUpdateDiscipulador', member)
   const URLUsers = `${BASE_URL}/users`
 
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [nome, setNome] = useState(member?.user?.first_name);
+  const [nome, setNome] = useState(member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.user_discipulador_usuario_usuario_idTouser?.first_name);
   const queryClient = useQueryClient()
 
   const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
@@ -77,10 +90,10 @@ function UpdateDisicipulador({
       const cached = queryClient.getQueryData(["celula"])
 
       // Atualizando o cached da lista de membros e discipuladores atraves do HTTPState
-      queryClient.setQueryData(["celula"], (cachedData: any) => {
+      queryClient.setQueryData(["celula"], (cached: any) => {
         return {
-          ...cachedData,
-          membros: cachedData.membros.map((membro: any) =>
+          ...cached,
+          membros: cached.membros.map((membro: any) =>
             membro.id === member.id ? {
               ...membro, user: {
                 id: selectedMember?.id,

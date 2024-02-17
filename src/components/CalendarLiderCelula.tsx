@@ -45,7 +45,7 @@ function classNames(...classes: string[]) {
 export default function CalendarLiderCelula() {
   const today = startOfToday()
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

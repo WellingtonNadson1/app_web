@@ -63,7 +63,7 @@ export default function AddNewTemaLicoesCelula() {
   const URLCelulas = `${BASE_URL}/celulas`
   const router = useRouter()
 
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

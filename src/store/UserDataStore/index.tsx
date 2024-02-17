@@ -2,21 +2,23 @@
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 
-type RefreshToken = {
+export type RefreshToken = {
   id: string
   expiresIn: number
   userIdRefresh: string
 }
 
-type NewRefreshToken = {
-  id: string
-  expiresIn: number
-  userIdRefresh: string
-}
+export type UserRoles =
+  {
+    rolenew: {
+      name: string
+    }
+  }
 
 type ActionsProps = {
   setId: (id: string) => void;
   setRole: (role: string) => void;
+  setUserRoles: (user_roles: UserRoles) => void;
   setEmail: (email: string) => void;
   setImageURL: (image_url: string) => void;
   setFirstName: (first_name: string) => void;
@@ -25,48 +27,46 @@ type ActionsProps = {
 }
 
 type UserDataStore = {
-  state: {
+  id: string;
+  role: string;
+  user_roles: UserRoles[];
+  email: string;
+  image_url: string;
+  first_name: string;
+  token: string;
+  refreshToken: {
     id: string
-    role: string
-    email: string
-    image_url: string
-    first_name: string
-    token: string
-    refreshToken: {
-      id: string
-      expiresIn: number
-      userIdRefresh: string
-    }
+    expiresIn: number
+    userIdRefresh: string
   };
   actions: ActionsProps;
 };
 
 export const useUserDataStore = create(persist<UserDataStore>(
   (set) => ({
-    state: {
+    id: '',
+    role: '',
+    user_roles: [],
+    email: '',
+    image_url: '',
+    first_name: '',
+    token: '',
+    refreshToken: {
       id: '',
-      role: '',
-      email: '',
-      image_url: '',
-      first_name: '',
-      token: '',
-      refreshToken: {
-        id: '',
-        expiresIn: 0,
-        userIdRefresh: '',
-      },
-      newRefreshToken: {
-        id: '',
-        expiresIn: 0,
-        userIdRefresh: '',
-      }
+      expiresIn: 0,
+      userIdRefresh: '',
+    },
+    newRefreshToken: {
+      id: '',
+      expiresIn: 0,
+      userIdRefresh: '',
     },
     actions: {
       setId: (id) =>
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
+            ...state,
             id: id
           }
         })),
@@ -75,8 +75,16 @@ export const useUserDataStore = create(persist<UserDataStore>(
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
-            escolas: role
+            ...state, role
+          }
+        })),
+
+      setUserRoles: (user_roles) =>
+        set((state) => ({
+          ...state,
+          state: {
+            ...state,
+            user_roles: [...state.user_roles, user_roles]
           }
         })),
 
@@ -84,8 +92,7 @@ export const useUserDataStore = create(persist<UserDataStore>(
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
-            econtros: email
+            ...state, email
           }
         })),
 
@@ -93,33 +100,30 @@ export const useUserDataStore = create(persist<UserDataStore>(
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
-            image_url: image_url
+            ...state, image_url
           }
         })),
       setFirstName: (first_name) =>
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
-            first_name: first_name
+            ...state, first_name
           }
         })),
       setToken: (token) =>
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
-            token: token
+            ...state, token
           }
         })),
       setRefreshToken: (refreshToken) =>
         set((state) => ({
           ...state,
           state: {
-            ...state.state,
+            ...state,
             refreshToken: {
-              ...state.state.refreshToken, refreshToken
+              ...state.refreshToken, refreshToken
             }
           }
         })),
@@ -129,4 +133,5 @@ export const useUserDataStore = create(persist<UserDataStore>(
     name: 'data-user',
     storage: createJSONStorage(() => localStorage)
   }
-))
+)
+)

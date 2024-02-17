@@ -5,14 +5,16 @@ import React from 'react'
 
 interface IProps {
   children: React.ReactNode,
-
-}
-
-export const Providers = ({ children }: IProps) => {
-  return <SessionProvider>{children}</SessionProvider>
 }
 
 const queryClient = new QueryClient()
-export const ReactQueryProvider = ({ children }: { children: React.ReactNode }) => {
-  return <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+
+export const Providers = ({ children }: IProps) => {
+  return (
+    <SessionProvider>
+      <QueryClientProvider client={queryClient}>
+        {children}
+      </QueryClientProvider>
+    </SessionProvider>
+  )
 }

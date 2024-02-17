@@ -90,9 +90,7 @@ export default function ControlePresencaCelula({
   }, {
     onSuccess: async () => {
       success('😉 Presenças Registradas!')
-      setTimeout(() => {
-        refetchPresence();
-      }, 3000);
+      setPresencaReuniaoIsRegistered(true)
     }
   })
 
@@ -135,20 +133,20 @@ export default function ControlePresencaCelula({
                         }
                         <div className="w-full border-separate border-spacing-y-6">
                           <div className="flex items-center justify-between">
-                            <div className="py-2 w-full text-gray-800 border-b-2 border-blue-300 text-start">
+                            <div className="w-full py-2 text-gray-800 border-b-2 border-blue-300 text-start">
                               Nome
                             </div>
-                            <div className="hidden py-2 text-center text-gray-800 border-b-2 border-orange-300 sm:block">
+                            <div className="hidden w-full py-2 text-center text-gray-800 border-b-2 border-orange-300 sm:block">
                               Status
                             </div>
-                            <div className="hidden py-2 text-center text-gray-800 border-b-2 border-indigo-300 sm:block">
+                            <div className="hidden w-full py-2 text-center text-gray-800 border-b-2 border-indigo-300 sm:block">
                               Cargo
                             </div>
-                            <div className='flex items-center justify-between'>
-                              <div className="py-2 text-center text-gray-800 w-full px-2 border-b-2 border-green-300">
+                            <div className='flex items-center justify-between w-full'>
+                              <div className="w-full px-2 py-2 text-center text-gray-800 border-b-2 border-green-300">
                                 P
                               </div>
-                              <div className="py-2 text-center text-gray-800 w-full px-2 border-b-2 border-red-300">
+                              <div className="w-full px-2 py-2 text-center text-gray-800 border-b-2 border-red-300">
                                 F
                               </div>
                             </div>
@@ -157,7 +155,7 @@ export default function ControlePresencaCelula({
                           <div className="text-sm font-normal text-gray-700">
                             {celulaSort.map((user, index) => (
                               <form key={user.id} id={user.id}>
-                                <div className="flex items-center justify-between">
+                                <div className="flex items-center justify-between w-full">
                                   <input
                                     type="hidden"
                                     value={user.id}
@@ -168,13 +166,13 @@ export default function ControlePresencaCelula({
                                     value={culto}
                                     {...register(`${index}.presenca_culto`)}
                                   />
-                                  <div className="mr-2 my-2 flex items-center justify-start gap-1 sm:gap-3">
+                                  <div className="flex items-center justify-start w-full gap-1 my-2 mr-2 sm:gap-3">
                                     <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
                                       <User size={20} />
                                     </div>
                                     <h2 className="ml-4">{user.first_name}</h2>
                                   </div>
-                                  <div className="hidden sm:block">
+                                  <div className="hidden w-full text-center sm:block">
                                     <span
                                       className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === 'Ativo'
                                         ? 'border border-green-200 bg-green-100 ring-green-500'
@@ -189,13 +187,13 @@ export default function ControlePresencaCelula({
                                       {user.situacao_no_reino.nome}
                                     </span>
                                   </div>
-                                  <div className="hidden sm:block">
+                                  <div className="hidden w-full text-center sm:block">
                                     <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
                                       {user.cargo_de_lideranca.nome}{' '}
                                     </span>
                                   </div>
-                                  <div className='flex items-center justify-end gap-3.5'>
-                                    <div>
+                                  <div className='flex w-full items-center justify-end gap-3.5'>
+                                    <div className='w-full text-center'>
                                       <input
                                         {...register(`${index}.status` as const, {
                                           required: true
@@ -206,7 +204,7 @@ export default function ControlePresencaCelula({
                                         className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                                       />
                                     </div>
-                                    <div>
+                                    <div className='w-full text-center'>
                                       <input
                                         {...register(`${index}.status` as const, { required: true })}
                                         value="false"

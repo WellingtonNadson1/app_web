@@ -15,7 +15,7 @@ type ApiResponse = z.infer<typeof ResponseSchema>
 
 export default function LicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

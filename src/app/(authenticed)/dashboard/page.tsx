@@ -1,16 +1,18 @@
 // "use client"
 import { authOptions } from '@/app/api/auth/[...nextauth]/auth';
 import { getServerSession } from 'next-auth';
-import MainSide from '@/components/MainSide'
 import axios from 'axios';
+import MainSide from '@/components/MainSide'
 import { useCombinetedStore } from '@/store/DataCombineted';
 import { InitializerStore } from '@/store/InitializerStore';
 import { InitializerUserStore } from '@/store/InitializerUserStore';
+import { RedirectType, redirect } from 'next/navigation';
 
 export default async function Dashboard() {
   const session = await getServerSession(authOptions)
   const id = session?.user.id
   const role = session?.user.role
+  const user_roles = session?.user.user_roles;
   const email = session?.user.token
   const image_url = session?.user.image_url
   const first_name = session?.user.first_name
@@ -51,9 +53,39 @@ export default async function Dashboard() {
     }
   })
 
+  const roles = session?.user.user_roles;
+
+  if (roles?.some(role => role.rolenew.name === "USERSUPERVISOR") && roles.some(role => role.rolenew.name === "USERLIDER")) {
+    // Redireciona para supervisão
+    return redirect('/celula', RedirectType.replace);
+  }
+
+  if (roles?.some(role => role.rolenew.name === 'USERSUPERVISOR')) {
+    // Signed in
+    return redirect('/supervisao', RedirectType.replace);
+  }
+  if (roles?.some(role => role.rolenew.name === 'USERLIDER')) {
+    // Signed in
+    return redirect('/celula', RedirectType.replace);
+  }
+  if (roles?.some(role => role.rolenew.name === 'MEMBER')) {
+    // Signed in
+    return redirect('/login', RedirectType.replace);
+  }
+
   return (
     <>
       <div className="w-full px-2 py-2 mx-auto">
+        <InitializerUserStore
+          id={id ?? ''}
+          role={role ?? ''}
+          user_roles={user_roles ?? []}
+          email={email ?? ''}
+          image_url={image_url ?? ''}
+          first_name={first_name ?? ''}
+          token={token ?? ''}
+          refreshToken={refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }}
+        />
         <InitializerStore
           supervisoes={result[0] ?? []}
           escolas={result[1] ?? []}
@@ -61,15 +93,7 @@ export default async function Dashboard() {
           situacoesNoReino={result[3] ?? []}
           cargoLideranca={result[4] ?? []}
         />
-        <InitializerUserStore
-          id={id ?? ''}
-          role={role ?? ''}
-          email={email ?? ''}
-          image_url={image_url ?? ''}
-          first_name={first_name ?? ''}
-          token={token ?? ''}
-          refreshToken={refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }}
-        />
+
         <MainSide />
       </div>
     </>

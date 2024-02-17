@@ -31,7 +31,7 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
   const toDay = format(new Date(), 'PP', { locale: pt })
 
   if (status === 'loading') {
-    return <SpinnerButton message={''}/>
+    return <SpinnerButton message={''} />
   }
 
   const isAuthenticated = status === 'authenticated'

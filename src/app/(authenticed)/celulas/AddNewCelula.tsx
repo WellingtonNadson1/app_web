@@ -1,7 +1,6 @@
 'use client'
 import ListCelulas, { ICelula } from '@/components/ListCelulas'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
@@ -20,7 +19,7 @@ export default function AddNewCelula() {
   const URLCelulas = `${BASE_URL}/celulas`
   const router = useRouter()
 
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
