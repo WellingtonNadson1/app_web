@@ -25,7 +25,7 @@ export default function LicoesCelula() {
   }
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
-    queryFn: LicoesCelulaData
+    queryFn: LicoesCelulaData,
   })
   if (isLoading) return <SpinnerButton message={''} />
   if (isError) {
@@ -40,7 +40,7 @@ export default function LicoesCelula() {
       id: 1,
       title: 'O que é avivamento',
       periodo: '04 a 10 de Fev/2024',
-      status: 'pendente',
+      status: 'ok',
       icon: FilePdf,
       versiculo: 'Tg 4: 8-10',
     },
@@ -48,7 +48,7 @@ export default function LicoesCelula() {
       id: 2,
       title: 'Jejum vs Despertar Espiritual',
       periodo: '11 a 17 de Fev/2024',
-      status: 'pendente',
+      status: 'ok',
       icon: FilePdf,
       versiculo: 'Jl 2:12',
     },
@@ -82,7 +82,7 @@ export default function LicoesCelula() {
     <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
       <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
         <div className="flex flex-col items-start justify-start mb-3">
-          <h1 className="mb-3 text-lg font-semibold leading-7">Lições</h1>
+          <h1 className="p-2 mb-3 text-lg font-semibold leading-7">Lições</h1>
           <div className='flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50'>
             <span className='mb-1 text-base'>
               <span className="font-semibold">Tema: </span>{temaMesCelula}

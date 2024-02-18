@@ -105,7 +105,7 @@ export default function CalendarLiderCelula() {
                 <h2 className="flex-auto font-semibold text-gray-900">
                   {format(firstDayCurrentMonth, 'MMMM yyyy', { locale: pt })}
                 </h2>
-                <button
+                {/* <button
                   type="button"
                   onClick={previousMonth}
                   className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
@@ -120,7 +120,7 @@ export default function CalendarLiderCelula() {
                 >
                   <span className="sr-only">Next month</span>
                   <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
-                </button>
+                </button> */}
               </div>
               <div className="grid grid-cols-7 text-xs leading-6 text-center text-gray-500 mt-9">
                 <div>D</div>
