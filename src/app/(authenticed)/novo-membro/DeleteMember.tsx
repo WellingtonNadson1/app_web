@@ -17,7 +17,7 @@ function DeleteMember({
 
   const cancelButtonRef = useRef(null)
 
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const router = useRouter()
 

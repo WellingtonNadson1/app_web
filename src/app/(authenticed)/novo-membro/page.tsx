@@ -10,7 +10,7 @@ import axios from 'axios'
 import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function NovoMembro() {
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

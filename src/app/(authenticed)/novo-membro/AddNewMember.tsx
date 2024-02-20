@@ -23,7 +23,7 @@ function AddNewMember() {
   // const URLCombinedData = `${BASE_URL_LOCAL}/users/all`
   const URLUsers = `${BASE_URL}/users`
   // Zustand Store
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
   const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } = useCombinetedStore.getState().state
 
   const axiosAuth = useAxiosAuthToken(token)

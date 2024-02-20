@@ -4,7 +4,7 @@ import { MembroCell, dataSchemaCreateDiscipulado } from "./schema"
 import { useUserDataStore } from "@/store/UserDataStore"
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken"
 import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from "@/functions/functions"
-import { useMutation } from "@tanstack/react-query"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import { Disclosure } from "@headlessui/react"
 import { Fragment, useState } from "react"
 import { ChevronUpIcon } from "lucide-react"
@@ -23,7 +23,7 @@ interface PropsForm {
   membro: MembroCell
 }
 export default function FormSecondDiscipulado(membro: PropsForm) {
-  const [isLoadingForm, setIsLoadingForm] = useState(false)
+  const queryClient = useQueryClient()
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
   const URLCreateNewDiscipulado = `${BASE_URL_LOCAL}/discipulados`
@@ -36,26 +36,25 @@ export default function FormSecondDiscipulado(membro: PropsForm) {
   // Register New Discipulado
   const CreateDiscipuladoFunction = async (dataForm: dataSchemaCreateDiscipulado) => {
     try {
-      setIsLoadingForm(true)
       const { data } = await axiosAuth.post(URLCreateNewDiscipulado, dataForm)
-      setIsLoadingForm(false)
+      success('😉 2º Discipulado Registrado!')
       return data
     } catch (error) {
-      console.error('⛔ error no registro do Discipulado', error)
-      setIsLoadingForm(false)
+      errorCadastro('⛔ error no registro do Discipulado')
     }
   }
 
-  const { mutateAsync: createDiscipuladoFn, isLoading, isSuccess } = useMutation({
+  const { mutateAsync: createDiscipuladoFn, isPending, isSuccess } = useMutation({
     mutationFn: CreateDiscipuladoFunction,
-    onSuccess: async () => {
-      success('😉 2º Discipulado Registrado!')
-      // setTimeout(() => {
-      //   window.location.reload()
-      // }, 2500);
+    // If the mutation fails,
+    // use the context returned from onMutate to roll back
+    onError: (err, newMember, context) => {
+      // errorCadastro('⛔ error no registro do Discipulado')
+      queryClient.invalidateQueries({ queryKey: ['dataRegisterAllDiscipuladoCell'] })
     },
-    onError() {
-      errorCadastro('⛔ error no registro do Discipulado')
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['dataRegisterAllDiscipuladoCell'] })
     },
   })
 
@@ -119,7 +118,7 @@ export default function FormSecondDiscipulado(membro: PropsForm) {
                     })}
                     id="second_discipulado"
                     className="block w-full rounded-md border-0 py-1.5 mb-4 text-slate-400 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
-                  {isLoading ? (
+                  {isPending ? (
                     <button
                       type="submit"
                       disabled={true}
@@ -185,10 +184,10 @@ export default function FormSecondDiscipulado(membro: PropsForm) {
                     })}
                     id="second_discipulado"
                     className={cn(`block w-full text-sm rounded-md border-0 py-1.5 mb-4 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6`, isSuccess ? `text-slate-400 ` : ``)} />
-                  {isLoading ? (
+                  {isPending ? (
                     <button
                       type="submit"
-                      disabled={isLoading}
+                      disabled={isPending}
                       className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
                     >
                       <svg
@@ -223,7 +222,7 @@ export default function FormSecondDiscipulado(membro: PropsForm) {
                       :
                       (
                         <button
-                          disabled={isLoading}
+                          disabled={isPending || isSuccess}
                           className='mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]' type="submit">
                           Registrar
                         </button>

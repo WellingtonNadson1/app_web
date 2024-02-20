@@ -27,7 +27,7 @@ function UpdateMember({
   const URLUsersId = `${BASE_URL}/users/${memberId}`
   const URLUsers = `${BASE_URL}/users`
 
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

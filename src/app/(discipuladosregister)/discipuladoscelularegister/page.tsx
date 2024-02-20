@@ -19,10 +19,14 @@ export default async function DiscipuladosCelula() {
 
   const celulaId = session?.user?.celulaId
   const URLCelula = `http://localhost:8080/celulas/${celulaId}`
+  console.log('celulaId', celulaId)
+  console.log('URLCelula', URLCelula)
 
   const CelulaData = async () => {
     try {
       const { data } = await axiosAuthToken.get(URLCelula, config)
+      console.log('data', data)
+
       return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -34,6 +38,7 @@ export default async function DiscipuladosCelula() {
   }
 
   const celula = await CelulaData()
+  console.log('celula', celula)
 
   return (
     <>

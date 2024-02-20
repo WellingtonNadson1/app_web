@@ -12,6 +12,7 @@ import Pagination from '@/components/Pagination'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 
 export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelulaProps) {
+  // console.log('data', data)
   const handlePageChange = (newPage: number) => {
     setCurrentPage(newPage)
   }
@@ -30,16 +31,20 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
   const data_ocorreu = new Date()
 
   const { data: registerDiscipuladosCell, isLoading, isSuccess } = useQuery({
-    queryKey: ['dataRegisterAllDiscipuladoCell', data.id],
+    queryKey: ['dataRegisterAllDiscipuladoCell', cell_id],
     queryFn: async () => GetAllRegisterDiscipuladoCell({
       cell_id
       , data_ocorreu
     }),
   })
 
+  !isSuccess && <SpinnerButton message='' />
+  // isSuccess && console.log('registerDiscipuladosCell', registerDiscipuladosCell)
+
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const membersSort = registerDiscipuladosCell?.data[0].membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
+  const membersSort = registerDiscipuladosCell?.data[0]?.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
+  // console.log('membersSort', membersSort)
   const displayedMembers = membersSort?.slice(startIndex, endIndex)
 
   return (
@@ -58,7 +63,7 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
               <thead className='bg-[#F8FAFC]'>
                 <tr>
                   <th className="px-2 w-full py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
-                    Nome
+                    Membros
                   </th>
                 </tr>
               </thead>
@@ -69,21 +74,29 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
                       className="py-8 border-b border-gray-200 rounded-lg hover:bg-gray-50/90"
                       key={user.id}
                     >
-                      <td className='px-2 py-1 border-b border-gray-200 sm:py-2'>
-                        <div className="flex items-center justify-start gap-2 my-3">
-                          <UserFocus size={24} />
-                          <h2 className="ml-4">{user.first_name}</h2>
-                        </div>
-                        <div className='flex flex-col gap-4 mb-4 sm:mb-3 sm:flex sm:flex-row sm:items-start sm:justify-between'>
-                          {/* 1º Discipulado */}
-                          <div className='sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between'>
-                            <FormFirstDiscipulado key={user.id} membro={user} />
+                      <td className='py-3 border-b border-gray-200 sm:py-3'>
+                        <div className="relative w-full px-2 py-2 mx-auto bg-white shadow-md rounded-xl">
+                          <div className="w-full px-2 py-2 ">
+                            <div className="w-full px-1 py-2 rounded-md">
+                              <div className="flex items-center justify-start gap-1 mb-6 sm:mb-4">
+                                <UserFocus size={24} />
+                                <h2 className="ml-3">{user.first_name}</h2>
+                              </div>
+                              <div className='flex flex-col gap-4 mb-4 sm:mb-3 sm:flex sm:flex-row sm:items-start sm:justify-between'>
+                                {/* 1º Discipulado */}
+                                <div className='sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between'>
+                                  <FormFirstDiscipulado key={user.id} membro={user} />
+                                </div>
+
+                                {/* 2º Discipulado */}
+                                <div className='sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between'>
+                                  <FormSecondDiscipulado key={user.cargo_de_lideranca.id} membro={user} />
+                                </div>
+                              </div>
+                            </div>
                           </div>
-                          {/* 2º Discipulado */}
-                          <div className='sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between'>
-                            <FormSecondDiscipulado key={user.cargo_de_lideranca.id} membro={user} />
-                          </div>
                         </div>
+
                       </td>
                     </tr>
                   ))
