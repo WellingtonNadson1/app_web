@@ -20,7 +20,7 @@ export interface SupervisaoDataCard {
 }
 
 export default function StatsCardSuper() {
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

@@ -2,7 +2,6 @@
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import dayjs from 'dayjs'
-import { useSession } from 'next-auth/react'
 import React, { useEffect, useState, Fragment } from 'react'
 import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
@@ -24,7 +23,7 @@ dayjs.locale(ptBr);
 dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function StatsCardRelatoriosSupervisores() {
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 

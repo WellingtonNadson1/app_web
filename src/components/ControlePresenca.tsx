@@ -41,7 +41,7 @@ type Celula = z.infer<typeof CelulaSchema>
 
 export default function ControlePresenca() {
   const { data: session } = useSession()
-  const { token } = useUserDataStore.getState().state
+  const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 
@@ -121,12 +121,12 @@ export default function ControlePresenca() {
                       <td className="text-center">
                         <span
                           className={`inline w-full rounded-md px-2 py-1 text-center ${user.situacao_no_reino?.nome === 'Ativo'
-                              ? 'border border-green-200 bg-green-100 ring-green-500'
-                              : user.situacao_no_reino?.nome === 'Normal'
-                                ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                                : user.situacao_no_reino?.nome === 'Frio'
-                                  ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                                  : 'border border-red-200 bg-red-100 ring-red-500'
+                            ? 'border border-green-200 bg-green-100 ring-green-500'
+                            : user.situacao_no_reino?.nome === 'Normal'
+                              ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                              : user.situacao_no_reino?.nome === 'Frio'
+                                ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                : 'border border-red-200 bg-red-100 ring-red-500'
                             }`}
                         >
                           {user.situacao_no_reino?.nome}

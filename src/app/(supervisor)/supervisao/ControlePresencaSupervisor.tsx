@@ -82,7 +82,6 @@ export default function ControlePresencaSupervisor({
 }: ControlePresencaSupervisorProps) {
   const URLControlePresenca = `${BASE_URL}/presencacultos`
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const router = useRouter()
   const { handleSubmit, register, reset, formState: { errors } } = useForm<attendance>()
   const { data: session } = useSession()
@@ -94,32 +93,26 @@ export default function ControlePresencaSupervisor({
     return PresenceExistRegistered
   }
 
-  const result = useQuery({
-    queryKey: ['presence'],
+  const { data: PresenceExistRegister, isLoading } = useQuery({
+    queryKey: ['presenceBySupervisor'],
     queryFn: getPresenceRegistered,
     retry: false
   })
 
-  const { data: PresenceExistRegister, isLoading } = result
-
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance> = async (data) => {
     try {
-      setIsLoadingSubmitForm(true)
-
       const status = data.status === 'true'
       const response = await axiosAuth.post(URLControlePresenca, { ...data, status })
       const presenceRedister = response.data
       if (!presenceRedister) {
         throw new Error('Failed to submit dados de presenca')
       }
-
       success('😉 Presenças Registradas!')
-      setIsLoadingSubmitForm(false)
       reset()
       router.refresh()
     } catch (error) {
-      setIsLoadingSubmitForm(false)
+      console.error('error: ', error)
     }
   }
 
@@ -257,10 +250,10 @@ export default function ControlePresencaSupervisor({
                             />
                           </div>
                         </form>
-                        {isLoadingSubmitForm ? (
+                        {isLoading ? (
                           <button
                             type="submit"
-                            disabled={isLoadingSubmitForm}
+                            disabled={isLoading}
                             className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                           >
                             <svg

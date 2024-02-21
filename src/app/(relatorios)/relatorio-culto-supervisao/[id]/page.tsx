@@ -8,7 +8,7 @@ import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
 import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { FormRelatorioSchema, GroupedForCulto, ISupervisoes, Pessoa, PresencaForDate } from './schema'
+import { FormRelatorioSchema, GroupedForCulto, Pessoa, PresencaForDate } from './schema'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { useQuery } from '@tanstack/react-query'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'

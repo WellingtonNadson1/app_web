@@ -49,7 +49,6 @@
     "/(celula)/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(celula)/loading.css",
       "static/chunks/app/(celula)/loading.js"
     ],
     "/(celula)/celula/page": [
