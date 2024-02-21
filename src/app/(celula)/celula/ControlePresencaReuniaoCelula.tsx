@@ -71,7 +71,7 @@ export default function ControlePresencaReuniaoCelula({
     return response.data;
   }
 
-  const { mutate, data: dataMutate, isSuccess, isError } = useMutation({
+  const { mutate, data: dataMutate, isError, isPending: isPendingCreateReunia } = useMutation({
     mutationFn: createReuniaoCelula,
     onSuccess: async (responseData) => {
       queryClient.invalidateQueries({ queryKey: ['reuniaocelula'] });
@@ -110,21 +110,20 @@ export default function ControlePresencaReuniaoCelula({
     }
   }, [])
 
-  const { refetch: refetchPresence } = useQuery({
-    queryKey: ["presenca"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
-      const PresenceExistRegistered = await response.data
-      if (response.status === 200) {
-        setPresencaReuniaoIsRegistered(true)
-      }
-      return PresenceExistRegistered
-    },
+  const getPresenceRegistered = async () => {
+    const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
+    const PresenceExistRegistered = response.data
+    return PresenceExistRegistered
+  }
+
+  const { data, isLoading, isSuccess: isSuccessGetPresenceRegistered } = useQuery({
+    queryKey: ["presenceCellMetting"],
+    queryFn: getPresenceRegistered,
     enabled: !!reuniaoRegisteredId, // A consulta será executada apenas se reuniaoRegisteredId existir
     retry: false
   })
 
-  const mutation = useMutation(async (data: attendanceReuniaoCelula[]) => {
+  const createPresencaReuniaoCelulaFunction = async (data: attendanceReuniaoCelula[]) => {
     // Transforma o objeto data em um array
     const dataArray = Object.values(data)
     const totalRecords = dataArray.length;
@@ -136,7 +135,6 @@ export default function ControlePresencaReuniaoCelula({
       try {
         const response = await axiosAuth.post(URLControlePresencaReuniaoCelula, {
           ...currentData,
-          which_reuniao_celula: reuniaoRegisteredId,
           status: currentData.status === 'true',
         });
 
@@ -155,36 +153,38 @@ export default function ControlePresencaReuniaoCelula({
         // Lide com o erro conforme necessário
       }
     }
-  }, {
-    onSuccess: async () => {
-      success('😉 Presenças de Célula Registradas!')
-      setTimeout(() => {
-        refetchPresence();
-      }, 3000);
-    }
+    success('😉 Presenças de Célula Registradas!')
+  }
+
+  const { mutateAsync: createPresencaReuniaoCelulaFn, isPending, isSuccess } = useMutation({
+    mutationFn: createPresencaReuniaoCelulaFunction,
+    onError: (err, newMember, context) => {
+      queryClient.invalidateQueries({ queryKey: ['presenceCellMetting'] })
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['presenceCellMetting'] })
+    },
   })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendanceReuniaoCelula[]> = async (data) => {
     try {
-      setIsLoadingSubmitForm(true)
-      await mutation.mutateAsync(data)
-      setIsLoadingSubmitForm(false)
+      await createPresencaReuniaoCelulaFn(data)
     } catch (error) {
       errorCadastro('Já existem presenças registradas!')
-      setIsLoadingSubmitForm(false)
     }
   }
 
   return (
     <>
-      {isLoadingCreateReuniaoCelula ? (
+      {isPendingCreateReunia || isLoading ? (
         <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
           <SpinnerButton message={''} />
         </p>
       ) : (
         <>
-          {presencaReuniaoIsRegistered ? (
+          {isSuccess || isSuccessGetPresenceRegistered ? (
             <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
               Presença já cadastrada!
             </p>
@@ -197,7 +197,7 @@ export default function ControlePresencaReuniaoCelula({
                     <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                       Presença de Reunião de Célula
                     </h2>
-                    {isLoadingSubmitForm && (
+                    {isPending && (
                       <ProgressBar bgColor='#1e40af' baseBgColor='#e5e7eb' completed={progress} />
                     )
                     }
@@ -275,10 +275,10 @@ export default function ControlePresencaReuniaoCelula({
                             </div>
                           </form>
                         ))}
-                        {isLoadingSubmitForm ? (
+                        {isPending ? (
                           <button
                             type="submit"
-                            disabled={isLoadingSubmitForm}
+                            disabled={isPending}
                             className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                           >
                             <svg

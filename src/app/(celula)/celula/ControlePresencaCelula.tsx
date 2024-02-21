@@ -1,12 +1,10 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { User, UserFocus } from '@phosphor-icons/react'
+import { User } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
@@ -19,13 +17,10 @@ export default function ControlePresencaCelula({
   celula,
 }: ControlePresencaCelulaProps) {
   const celulaSort = celula.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
-  const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [presencaReuniaoIsRegistered, setPresencaReuniaoIsRegistered] = useState<boolean>()
+  const URLControlePresenca = `${BASE_URL_LOCAL}/presencacultos`
+  const URLPresencaCultoId = `${BASE_URL_LOCAL}/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [progress, setProgress] = useState(0);
-  const router = useRouter()
-  const { handleSubmit, register, reset, formState: { errors }, setValue } = useForm<attendance[]>()
+  const { handleSubmit, register } = useForm<attendance[]>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
   const queryClient = useQueryClient()
@@ -36,27 +31,16 @@ export default function ControlePresencaCelula({
     return PresenceExistRegistered
   }
 
-  const { isLoading, refetch: refetchPresence } = useQuery({
+  const { data, isLoading, isSuccess: isSuccessGetPresence } = useQuery({
     queryKey: ['presence'],
     queryFn: getPresenceRegistered,
-    onSuccess: async (responseData) => {
-      queryClient.invalidateQueries({ queryKey: ['reuniaocelula'] });
-      setPresencaReuniaoIsRegistered(true)
-      console.debug('success mutate', responseData);
-    },
-    onError: async (errorData) => {
-      const axiosError = errorData as AxiosError;
-      if (axiosError.response) {
-        const errorResponseData = axiosError.response.data;
-        console.debug('error mutate', errorResponseData);
-      } else {
-        console.error('Error response is not available');
-      }
-    },
-    retry: false
   })
 
-  const mutation = useMutation(async (data: attendance[]) => {
+  if (isSuccessGetPresence) {
+    console.log('dataPresence', data)
+  }
+
+  const createPresencaCultoFunction = async (data: attendance[]) => {
     // Transforma o objeto data em um array
     const dataArray = Object.values(data)
     const totalRecords = dataArray.length;
@@ -86,23 +70,26 @@ export default function ControlePresencaCelula({
         // Lide com o erro conforme necessário
       }
     }
+    success('😉 Presenças Registradas!')
+  }
 
-  }, {
-    onSuccess: async () => {
-      success('😉 Presenças Registradas!')
-      setPresencaReuniaoIsRegistered(true)
-    }
+  const { mutateAsync: createPresencaCultoFn, isPending, isSuccess } = useMutation({
+    mutationFn: createPresencaCultoFunction,
+    onError: (err, newMember, context) => {
+      queryClient.invalidateQueries({ queryKey: ['presence'] })
+    },
+    // Always refetch after error or success:
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['presence'] })
+    },
   })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
-      setIsLoadingSubmitForm(true)
-      await mutation.mutateAsync(data)
-      setIsLoadingSubmitForm(false)
+      await createPresencaCultoFn(data)
     } catch (error) {
       errorCadastro('Já existem presenças registradas!')
-      setIsLoadingSubmitForm(false)
     }
   }
 
@@ -114,7 +101,7 @@ export default function ControlePresencaCelula({
         <>
           {isLoading ? (<SpinnerButton message='' />) : (
             <>
-              {presencaReuniaoIsRegistered ? (
+              {isSuccess || isSuccessGetPresence ? (
                 <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
                   Presença já cadastrada!
                 </p>
@@ -127,7 +114,7 @@ export default function ControlePresencaCelula({
                         <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                           Presença de Culto
                         </h2>
-                        {isLoadingSubmitForm && (
+                        {isPending && (
                           <ProgressBar bgColor='#1e40af' baseBgColor='#e5e7eb' completed={progress} />
                         )
                         }
@@ -218,10 +205,10 @@ export default function ControlePresencaCelula({
                                 </div>
                               </form>
                             ))}
-                            {isLoadingSubmitForm ? (
+                            {isPending ? (
                               <button
                                 type="submit"
-                                disabled={isLoadingSubmitForm}
+                                disabled={isPending}
                                 className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                               >
                                 <svg

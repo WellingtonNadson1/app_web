@@ -64,7 +64,7 @@ function UpdateDisicipulador({
   const axiosAuth = useAxiosAuthToken(token)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [nome, setNome] = useState(member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.user_discipulador_usuario_usuario_idTouser?.first_name);
+  const [nome, setNome] = useState(member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name);
   const queryClient = useQueryClient()
 
   const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
