@@ -17,6 +17,8 @@ import ControlePresencaSupervisor from './ControlePresencaSupervisor'
 import { Meeting } from '@/app/(celula)/celula/schema'
 import HeaderSupervisorLoad from './loadingUi'
 import axios from 'axios'
+import CalendarLoading from '@/app/(celula)/celula/loadingUi/CalendarLoading'
+import LicoesLoading from '@/app/(celula)/celula/loadingUi/LicoesLoading'
 
 export default function ControleSupervisor() {
   const { data: session } = useSession()
@@ -70,7 +72,15 @@ export default function ControleSupervisor() {
     <>
       {isLoading ? (
         <>
-          <HeaderSupervisorLoad />
+          <div className="relative w-full px-2 py-2 mx-auto">
+            <HeaderSupervisorLoad />
+            <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
+              <CalendarLoading />
+            </div>
+            <div className="relative w-full px-2 mx-auto mb-4">
+              <LicoesLoading />
+            </div>
+          </div>
         </>
       ) : (
         <div className="relative w-full px-2 py-2 mx-auto">

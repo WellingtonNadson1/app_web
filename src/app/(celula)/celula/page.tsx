@@ -19,6 +19,8 @@ import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
 // import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
 import axios from 'axios'
 import { useUserDataStore } from '@/store/UserDataStore'
+import CalendarLoading from './loadingUi/CalendarLoading'
+import LicoesLoading from './loadingUi/LicoesLoading'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -93,7 +95,15 @@ export default function ControleCelulaSupervision() {
     <>
       {isLoadingCelula ? (
         <>
-          <HeaderCelulaLoad />
+          <div className="relative w-full px-2 py-2 mx-auto">
+            <HeaderCelulaLoad />
+            <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
+              <CalendarLoading />
+            </div>
+            <div className="relative w-full px-2 mx-auto mb-4">
+              <LicoesLoading />
+            </div>
+          </div>
         </>
       ) : (
         <div className="relative w-full px-2 py-2 mx-auto">
