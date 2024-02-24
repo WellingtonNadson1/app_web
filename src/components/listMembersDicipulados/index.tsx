@@ -33,7 +33,7 @@ interface Membro {
   };
 }
 
-export interface CelulaData {
+export interface CelulaDataDiscipulado {
   id: string;
   nome: string;
   membros: Membro[];
@@ -49,7 +49,7 @@ export interface CelulaData {
 }
 
 export interface ListMembersCelulaProps {
-  data: CelulaData;
+  data: CelulaDataDiscipulado;
 }
 
 

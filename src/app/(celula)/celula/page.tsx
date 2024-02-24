@@ -29,7 +29,7 @@ export default function ControleCelulaSupervision() {
   const axiosAuth = useAxiosAuthToken(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
-  const URLCelula = `${BASE_URL_LOCAL}/celulas/${celulaId}`
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const CelulaData = async () => {
     try {

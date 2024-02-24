@@ -1,6 +1,5 @@
 'use client'
-import { CelulaData } from '@/components/listMembersCelula'
-import ListMembersDiscipulados from '@/components/listMembersDicipulados'
+import ListMembersDiscipulados, { CelulaDataDiscipulado } from '@/components/listMembersDicipulados'
 import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
@@ -31,7 +30,7 @@ export default function ControleCelulaSupervision({
     }
   }
 
-  const { data: celula, isError: error, isLoading, isSuccess } = useQuery<CelulaData>({
+  const { data: celula, isError: error, isLoading, isSuccess } = useQuery<CelulaDataDiscipulado>({
     queryKey: ["celula"],
     queryFn: CelulaDataQuery,
     retry: 3

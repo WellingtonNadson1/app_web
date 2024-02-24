@@ -1,6 +1,6 @@
-import HeaderCelulaDiscipuladosLoad from "../(discipuladosregister)/discipuladoscelularegister/loadingHeaderDiscipuladosRegister";
+import HeaderSupervisorLoad from "./supervisao/loadingUi";
 
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.
-  return <HeaderCelulaDiscipuladosLoad />
+  return <HeaderSupervisorLoad />
 }

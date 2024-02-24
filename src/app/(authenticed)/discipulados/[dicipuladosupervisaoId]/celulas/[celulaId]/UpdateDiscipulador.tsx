@@ -14,7 +14,6 @@ import { Member } from '@/app/(authenticed)/novo-membro/schema'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useUserDataStore } from '@/store/UserDataStore'
-import { CelulaData } from '@/components/listMembersCelula'
 
 type dataUpdateDiscipulador = {
   id: string,

@@ -29,7 +29,7 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
   const toDay = format(new Date(), 'PP', { locale: pt })
 
   if (status === 'loading') {
-    return <SpinnerButton message={''}/>
+    return <SpinnerButton message={''} />
   }
 
   const isAuthenticated = status === 'authenticated'
@@ -49,7 +49,7 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              Supervisão {headerSupervisao}
+              Supervisão <span className='capitalize'>{headerSupervisao}</span>
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">

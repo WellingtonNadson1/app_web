@@ -2,7 +2,7 @@
 import { ICelula } from '@/components/ListCelulas'
 import ListTemaLicoesCelula from '@/components/ListTemaLicoesCelula'
 import Modal from '@/components/modal'
-import { BASE_URL, errorCadastro, fetchWithToken, success } from '@/functions/functions'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'

@@ -1,5 +1,6 @@
 'use client'
 import Modal from '@/components/modal'
+import { BASE_URL } from '@/functions/functions'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { UserMinusIcon } from '@heroicons/react/24/outline'
 import { useRouter } from 'next/navigation'
@@ -12,7 +13,6 @@ function DeleteMember({
   member: string
   memberName: string
 }) {
-  const hostname = 'app-ibb.onrender.com'
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
 
   const cancelButtonRef = useRef(null)
@@ -22,7 +22,7 @@ function DeleteMember({
   const router = useRouter()
 
   const handleDelete = async (memberId: string) => {
-    const URLUsers = `https://${hostname}/users/${memberId}`
+    const URLUsers = `${BASE_URL}/users/${memberId}`
     setIsLoadingSubmitForm(true)
     const response = await fetch(URLUsers, {
       method: 'DELETE',

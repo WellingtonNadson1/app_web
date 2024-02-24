@@ -1,7 +1,6 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
 import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import { useSession } from 'next-auth/react'
 import React, { useCallback, useEffect, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import Modal from '@/components/modal'

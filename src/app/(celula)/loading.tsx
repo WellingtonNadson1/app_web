@@ -1,4 +1,4 @@
-import HeaderCelulaDiscipuladosLoad from "../(discipuladosregister)/discipuladoscelularegister/loadingHeaderDiscipuladosRegister";
+import HeaderCelulaDiscipuladosLoad from "../(discipuladosregisterliderelula)/discipuladoscelularegister/loadingHeaderDiscipuladosRegister";
 
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.

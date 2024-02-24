@@ -1,15 +1,12 @@
 'use client'
-
 import { cn } from '@/lib/utils'
 import { SignOut, X } from '@phosphor-icons/react'
 import { signOut, useSession } from 'next-auth/react'
-// import Image from 'next/image'
 import { usePathname, useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { sidebarCentral, sidebarLiderCelula, sidebarSupervisor, sidebarSupervisorLider } from './LinksSidebar'
 import SpinnerButton from '../spinners/SpinnerButton'
 import ThemeImage from '../theme-image'
-import { useStore, Destroy } from 'zustand'
 import { useUserDataStore } from '@/store/UserDataStore'
 
 export default function Sidebar() {
@@ -17,6 +14,7 @@ export default function Sidebar() {
   const route = useRouter()
   const pathName = usePathname().split('/')[1]
   const { data: session, status } = useSession()
+  const { user_roles } = useUserDataStore.getState()
   const roles = session?.user.user_roles;
   const { actions } = useUserDataStore()
 
@@ -27,6 +25,11 @@ export default function Sidebar() {
     // Redirect the user (replace with your desired URL)
     signOut();
   };
+  console.log('roles', roles)
+  console.log('user_roles', user_roles)
+  if (user_roles?.some(role => role.rolenew.name === "USERLIDER") && user_roles.some(role => role.rolenew.name === "USERSUPERVISOR")) {
+    console.log('Deu certo para Apenas Lider')
+  }
 
   return (
     <div className="shadow">
@@ -98,7 +101,7 @@ export default function Sidebar() {
                   </span>
                 </li>
               ))
-            ) : (roles?.some(role => role.rolenew.name === 'USERLIDER')) ? (
+            ) : (user_roles?.every(role => role.rolenew.name === "USERLIDER") && !user_roles.every(role => role.rolenew.name === "USERSUPERVISOR")) ? (
               sidebarLiderCelula.map((item) => (
                 <li
                   key={item.name}
@@ -129,7 +132,7 @@ export default function Sidebar() {
                   </span>
                 </li>
               ))
-            ) : (roles?.some(role => role.rolenew.name === 'USERSUPERVISOR')) ? (
+            ) : (roles?.every(role => role.rolenew.name === 'USERSUPERVISOR')) ? (
               sidebarSupervisor.map((item) => (
                 <li
                   key={item.name}
@@ -161,7 +164,7 @@ export default function Sidebar() {
                 </li>
               ))
             ) :
-              (roles?.some(role => role.rolenew.name === "USERSUPERVISOR") && roles.some(role => role.rolenew.name === "USERLIDER")) ? (
+              (user_roles?.every(role => ["USERSUPERVISOR", "USERLIDER"])) ? (
                 sidebarSupervisorLider.map((item) => (
                   <li
                     key={item.name}

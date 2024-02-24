@@ -30,7 +30,10 @@ declare module 'next-auth' {
         id: string,
         first_name: string
       }
-      supervisao: string
+      supervisao_pertence: {
+        id: string,
+        nome: string
+      }
       celulaId: string
       estado_civil: string
       nome_conjuge: string

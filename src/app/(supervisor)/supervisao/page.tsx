@@ -12,40 +12,51 @@ import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
 import { CelulaProps } from './schema'
-import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
 import HeaderSupervisao from './HeaderSupervisao'
 import ControlePresencaSupervisor from './ControlePresencaSupervisor'
 import { Meeting } from '@/app/(celula)/celula/schema'
+import HeaderSupervisorLoad from './loadingUi'
+import axios from 'axios'
 
 export default function ControleSupervisor() {
   const { data: session } = useSession()
 
-  const celulaId = session?.user.celulaId
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLCultosInd = `${BASE_URL}/cultosindividuais`
-  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
 
-  const { data, isLoading } = useQuery<Meeting>({
-    queryKey: ['meetingsData'],
-    queryFn: async () => {
-      const result = await axiosAuth.get(URLCultosInd)
-      return result.data
+  const dataHoje = new Date()
+  const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
+  const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
+
+  const MeetingsData = async () => {
+    try {
+      const { data } = await axiosAuth.post(URLCultosInd, {
+        firstDayOfMonth,
+        lastDayOfMonth
+      })
+      return data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
     }
-  })
+  }
 
-  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ['celula', celulaId],
-    queryFn: async () => {
-      const result = await axiosAuth.get(URLCelula)
-      return result.data
-    },
-    enabled: !!celulaId,
-    retry: false
+  const { data, isLoading, isSuccess } = useQuery<Meeting>({
+    queryKey: ['meetingsData'],
+    queryFn: MeetingsData,
+    refetchOnWindowFocus: false,
   })
 
   if (isLoading) {
-    return <HeaderCelulaLoad />
+    return <HeaderSupervisorLoad />
+  }
+
+  if (isSuccess) {
+    console.log('data', data)
   }
 
   const today = startOfToday()
@@ -53,17 +64,18 @@ export default function ControleSupervisor() {
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
+  console.log('session?.user?.supervisao', session)
 
   return (
     <>
       {isLoading ? (
         <>
-          <HeaderCelulaLoad />
+          <HeaderSupervisorLoad />
         </>
       ) : (
         <div className="relative w-full px-2 py-2 mx-auto">
           <div className="relative w-full mx-auto">
-            <HeaderSupervisao headerSupervisao={session?.user.supervisao} />
+            <HeaderSupervisao headerSupervisao={session?.user?.supervisao_pertence.nome} />
           </div>
           <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
             <CalendarLiderCelula />

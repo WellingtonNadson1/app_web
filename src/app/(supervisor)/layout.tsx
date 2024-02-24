@@ -7,6 +7,7 @@ import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import './globals.css'
+import { InitializerUserStore } from '@/store/InitializerUserStore'
 
 export const metadata = {
   title: 'App IBB',
@@ -25,9 +26,28 @@ export default async function RootLayout({
     return redirect('/login', RedirectType.replace)
   }
 
+  const id = session?.user.id
+  const role = session?.user.role
+  const user_roles = session?.user.user_roles;
+  const email = session?.user.token
+  const image_url = session?.user.image_url
+  const first_name = session?.user.first_name
+  const token = session?.user.token
+  const refreshToken = session?.user.refreshToken
+
   return (
     <html lang="pt">
       <body>
+        <InitializerUserStore
+          id={id ?? ''}
+          role={role ?? ''}
+          user_roles={user_roles ?? []}
+          email={email ?? ''}
+          image_url={image_url ?? ''}
+          first_name={first_name ?? ''}
+          token={token ?? ''}
+          refreshToken={refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }}
+        />
         <NextTopLoader
           color="#fff"
           initialPosition={0.08}
