@@ -38,8 +38,8 @@ export default async function RootLayout({
     <html lang="pt">
       <body>
         <div className="overflow-x-auto overflow-y-auto">
-          <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
-          <div className="flex min-h-screen bg-slate-100">
+          <div className="absolute top-0 min-h-[18.75rem] w-screen dark:bg-gray-700 bg-[#1D70B6]/90"></div>
+          <div className="flex min-h-screen bg-slate-100 dark:bg-slate-950">
             <InitializerUserStore
               id={id ?? ''}
               role={role ?? ''}

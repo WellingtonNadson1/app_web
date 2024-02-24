@@ -1,3 +1,7 @@
 {
-  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js"
+  "/(authenticed)/page": "app/(authenticed)/page.js",
+  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(celula)/celula/page": "app/(celula)/celula/page.js"
 }

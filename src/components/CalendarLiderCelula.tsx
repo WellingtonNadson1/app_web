@@ -97,12 +97,12 @@ export default function CalendarLiderCelula() {
 
   return (
     <div className="pt-4">
-      <div className="px-2 py-6 bg-white rounded-lg shadow-md">
+      <div className="px-2 py-6 bg-white rounded-lg shadow-md dark:bg-zinc-900">
         <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-10">
               <div className="flex items-center">
-                <h2 className="flex-auto font-semibold text-gray-900">
+                <h2 className="flex-auto font-semibold text-gray-900 capitalize">
                   {format(firstDayCurrentMonth, 'MMMM yyyy', { locale: pt })}
                 </h2>
                 {/* <button
@@ -182,7 +182,7 @@ export default function CalendarLiderCelula() {
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                            <div className="w-1 h-1 rounded-full dark:bg-gray-500 bg-sky-500"></div>
                           </div>
                         )}
                       {isSunday(day) ? (
