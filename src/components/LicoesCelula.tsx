@@ -80,10 +80,10 @@ export default function LicoesCelula() {
 
   return (
     <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
-      <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md dark:bg-zinc-900 flex-warp hover:bg-white/95">
+      <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
         <div className="flex flex-col items-start justify-start mb-3">
           <h1 className="p-2 mb-3 text-lg font-semibold leading-7">Lições</h1>
-          <div className='flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md dark:bg-neutral-800 bg-gray-50'>
+          <div className='flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50'>
             <span className='mb-1 text-base'>
               <span className="font-semibold">Tema: </span>{temaMesCelula}
             </span>
