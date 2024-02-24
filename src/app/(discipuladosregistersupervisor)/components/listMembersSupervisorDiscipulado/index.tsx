@@ -10,6 +10,7 @@ import { useUserDataStore } from '@/store/UserDataStore'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import Pagination from '@/components/Pagination'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import Scheleton from '@/app/(discipuladosregisterliderelula)/components/listMembersCelulaDiscipulado/scheleton'
 
 export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   // console.log('data', data)
@@ -37,8 +38,6 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
       , data_ocorreu
     }),
   })
-
-  !isSuccess && <SpinnerButton message='' />
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
@@ -74,7 +73,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {data.discipulador_usuario_discipulador_usuario_discipulador_idTouser ? (
+                {!isLoading ? (
                   displayedMembers?.map((user) => (
                     <tr
                       className="py-8 border-b border-gray-200 rounded-lg hover:bg-gray-50/90"
@@ -110,7 +109,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                   <tr>
                     <td>
                       <div className='flex items-center justify-start p-2 mt-3'>
-                        <SpinnerButton message='' />
+                        <Scheleton />
                       </div>
                     </td>
                   </tr>

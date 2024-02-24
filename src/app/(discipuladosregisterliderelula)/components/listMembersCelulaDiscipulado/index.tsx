@@ -10,6 +10,7 @@ import { useUserDataStore } from '@/store/UserDataStore'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import Pagination from '@/components/Pagination'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import Scheleton from './scheleton'
 
 export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelulaProps) {
   // console.log('data', data)
@@ -30,16 +31,13 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
   const cell_id = data.id
   const data_ocorreu = new Date()
 
-  const { data: registerDiscipuladosCell, isLoading, isSuccess } = useQuery({
+  const { data: registerDiscipuladosCell, isLoading } = useQuery({
     queryKey: ['dataRegisterAllDiscipuladoCell', cell_id],
     queryFn: async () => GetAllRegisterDiscipuladoCell({
       cell_id
       , data_ocorreu
     }),
   })
-
-  !isSuccess && <SpinnerButton message='' />
-  // isSuccess && console.log('registerDiscipuladosCell', registerDiscipuladosCell)
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
@@ -63,12 +61,25 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
               <thead className='bg-[#F8FAFC]'>
                 <tr>
                   <th className="px-2 w-full py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
-                    Membros
+                    <div className='flex items-center justify-between w-full gap-3 sm:justify-start'>
+                      <h2 className="py-2">
+                        Membros
+                      </h2>
+                      <div className='items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block'>
+                        <p className='flex items-center justify-between'>Total <span className='px-1 py-1 ml-2 text-white rounded-md bg-sky-700'>{membersSort?.length}</span></p>
+                      </div>
+                    </div>
                   </th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {data.membros ? (
+                {isLoading ? (
+                  <tr>
+                    <td>
+                      <Scheleton />
+                    </td>
+                  </tr>
+                ) : (
                   displayedMembers?.map((user, index) => (
                     <tr
                       className="py-8 border-b border-gray-200 rounded-lg hover:bg-gray-50/90"
@@ -96,18 +107,9 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
                             </div>
                           </div>
                         </div>
-
                       </td>
                     </tr>
                   ))
-                ) : (
-                  <tr>
-                    <td>
-                      <div className='flex items-center justify-start p-2 mt-3'>
-                        <SpinnerButton message='' />
-                      </div>
-                    </td>
-                  </tr>
                 )}
               </tbody>
             </table>

@@ -25,11 +25,6 @@ export default function Sidebar() {
     // Redirect the user (replace with your desired URL)
     signOut();
   };
-  console.log('roles', roles)
-  console.log('user_roles', user_roles)
-  if (user_roles?.some(role => role.rolenew.name === "USERLIDER") && user_roles.some(role => role.rolenew.name === "USERSUPERVISOR")) {
-    console.log('Deu certo para Apenas Lider')
-  }
 
   return (
     <div className="shadow">
