@@ -17,8 +17,8 @@ export default function ControlePresencaCelula({
   celula,
 }: ControlePresencaCelulaProps) {
   const celulaSort = celula.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
-  const URLControlePresenca = `${BASE_URL_LOCAL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL_LOCAL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const URLControlePresenca = `${BASE_URL}/presencacultos`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
   const [progress, setProgress] = useState(0);
   const { handleSubmit, register } = useForm<attendance[]>()
   const { data: session } = useSession()
