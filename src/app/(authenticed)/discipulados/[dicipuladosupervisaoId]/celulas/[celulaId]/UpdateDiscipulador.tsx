@@ -56,7 +56,8 @@ function UpdateDisicipulador({
 }) {
 
   console.log('memberBtnUpdateDiscipulador', member)
-  const URLUsers = `${BASE_URL}/users/discipulador`
+  const URLUsers = `${BASE_URL}/users`
+  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
 
   const { token } = useUserDataStore.getState()
 
@@ -76,7 +77,7 @@ function UpdateDisicipulador({
 
   const UpdateDiscipuladorFunction = async (dataForm: dataUpdateDiscipulador) => {
     try {
-      const { data } = await axiosAuth.put(URLUsers, dataForm)
+      const { data } = await axiosAuth.put(URLUpdateDiscipulador, dataForm)
       return data
     } catch (error) {
       console.error('⛔ error na atualização do Discipulador', error)
