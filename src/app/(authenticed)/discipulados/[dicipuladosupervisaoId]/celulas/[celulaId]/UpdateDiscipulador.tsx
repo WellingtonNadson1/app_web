@@ -56,7 +56,7 @@ function UpdateDisicipulador({
 }) {
 
   console.log('memberBtnUpdateDiscipulador', member)
-  const URLUsers = `${BASE_URL}/users`
+  const URLUsers = `${BASE_URL}/users/discipulador`
 
   const { token } = useUserDataStore.getState()
 
