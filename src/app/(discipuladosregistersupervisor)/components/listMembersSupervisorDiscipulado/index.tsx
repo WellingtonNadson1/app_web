@@ -22,7 +22,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   const [currentPage, setCurrentPage] = useState(1)
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
-  const URLDiscipuladosExist = `${BASE_URL_LOCAL}/discipulados/allmemberssupervisor/existing-register`
+  const URLDiscipuladosExist = `${BASE_URL}/discipulados/allmemberssupervisor/existing-register`
 
   const GetAllRegisterDiscipuladoCell = async (dataForm: dataSchemaGetDiscipuladoAllSupervisor) => {
     const result: dataSchemaReturnExistDiscipuladoAllCell = await axiosAuth.post(URLDiscipuladosExist, dataForm)
