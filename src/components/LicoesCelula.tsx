@@ -6,6 +6,8 @@ import { useQuery } from '@tanstack/react-query'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
 import { useUserDataStore } from '@/store/UserDataStore'
+import dayjs from 'dayjs'
+dayjs().locale()
 
 
 const ResponseSchema = z.string().array()
@@ -31,41 +33,81 @@ export default function LicoesCelula() {
     return <div>Atualize a página para carregar os dados.</div>
   }
 
-  const temaMesCelula = 'Aviva-nos'
-  const subTemaMesCelula = 'Ouvi, Senhor, a tua palavra, e temi; aviva, ó Senhor, a tua obra no meio dos anos, no meio dos anos faze-a conhecida; na tua ira lembra-te da misericórdia. Hc 3.2'
+  // Pegamos o mês e ano atual
+  const month = dayjs().month();
+  const year = dayjs().year();
+  const toDay = dayjs()
+
+  // Definimos a primeira data do mês
+  let startDate = dayjs().set('month', month).set('date', 1);
+
+  // Criamos um array para armazenar as semanas
+  const weeks: { start: dayjs.Dayjs; end: dayjs.Dayjs }[] = [];
+  const weeksDate: { start: string; end: string }[] = [];
+
+  // Loop para iterar pelas semanas do mês
+  while (startDate.month() === month) {
+    // Pegamos o dia da semana da data atual (0 = domingo, 6 = sábado)
+    const dayOfWeek = startDate.day();
+
+    // Ajustamos a data para o início da semana (domingo)
+    const weekStart = startDate.subtract(dayOfWeek, 'day');
+
+    // Ajustamos a data para o fim da semana (sábado)
+    const weekEnd = weekStart.add(6, 'day');
+
+    // Adicionamos a semana ao array
+    weeks.push({
+      start: weekStart,
+      end: weekEnd,
+    });
+
+    weeksDate.push({
+      start: weekStart.format('DD/MM'),
+      end: weekEnd.format('DD/MM'),
+    });
+
+    // Incrementamos a data para o início da próxima semana
+    startDate = weekEnd.add(1, 'day');
+  }
+
+  console.log('weeks', weeks[0].end.isBefore(toDay))
+
+  const temaMesCelula = 'Espírito Santo'
+  const subTemaMesCelula = 'O mundo não pode receber esse Espírito porque não o pode ver, nem conhecer. Mas vocês o conhecem porque ele está com vocês e viverá em vocês. Jo 14:17'
 
   const statusLicoes = [
     {
       id: 1,
-      title: 'O que é avivamento',
-      periodo: '04 a 10 de Fev/2024',
+      title: 'Quem é o Espírito Santo?',
+      periodo: weeks,
       status: 'ok',
       icon: FilePdf,
-      versiculo: 'Tg 4: 8-10',
+      versiculo: 'Ez 36:27',
     },
     {
       id: 2,
-      title: 'Jejum vs Despertar Espiritual',
-      periodo: '11 a 17 de Fev/2024',
+      title: 'Uma questão de Governo',
+      periodo: weeks,
       status: 'ok',
       icon: FilePdf,
-      versiculo: 'Jl 2:12',
+      versiculo: 'Gl 5:16-17',
     },
     {
       id: 3,
-      title: 'Avivamento vs Palavra de Deus',
-      periodo: '18 a 24 de Fev/2024',
+      title: 'A poderosa ação do Espírito Santo',
+      periodo: weeks,
       status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Ne 8:1-3',
+      versiculo: '1Co 2:11',
     },
     {
       id: 4,
-      title: 'Tempo de Arrempendimento',
-      periodo: '25 de Fev a 02 de Mar/2024',
+      title: 'Como receber o Espírito Santo?',
+      periodo: weeks,
       status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Jn 3:1-10',
+      versiculo: 'Jo 14:15-17',
     },
     // {
     //   id: 5,
@@ -110,20 +152,25 @@ export default function LicoesCelula() {
                             {stat.versiculo}
                           </span>
                         </div>
+                        <div className='mt-2 text-sm'>
+                          Período:
+                          <span className="ml-2 text-sm leading-6 text-gray-500">
+                            {weeksDate[index + 1]?.start} à
+                          </span>
+                          <span className="ml-1 text-sm leading-6 text-gray-500">
+                            {weeksDate[index + 1]?.end}
+                          </span>
+                        </div>
                         <div className="flex items-center mt-3">
-                          {stat.status === 'pendente' ? (
+                          {stat.periodo[index + 1]?.end.isAfter(toDay) ? (
                             <span className="text-sm font-normal leading-6 text-red-500">
-                              {stat.status}
+                              pendente
                             </span>
                           ) : (
                             <span className="text-sm font-normal leading-6 text-emerald-500">
-                              {stat.status}
+                              ok
                             </span>
                           )}
-
-                          <span className="ml-2 text-sm leading-6 text-gray-500">
-                            {stat.periodo}
-                          </span>
                         </div>
                       </div>
                     </div>

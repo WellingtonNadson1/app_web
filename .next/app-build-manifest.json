@@ -1,10 +1,5 @@
 {
   "pages": {
-    "/(authenticed)/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(authenticed)/page.js"
-    ],
     "/(authenticed)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -16,41 +11,6 @@
       "static/chunks/main-app.js",
       "static/css/app/(authenticed)/loading.css",
       "static/chunks/app/(authenticed)/loading.js"
-    ],
-    "/(discipuladosregisterliderelula)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(discipuladosregisterliderelula)/layout.css",
-      "static/chunks/app/(discipuladosregisterliderelula)/layout.js"
-    ],
-    "/(discipuladosregisterliderelula)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(discipuladosregisterliderelula)/loading.js"
-    ],
-    "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.css",
-      "static/chunks/app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js"
-    ],
-    "/(login)/login/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/page.css",
-      "static/chunks/app/(login)/login/page.js"
-    ],
-    "/(login)/login/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/loading.css",
-      "static/chunks/app/(login)/login/loading.js"
-    ],
-    "/(login)/login/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
     ],
     "/(authenticed)/dashboard/page": [
       "static/chunks/webpack.js",

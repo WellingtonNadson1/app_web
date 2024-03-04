@@ -22,7 +22,7 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
   const [currentPage, setCurrentPage] = useState(1)
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
-  const URLDiscipuladosExist = `${BASE_URL}/discipulados/allmemberscell/existing-register`
+  const URLDiscipuladosExist = `${BASE_URL_LOCAL}/discipulados/allmemberscell/existing-register`
 
   const GetAllRegisterDiscipuladoCell = async (dataForm: dataSchemaGetDiscipuladoAllCell) => {
     const result: dataSchemaReturnExistDiscipuladoAllCell = await axiosAuth.post(URLDiscipuladosExist, dataForm)
