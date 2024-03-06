@@ -55,9 +55,8 @@ function UpdateDisicipulador({
   member: Membro
 }) {
 
-  console.log('memberBtnUpdateDiscipulador', member)
-  const URLUsers = `${BASE_URL}/users`
-  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
+  const URLUsers = `${BASE_URL_LOCAL}/users/alldiscipulados`
+  const URLUpdateDiscipulador = `${BASE_URL_LOCAL}/users/discipulador`
 
   const { token } = useUserDataStore.getState()
 
@@ -98,11 +97,13 @@ function UpdateDisicipulador({
               ...membro, user: {
                 id: selectedMember?.id,
                 first_name: selectedMember?.first_name,
-              }
+              },
             } : membro
           )
         };
       });
+      setNome(selectedMember?.first_name as string)
+      queryClient.invalidateQueries({ queryKey: ["celula"] })
     },
   })
 
@@ -146,14 +147,12 @@ function UpdateDisicipulador({
     retry: 3,
   })
 
-  if (isLoadingQueryUpdate) {
-    return null
-  }
+  const queryMembersSort = queryMembers?.sort((a, b) => a.first_name.localeCompare(b.first_name))
 
   const filteredPeople =
     queryUpDate === ''
-      ? queryMembers
-      : queryMembers?.filter((person) =>
+      ? queryMembersSort
+      : queryMembersSort?.filter((person) =>
         person.first_name
           .toLowerCase()
           .replace(/\s+/g, '')
