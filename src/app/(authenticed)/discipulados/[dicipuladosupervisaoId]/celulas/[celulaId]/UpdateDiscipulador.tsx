@@ -55,8 +55,8 @@ function UpdateDisicipulador({
   member: Membro
 }) {
 
-  const URLUsers = `${BASE_URL_LOCAL}/users/alldiscipulados`
-  const URLUpdateDiscipulador = `${BASE_URL_LOCAL}/users/discipulador`
+  const URLUsers = `${BASE_URL}/users/alldiscipulados`
+  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
 
   const { token } = useUserDataStore.getState()
 
