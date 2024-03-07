@@ -27,7 +27,7 @@ export default function StatsCardRelatorios() {
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
   const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLPresencaGeralCultos = `${BASE_URL_LOCAL}/relatorio/presencacultos`
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
