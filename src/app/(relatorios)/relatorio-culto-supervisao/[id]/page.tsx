@@ -1,5 +1,5 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
@@ -26,12 +26,8 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  // const URLPresencaGeralCultos = `http://localhost:3333/relatorio/presencacultos`
-  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLSupervisoes = `http://localhost:3333/supervisoes`
-
   const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  const URLPresencaGeralCultos = `${BASE_URL_LOCAL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<Record<string, Pessoa[]> | undefined>();
@@ -370,7 +366,7 @@ export default function StatsCardRelatorios() {
           </Fragment>
         </div>
         {/* Inicio Relatorio */}
-        <div className={cn(`bg-yellow-400 dark:bg-yellow-400 text-center text-white`, `${newCorSupervisao}`)}>
+        <div className={cn(`bg-yellow-400 w-full text-center text-white`, `${newCorSupervisao}`)}>
           <div className='pt-2 pb-0'>
             <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
           </div>
