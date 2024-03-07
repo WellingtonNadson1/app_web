@@ -1,5 +1,5 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import dayjs from 'dayjs'
 import React, { useEffect, useState, Fragment } from 'react'
@@ -26,10 +26,6 @@ export default function StatsCardRelatoriosSupervisores() {
   const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
-
-  // const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
-  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLSupervisoes = `http://localhost:3333/supervisoes`
 
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
