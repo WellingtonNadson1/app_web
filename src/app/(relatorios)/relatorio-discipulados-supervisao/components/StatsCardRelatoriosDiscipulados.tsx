@@ -1,10 +1,7 @@
 'use client'
 import { cn } from '@/lib/utils'
 import {
-  GraduationCap,
   HandHeart,
-  Users,
-  UsersFour,
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 
