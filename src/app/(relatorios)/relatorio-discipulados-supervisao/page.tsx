@@ -6,8 +6,7 @@ import React, { useState, Fragment } from 'react'
 import utc from 'dayjs/plugin/utc'
 import timezone from "dayjs/plugin/timezone"
 import ptBr from "dayjs/locale/pt-br"
-import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { FormRelatorioSchema, MemberDataDiscipulado, MembersDataDiscipulado, Pessoa } from './schema'
+import { FormRelatorioSchema, MemberDataDiscipulado, MembersDataDiscipulado } from './schema'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
 import Image from 'next/image'
@@ -16,9 +15,6 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useUserDataStore } from '@/store/UserDataStore'
-import ButtonLoader from '@/components/ButtonLoader'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
