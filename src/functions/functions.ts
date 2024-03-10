@@ -3,7 +3,7 @@ import axios, { AxiosError } from 'axios';
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-export interface FetchError extends AxiosError {}
+export interface FetchError extends AxiosError { }
 
 const hostname = 'app-ibb.onrender.com'
 export const BASE_URL = `https://${hostname}`

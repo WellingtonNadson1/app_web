@@ -1,5 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
+  "/(authenticed)/relatorios/[id]/page": "app/(authenticed)/relatorios/[id]/page.js",
+  "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
+  "/(relatorios)/relatorio-discipulados-supervisao/page": "app/(relatorios)/relatorio-discipulados-supervisao/page.js"
 }

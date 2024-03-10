@@ -8,37 +8,37 @@ import {
 } from '@phosphor-icons/react'
 import Link from 'next/link'
 
-export default function StatsCardRelatorios() {
+export default function StatsCardRelatoriosDiscipulados() {
 
   const escolasIbb = [
     {
-      title: 'Presença nos Cultos',
+      title: 'Discipulados de Células',
       supervisor: 'Supervisões',
-      icon: UsersFour,
-      color: 'bg-sky-800',
-      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
-    },
-    {
-      title: 'Presença nas Reuniões',
-      supervisor: 'Células',
-      icon: Users,
-      color: 'bg-sky-800',
-      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
-    },
-    {
-      title: 'Presença nos Cultos',
-      supervisor: 'Supervisores',
-      icon: GraduationCap,
-      color: 'bg-sky-800',
-      href: "/relatorio-culto-supervisor/2a9cbf21-4def-4ba7-9909-104b874ed896"
-    },
-    {
-      title: 'Registro',
-      supervisor: 'Discipulados Realizados',
       icon: HandHeart,
-      color: 'bg-sky-800',
-      href: "/relatorios/register"
+      color: 'bg-black',
+      href: "/relatorio-discipulados/f425-4865-celulas"
     },
+    {
+      title: 'Discipulados',
+      supervisor: 'Supervisores',
+      icon: HandHeart,
+      color: 'bg-indigo-800',
+      href: "/relatorio-discipulados/f425-4865-supervisores"
+    },
+    // {
+    //   title: 'Presença nas Reuniões',
+    //   supervisor: 'Células',
+    //   icon: Users,
+    //   color: 'bg-sky-800',
+    //   href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
+    // },
+    // {
+    //   title: 'Registro',
+    //   supervisor: 'Discipulados Realizados',
+    //   icon: HandHeart,
+    //   color: 'bg-sky-800',
+    //   href: "/relatorio-discipulados/f425-4865-a730-5191bc0821cd"
+    // },
   ]
   return (
     <div className="relative z-10 w-full py-2 mx-auto">
