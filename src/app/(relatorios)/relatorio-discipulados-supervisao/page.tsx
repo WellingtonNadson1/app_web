@@ -29,7 +29,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
 
   const axiosAuth = useAxiosAuthToken(token)
   const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
-  const URLDiscipuladosSupervisoes = `${BASE_URL_LOCAL}/discipuladosibb/supervisao/relatorio`
+  const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] = useState<Record<string, MemberDataDiscipulado[]>>();
   const [corSupervisao, setCorSupervisao] = useState('');
@@ -81,11 +81,9 @@ export default function DiscipuladosRelatoriosSupervisoes() {
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(relatorio: MembersDataDiscipulado): Promise<Record<string, MemberDataDiscipulado[]>> {
     const celula: Record<string, MemberDataDiscipulado[]> = {};
-    console.log('celulaFirst', celula)
 
     relatorio.membros.forEach(membro => {
       const cellName = membro?.celula?.nome;
-      console.log('cellName', cellName)
 
       if (cellName) {
         if (!celula[cellName]) {
@@ -94,7 +92,6 @@ export default function DiscipuladosRelatoriosSupervisoes() {
         celula[cellName].push(membro);
       }
     })
-    console.log('celula', celula)
     return Promise.resolve(celula);
   }
 
@@ -108,7 +105,6 @@ export default function DiscipuladosRelatoriosSupervisoes() {
 
     if (!isPending && DiscipuladosSupervisao) {
       const dataGroupedForCell = await groupDiscipuladoByCell(DiscipuladosSupervisao[0]);
-      console.log('dataGroupedForCell', dataGroupedForCell)
       setDiscipuladoForCellForCell(dataGroupedForCell);
       setCorSupervisao(DiscipuladosSupervisao[0]?.membros[0]?.supervisao_pertence?.nome)
     }
