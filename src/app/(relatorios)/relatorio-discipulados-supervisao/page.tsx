@@ -15,6 +15,7 @@ import { cn } from '@/lib/utils'
 import Link from 'next/link'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useUserDataStore } from '@/store/UserDataStore'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
@@ -60,20 +61,6 @@ export default function DiscipuladosRelatoriosSupervisoes() {
     }
   })
 
-  const DataGeralCultos = async (
-    startDate: string,
-    endDate: string,
-    superVisionId: string
-  ) => {
-    const { data } = await axiosAuth.post(URLPresencaGeralCultos, {
-      startDate,
-      endDate,
-      superVisionId,
-      cargoLideranca
-    });
-    return data
-  }
-
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(relatorio: MembersDataDiscipulado): Promise<Record<string, MemberDataDiscipulado[]>> {
     const celula: Record<string, MemberDataDiscipulado[]> = {};
@@ -93,7 +80,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
 
-    await DiscipuladosSupervisoesFn({
+    DiscipuladosSupervisoesFn({
       startDate,
       endDate,
       superVisionId
@@ -262,177 +249,194 @@ export default function DiscipuladosRelatoriosSupervisoes() {
           </Fragment>
         </div>
 
-        {/* Inicio Relatorio */}
-        <div className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400`, newCorSupervisao)}>
-          <div className='pt-2 pb-0'>
-            {corSupervisao ? (
-              <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - {corSupervisao}</h1>
-            ) : (
-              <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - Sem Dados</h1>
-            )}
-          </div>
-          {
-            isSuccess ? (
-              <div className='pb-2 pl-2'>
-                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>{Supervisor}</span></p>
-              </div>
-            ) : (
-              <div className='pb-2 pl-2'>
-                <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>Sem Dados</span></p>
-              </div>
-            )
-          }
-        </div>
+
+
 
         {/* TABELA DE REGISTRO DE DISCIPULADOS DA SUPERVISÃO */}
-        {discipuladoForCell ?
-          <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
-            {/* Cabeçalho da tabela */}
-            <thead className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400 p-2`, newCorSupervisao)}>
-              <Fragment>
-                <tr className={`mx-4 p-2`}>
-                  <th>
-                    <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULA</h1>
-                  </th>
-                  <th>
-                    <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
-                  </th>
-                  <th>
-                    <h1 className='p-2 font-bold text-center text-white uppercase'>DISCIPULADOR(A)</h1>
-                  </th>
-                  <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                    <div>
-                      <h1 className='font-bold text-center uppercase'>% DISCIP. TOTAL</h1>
-                    </div>
-                  </th>
-
-                  <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                    <div className='text-center'>
-                      <h1 className='font-bold text-center uppercase'>1º</h1>
-                      <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
-                    </div>
-                  </th>
-                  <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                    <div className='text-center'>
-                      <h1 className='font-bold text-center uppercase'>2º</h1>
-                      <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
-                    </div>
-                  </th>
-                </tr>
-              </Fragment>
-            </thead>
-            <tbody>
-              {discipuladoForCell &&
-                Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
-                  <tr className={`border-b border-slate-600`} key={cellName + cellIndex}>
-                    {/* Coluna fixa */}
-                    <td className='px-4 bg-gray-50'>
-                      <p className='text-base font-medium text-black'>{cellName}</p>
-                      <p className='text-sm text-slate-600'>
-                        Líder: <span className='capitalize'>{discipuladoForCell[cellName][0].celula.lider.first_name}</span>
-                      </p>
-                      <p className='text-sm text-slate-600'>
-                        Membros: <span>{discipuladoForCell[cellName].length}</span>
-                      </p>
-                    </td>
-                    {/* Coluna para membros */}
-                    <td className='px-4'>
-                      {discipuladoForCell[cellName].map((member) => (
-                        <tr className='w-20 h-20 py-4' key={member.id}>
-                          {member.first_name === discipuladoForCell[cellName][0].celula.lider.first_name ?
-                            <div className='flex flex-col justify-center h-20 font-semibold text-gray-500 capitalize'>
-                              {member.first_name}
-                            </div>
-                            :
-                            <div className='flex flex-col justify-center h-20 capitalize'>
-                              {member.first_name}
-                            </div>
-                          }
-                        </tr>
-                      ))}
-                    </td>
-                    {/* Coluna para discipuladores */}
-                    <td className='px-4'>
-                      {discipuladoForCell[cellName].map((member) => (
-                        <tr className='w-20 h-20 py-4' key={member.id}>
-                          <div className='flex flex-col justify-center h-20 capitalize'>
-                            {member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name}
-                          </div>
-                        </tr>
-                      ))}
-                    </td>
-
-                    {/* Colunas dinâmicas para porcentagem */}
-                    <td className='mx-4 mb-4 text-center border border-zinc-200' key={cellName + cellIndex}>
-                      {discipuladoForCell[cellName].map((member, indexMember) => {
-                        const totalDiscipulado = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado.length;
-                        return (
-                          <div className='flex flex-col justify-center h-20 font-bold border-b w-30 border-zinc-200' key={indexMember}>
-                            {totalDiscipulado ? (
-                              <Fragment>
-                                {totalDiscipulado === 1 ?
-                                  <p className='text-sky-600'>{'50%'}</p>
-                                  :
-                                  <p className='text-green-600'>{'100%'}</p>
-                                }
-                              </Fragment>
-                            ) : (
-                              <p key={indexMember}>
-                                <p className='text-red-600'>{'00%'}</p>
-
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </td>
-                    {/* // 1º Discipulado */}
-                    <td className='mx-4 mb-4 text-center border border-zinc-200' key={cellName}>
-                      {discipuladoForCell[cellName].map((member, indexMember) => {
-                        const discipulado1 = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado[0]?.data_ocorreu;
-                        return (
-                          <div className='flex flex-col justify-center h-20 font-bold border-b w-30 border-zinc-200' key={indexMember}>
-                            {discipulado1 ? (
-                              <Fragment>
-                                {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
-                              </Fragment>
-                            ) : (
-                              <p key={indexMember}>
-                                <p className='font-normal text-slate-600'>-</p>
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </td>
-                    {/* // 2º Discipulado */}
-                    <td className='mx-4 mb-4 text-center border border-zinc-200' key={cellIndex}>
-                      {discipuladoForCell[cellName].map((member, indexMember) => {
-                        const discipulado2 = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado[1]?.data_ocorreu;
-                        return (
-                          <div className='flex flex-col justify-center h-20 font-bold border-b w-30 border-zinc-200' key={indexMember}>
-                            {discipulado2 ? (
-                              <Fragment>
-                                {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                <p className='text-green-600'>{`${dayjs(discipulado2).utcOffset('+03:00').format('DD/MM')}`}</p>
-                              </Fragment>
-                            ) : (
-                              <p key={indexMember}>
-                                <p className='font-normal text-slate-600'>-</p>
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </td>
-                  </tr>
-                ))}
-            </tbody>
-          </table>
+        {isPending ? <p className='flex items-center justify-center gap-2 text-center'> <SpinnerButton message='' /> Carregando dados...</p>
           :
-          <span></span>
+          discipuladoForCell ?
+            (
+              <Fragment>
+                {/* Inicio Relatorio */}
+                <div className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400`, newCorSupervisao)}>
+                  <div className='pt-2 pb-0'>
+                    {corSupervisao ? (
+                      <h1 className='py-1 font-bold uppercase'>RELATÓRIO DE DISCIPUALDOS - SUPERVISÃO {corSupervisao}</h1>
+                    ) : (
+                      <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - Sem Dados</h1>
+                    )}
+                  </div>
+                  {
+                    isSuccess ? (
+                      <div className='pb-2 pl-2'>
+                        <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>{Supervisor}</span></p>
+                      </div>
+                    ) : (
+                      <div className='pb-2 pl-2'>
+                        <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>Sem Dados</span></p>
+                      </div>
+                    )
+                  }
+                </div>
+                <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
+                  {/* Cabeçalho da tabela */}
+                  <thead className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400 p-2`, newCorSupervisao)}>
+                    <Fragment>
+                      <tr className={`mx-4 p-2`}>
+                        <th>
+                          <h1 className='p-2 font-bold text-center text-white uppercase'>CÉLULA</h1>
+                        </th>
+                        <th>
+                          <h1 className='p-2 font-bold text-center text-white uppercase'>MEMBROS</h1>
+                        </th>
+                        <th>
+                          <h1 className='p-2 font-bold text-center text-white uppercase'>DISCIPULADOR(A)</h1>
+                        </th>
+                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                          <div>
+                            <h1 className='font-bold text-center uppercase'>% DISCIP. TOTAL</h1>
+                          </div>
+                        </th>
+
+                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                          <div className='text-center'>
+                            <h1 className='font-bold text-center uppercase'>1º</h1>
+                            <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
+                          </div>
+                        </th>
+                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
+                          <div className='text-center'>
+                            <h1 className='font-bold text-center uppercase'>2º</h1>
+                            <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
+                          </div>
+                        </th>
+                      </tr>
+                    </Fragment>
+                  </thead>
+                  <tbody>
+                    {discipuladoForCell &&
+                      Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
+                        <tr key={cellName + cellIndex}>
+                          {/* Coluna para as células */}
+                          <td className='px-4 border border-b bg-gray-50 border-zinc-300'>
+                            <p className='text-base font-medium text-black'>{cellName}</p>
+                            <p className='text-sm text-slate-600'>
+                              Líder: <span className='capitalize'>{discipuladoForCell[cellName][0].celula.lider.first_name}</span>
+                            </p>
+                            <p className='text-sm text-slate-600'>
+                              Membros: <span>{discipuladoForCell[cellName].length}</span>
+                            </p>
+                          </td>
+                          {/* Coluna para membros */}
+                          <td>
+                            {discipuladoForCell[cellName].map((member) => (
+                              <tr className='border border-zinc-200' key={member.id}>
+                                {member.first_name === discipuladoForCell[cellName][0].celula.lider.first_name ?
+                                  <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize'>
+                                    {member.first_name}
+                                  </div>
+                                  :
+                                  <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 capitalize'>
+                                    {member.first_name}
+                                  </div>
+                                }
+                              </tr>
+                            ))}
+                          </td>
+                          {/* Coluna para discipuladores */}
+                          <td>
+                            {discipuladoForCell[cellName].map((member) => (
+                              <tr className='border border-zinc-200' key={member.id}>
+                                <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 capitalize'>
+                                  {member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name}
+                                </div>
+                              </tr>
+                            ))}
+                          </td>
+
+                          {/* Colunas dinâmicas para porcentagem */}
+                          <td className='mx-4 text-center' key={cellName + cellIndex}>
+                            {discipuladoForCell[cellName].map((member, indexMember) => {
+                              const totalDiscipulado = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado.length;
+                              return (
+                                <tr className='border border-zinc-200' key={member.id}>
+                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
+                                    {totalDiscipulado ? (
+                                      <Fragment>
+                                        {totalDiscipulado === 1 ?
+                                          <p className='text-sky-600'>{'50%'}</p>
+                                          :
+                                          <p className='text-green-600'>{'100%'}</p>
+                                        }
+                                      </Fragment>
+                                    ) : (
+                                      <p className='text-red-600' key={indexMember}>
+                                        {'00%'}
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
+                              );
+                            })}
+                          </td>
+                          {/* // 1º Discipulado */}
+                          <td className='mx-4 text-center' key={cellName}>
+                            {discipuladoForCell[cellName].map((member, indexMember) => {
+                              const discipulado1 = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado[0]?.data_ocorreu;
+                              return (
+                                <tr className='border border-zinc-200' key={member.id}>
+                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
+                                    {discipulado1 ? (
+                                      <Fragment>
+                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                        <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
+                                      </Fragment>
+                                    ) : (
+                                      <p key={indexMember}>
+                                        <p className='font-normal text-slate-600'>-</p>
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
+                              );
+                            })}
+                          </td>
+                          {/* // 2º Discipulado */}
+                          <td className='mx-4 text-center ' key={cellIndex}>
+                            {discipuladoForCell[cellName].map((member, indexMember) => {
+                              const discipulado2 = member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado[1]?.data_ocorreu;
+                              return (
+                                <tr className='border border-zinc-200' key={member.id}>
+                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
+                                    {discipulado2 ? (
+                                      <Fragment>
+                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                        <p className='text-green-600'>{`${dayjs(discipulado2).utcOffset('+03:00').format('DD/MM')}`}</p>
+                                      </Fragment>
+                                    ) : (
+                                      <p key={indexMember}>
+                                        <p className='font-normal text-slate-600'>-</p>
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
+                              );
+
+                            })}
+                          </td>
+                        </tr>
+                      ))}
+
+                  </tbody>
+                </table>
+              </Fragment>
+
+            )
+            :
+            (<span></span>)
         }
+
       </div>
     </Fragment>
   )
