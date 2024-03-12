@@ -28,7 +28,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
   const queryClient = useQueryClient()
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
-  const URLCreateNewDiscipulado = `${BASE_URL}/discipulados`
+  const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
   const discipulador = membro?.discipulador_name
   const discipulador_id = membro?.supervisor_id
   const quantidade_discipulado = membro?.membro?._count?.discipulado
