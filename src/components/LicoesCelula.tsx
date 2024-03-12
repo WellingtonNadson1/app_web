@@ -168,7 +168,7 @@ export default function LicoesCelula() {
                             </span>
                           ) : (
                             <span className="text-sm font-normal leading-6 text-emerald-500">
-                              Ministrada
+                              ministrada
                             </span>
                           )}
                         </div>
