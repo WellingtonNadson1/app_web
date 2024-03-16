@@ -1,9 +1,9 @@
 'use client'
 import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
-import Pagination from '../Pagination'
-import UpdateDisicipulador from '@/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
 import { ListMembersCelulaProps } from './schema'
+import UpdateDisicipulador from '@/app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
+import Pagination from '@/components/Pagination'
 
 export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps) {
   const [shouldFetch, setShouldFetch] = useState<boolean>(false)

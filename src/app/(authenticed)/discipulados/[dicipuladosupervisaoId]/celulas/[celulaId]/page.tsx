@@ -1,11 +1,11 @@
 'use client'
-import ListMembersDiscipulados from '@/components/listMembersDicipulados'
-import { CelulaDataDiscipulado } from '@/components/listMembersDicipulados/schema'
 import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
+import { CelulaDataDiscipulado } from '../../../Components/ListMembersDiscipuladoSupervisor/schema'
+import ListMembersDiscipulados from '../../../Components/ListMembersDiscipulados'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },

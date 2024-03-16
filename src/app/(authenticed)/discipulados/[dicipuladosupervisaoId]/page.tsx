@@ -1,9 +1,9 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
-import ListDisicipuladoCelulasSupervision from '@/components/ListDisicipuladoCelulasSupervision'
-import StatsCardSupervision from '@/components/StatsCardSupervision'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { useParams } from 'next/navigation'
+import StatsCardSupervisionDiscipulado from '@/app/(authenticed)/discipulados/Components/StatsCardSupervisionDiscipulado'
+import ListDisicipuladoCelulasSupervision from '@/app/(authenticed)/discipulados/Components/ListDisicipuladoCelulasSupervision'
 
 interface IUser {
   id: string
@@ -32,15 +32,17 @@ export default function Supervisao({
 }) {
   const id = useParams()
   const { supervisoes } = useCombinetedStore.getState().state
+  console.log('supervisoes', supervisoes)
   const supervisao = supervisoes?.filter(supervisao => supervisao.id === id.dicipuladosupervisaoId)
 
   return (
     <div className="w-full px-2 py-2 mx-auto">
       <div className="w-full mx-auto">
       </div>
-      <StatsCardSupervision
+      <StatsCardSupervisionDiscipulado
         nome={supervisao[0].nome}
         cor={supervisao[0].cor}
+        idSupervisao={supervisao[0].id}
         supervisor={supervisao[0].supervisor} />
       {supervisao &&
         <ListDisicipuladoCelulasSupervision data={supervisao[0].celulas} />

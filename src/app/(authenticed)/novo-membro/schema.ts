@@ -79,6 +79,12 @@ const SupervisaoDataSchema = z
     supervisor: z.object({
       id: z.string(),
       first_name: z.string(),
+      discipulador_usuario_discipulador_usuario_discipulador_idTouser: z.object({
+        user_discipulador_usuario_usuario_idTouser: z.object({
+          id: z.string(),
+          first_name: z.string(),
+        }),
+      }).array(),
     }),
     celulas: CelulaSchema.array(),
   })

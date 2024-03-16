@@ -1,19 +1,8 @@
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { useRouter } from 'next/navigation'
 import React from 'react'
 
-export interface ICelula {
-  id: string
-  nome: string
-  lider: {
-    id: string
-    first_name: string
-  }
-}
-
-interface ListCelulasProps {
-  data: ICelula[]
-}
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
+import { useRouter } from 'next/navigation'
+import { ListCelulasProps } from './schema'
 
 export default function ListDisicipuladoCelulasSupervision({ data }: ListCelulasProps) {
   const router = useRouter()
@@ -67,7 +56,7 @@ export default function ListDisicipuladoCelulasSupervision({ data }: ListCelulas
                           <button
                             onClick={handleClickCelula}
                             id={celula.id}
-                            className="px-4 py-2 mx-auto text-sm font-medium text-white bg-green-500 rounded-md hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+                            className="px-4 py-2 mx-auto text-sm font-medium text-white transition-all bg-green-500 rounded-md hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
                           >
                             Acessar
                           </button>

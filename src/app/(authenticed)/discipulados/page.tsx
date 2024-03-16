@@ -1,4 +1,4 @@
-import StatsDiscipuladosCardSupervisions from '@/components/StatsCardDiscipuladoSupervisions'
+import StatsDiscipuladosCardSupervisions from "./Components/StatsCardDiscipuladoSupervisions";
 
 export default function DiscipuladosSupervisoes() {
   return (

@@ -20,7 +20,8 @@ export default async function Dashboard() {
   const refreshToken = session?.user.refreshToken
 
   const axiosAuth = axios.create({
-    baseURL: 'https://app-ibb.onrender.com',
+    baseURL: 'http://localhost:8080',
+    // baseURL: 'https://app-ibb.onrender.com',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -31,6 +32,7 @@ export default async function Dashboard() {
   const DataCombinetedt = async () => {
     try {
       const { data } = await axiosAuth.get('/users/all')
+      console.log('data', data)
       return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
