@@ -20,8 +20,8 @@ export default async function Dashboard() {
   const refreshToken = session?.user.refreshToken
 
   const axiosAuth = axios.create({
-    baseURL: 'http://localhost:8080',
-    // baseURL: 'https://app-ibb.onrender.com',
+    // baseURL: 'http://localhost:8080',
+    baseURL: 'https://app-ibb.onrender.com',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
