@@ -9,10 +9,10 @@ import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { ControlePresencaCelulaProps, attendance } from './schema'
+import { ControlePresencaCelulaProps, attendance } from '../../schema'
 import ProgressBar from "@ramonak/react-progress-bar";
 
-export default function ControlePresencaCelula({
+export default function ControlePresenceSecond({
   id,
   culto,
   celula,
@@ -33,13 +33,13 @@ export default function ControlePresencaCelula({
 
   console.log('culto', culto)
 
-  const { data: PresenceExistRegistered, isLoading, isSuccess: isSuccessGetPresence, error } = useQuery({
-    queryKey: ['presenceExistRegistered'],
+  const { data: PresenceSecondExistRegistered, isLoading: isLoadingSecondRegistered, isSuccess: isSuccessGetPresence, error } = useQuery({
+    queryKey: ['presenceSecondExistRegistered'],
     queryFn: getPresenceRegistered,
   })
 
   if (isSuccessGetPresence) {
-    console.log('PresenceExistRegistered', PresenceExistRegistered)
+    console.log('PresenceSecondExistRegistered', PresenceSecondExistRegistered)
   }
 
   const createPresencaCultoFunction = async (data: attendance[]) => {
@@ -75,39 +75,41 @@ export default function ControlePresencaCelula({
     success('😉 Presenças Registradas!')
   }
 
-  const { mutateAsync: createPresencaCultoFn, isPending, isSuccess } = useMutation({
+  const { mutateAsync: createSecondPresencaCultoFn, isPending: isPendingCreateSecondPresence, isSuccess } = useMutation({
     mutationFn: createPresencaCultoFunction,
     onError: (err, newMember, context) => {
-      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['presenceSecondExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['presenceSecondExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
   })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
-      await createPresencaCultoFn(data)
+      await createSecondPresencaCultoFn(data)
     } catch (error) {
       errorCadastro('Já existem presenças registradas!')
     }
   }
 
-  console.log('Deu certo:', PresenceExistRegistered)
+  console.log('Deu certo:', PresenceSecondExistRegistered)
 
   return (
     <>
-      {isLoading ? (
+      {isLoadingSecondRegistered ? (
         <SpinnerButton message={''} />
       ) : (
-        isLoading ? (
+        isLoadingSecondRegistered ? (
           <SpinnerButton message={''} />
         ) :
           <>
             {
-              PresenceExistRegistered ? (
+              PresenceSecondExistRegistered ? (
                 <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
                   Presença já cadastrada!
                 </p>
@@ -120,7 +122,7 @@ export default function ControlePresencaCelula({
                         <h2 className="mb-6 text-base font-medium leading-8 text-gray-800">
                           Presença de Culto
                         </h2>
-                        {isPending && (
+                        {isPendingCreateSecondPresence && (
                           <ProgressBar bgColor='#1e40af' baseBgColor='#e5e7eb' completed={progress} />
                         )
                         }
@@ -211,10 +213,10 @@ export default function ControlePresencaCelula({
                                 </div>
                               </form>
                             ))}
-                            {isPending ? (
+                            {isPendingCreateSecondPresence ? (
                               <button
                                 type="submit"
-                                disabled={isPending}
+                                disabled={isPendingCreateSecondPresence}
                                 className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                               >
                                 <svg

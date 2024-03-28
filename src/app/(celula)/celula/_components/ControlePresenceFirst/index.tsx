@@ -9,10 +9,10 @@ import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { ControlePresencaCelulaProps, attendance } from './schema'
+import { ControlePresencaCelulaProps, attendance } from '../../schema'
 import ProgressBar from "@ramonak/react-progress-bar";
 
-export default function ControlePresencaCelula({
+export default function ControlePresenceFirst({
   id,
   culto,
   celula,
@@ -79,10 +79,12 @@ export default function ControlePresencaCelula({
     mutationFn: createPresencaCultoFunction,
     onError: (err, newMember, context) => {
       queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
   })
 

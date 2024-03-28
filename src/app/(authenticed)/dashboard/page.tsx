@@ -45,6 +45,14 @@ export default async function Dashboard() {
 
   const result = await DataCombinetedt()
 
+  if (!result) {
+    // Handle the case where data is not fetched
+    // You might redirect to an error page or display a loading message
+    console.error('Failed to fetch data');
+    return <div>Error fetching data</div>; // Or redirect, etc.
+  }
+
+
   useCombinetedStore.setState({
     state: {
       supervisoes: result[0] ?? [],

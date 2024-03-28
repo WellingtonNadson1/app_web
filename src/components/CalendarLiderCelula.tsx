@@ -71,6 +71,8 @@ export default function CalendarLiderCelula() {
     },
   })
 
+  console.log('data Calndar: ', data)
+
   if (isLoading) {
     return <SpinnerButton message={''} />
   }
@@ -94,6 +96,8 @@ export default function CalendarLiderCelula() {
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
   )
+
+  console.log('selectedDayMeetings Data', selectedDayMeetings)
 
   return (
     <div className="pt-4">
@@ -182,7 +186,7 @@ export default function CalendarLiderCelula() {
                           isSameDay(parseISO(meeting.data_inicio_culto), day),
                         ) && (
                           <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 rounded-fullbg-sky-500"></div>
+                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
                           </div>
                         )}
                       {isSunday(day) ? (
@@ -225,6 +229,7 @@ export default function CalendarLiderCelula() {
 }
 
 function MeetingComponent({ meeting }: { meeting: meetingsch }) {
+  console.log('meeting Calendar', meeting)
   // eslint-disable-next-line camelcase
   const data_inicio_culto = parseISO(meeting?.data_inicio_culto)
   // eslint-disable-next-line camelcase
