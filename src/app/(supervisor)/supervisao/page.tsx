@@ -68,7 +68,6 @@ export default function ControleSupervisor() {
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
-  console.log('session?.user?.supervisao', session)
 
   return (
     <>

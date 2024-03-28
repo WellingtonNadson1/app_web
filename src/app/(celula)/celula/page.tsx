@@ -93,9 +93,6 @@ export default function ControleCelulaSupervision() {
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
-  console.log('selectedDayMeetings', selectedDayMeetings?.length)
-  console.log('selectedDayMeetings Data: ', selectedDayMeetings)
-
   return (
     <>
       {isLoadingCelula ? (

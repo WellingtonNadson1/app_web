@@ -27,8 +27,6 @@ export default function ControlePresenceSupervisorFirst({
     return data
   }
 
-  console.log('culto', culto)
-
   const { data: PresenceExistRegisteredSupervisorFirst, isLoading, isSuccess: isSuccessGetPresence, error } = useQuery({
     queryKey: ['presenceExistRegisteredSupervisorFirst'],
     queryFn: getPresenceRegistered,

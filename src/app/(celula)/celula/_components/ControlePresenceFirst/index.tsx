@@ -31,8 +31,6 @@ export default function ControlePresenceFirst({
     return data
   }
 
-  console.log('culto', culto)
-
   const { data: PresenceExistRegistered, isLoading, isSuccess: isSuccessGetPresence, error } = useQuery({
     queryKey: ['presenceExistRegistered'],
     queryFn: getPresenceRegistered,
@@ -96,8 +94,6 @@ export default function ControlePresenceFirst({
       errorCadastro('Já existem presenças registradas!')
     }
   }
-
-  console.log('Deu certo:', PresenceExistRegistered)
 
   return (
     <>
