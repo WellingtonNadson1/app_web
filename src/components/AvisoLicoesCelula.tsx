@@ -18,47 +18,47 @@ export default function AvisoLicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const {data, isLoading, isError } = useQuery<ApiResponse>({
+  const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
     queryFn: () =>
-    axiosAuth.get(URLLicoesCelula),
+      axiosAuth.get(URLLicoesCelula),
   })
-  if(isLoading) return <SpinnerButton message={''}/>
+  if (isLoading) return <SpinnerButton message={''} />
   if (isError) {
     return <div>Erro ao carregar os dados.</div>
   }
 
   const temaMesCelula = 'Neste mês Não Haverá Lições de Célula'
-  const subTemaMesCelula = 'Seguem as Programações Semanais das Comunhões'
+  const subTemaMesCelula = `As células serão focadas em buscar as ovelhas pedidas. Seguem as Programações Semanais`
   const statusLicoes = [
     {
       id: 1,
-      title: 'Célula',
-      periodo: '04 a 09 de Dez/2023',
+      title: 'Célula (Levar Afastados)',
+      periodo: '01 a 06 de Abr/2024',
       status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Sl 90:12',
     },
     {
       id: 2,
-      title: 'Célula + Líd. Supervisor',
-      periodo: '11 a 16 de Dez/2023',
+      title: 'Célula (Levar Afastados)',
+      periodo: '08 a 13 de Abr/2024',
       status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Is 64:04',
     },
     {
       id: 3,
-      title: 'Setor ou Área',
-      periodo: '18 a 23 de Dez/2023',
+      title: 'Setor ou Área (Levar Afastados)',
+      periodo: '15 a 20 de Abr/2024',
       status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Fp 3:13-14',
     },
     {
       id: 4,
-      title: 'Toda Supervisão',
-      periodo: '24 a 31 de Nov/2023',
+      title: 'Toda Supervisão (Levar Afastados)',
+      periodo: '22 a 27 de Abr/2024',
       status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Hb 9:27',
@@ -87,18 +87,18 @@ export default function AvisoLicoesCelula() {
         </div>
         <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
           {statusLicoes.map((stat, index) => (
-            data ?  (
-            //   <a
-            //   href={`${data.data[index]}`}
-            //   target="_blank"
-            //   key={stat.id}
-            //   className="rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100/80"
-            // >
+            data ? (
+              //   <a
+              //   href={`${data.data[index]}`}
+              //   target="_blank"
+              //   key={stat.id}
+              //   className="rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100/80"
+              // >
               <div className="p-2 sm:col-span-1">
                 <div className="flex items-center justify-between w-full gap-4">
                   <div>
                     <div className="mb-0 font-sans text-base font-semibold leading-normal text-gray-900 uppercase">
-                    {stat.id}ª - {stat.title}
+                      {stat.id}ª - {stat.title}
                     </div>
                     <div>
                       {/* <div className="flex items-center gap-3">
@@ -133,10 +133,10 @@ export default function AvisoLicoesCelula() {
                 </div>
               </div>
 
-          ) : (
-            // Handle the case where data or data[index] is not valid
-    <div key={stat.id}>Invalid Data</div>
-          )))}
+            ) : (
+              // Handle the case where data or data[index] is not valid
+              <div key={stat.id}>Invalid Data</div>
+            )))}
         </div>
       </div>
     </div>

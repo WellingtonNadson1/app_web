@@ -23,6 +23,7 @@ import CalendarLoading from './loadingUi/CalendarLoading'
 import LicoesLoading from './loadingUi/LicoesLoading'
 import ControlePresenceFirst from './_components/ControlePresenceFirst'
 import ControlePresenceSecond from './_components/ControlePresenceSecond'
+import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
@@ -116,7 +117,8 @@ export default function ControleCelulaSupervision() {
             <CalendarLiderCelula />
           </div>
           <div className="relative w-full px-2 mx-auto mb-4">
-            <LicoesCelula />
+            <AvisoLicoesCelula />
+            {/* <LicoesCelula /> */}
           </div>
           {/* FREQUENCIA DE PRESENCA NOS CULTOS #1*/}
           <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
