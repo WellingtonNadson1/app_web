@@ -2,7 +2,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/auth"
 import axios from "axios"
 import { getServerSession } from "next-auth"
 
-const hostname = 'app-ibb.onrender.com'
+// const hostname = 'app-ibb.onrender.com'
+const hostname = 'backibb-production.up.railway.app'
 const BASE_URL = `https://${hostname}`
 
 // const Token = async () => {
