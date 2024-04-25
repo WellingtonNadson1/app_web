@@ -20,7 +20,7 @@ export default function StatsCardRelatoriosDiscipulados() {
       supervisor: 'Supervisores',
       icon: HandHeart,
       color: 'bg-indigo-800',
-      href: "/relatorio-discipulados/f425-4865-supervisores"
+      href: "/relatorio-discipulados-supervisor"
     },
     // {
     //   title: 'Presença nas Reuniões',

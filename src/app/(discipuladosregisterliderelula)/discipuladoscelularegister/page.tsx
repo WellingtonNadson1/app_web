@@ -18,8 +18,8 @@ export default async function DiscipuladosCelula() {
   };
 
   const celulaId = session?.user?.celulaId
-  // const URLCelula = `https://app-ibb.onrender.com/celulas/${celulaId}`
-  const URLCelula = `https://backibb-production.up.railway.app/celulas/${celulaId}`
+  const URLCelula = `https://app-ibb.onrender.com/celulas/${celulaId}`
+  // const URLCelula = `https://backibb-production.up.railway.app/celulas/${celulaId}`
   console.log('celulaId', celulaId)
   console.log('URLCelula', URLCelula)
 

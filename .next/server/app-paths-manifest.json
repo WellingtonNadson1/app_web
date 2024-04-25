@@ -1,9 +1,7 @@
 {
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(authenticed)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js",
   "/(authenticed)/relatorios/page": "app/(authenticed)/relatorios/page.js",
-  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
   "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
-  "/(authenticed)/cultos/page": "app/(authenticed)/cultos/page.js",
-  "/(login)/login/page": "app/(login)/login/page.js"
+  "/(relatorios)/relatorio-discipulados-supervisor/page": "app/(relatorios)/relatorio-discipulados-supervisor/page.js",
+  "/(authenticed)/relatorios/[id]/page": "app/(authenticed)/relatorios/[id]/page.js"
 }

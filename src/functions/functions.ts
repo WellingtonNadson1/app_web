@@ -5,8 +5,8 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export interface FetchError extends AxiosError { }
 
-// const hostname = 'app-ibb.onrender.com'
-const hostname = 'backibb-production.up.railway.app'
+const hostname = 'app-ibb.onrender.com'
+// const hostname = 'backibb-production.up.railway.app'
 export const BASE_URL = `https://${hostname}`
 
 const hostnameLocal = 'localhost:8080'

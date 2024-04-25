@@ -18,8 +18,8 @@ export default async function DiscipuladosSupervisor() {
     }
   };
 
-  // const URLUser = `https://app-ibb.onrender.com/users/cell/${id}`
-  const URLUser = `https://backibb-production.up.railway.app/users/cell/${id}`
+  const URLUser = `https://app-ibb.onrender.com/users/cell/${id}`
+  // const URLUser = `https://backibb-production.up.railway.app/users/cell/${id}`
 
   const UserData = async () => {
     try {
