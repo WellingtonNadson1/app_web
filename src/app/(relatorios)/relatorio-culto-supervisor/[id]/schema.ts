@@ -1,49 +1,5 @@
 import { z } from 'zod'
 
-const UserDiscipuladorUsuarioDiscipuladorIdTouser = z.object({
-  first_name: z.string()
-})
-
-const DiscipuladorUsuario = z.object({
-  user_discipulador_usuario_discipulador_idTouser: UserDiscipuladorUsuarioDiscipuladorIdTouser
-})
-
-const Discipulado = z.object({
-  data_ocorreu: z.string()
-})
-
-const DiscipuloIdTouser = z.object({
-  user_discipulador_usuario_usuario_idTouser: z.object({
-    first_name: z.string()
-  }),
-  DiscipuladorUsuario,
-  discipulado: Discipulado.array()
-})
-
-const MembroDiscipuladoSchema = z.object({
-  id: z.string(),
-  first_name: z.string(),
-  cargo_de_lideranca: z.object({
-    nome: z.string()
-  }),
-  celula: z.object({
-    id: z.string(),
-    nome: z.string(),
-    lider: z.object({
-      first_name: z.string()
-    })
-  }),
-  supervisao_pertence: z.object({
-    id: z.string(),
-    nome: z.string()
-  }),
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: DiscipuloIdTouser.array()
-})
-
-const MembrosDiscipuladoSchema = z.object({
-  membros: MembroDiscipuladoSchema.array()
-})
-
 const MembroSchema = z.object({
   id: z.string(),
   first_name: z.string(),
@@ -91,9 +47,9 @@ export const PresencaForDateSchema = z.object({
 
 export const FormRelatorioDataSchema = z.object({
   superVisionId: z.string(),
+  cargoLideranca: z.string().array(),
   startDate: z.string(),
   endDate: z.string(),
-  cargoLiderancaId: z.string().array(),
 })
 
 
@@ -199,8 +155,8 @@ export interface MembroPresencaProps {
   membro: Pessoa;
 }
 
-export type MemberDataDiscipulado = z.infer<typeof MembroDiscipuladoSchema>
-export type MembersDataDiscipulado = z.infer<typeof MembrosDiscipuladoSchema>
+
+
 export type MemberData = z.infer<typeof MemberDataSchema>
 export type GroupedData = Record<string, MemberData[]>;
 export type PresencaForDate = z.infer<typeof PresencaForDateSchema>;
