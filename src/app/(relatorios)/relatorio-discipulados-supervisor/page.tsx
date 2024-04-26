@@ -25,7 +25,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
   const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
-  const URLDiscipuladosSupervisor = `${BASE_URL_LOCAL}/discipuladosibb/supervisor/relatorio`
+  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] = useState<Record<string, MemberDataDiscipulado[]>>();
   const [corSupervisao, setCorSupervisao] = useState('');
@@ -44,9 +44,6 @@ export default function DiscipuladosRelatoriosSupervisor() {
     cargo.nome !== "Membro" &&
     cargo.nome !== "Líder Auxiliar"
   )
-
-  // const cargoLiderancaId = cargoLiderancaFiltered.map(cargoId => cargoId.id)
-  // console.log('CargoFilter2', cargoLiderancaId)
 
   const DiscipuladosSupervisor = async (
     { startDate,
@@ -102,7 +99,6 @@ export default function DiscipuladosRelatoriosSupervisor() {
 
     setIsLoadingSubmitForm(true)
 
-
     DiscipuladosSupervisoesFn({
       startDate,
       endDate,
@@ -125,6 +121,16 @@ export default function DiscipuladosRelatoriosSupervisor() {
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
     setSupervisaoSelecionada(event.target.value)
+  }
+
+  if (discipuladoForCell) {
+    const view = Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
+      discipuladoForCell[cellName].map((member) => (
+        console.log('member', member)
+
+      ))
+    ))
+    view
   }
 
   return (
@@ -344,15 +350,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         <th>
                           <h1 className='p-2 font-bold text-center text-white uppercase'>DISCÍPULO</h1>
                         </th>
-                        {/* <th>
-                          <h1 className='p-2 font-bold text-center text-white uppercase'>DISCIPULADOR(A)</h1>
-                        </th> */}
                         <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                           <div>
                             <h1 className='font-bold text-center uppercase'>% DISCIP. TOTAL</h1>
                           </div>
                         </th>
-
                         <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
                           <div className='text-center'>
                             <h1 className='font-bold text-center uppercase'>1º</h1>
@@ -384,112 +386,143 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           </td>
                           {/* Coluna para Discípulos */}
                           <td>
-                            {discipuladoForCell[cellName].map((member) => (
-                              <td>
-                                {member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser?.map((t) => (
+                            {
+                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ?
+                                (discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulo) => (
+
                                   <tr className='w-20 h-20 py-4 border border-zinc-200' key={cellName}>
                                     <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize'>
-                                      {t.user_discipulador_usuario_usuario_idTouser.first_name}
-
+                                      {discipulo.user_discipulador_usuario_usuario_idTouser.first_name}
                                     </div>
                                   </tr>
-                                ))}
-                              </td>
-                            ))}
+
+                                )))
+                                : (
+                                  <tr className='w-20 h-20 py-4 border border-zinc-200' key={cellName}>
+                                    <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-red-500 capitalize'>
+                                      Sem discípulo
+                                    </div>
+                                  </tr>
+                                )
+                            }
                           </td>
-                          {/* Coluna para discipuladores */}
-                          {/* <td>
-                            {DiscipuladosSupervisorData[0].membros.map((member) => (
-                              <tr className='border border-zinc-200' key={member.id}>
-                                <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 capitalize'>
-                                  {member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.user_discipulador_usuario_usuario_idTouser?.first_name}
-                                </div>
-                              </tr>
-                            ))}
-                          </td> */}
 
                           {/* Colunas dinâmicas para porcentagem */}
                           <td className='mx-4 text-center' key={cellName + cellIndex}>
-                            {discipuladoForCell[cellName].map((member, indexMember) => {
-                              const totalDiscipulado = member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.discipulado.length;
-                              return (
-                                <tr className='border border-zinc-200' key={member.id}>
-                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
-                                    {totalDiscipulado ? (
-                                      <Fragment>
-                                        {totalDiscipulado === 1 ?
-                                          <p className='text-sky-600'>{'50%'}</p>
-                                          :
-                                          <p className='text-green-600'>{'100%'}</p>
-                                        }
-                                      </Fragment>
-                                    ) : (
-                                      <p className='text-red-600' key={indexMember}>
-                                        {'00%'}
-                                      </p>
-                                    )}
-                                  </div>
+                            {
+                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
+                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexMember) => {
+                                  const totalDiscipulado = discipulado?.discipulado.length;
+                                  return (
+                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexMember}>
+                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
+                                        {totalDiscipulado ? (
+                                          <Fragment>
+                                            {totalDiscipulado === 1 ?
+                                              <p className='text-sky-600'>{'50%'}</p>
+                                              :
+                                              <p className='text-green-600'>{'100%'}</p>
+                                            }
+                                          </Fragment>
+                                        ) : (
+                                          <p className='text-red-600' key={indexMember}>
+                                            {'00%'}
+                                          </p>
+                                        )}
+                                      </div>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
+                                  <p className='flex flex-col justify-center h-24 font-bold text-red-600 w-36' key={cellName + cellIndex}>
+                                    {'00%'}
+                                  </p>
                                 </tr>
-                              );
-                            })}
+                              )
+                            }
                           </td>
                           {/* // 1º Discipulado */}
                           <td className='mx-4 text-center' key={cellName}>
-                            {discipuladoForCell[cellName].map((member, indexMember) => {
-                              const discipulado1 = member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.discipulado[0]?.data_ocorreu;
-                              return (
-                                <tr className='border border-zinc-200' key={member.id}>
-                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
-                                    {discipulado1 ? (
-                                      <Fragment>
-                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                        <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
-                                      </Fragment>
-                                    ) : (
-                                      <p key={indexMember}>
+                            {
+                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
+                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexDiscipulado) => {
+                                  const discipulado1 = discipulado?.discipulado[0]?.data_ocorreu;
+                                  return (
+                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexDiscipulado}>
+                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexDiscipulado}>
+                                        {discipulado1 ? (
+                                          <Fragment>
+                                            {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                            <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
+                                          </Fragment>
+                                        ) : (
+                                          <p key={indexDiscipulado}>
+                                            <p className='font-normal text-slate-600'>-</p>
+                                          </p>
+                                        )}
+                                      </div>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
+                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={cellName + cellIndex}>
+                                    {(
+                                      <p key={cellName + cellIndex}>
                                         <p className='font-normal text-slate-600'>-</p>
                                       </p>
                                     )}
                                   </div>
                                 </tr>
-                              );
-                            })}
+                              )
+                            }
                           </td>
                           {/* // 2º Discipulado */}
                           <td className='mx-4 text-center ' key={cellIndex}>
-                            {discipuladoForCell[cellName].map((member, indexMember) => {
-                              const discipulado2 = member?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.discipulado[1]?.data_ocorreu;
-                              return (
-                                <tr className='border border-zinc-200' key={member.id}>
-                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
-                                    {discipulado2 ? (
-                                      <Fragment>
-                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                        <p className='text-green-600'>{`${dayjs(discipulado2).utcOffset('+03:00').format('DD/MM')}`}</p>
-                                      </Fragment>
-                                    ) : (
-                                      <p key={indexMember}>
+                            {
+                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
+                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexDiscipulado) => {
+                                  const discipulado1 = discipulado?.discipulado[1]?.data_ocorreu;
+                                  return (
+                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexDiscipulado}>
+                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexDiscipulado}>
+                                        {discipulado1 ? (
+                                          <Fragment>
+                                            {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                            <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
+                                          </Fragment>
+                                        ) : (
+                                          <p key={indexDiscipulado}>
+                                            <p className='font-normal text-slate-600'>-</p>
+                                          </p>
+                                        )}
+                                      </div>
+                                    </tr>
+                                  );
+                                })
+                              ) : (
+                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
+                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={cellName + cellIndex}>
+                                    {(
+                                      <p key={cellName + cellIndex}>
                                         <p className='font-normal text-slate-600'>-</p>
                                       </p>
                                     )}
                                   </div>
                                 </tr>
-                              );
-
-                            })}
+                              )
+                            }
                           </td>
                         </tr>
                       ))}
-
                   </tbody>
                 </table>
               </Fragment>
-
             )
             :
             (<span></span>)
         }
-
       </div>
     </Fragment>
   )
