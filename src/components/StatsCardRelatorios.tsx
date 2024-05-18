@@ -23,7 +23,7 @@ export default function StatsCardRelatorios() {
       supervisor: 'Células',
       icon: Users,
       color: 'bg-sky-800',
-      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd"
+      href: "/relatorio-presenca-celula-supervisao/presenca-celulas"
     },
     {
       title: 'Presença nos Cultos',
