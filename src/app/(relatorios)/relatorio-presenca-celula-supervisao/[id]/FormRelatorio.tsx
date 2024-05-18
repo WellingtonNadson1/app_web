@@ -62,7 +62,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
           <tr className={`border-b border-slate-600`}>
             {/* Coluna fixa */}
             <td className='px-4 bg-gray-50'>
-              <p className='text-base font-medium text-black'>{celula.nome}</p>
+              <p className='text-base font-medium text-black'>{celula?.nome}</p>
               <p className='text-sm font-medium text-slate-600'>
                 Líder: <span className='font-normal'>{celula?.lider?.first_name}</span>
               </p>
@@ -73,9 +73,9 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
             {/* Coluna para membros */}
             <td className='px-4'>
               {celula?.reunioes_celula[0]?.presencas_membros_reuniao_celula?.map((member) => (
-                <tr className='w-20 h-20 py-4' key={member.membro.id}>
+                <tr className='w-20 h-20 py-4' key={member.membro?.id}>
                   <div className='flex flex-col justify-center h-20'>
-                    {member.membro.first_name}
+                    {member.membro?.first_name}
                   </div>
                 </tr>
               ))}
@@ -94,17 +94,19 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
                           {member.status === false && (
                             <p className='text-red-600'>F</p>
                           )}
+                          {member.status === null && (
+                            <p className='text-yellow-600'>Não lançado</p>
+                          )}
                         </Fragment>
                       ) : (
-                        <p key={indexMember}>
-                          <p className='font-normal text-slate-600'>-</p>
-                        </p>
+                        <p className='font-normal text-slate-600'>-</p>
                       )}
                     </div>
                   );
                 })}
               </td>
             ))}
+
           </tr>
 
         </tbody>
