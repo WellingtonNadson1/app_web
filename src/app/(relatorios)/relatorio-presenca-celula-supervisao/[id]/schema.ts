@@ -21,6 +21,10 @@ export const CelulaSchema = z.object({
   id: z.string(),
   nome: z.string(),
   lider: z.object({ first_name: z.string() }),
+  membros: z.object({
+    id: z.string(),
+    first_name: z.string(),
+  }).array(),
   _count: z.object({
     membros: z.number()
   }),

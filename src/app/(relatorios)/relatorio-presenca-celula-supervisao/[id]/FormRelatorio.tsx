@@ -14,6 +14,12 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
   const newCorSupervisao = CorSupervision(corSupervisao)
   const Supervisor = ListSupervisores(corSupervisao)
 
+  const meetingSortedByDate = celula.reunioes_celula.sort((a, b) => {
+    const dateA = new Date(a.data_reuniao);
+    const dateB = new Date(b.data_reuniao);
+    return dateA.getTime() - dateB.getTime(); // Compare dates
+  });
+
   return (
     <div className='pt-3'>
       <div className={cn(`bg-yellow-400 w-full text-center text-white`, `${newCorSupervisao}`)}>
@@ -34,7 +40,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
       </div>
       <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
         {/* Cabeçalho da tabela */}
-        <thead className={cn(`p-2 text-center`, `${newCorSupervisao}`)}>
+        <thead className={cn(`bg-yellow-400 p-2 text-center`, `${newCorSupervisao}`)}>
           <Fragment>
             <tr className={`mx-4 p-2`}>
               <th>
@@ -45,14 +51,23 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
               </th>
 
               {
-                celula.reunioes_celula.map((dataCelula, dataCelulaIndex) => (
-                  <th className='flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white' key={dataCelulaIndex}>
+                celula.reunioes_celula?.length > 0 ? (
+                  celula.reunioes_celula.map((dataCelula, dataCelulaIndex) => (
+                    <th className='flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white' key={dataCelulaIndex}>
+                      <div className=''>
+                        <p>{`${dayjs(dataCelula.data_reuniao).format('ddd').toUpperCase()}`}</p>
+                        <p>{`${dayjs(dataCelula.data_reuniao).format('DD/MM')}`}</p>
+                      </div>
+                    </th>
+                  ))
+                ) : (
+                  <th className='flex-col items-center justify-center h-20 p-2 mb-2 text-white'>
                     <div className=''>
-                      <p>{`${dayjs(dataCelula.data_reuniao).format('ddd').toUpperCase()}`}</p>
-                      <p>{`${dayjs(dataCelula.data_reuniao).format('DD/MM')}`}</p>
+                      <p>Não Fez Registro</p>
+
                     </div>
                   </th>
-                ))
+                )
               }
             </tr>
           </Fragment>
@@ -72,43 +87,51 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({ celula, supervisionDat
             </td>
             {/* Coluna para membros */}
             <td className='px-4'>
-              {celula?.reunioes_celula[0]?.presencas_membros_reuniao_celula?.map((member) => (
-                <tr className='w-20 h-20 py-4' key={member.membro?.id}>
+              {celula?.membros?.map((member) => (
+                <tr className='w-20 h-20 py-4' key={member?.id}>
                   <div className='flex flex-col justify-center h-20'>
-                    {member.membro?.first_name}
+                    {member?.first_name}
                   </div>
                 </tr>
               ))}
             </td>
             {/* Colunas dinâmicas para presenças */}
-            {celula.reunioes_celula.map((cultoId, indexCulto) => (
-              <td className='mx-4 mb-4 text-center border border-zinc-200' key={cultoId.id + indexCulto}>
-                {cultoId?.presencas_membros_reuniao_celula?.map((member, indexMember) => {
-                  return (
-                    <div className='flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200' key={cultoId.id + indexMember}>
-                      {member ? (
-                        <Fragment>
-                          {member.status === true && (
-                            <p className='text-green-600'>P</p>
+            {/* Meeting presence rendering */}
+            {meetingSortedByDate?.length > 0 ? (
+              meetingSortedByDate.map((meeting, indexCulto) => {
+                return (
+                  <td className='mx-4 mb-4 text-center border border-zinc-200' key={meeting.id + indexCulto}>
+                    {celula.membros.map((member) => {
+                      const presenca = meeting.presencas_membros_reuniao_celula.find((p) => p.membro?.id === member.id);
+
+                      return (
+                        <div className='flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200' key={member.id}>
+                          {presenca ? (
+                            presenca.status === true ? (
+                              <p className='text-green-600'>P</p>
+                            ) : presenca.status === false ? (
+                              <p className='text-red-600'>F</p>
+                            ) : (
+                              <p className='text-yellow-600'>-</p>
+                            )
+                          ) : (
+                            <p className='text-yellow-600'>-</p>
                           )}
-                          {member.status === false && (
-                            <p className='text-red-600'>F</p>
-                          )}
-                          {member.status === null && (
-                            <p className='text-yellow-600'>Não lançado</p>
-                          )}
-                        </Fragment>
-                      ) : (
-                        <p className='font-normal text-slate-600'>-</p>
-                      )}
-                    </div>
-                  );
-                })}
+                        </div>
+                      );
+                    })}
+                  </td>
+                )
+
+              })
+            ) : (
+              <td className='mx-4 mb-4 text-center border border-zinc-200'>
+                <div className='flex flex-col justify-center h-full font-bold'>
+                  <p className='px-2 text-yellow-600'>Não Fez Nenhum Lançamento</p>
+                </div>
               </td>
-            ))}
-
+            )}
           </tr>
-
         </tbody>
       </table>
     </div>
