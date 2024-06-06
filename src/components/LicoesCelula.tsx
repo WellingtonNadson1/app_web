@@ -73,47 +73,42 @@ export default function LicoesCelula() {
 
   console.log('weeks', weeks[0].end.isBefore(toDay))
 
-  const temaMesCelula = 'Espírito Santo'
-  const subTemaMesCelula = 'O mundo não pode receber esse Espírito porque não o pode ver, nem conhecer. Mas vocês o conhecem porque ele está com vocês e viverá em vocês. Jo 14:17'
+  const temaMesCelula = 'A Volta de Jesus'
+  const subTemaMesCelula = 'Mas cada um por sua vez: Cristo, as primícias; depois, quando ele vier, os que lhe pertencem. 1Coríntios 15:23'
 
   const statusLicoes = [
     {
       id: 1,
-      title: 'Quem é o Espírito Santo?',
+      title: 'A Esperança da Segunda Vinda',
       periodo: weeks,
-      status: 'ok',
       icon: FilePdf,
-      versiculo: 'Ez 36:27',
+      versiculo: '1Ts 4:16-18',
     },
     {
       id: 2,
-      title: 'Uma questão de Governo',
+      title: 'Como cooperar com a vinda de Jesus',
       periodo: weeks,
-      status: 'ok',
       icon: FilePdf,
-      versiculo: 'Gl 5:16-17',
+      versiculo: 'IIPe 3:9-12',
     },
     {
       id: 3,
-      title: 'A poderosa ação do Espírito Santo',
+      title: 'A Noiva de Jesus',
       periodo: weeks,
-      status: 'pendente',
       icon: FilePdf,
-      versiculo: '1Co 2:11',
+      versiculo: 'Ap 19:6-8',
     },
     {
       id: 4,
-      title: 'Como receber o Espírito Santo?',
+      title: 'A prestação de Contas',
       periodo: weeks,
-      status: 'pendente',
       icon: FilePdf,
-      versiculo: 'Jo 14:15-17',
+      versiculo: 'Mt 16:25-27',
     },
     // {
     //   id: 5,
     //   title: 'O Cuidado de Deus',
     //   periodo: '29 de Out a 04 de Fev/2024',
-    //   status: 'pendente',
     //   icon: FilePdf,
     //   versiculo: 'Ez 34:11-12',
     // },

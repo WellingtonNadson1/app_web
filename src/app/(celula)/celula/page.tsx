@@ -11,12 +11,10 @@ import { useQuery } from '@tanstack/react-query'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
-import ControlePresencaCelula from './ControlePresencaCelula'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
 import HeaderCelula from './HeaderCelula'
 import { CelulaProps, Meeting } from './schema'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
-// import AvisoLicoesCelula from '@/components/AvisoLicoesCelula'
 import axios from 'axios'
 import { useUserDataStore } from '@/store/UserDataStore'
 import CalendarLoading from './loadingUi/CalendarLoading'
@@ -117,8 +115,8 @@ export default function ControleCelulaSupervision() {
             <CalendarLiderCelula />
           </div>
           <div className="relative w-full px-2 mx-auto mb-4">
-            <AvisoLicoesCelula />
-            {/* <LicoesCelula /> */}
+            {/* <AvisoLicoesCelula /> */}
+            <LicoesCelula />
           </div>
           {/* FREQUENCIA DE PRESENCA NOS CULTOS #1*/}
           <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">

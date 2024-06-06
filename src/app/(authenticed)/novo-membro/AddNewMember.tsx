@@ -19,8 +19,6 @@ import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import { useUserDataStore } from '@/store/UserDataStore'
 
 function AddNewMember() {
-  // const URLUsers = `${BASE_URL_LOCAL}/users`
-  // const URLCombinedData = `${BASE_URL_LOCAL}/users/all`
   const URLUsers = `${BASE_URL}/users`
   // Zustand Store
   const { token } = useUserDataStore.getState()
