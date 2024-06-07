@@ -1,14 +1,15 @@
 /* eslint-disable camelcase */
+// import { getServerSession } from 'next-auth'
+// import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import axios from 'axios'
 import HeaderCelulaDiscipulados from './HeaderCelulaDiscipulados'
-import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { axiosAuthToken } from '@/lib/axios'
 import ListMembersCelulaDiscipulado from '../components/listMembersCelulaDiscipulado'
+import { auth } from '@/auth'
 
 export default async function DiscipuladosCelula() {
 
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const token = session?.user?.token
 
   const config = {

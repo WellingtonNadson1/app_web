@@ -1,5 +1,5 @@
 // "use client"
-import { CargoLidereanca, Encontros, Escolas, SituacoesNoReino, SupervisaoData } from "@/app/(authenticed)/novo-membro/schema";
+import { CargoLidereanca, Encontros, Escolas, SituacoesNoReino, SupervisaoData } from "@/app/(central)/novo-membro/schema";
 import { create } from "zustand";
 import { persist, createJSONStorage } from "zustand/middleware";
 

@@ -2,8 +2,8 @@
 import { ICelula } from '@/components/ListCelulas'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import { useParams } from 'next/navigation'
-import StatsCardSupervisionDiscipulado from '@/app/(authenticed)/discipulados/Components/StatsCardSupervisionDiscipulado'
-import ListDisicipuladoCelulasSupervision from '@/app/(authenticed)/discipulados/Components/ListDisicipuladoCelulasSupervision'
+import StatsCardSupervisionDiscipulado from '@/app/(central)/discipulados/Components/StatsCardSupervisionDiscipulado'
+import ListDisicipuladoCelulasSupervision from '@/app/(central)/discipulados/Components/ListDisicipuladoCelulasSupervision'
 
 interface IUser {
   id: string

@@ -2,10 +2,10 @@
 // import { UserFocus } from '@phosphor-icons/react'
 // import { useState } from 'react'
 // import Pagination from '../Pagination'
-// import { ReturnMembers } from '@/app/(authenticed)/novo-membro/schema';
-// import AddNewMember from '@/app/(authenticed)/novo-membro/AddNewMember';
-// import DeleteMember from '@/app/(authenticed)/novo-membro/DeleteMember';
-// import UpdateMember from '@/app/(authenticed)/novo-membro/UpdateMember';
+// import { ReturnMembers } from '@/app/(central)/novo-membro/schema';
+// import AddNewMember from '@/app/(central)/novo-membro/AddNewMember';
+// import DeleteMember from '@/app/(central)/novo-membro/DeleteMember';
+// import UpdateMember from '@/app/(central)/novo-membro/UpdateMember';
 // // import { useEffect, useState } from 'react'
 
 // interface ListMembersProps {

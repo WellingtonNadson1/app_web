@@ -1,15 +1,13 @@
 // "use client"
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth';
-import { getServerSession } from 'next-auth';
 import axios from 'axios';
 import MainSide from '@/components/MainSide'
 import { useCombinetedStore } from '@/store/DataCombineted';
 import { InitializerStore } from '@/store/InitializerStore';
 import { InitializerUserStore } from '@/store/InitializerUserStore';
-import { RedirectType, redirect } from 'next/navigation';
+import { auth } from '@/auth';
 
 export default async function Dashboard() {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
   const id = session?.user.id
   const role = session?.user.role
   const user_roles = session?.user.user_roles;
@@ -20,9 +18,7 @@ export default async function Dashboard() {
   const refreshToken = session?.user.refreshToken
 
   const axiosAuth = axios.create({
-    // baseURL: 'http://localhost:8080',
     baseURL: 'https://app-ibb.onrender.com',
-    // baseURL: 'https://backibb-production.up.railway.app',
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
@@ -63,26 +59,6 @@ export default async function Dashboard() {
       cargoLideranca: result[4] ?? [], // Adicione esta linha
     }
   })
-
-  const roles = session?.user.user_roles;
-
-  if (roles?.some(role => role.rolenew.name === "USERSUPERVISOR") && roles.some(role => role.rolenew.name === "USERLIDER")) {
-    // Redireciona para supervisão
-    return redirect('/celula', RedirectType.replace);
-  }
-
-  if (roles?.some(role => role.rolenew.name === 'USERSUPERVISOR')) {
-    // Signed in
-    return redirect('/supervisao', RedirectType.replace);
-  }
-  if (roles?.some(role => role.rolenew.name === 'USERLIDER')) {
-    // Signed in
-    return redirect('/celula', RedirectType.replace);
-  }
-  if (roles?.some(role => role.rolenew.name === 'MEMBER')) {
-    // Signed in
-    return redirect('/login', RedirectType.replace);
-  }
 
   return (
     <>

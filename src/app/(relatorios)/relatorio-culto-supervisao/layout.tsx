@@ -1,11 +1,12 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
+// import { getServerSession } from 'next-auth'
+// import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { Providers } from '@/providers/providers'
-import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import './globals.css'
+import { auth } from '@/auth'
 
 export const metadata = {
   title: 'App IBB',
@@ -17,7 +18,7 @@ export default async function RootLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
+  const session = await auth()
 
   if (!session) {
     // Signed in

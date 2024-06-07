@@ -1,6 +1,6 @@
-import { authOptions } from "@/app/api/auth/[...nextauth]/auth"
+// import { getServerSession } from "next-auth"
+// import { authOptions } from "@/app/api/auth/[...nextauth]/auth"
 import axios from "axios"
-import { getServerSession } from "next-auth"
 
 const hostname = 'app-ibb.onrender.com'
 // const hostname = 'backibb-production.up.railway.app'

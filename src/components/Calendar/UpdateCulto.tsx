@@ -2,7 +2,7 @@
 import {
   CultoDaSemana,
   NewCulto,
-} from '@/app/(authenticed)/cultos/schemaNewCulto'
+} from '@/app/(central)/cultos/schemaNewCulto'
 import {
   BASE_URL,
   errorCadastro,
@@ -20,10 +20,10 @@ import { useQuery } from '@tanstack/react-query'
 export default function UpdateCulto({
   cultoId,
 }: // shouldFetch,
-{
-  cultoId: string
-  // shouldFetch: boolean
-}) {
+  {
+    cultoId: string
+    // shouldFetch: boolean
+  }) {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 

@@ -81,7 +81,7 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
           {/* {session?.user ? ( */}
           <>
             <div>
-              <h2 className="hidden text-xs text-gray-700 sm:block">
+              <h2 className="hidden text-xs text-gray-700 truncate sm:block">
                 Shalom,{' '}
                 <span className="font-bold">{session?.user?.first_name}</span>
               </h2>

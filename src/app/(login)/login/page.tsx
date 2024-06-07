@@ -1,55 +1,52 @@
 'use client'
 import ThemeImage from '@/components/theme-image'
-// import { GoogleLogo } from '@phosphor-icons/react'
-import { signIn } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
+import { TypeLogin } from '@/types'
 import { useState } from 'react'
-import { SubmitErrorHandler, SubmitHandler, useForm } from 'react-hook-form'
-import { Output, email, object, string } from 'valibot'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { loginFunction } from '../../../../actions/login'
+import { useMutation } from '@tanstack/react-query'
+import { FormError } from "@/components/Info/form-error";
+import { FormSuccess } from "@/components/Info/form-sucesso";
 
-const loginSchema = object({
-  email: string([email()]),
-  password: string(),
-})
-
-type TypeLogin = Output<typeof loginSchema>
 
 export default function Login() {
-  const router = useRouter()
+  const [error, setError] = useState<string | undefined>("");
+  const [success, setSuccess] = useState<string | undefined>("");
   const { handleSubmit, register } = useForm<TypeLogin>()
-  const [isLoading, setIsLoading] = useState(false)
-  const [isLoadingFaield, setIsLoadingFaield] = useState(false)
-  const [isLoading504, setIsLoading504] = useState(false)
+
+  const loginFn = async ({ email, password }: TypeLogin) => {
+    const registered = await loginFunction({
+      email,
+      password,
+    });
+    return registered;
+  };
+
+  const { mutateAsync: loginFunc, isPending } = useMutation({
+    mutationKey: ["registeruser"],
+    mutationFn: loginFn,
+  });
 
   const onSubmit: SubmitHandler<TypeLogin> = async ({
     email,
     password,
-  }: TypeLogin) => {
-    setIsLoading(true)
-    const result = await signIn('credentials', {
-      email,
-      password,
-      redirect: false,
-    })
-    if (result?.status === 504) {
-      setIsLoading504(true)
-      setTimeout(() => {
-        setIsLoading504(false)
-      }, 4000);
-    }
-    if (result?.error) {
-      setIsLoadingFaield(true)
-      setIsLoading(false)
-      setTimeout(() => {
-        setIsLoadingFaield(false)
-      }, 4000);
-      return
-    }
-    setIsLoading(false)
-    router.replace('/dashboard')
-  }
+  }) => {
+    setError("");
+    setSuccess("");
+    try {
+      console.log('email e senha', email, password)
 
-  const onError: SubmitErrorHandler<TypeLogin> = (erros) => console.log(erros)
+      const login = await loginFunc({ email, password }).then(
+        (data) => {
+          setError(data?.error);
+          setSuccess(data?.sucesso);
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
 
   return (
     <>
@@ -78,7 +75,7 @@ export default function Login() {
             <div className="mt-8 md:mx-auto md:w-full md:max-w-sm">
               <form
                 className="space-y-5"
-                onSubmit={handleSubmit(onSubmit, onError)}
+                onSubmit={handleSubmit(onSubmit)}
               >
                 <div>
                   <label
@@ -156,7 +153,7 @@ export default function Login() {
                 </div>
 
                 <div>
-                  {isLoading ? (
+                  {isPending ? (
                     <button
                       type="submit"
                       // disabled
@@ -192,12 +189,8 @@ export default function Login() {
                       Entrar
                     </button>
                   )}
-                  <div className='mx-auto mt-2 text-center'>
-                    {isLoadingFaield && <span className="text-sm text-red-400">Senha ou e-mail inválido!</span>}
-                  </div>
-                  <div className='mx-auto mt-2 text-center'>
-                    {isLoading504 && <span className="text-sm text-red-400">Tente novamente!</span>}
-                  </div>
+                  <FormSuccess message={success} />
+                  <FormError message={error} />
                 </div>
               </form>
 

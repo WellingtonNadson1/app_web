@@ -1,5 +1,5 @@
 import { useForm, UseFormSetValue } from 'react-hook-form';
-import { AddressProps, Member } from '@/app/(authenticed)/novo-membro/schema';
+import { AddressProps, Member } from '@/app/(central)/novo-membro/schema';
 
 type FlexibleSetValue = UseFormSetValue<Member>;
 

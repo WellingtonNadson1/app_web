@@ -1,11 +1,10 @@
-import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { Providers } from '@/providers/providers'
-import { getServerSession } from 'next-auth'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
 import '../globals.css'
+import { auth } from '@/auth'
 
 export const metadata = {
   title: 'App IBB',
@@ -17,24 +16,26 @@ export default async function LoginLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await getServerSession(authOptions)
-  console.log('Session Role: ', session?.user.role)
+  const session = await auth()
 
-  if (session?.user.role === 'USERCENTRAL') {
-    // Signed in
-    return redirect('/dashboard', RedirectType.replace)
+  const roles = session?.user.user_roles;
+
+  if (roles?.some(role => role.rolenew.name === "USERSUPERVISOR") && roles.some(role => role.rolenew.name === "USERLIDER")) {
+    // Redireciona para supervisão
+    return redirect('/celula', RedirectType.replace);
   }
-  if (session?.user.role === 'USERSUPERVISOR') {
+
+  if (roles?.some(role => role.rolenew.name === 'USERSUPERVISOR')) {
     // Signed in
-    return redirect('/supervisao', RedirectType.replace)
+    return redirect('/supervisao', RedirectType.replace);
   }
-  if (session?.user.role === 'USERLIDER') {
+  if (roles?.some(role => role.rolenew.name === 'USERLIDER')) {
     // Signed in
-    return redirect('/celula', RedirectType.replace)
+    return redirect('/celula', RedirectType.replace);
   }
-  if (session?.user.role === 'MEMBER') {
+  if (roles?.some(role => role.rolenew.name === 'MEMBER')) {
     // Signed in
-    return redirect('/login', RedirectType.replace)
+    return redirect('/login', RedirectType.replace);
   }
 
   return (

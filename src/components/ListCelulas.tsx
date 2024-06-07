@@ -2,8 +2,8 @@ import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Pagination from './Pagination'
-import UpdateCelula from '@/app/(authenticed)/celulas/UpdateCelula'
-import UpdateCelula2 from '@/app/(authenticed)/celulas/UpdateCelula2'
+import UpdateCelula from '@/app/(central)/celulas/UpdateCelula'
+import UpdateCelula2 from '@/app/(central)/celulas/UpdateCelula2'
 
 export interface ICelula {
   id: string

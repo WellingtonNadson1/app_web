@@ -10,13 +10,17 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from '@/functions/functions'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import axios from 'axios'
-import { Member } from '@/app/(authenticed)/novo-membro/schema'
+import { Member } from '@/app/(central)/novo-membro/schema'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { useUserDataStore } from '@/store/UserDataStore'
-import { UpdateSupervisorProps, dataUpdateDiscipulador } from './schema'
+import { Membro, dataUpdateDiscipulador } from './schema'
 
-function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
+function UpdateDisicipulador({
+  member,
+}: {
+  member: Membro
+}) {
 
   const URLUsers = `${BASE_URL}/users/alldiscipulados`
   const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
@@ -26,7 +30,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
   const axiosAuth = useAxiosAuthToken(token)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [nome, setNome] = useState(props.supervisor?.first_name);
+  const [nome, setNome] = useState(member?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name);
   const queryClient = useQueryClient()
 
   const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
@@ -56,6 +60,23 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
       console.error('⛔ error na atualização do Discipulador', error)
     },
     onSuccess(data, variables) {
+      // const cached = queryClient.getQueryData(["celula"])
+
+      // Atualizando o cached da lista de membros e discipuladores atraves do HTTPState
+      // queryClient.setQueryData(["celula"], (cached: any) => {
+      //   return {
+      //     ...cached,
+      //     membros: cached.membros.map((membro: any) =>
+      //       membro.id === member.id ? {
+      //         ...membro, user: {
+      //           id: selectedMember?.id,
+      //           first_name: selectedMember?.first_name,
+      //         },
+      //       } : membro
+      //     )
+      //   };
+      // });
+
       setNome(selectedMember?.first_name as string)
       queryClient.invalidateQueries({ queryKey: ["celula"] })
       queryClient.invalidateQueries({ queryKey: ["updateDiscipulador"] })
@@ -64,7 +85,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<dataUpdateDiscipulador> = async (data) => {
-    data.id = props?.member?.user_discipulador_usuario_usuario_idTouser?.id;
+    data.id = member.id;
     selectedMember && (data.discipuladorId = selectedMember?.id);
     setIsLoadingSubmitUpDate(true)
     try {
@@ -147,13 +168,13 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                               htmlFor="membro"
                               className="block text-sm font-medium leading-6 text-slate-700"
                             >
-                              Discípulo
+                              Membro
                             </label>
                             <div className="mt-3">
                               <input
                                 type="text"
                                 name="membro"
-                                value={props?.member?.user_discipulador_usuario_usuario_idTouser?.first_name}
+                                value={member.first_name}
                                 id="membro"
                                 disabled
                                 autoComplete="family-name"
@@ -337,4 +358,4 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
   )
 }
 
-export default UpdateSupervisorDisicipulado
+export default UpdateDisicipulador
