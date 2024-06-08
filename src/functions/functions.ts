@@ -1,12 +1,14 @@
-"use client"
+import authConfig from '@/auth/auth.config';
 import axios, { AxiosError } from 'axios';
+import NextAuth from 'next-auth';
+import { NextAuthRequest } from 'next-auth/lib';
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
 export interface FetchError extends AxiosError { }
 
-const hostname = 'app-ibb.onrender.com'
 // const hostname = 'backibb-production.up.railway.app'
+const hostname = 'app-ibb.onrender.com'
 export const BASE_URL = `https://${hostname}`
 
 const hostnameLocal = 'localhost:8080'
@@ -66,7 +68,12 @@ export const errorCadastro = (message: string) =>
     theme: 'light',
   });
 
+const { auth } = NextAuth(authConfig);
 
-
+export default auth((req: NextAuthRequest) => {
+  const { nextUrl } = req;
+  const isLoggedIn = !!req.auth;
+  return console.log('isLoggedIn', isLoggedIn)
+})
 
 

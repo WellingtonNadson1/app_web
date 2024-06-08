@@ -71,8 +71,6 @@ export default function LicoesCelula() {
     startDate = weekEnd.add(1, 'day');
   }
 
-  console.log('weeks', weeks[0].end.isBefore(toDay))
-
   const temaMesCelula = 'A Volta de Jesus'
   const subTemaMesCelula = 'Mas cada um por sua vez: Cristo, as primícias; depois, quando ele vier, os que lhe pertencem. 1Coríntios 15:23'
 

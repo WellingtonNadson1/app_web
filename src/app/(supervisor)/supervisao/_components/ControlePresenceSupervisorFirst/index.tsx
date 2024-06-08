@@ -72,7 +72,6 @@ export default function ControlePresenceSupervisorFirst({
     }
   }
 
-
   return (
     <>
       {isLoading ? (

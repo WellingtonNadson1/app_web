@@ -56,7 +56,7 @@ export type PresencaCultoProps = z.infer<typeof PresencaCultoSupervisorSchema>
 export const ControlePresencaSupervisorPropsSchema = z.object({
   id: z.string(),
   supervisorId: z.string(),
-  culto: z.string()
+  culto: z.string(),
 })
 
 export type ControlePresencaSupervisorProps = z.infer<typeof ControlePresencaSupervisorPropsSchema>

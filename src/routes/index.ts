@@ -2,7 +2,7 @@
  * @type {string[]}
  */
 
-export const publicRoutes: string[] = ["/", "/auth/new-verification", "/portfolio", "/services", "/contato", "/register", "/vistoriador"];
+export const publicRoutes: string[] = ["/", "/login", "/auth/new-verification", "/portfolio", "/services", "/contato", "/register", "/vistoriador"];
 
 /**
  * @type {string[]}
@@ -65,4 +65,4 @@ export const apiAuthPrefix: string = "/api/auth";
  */
 export const DEFAULT_LOGIN_REDIRECT: string = "/dashboard";
 export const DEFAULT_LOGIN_REDIRECT_CELULA: string = "/celula";
-export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR: string = "/dashboard";
+export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR: string = "/supervisao";

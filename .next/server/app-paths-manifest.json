@@ -1,8 +1,4 @@
 {
   "/not-found": "app/not-found.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(supervisor)/supervisao/page": "app/(supervisor)/supervisao/page.js",
-  "/(discipuladosregistersupervisor)/discipuladosregistersupervisor/page": "app/(discipuladosregistersupervisor)/discipuladosregistersupervisor/page.js"
+  "/(supervisor)/supervisao/page": "app/(supervisor)/supervisao/page.js"
 }

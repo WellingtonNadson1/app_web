@@ -11,9 +11,7 @@ import { useQuery } from '@tanstack/react-query'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import { useSession } from 'next-auth/react'
-import { CelulaProps } from './schema'
 import HeaderSupervisao from './HeaderSupervisao'
-import ControlePresencaSupervisor from './ControlePresencaSupervisor'
 import { Meeting } from '@/app/(celula)/celula/schema'
 import HeaderSupervisorLoad from './loadingUi'
 import axios from 'axios'
@@ -59,13 +57,9 @@ export default function ControleSupervisor() {
     return <HeaderSupervisorLoad />
   }
 
-  if (isSuccess) {
-    console.log('data', data)
-  }
-
   const today = startOfToday()
 
-  const selectedDayMeetings = data?.filter((meeting) =>
+  const selectedDayMeetings = isSuccess && data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
 
@@ -100,7 +94,6 @@ export default function ControleSupervisor() {
               <SpinnerButton message={''} />
             ) :
               selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
-                // isSameDay(parseISO(selectedDayMeetings[0].data_inicio_culto), today) ? (
                 session ? (
                   <div key={selectedDayMeetings[0].id} id={selectedDayMeetings[0].id} className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
                     <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
@@ -135,7 +128,6 @@ export default function ControleSupervisor() {
                 ) : (
                   <SpinnerButton message={''} key={selectedDayMeetings[0].id} />
                 )
-                // ) : <SpinnerButton message={''} key={selectedDayMeetings[0].id} />
               )
                 :
                 (
@@ -174,7 +166,6 @@ export default function ControleSupervisor() {
                 <SpinnerButton message={''} />
               ) :
                 selectedDayMeetings && selectedDayMeetings?.length <= 2 && selectedDayMeetings?.length > 1 ? (
-                  // isSameDay(parseISO(selectedDayMeetings[1]?.data_inicio_culto), today) ? (
                   session ? (
                     <div key={selectedDayMeetings[1]?.id} id={selectedDayMeetings[1]?.id} className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
                       <div className="relative flex-col w-full p-4 bg-white rounded-lg shadow-md flex-warp hover:bg-white/95">
@@ -209,7 +200,6 @@ export default function ControleSupervisor() {
                   ) : (
                     <SpinnerButton message={''} key={selectedDayMeetings[1]?.id} />
                   )
-                  // ) : <SpinnerButton message={''} key={selectedDayMeetings[1]?.id} />
                 )
                   :
                   (

@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+export const RoleSchema = z.enum([
+  "USERLIDER",
+  "USERSUPERVISOR",
+  "USERCENTRAL",
+  "USERPASTOR",
+  "MEMBER",
+  "ADMIN",
+])
+
+
 export const InputsFormAuthSchema = z.object({
   email: z.string().email({ message: "Endereço de email inválido" }).toLowerCase(),
   password: z.string().min(6, { message: "* Senha requerida" })
