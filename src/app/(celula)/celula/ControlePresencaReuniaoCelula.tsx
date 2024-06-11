@@ -121,9 +121,13 @@ export default function ControlePresencaReuniaoCelula({
   }, [])
 
   const getPresenceRegistered = async () => {
-    const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
-    const PresenceExistRegistered = response.data
-    return PresenceExistRegistered
+    try {
+      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
+      const PresenceExistRegistered = response.data
+      return PresenceExistRegistered
+    } catch (error) {
+      console.log('Error in GET Presenca Registrada', error)
+    }
   }
 
   const { data, isLoading, isSuccess: isSuccessGetPresenceRegistered } = useQuery({
@@ -146,7 +150,7 @@ export default function ControlePresencaReuniaoCelula({
       id: reuniaoRegisteredId!
     };
 
-    const responseUpdate = await axiosAuth.put(`${BASE_URL_LOCAL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`, dataSendUpdate);
+    const responseUpdate = await axiosAuth.put(`${BASE_URL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`, dataSendUpdate);
 
     console.log('response Update', responseUpdate.data)
 
