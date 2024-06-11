@@ -31,10 +31,10 @@ export default function ControlePresencaReuniaoCelula({
 }) {
   const { data: session } = useSession()
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  const URLControlePresencaReuniaoCelula = `${BASE_URL_LOCAL}/presencareuniaocelulas`
-  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL_LOCAL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
-  const URLUpdateReuniaoCelula = `${BASE_URL_LOCAL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`
-  const URLReuniaoCelula = `${BASE_URL_LOCAL}/reunioessemanaiscelulas`
+  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+  const URLUpdateReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`
+  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
   const [progress, setProgress] = useState(0);
   const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData[]>()
   const [erro, setErro] = useState<Error>();
