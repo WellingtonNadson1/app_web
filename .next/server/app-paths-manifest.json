@@ -1,4 +1,5 @@
 {
   "/not-found": "app/not-found.js",
-  "/(supervisor)/supervisao/page": "app/(supervisor)/supervisao/page.js"
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(celula)/celula/page": "app/(celula)/celula/page.js"
 }

@@ -1,21 +1,39 @@
 {
   "pages": {
-    "/(supervisor)/layout": [
+    "/(login)/login/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(supervisor)/layout.css",
-      "static/chunks/app/(supervisor)/layout.js"
+      "static/css/app/(login)/login/page.css",
+      "static/chunks/app/(login)/login/page.js"
     ],
-    "/(supervisor)/loading": [
+    "/(login)/login/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(supervisor)/loading.js"
+      "static/css/app/(login)/login/layout.css",
+      "static/chunks/app/(login)/login/layout.js"
     ],
-    "/(supervisor)/supervisao/page": [
+    "/(login)/login/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(supervisor)/supervisao/page.css",
-      "static/chunks/app/(supervisor)/supervisao/page.js"
+      "static/css/app/(login)/login/loading.css",
+      "static/chunks/app/(login)/login/loading.js"
+    ],
+    "/(celula)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
+    ],
+    "/(celula)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(celula)/loading.js"
+    ],
+    "/(celula)/celula/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ],
     "/not-found": [
       "static/chunks/webpack.js",

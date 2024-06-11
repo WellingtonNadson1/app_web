@@ -85,7 +85,29 @@ export type ReuniaoCelulaSuccessData = {
   data_reuniao: string;
   presencas_membros_reuniao_celula: string;
   id?: string | undefined;
+  visitantes: number,
+  almas_ganhas: number,
 };
+
+export const reuniaoCelulaUpdateSchema = z.object({
+  id: z.string().optional(),
+  visitantes: z.number().int().positive(),
+  almas_ganhas: z.number().int().positive(),
+})
+
+export type reuniaoCelulaUpdate = z.infer<typeof reuniaoCelulaUpdateSchema>
+
+export const reuniaoCelulaUpdateSchemaReturn = z.object({
+  id: z.string().optional(),
+  status: z.string(),
+  celula: z.string(),
+  data_reuniao: z.string(),
+  presencas_membros_reuniao_celula: z.string(),
+  visitantes: z.number().int().positive(),
+  almas_ganhas: z.number().int().positive(),
+})
+
+export type reuniaoCelulaUpdateReturn = z.infer<typeof reuniaoCelulaUpdateSchemaReturn>
 
 const reuniaoCelulaDataSchema = z.object({
   id: z.string().optional(),
@@ -93,6 +115,8 @@ const reuniaoCelulaDataSchema = z.object({
   celula: z.string(),
   data_reuniao: z.string(),
   presencas_membros_reuniao_celula: z.string(),
+  visitantes: z.number().int().positive(),
+  almas_ganhas: z.number().int().positive(),
 })
 
 export type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
@@ -110,6 +134,6 @@ const attendanceReuniaCelulaSchema = z.object({
   status: z.string(),
   membro: z.string(),
   which_reuniao_celula: z.string(),
-})
+});
 
 export type attendanceReuniaoCelula = z.infer<typeof attendanceReuniaCelulaSchema>
