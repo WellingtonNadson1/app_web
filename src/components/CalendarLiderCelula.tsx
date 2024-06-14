@@ -25,6 +25,7 @@ import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
 import { Meeting } from '@/app/(celula)/celula/schema'
 import { useUserDataStore } from '@/store/UserDataStore'
+import { Card } from './ui/card'
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -96,16 +97,17 @@ export default function CalendarLiderCelula() {
   )
 
   return (
-    <div className="pt-4">
-      <div className="px-2 py-6 bg-white rounded-lg shadow-md">
-        <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
-          <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
-            <div className="md:pr-10">
-              <div className="flex items-center">
-                <h2 className="flex-auto font-semibold text-gray-900 capitalize">
-                  {format(firstDayCurrentMonth, 'MMMM yyyy', { locale: pt })}
-                </h2>
-                {/* <button
+    <Card className=" bg-white relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
+      <div className="pt-4">
+        <div className="px-2 py-4 bg-white rounded-lg">
+          <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
+            <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
+              <div className="md:pr-10">
+                <div className="flex items-center">
+                  <h2 className="flex-auto font-semibold text-gray-900 capitalize">
+                    {format(firstDayCurrentMonth, 'MMMM yyyy', { locale: pt })}
+                  </h2>
+                  {/* <button
                   type="button"
                   onClick={previousMonth}
                   className="-my-1.5 flex flex-none items-center justify-center p-1.5 text-gray-400 hover:text-gray-500"
@@ -121,106 +123,107 @@ export default function CalendarLiderCelula() {
                   <span className="sr-only">Next month</span>
                   <ChevronRightIcon className="w-5 h-5" aria-hidden="true" />
                 </button> */}
-              </div>
-              <div className="grid grid-cols-7 text-xs leading-6 text-center text-gray-500 mt-9">
-                <div>D</div>
-                <div>S</div>
-                <div>T</div>
-                <div>Q</div>
-                <div>Q</div>
-                <div>S</div>
-                <div>S</div>
-              </div>
-              <div className="grid grid-cols-7 mt-2 text-sm">
-                {days.map((day, dayIdx) => (
-                  <div
-                    key={day.toString()}
-                    className={classNames(
-                      (dayIdx === 0 && colStartClasses[getDay(day)]) || '',
-                      'py-1',
-                    )}
-                  >
-                    <button
-                      type="button"
-                      onClick={() => setSelectedDay(day)}
+                </div>
+                <div className="grid grid-cols-7 text-xs leading-6 text-center text-gray-500 mt-9">
+                  <div>D</div>
+                  <div>S</div>
+                  <div>T</div>
+                  <div>Q</div>
+                  <div>Q</div>
+                  <div>S</div>
+                  <div>S</div>
+                </div>
+                <div className="grid grid-cols-7 mt-2 text-sm">
+                  {days.map((day, dayIdx) => (
+                    <div
+                      key={day.toString()}
                       className={classNames(
-                        isEqual(day, selectedDay) ? 'text-white' : '',
-                        !isEqual(day, selectedDay) && isToday(day)
-                          ? 'text-red-500'
-                          : '',
-                        !isEqual(day, selectedDay) &&
-                          !isToday(day) &&
-                          isSameMonth(day, firstDayCurrentMonth)
-                          ? 'text-gray-900'
-                          : '',
-                        !isEqual(day, selectedDay) &&
-                          !isToday(day) &&
-                          !isSameMonth(day, firstDayCurrentMonth)
-                          ? 'text-gray-400'
-                          : '',
-                        isEqual(day, selectedDay) && isToday(day)
-                          ? 'bg-red-500'
-                          : '',
-                        isEqual(day, selectedDay) && !isToday(day)
-                          ? 'bg-gray-900'
-                          : '',
-                        !isEqual(day, selectedDay) ? 'hover:bg-gray-200' : '',
-                        isEqual(day, selectedDay) || isToday(day)
-                          ? 'font-semibold'
-                          : '',
-                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                        (dayIdx === 0 && colStartClasses[getDay(day)]) || '',
+                        'py-1',
                       )}
                     >
-                      <time dateTime={format(day, 'yyyy-MM-dd')}>
-                        {format(day, 'd')}
-                      </time>
-                    </button>
-                    {/* Pontos de Eventos */}
-                    <div className="flex items-center justify-center gap-1 mx-auto">
-                      {data &&
-                        data?.some((meeting) =>
-                          isSameDay(parseISO(meeting.data_inicio_culto), day),
-                        ) && (
-                          <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                          </div>
+                      <button
+                        type="button"
+                        onClick={() => setSelectedDay(day)}
+                        className={classNames(
+                          isEqual(day, selectedDay) ? 'text-white' : '',
+                          !isEqual(day, selectedDay) && isToday(day)
+                            ? 'text-red-500'
+                            : '',
+                          !isEqual(day, selectedDay) &&
+                            !isToday(day) &&
+                            isSameMonth(day, firstDayCurrentMonth)
+                            ? 'text-gray-900'
+                            : '',
+                          !isEqual(day, selectedDay) &&
+                            !isToday(day) &&
+                            !isSameMonth(day, firstDayCurrentMonth)
+                            ? 'text-gray-400'
+                            : '',
+                          isEqual(day, selectedDay) && isToday(day)
+                            ? 'bg-red-500'
+                            : '',
+                          isEqual(day, selectedDay) && !isToday(day)
+                            ? 'bg-gray-900'
+                            : '',
+                          !isEqual(day, selectedDay) ? 'hover:bg-gray-200' : '',
+                          isEqual(day, selectedDay) || isToday(day)
+                            ? 'font-semibold'
+                            : '',
+                          'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
                         )}
-                      {isSunday(day) ? (
-                        <div className="w-1 h-1 mt-1">
-                          <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-                        </div>
-                      ) : (
-                        ''
-                      )}
+                      >
+                        <time dateTime={format(day, 'yyyy-MM-dd')}>
+                          {format(day, 'd')}
+                        </time>
+                      </button>
+                      {/* Pontos de Eventos */}
+                      <div className="flex items-center justify-center gap-1 mx-auto">
+                        {data &&
+                          data?.some((meeting) =>
+                            isSameDay(parseISO(meeting.data_inicio_culto), day),
+                          ) && (
+                            <div className="w-1 h-1 mt-1">
+                              <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                            </div>
+                          )}
+                        {isSunday(day) ? (
+                          <div className="w-1 h-1 mt-1">
+                            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
+                          </div>
+                        ) : (
+                          ''
+                        )}
+                      </div>
                     </div>
-                  </div>
-                ))}
+                  ))}
+                </div>
               </div>
+              {/* Section for the Events Day */}
+              <section className="mt-12 md:mt-0 md:pl-14">
+                <h2 className="font-semibold text-gray-900">
+                  Agenda para{' '}
+                  <time
+                    dateTime={format(selectedDay, 'yyyy-MM-dd', { locale: pt })}
+                  >
+                    {format(selectedDay, 'PP', { locale: pt })}
+                  </time>
+                </h2>
+                <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
+                  {selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
+                    selectedDayMeetings?.map((meeting) => (
+                      <MeetingComponent meeting={meeting} key={meeting.id} />
+                    ))
+                  ) : (
+                    <p>Sem Eventos hoje.</p>
+                  )}
+                </ol>
+              </section>
             </div>
-            {/* Section for the Events Day */}
-            <section className="mt-12 md:mt-0 md:pl-14">
-              <h2 className="font-semibold text-gray-900">
-                Agenda para{' '}
-                <time
-                  dateTime={format(selectedDay, 'yyyy-MM-dd', { locale: pt })}
-                >
-                  {format(selectedDay, 'PP', { locale: pt })}
-                </time>
-              </h2>
-              <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
-                {selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
-                  selectedDayMeetings?.map((meeting) => (
-                    <MeetingComponent meeting={meeting} key={meeting.id} />
-                  ))
-                ) : (
-                  <p>Sem Eventos hoje.</p>
-                )}
-              </ol>
-            </section>
           </div>
         </div>
       </div>
-    </div>
+    </Card>
   )
 }
 

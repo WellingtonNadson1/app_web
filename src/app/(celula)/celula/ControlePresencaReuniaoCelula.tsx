@@ -18,9 +18,36 @@ import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
 import { AxiosError } from 'axios'
 import { zodResolver } from "@hookform/resolvers/zod";
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
+
+interface UpdateDataParams {
+  URL: string;
+  newData: reuniaoCelulaUpdate;
+  token: string;
+}
+
+// Função assíncrona para fazer a requisição PUT com Bearer Token
+async function updateData({ URL, newData, token }: UpdateDataParams) {
+  const response = await fetch(URL, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,
+    },
+    body: JSON.stringify(newData),
+  });
+
+  if (!response.ok) {
+    throw new Error('Failed to update data');
+  }
+
+  return response.json();
+}
 
 export default function ControlePresencaReuniaoCelula({
   celulaId,
@@ -41,6 +68,7 @@ export default function ControlePresencaReuniaoCelula({
   const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendanceReuniaoCelula[]>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const token = session?.user.token
 
   const queryClient = useQueryClient()
 
@@ -137,22 +165,37 @@ export default function ControlePresencaReuniaoCelula({
     retry: false
   })
 
+
+  const formUpdate = useForm<reuniaoCelulaUpdate>({
+    resolver: zodResolver(reuniaoCelulaUpdateSchema),
+  });
+
+  const dataSendUpdate: reuniaoCelulaUpdate = {
+    visitantes: formUpdate.getValues().visitantes,
+    almas_ganhas: formUpdate.getValues().almas_ganhas,
+    id: reuniaoRegisteredId!
+  };
+
+
+  const mutation = useMutation({
+    mutationFn: updateData,
+  })
+
+  const handleUpdate = () => {
+    mutation.mutate({
+      URL: URLUpdateReuniaoCelula,
+      newData: dataSendUpdate,
+      token: token!
+    });
+  };
+
+
   const createPresencaReuniaoCelulaFunction = async (data: attendanceReuniaoCelula[]) => {
     // Transforma o objeto data em um array
     const dataArray = Object.values(data)
     const totalRecords = dataArray.length;
     const increment = 100 / totalRecords;
     let currentProgress = 0;
-
-    const dataSendUpdate: reuniaoCelulaUpdate = {
-      visitantes: formUpdate.getValues().visitantes,
-      almas_ganhas: formUpdate.getValues().almas_ganhas,
-      id: reuniaoRegisteredId!
-    };
-
-    const responseUpdate = await axiosAuth.put(`${BASE_URL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`, dataSendUpdate);
-
-    console.log('response Update', responseUpdate.data)
 
     // Use loop for ...of
     for (const currentData of dataArray) {
@@ -202,44 +245,9 @@ export default function ControlePresencaReuniaoCelula({
     }
   }
 
-  // FAZENDO UPDATE NA REUNIÃO ADD VISITANTES E ALMAS GANHAS
-  const updateReuniaoCelula = async (dataSendUpdate: reuniaoCelulaUpdate): Promise<reuniaoCelulaUpdateReturn | undefined> => {
-    try {
-      const response = await axiosAuth.put(URLUpdateReuniaoCelula, dataSendUpdate)
-      console.debug(response)
-      return response.data;
-    } catch (error) {
-      console.error(error)
-    }
-  }
-
-  const { mutateAsync: mutateUpdate, data: dataUpdateMutate, isPending: isPendingUpdateReunia } = useMutation({
-    mutationFn: updateReuniaoCelula,
-    onSuccess: async (responseData) => {
-      queryClient.invalidateQueries({ queryKey: ['updatereuniaocelula'] });
-
-      console.debug('success Update Reuniao mutate', responseData);
-    }
-  })
-
-  const onSubmitUpdate: SubmitHandler<reuniaoCelulaUpdate> = async (data) => {
-    console.log('UpdateDate', data)
-    try {
-      await mutateUpdate(data)
-    } catch (error) {
-      errorCadastro('Já existem presenças registradas!')
-    }
-  }
-
-  const formUpdate = useForm<reuniaoCelulaUpdate>({
-    resolver: zodResolver(reuniaoCelulaUpdateSchema),
-  });
-
-
-
   const hnadleFormsSubmit = async () => {
     try {
-      await formUpdate.handleSubmit(onSubmitUpdate)()
+      handleUpdate()
       await handleSubmit(onSubmit)()
     } catch (error) {
       console.error("Erro ao submeter os formulários", error);
@@ -273,9 +281,9 @@ export default function ControlePresencaReuniaoCelula({
                       <ProgressBar bgColor='#1e40af' baseBgColor='#e5e7eb' completed={progress} />
                     )
                     }
-                    <form id='formUpadte' onSubmit={formUpdate.handleSubmit(onSubmitUpdate)}>
+                    <form id='formUpadte'>
                       {dataMutate && reuniaoRegisteredId && (
-                        <input
+                        <Input
                           type="hidden"
                           value={reuniaoRegisteredId}
                           {...formUpdate.register(`id`)}
@@ -283,14 +291,14 @@ export default function ControlePresencaReuniaoCelula({
                       )}
                       <div className="grid grid-cols-1 mt-2 mb-4 gap-x-4 gap-y-6 sm:grid-cols-6">
                         <div className="sm:col-span-3">
-                          <label
+                          <Label
                             htmlFor="visitantes"
                             className="block text-sm font-medium leading-6 text-slate-700"
                           >
                             Visitantes
-                          </label>
+                          </Label>
                           <div className="mt-3">
-                            <input
+                            <Input
                               {...formUpdate.register('visitantes')}
                               type="number"
                               min={0}
@@ -298,19 +306,19 @@ export default function ControlePresencaReuniaoCelula({
                               defaultValue={0}
                               disabled={isPending}
                               id="visitantes"
-                              className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                              className=" w-full rounded-md border-0.5 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             />
                           </div>
                         </div>
                         <div className="sm:col-span-3">
-                          <label
+                          <Label
                             htmlFor="almas_ganhas"
                             className="block text-sm font-medium leading-6 text-slate-700"
                           >
                             Almas Ganhas
-                          </label>
+                          </Label>
                           <div className="mt-3">
-                            <input
+                            <Input
                               {...formUpdate.register('almas_ganhas')}
                               type="number"
                               min={0}
@@ -346,13 +354,13 @@ export default function ControlePresencaReuniaoCelula({
                         {dataCelula.membros.map((user, index) => (
                           <form key={user.id} id={user.id}>
                             <div className="grid w-full grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-4 md:grid-cols-5">
-                              <input
+                              <Input
                                 type="hidden"
                                 value={user.id}
                                 {...register(`${index}.membro`)}
                               />
                               {dataMutate && (
-                                <input
+                                <Input
                                   type="hidden"
                                   value={reuniaoRegisteredId}
                                   {...register(`${index}.which_reuniao_celula`)}
@@ -390,14 +398,14 @@ export default function ControlePresencaReuniaoCelula({
                                   {user.cargo_de_lideranca?.nome}{' '}
                                 </span>
                               </div>
-                              <input
+                              <Input
                                 {...register(`${index}.status` as const, { required: true })}
                                 value="true"
                                 type="radio"
                                 id={user.id}
                                 className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                               />
-                              <input
+                              <Input
                                 {...register(`${index}.status` as const, { required: true })}
                                 value="false"
                                 type="radio"
@@ -408,7 +416,7 @@ export default function ControlePresencaReuniaoCelula({
                           </form>
                         ))}
                         {isPending ? (
-                          <button
+                          <Button
                             type="submit"
                             disabled={isPending}
                             className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
@@ -434,15 +442,14 @@ export default function ControlePresencaReuniaoCelula({
                               ></path>
                             </svg>
                             <span>Registrando...</span>
-                          </button>
+                          </Button>
                         ) : (
-                          <button
+                          <Button
                             className="mx-auto mt-3 w-full rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
-                            type="button"
                             onClick={hnadleFormsSubmit}
                           >
                             Registrar
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </div>
