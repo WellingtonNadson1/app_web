@@ -1,5 +1,7 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/(central)/celulas/page": "app/(central)/celulas/page.js",
+  "/(central)/novo-membro/page": "app/(central)/novo-membro/page.js",
+  "/(central)/discipulados/[dicipuladosupervisaoId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/page.js",
+  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js"
 }

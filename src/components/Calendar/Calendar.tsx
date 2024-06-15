@@ -82,7 +82,7 @@ export default function Example() {
 
   return (
     <div className="pt-4">
-      <div className="px-2 py-6 bg-white rounded-lg shadow-md">
+      <div className="px-2 py-6 bg-white rounded-lg">
         <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
           <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
             <div className="md:pr-10">

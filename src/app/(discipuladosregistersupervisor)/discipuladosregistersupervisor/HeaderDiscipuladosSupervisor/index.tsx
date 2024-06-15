@@ -1,5 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { Card } from '@/components/ui/card'
 import { Menu, Transition } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { UserCircle } from '@phosphor-icons/react'
@@ -35,20 +36,20 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
 
   if (!isAuthenticated) {
     return (
-      <nav className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
+      <Card className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
         <h2>Não autenticado!</h2>
-      </nav>
+      </Card>
     )
   }
 
   return (
     <>
-      <nav className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
+      <Card className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
         <div className="flex flex-wrap items-center justify-between w-full mx-auto">
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              Supervisão <span className='capitalize'>{headerSupervisao}</span>
+              Superv. <span className='truncate capitalize'>{headerSupervisao}</span>
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">
@@ -162,7 +163,7 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
             </div>
           </>
         </div>
-      </nav>
+      </Card>
     </>
   )
 }

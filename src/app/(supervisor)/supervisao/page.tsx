@@ -82,7 +82,7 @@ export default function ControleSupervisor() {
           <div className="relative w-full mx-auto">
             <HeaderSupervisao headerSupervisao={session?.user?.supervisao_pertence.nome} />
           </div>
-          <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
+          <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-1">
             <CalendarLiderCelula />
           </div>
           <div className="relative w-full px-2 mx-auto mb-4">

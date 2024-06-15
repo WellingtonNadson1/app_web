@@ -5,7 +5,7 @@ import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
-import './globals.css'
+import '@/./app/globals.css'
 import { auth } from '@/auth'
 
 export const metadata = {

@@ -1,7 +1,7 @@
 import { Providers } from '@/providers/providers'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
-import '../../globals.css'
+import '@/./app/globals.css'
 
 export const metadata = {
   title: 'App IBB',

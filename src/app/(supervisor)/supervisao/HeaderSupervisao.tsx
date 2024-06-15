@@ -1,6 +1,8 @@
 'use client'
 
 import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import { Menu, Transition } from '@headlessui/react'
 import { BellIcon } from '@heroicons/react/24/outline'
 import { UserCircle } from '@phosphor-icons/react'
@@ -36,20 +38,20 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
 
   if (!isAuthenticated) {
     return (
-      <nav className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
+      <Card className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
         <h2>Não autenticado!</h2>
-      </nav>
+      </Card>
     )
   }
 
   return (
     <>
-      <nav className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
+      <Card className="relative flex items-center justify-between p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
         <div className="flex flex-wrap items-center justify-between w-full mx-auto">
           {/* Titile Page */}
           {session ? (
-            <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              Supervisão <span className='capitalize'>{headerSupervisao}</span>
+            <h1 className="truncate px-3 text-xl font-semibold leading-relaxed text-gray-800">
+              Superv. <span className='truncate capitalize'>{headerSupervisao}</span>
             </h1>
           ) : (
             <div className="flex items-center justify-center gap-2">
@@ -89,14 +91,14 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
             </div>
             <div className="cursor-pointer">
               <div className="flex items-center gap-4">
-                <button
+                <Button
                   type="button"
                   className="relative p-1 text-gray-400 bg-white rounded-full hover:text-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-800"
                 >
                   <span className="relative -inset-1.5" />
                   <span className="sr-only">View notifications</span>
                   <BellIcon className="w-6 h-6" aria-hidden="true" />
-                </button>
+                </Button>
 
                 {/* Profile dropdown */}
                 <Menu as="div" className="relative z-20">
@@ -149,12 +151,12 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
                         </Menu.Item>
                       ))}
                       <Menu.Item>
-                        <button
+                        <Button
                           className="block w-full px-4 py-2 text-sm text-gray-700 bg-white text-start hover:bg-gray-100"
                           onClick={() => signOut()}
                         >
                           Sair
-                        </button>
+                        </Button>
                       </Menu.Item>
                     </Menu.Items>
                   </Transition>
@@ -163,7 +165,7 @@ export default function HeaderSupervisao({ headerSupervisao }: HeaderSupervisaoP
             </div>
           </>
         </div>
-      </nav>
+      </Card>
     </>
   )
 }

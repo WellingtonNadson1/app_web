@@ -16,6 +16,9 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { useCombinetedStore } from '@/store/DataCombineted'
 import Link from 'next/link'
+import { Label } from '@/components/ui/label'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem } from '@/components/ui/select'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -252,14 +255,14 @@ export default function StatsCardRelatorios() {
 
                 <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
                   <div className="sm:col-span-2">
-                    <label
+                    <Label
                       htmlFor="startDate"
                       className="block text-sm font-medium leading-6 text-slate-700"
                     >
                       Dt. Início
-                    </label>
+                    </Label>
                     <div className="mt-3">
-                      <input
+                      <Input
                         {...register('startDate', { required: true })}
                         type="datetime-local"
                         name="startDate"
@@ -270,14 +273,14 @@ export default function StatsCardRelatorios() {
                   </div>
 
                   <div className="sm:col-span-2">
-                    <label
+                    <Label
                       htmlFor="endDate"
                       className="block text-sm font-medium leading-6 text-slate-700"
                     >
                       Dt. Final
-                    </label>
+                    </Label>
                     <div className="mt-3">
-                      <input
+                      <Input
                         {...register('endDate', { required: true })}
                         type="datetime-local"
                         name="endDate"
@@ -289,34 +292,35 @@ export default function StatsCardRelatorios() {
 
                   {/* INFORMAÇÕES DO REINO */}
                   <div className="sm:col-span-2">
-                    <label
+                    <Label
                       htmlFor="superVisionId"
                       className="block text-sm font-medium leading-6 text-slate-700"
                     >
                       Supervisão
-                    </label>
+                    </Label>
                     <div className="mt-3">
-                      <select
+                      <Select
                         {...register('superVisionId', { required: true })}
-                        id="superVisionId"
-                        name="superVisionId"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        onChange={handleSupervisaoSelecionada}
+                      // onChange={handleSupervisaoSelecionada}
                       >
-                        {!supervisoes ? (
-                          <option value="">Carregando supervisões...</option>
-                        ) : (
-                          <option value="">
-                            Selecione
-                          </option>
-                        )}
-                        {supervisoes &&
-                          supervisoes?.map((supervisao) => (
-                            <option key={supervisao.id} value={supervisao.id}>
-                              {supervisao.nome}
-                            </option>
-                          ))}
-                      </select>
+                        <SelectContent>
+                          <SelectGroup>
+                            {!supervisoes ? (
+                              <SelectItem value="q">Carregando supervisões...</SelectItem>
+                            ) : (
+                              <SelectItem value="w">
+                                Selecione
+                              </SelectItem>
+                            )}
+                            {supervisoes &&
+                              supervisoes?.map((supervisao) => (
+                                <SelectItem key={supervisao.id} value={supervisao.id}>
+                                  {supervisao.nome}
+                                </SelectItem>
+                              ))}
+                          </SelectGroup>
+                        </SelectContent>
+                      </Select>
                     </div>
                   </div>
                   {/* Botões para submeter Forms */}

@@ -1,10 +1,5 @@
 {
   "pages": {
-    "/(central)/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(central)/page.js"
-    ],
     "/(central)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
@@ -17,11 +12,53 @@
       "static/css/app/(central)/loading.css",
       "static/chunks/app/(central)/loading.js"
     ],
-    "/(login)/login/page": [
+    "/(central)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/page.css",
-      "static/chunks/app/(login)/login/page.js"
+      "static/chunks/app/(central)/dashboard/page.js"
+    ],
+    "/(central)/cultos/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(central)/cultos/page.css",
+      "static/chunks/app/(central)/cultos/page.js"
+    ],
+    "/(central)/relatorios/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/relatorios/page.js"
+    ],
+    "/(central)/escolas/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/escolas/page.js"
+    ],
+    "/(central)/discipulados/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/discipulados/page.js"
+    ],
+    "/(central)/discipulados/[dicipuladosupervisaoId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/discipulados/[dicipuladosupervisaoId]/page.js"
+    ],
+    "/(central)/celulas/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(central)/celulas/page.css",
+      "static/chunks/app/(central)/celulas/page.js"
+    ],
+    "/(central)/supervisoes/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/supervisoes/page.js"
+    ],
+    "/(central)/novo-membro/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(central)/novo-membro/page.css",
+      "static/chunks/app/(central)/novo-membro/page.js"
     ],
     "/(login)/login/loading": [
       "static/chunks/webpack.js",
@@ -29,33 +66,17 @@
       "static/css/app/(login)/login/loading.css",
       "static/chunks/app/(login)/login/loading.js"
     ],
+    "/(login)/login/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(login)/login/page.css",
+      "static/chunks/app/(login)/login/page.js"
+    ],
     "/(login)/login/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
       "static/css/app/(login)/login/layout.css",
       "static/chunks/app/(login)/login/layout.js"
-    ],
-    "/(celula)/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(celula)/loading.js"
-    ],
-    "/(celula)/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/layout.css",
-      "static/chunks/app/(celula)/layout.js"
-    ],
-    "/(celula)/celula/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(celula)/celula/page.css",
-      "static/chunks/app/(celula)/celula/page.js"
-    ],
-    "/not-found": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
     ]
   }
 }

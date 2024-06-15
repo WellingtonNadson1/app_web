@@ -14,15 +14,23 @@ import {
 } from "@/routes";
 import { auth } from './auth';
 
+function matchRoute(url: string, routes: string[]): boolean {
+  return routes.some(route => {
+    const regex = new RegExp(`^${route.replace(/\?.*$/, '').replace(/:[^\s/]+/g, '([\\w-]+)')}(\\?.*)?$`);
+    return regex.test(url);
+  });
+}
+
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const session = await auth();
 
   const isLoggedIn = !!session;
   const roleUser = session?.user.role;
+
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
-  const isPublicRoute = publicRoutes.includes(pathname);
-  const isAuthRoute = authRoutes.includes(pathname);
+  const isPublicRoute = matchRoute(pathname, publicRoutes);
+  const isAuthRoute = matchRoute(pathname, authRoutes);
 
   if (isApiAuthRoute) {
     return NextResponse.next();

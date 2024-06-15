@@ -148,7 +148,7 @@ export default function Login() {
                         <Button
                           type="submit"
                           // disabled
-                          className="flex w-full items-center justify-center gap-2 rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                          className="flex w-full items-center justify-center gap-2 bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                           <svg
                             className="w-5 h-5 mr-3 text-white animate-spin"
@@ -175,7 +175,7 @@ export default function Login() {
                       ) : (
                         <Button
                           type="submit"
-                          className="flex w-full justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                          className="flex w-full justify-center rounded-md bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                           Entrar
                         </Button>

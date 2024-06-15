@@ -1,5 +1,6 @@
 'use client'
 import { ChartLineUp, Confetti, HandsPraying } from '@phosphor-icons/react'
+import { Card } from '../ui/card'
 
 export default function StatsCard() {
   const statusIbb = [
@@ -35,7 +36,7 @@ export default function StatsCard() {
   return (
     <div className="relative z-10 mx-auto mt-3 flex w-full flex-wrap items-center justify-between gap-4 p-2 md:flex-nowrap">
       {statusIbb.map((stat) => (
-        <div
+        <Card
           key={stat.title}
           className="flex-warp relative w-full cursor-pointer flex-col rounded-lg border-black/5 bg-white p-4 transition hover:shadow-md"
         >
@@ -58,7 +59,7 @@ export default function StatsCard() {
               desde {stat.destaq}
             </span>
           </div>
-        </div>
+        </Card>
       ))}
     </div>
   )

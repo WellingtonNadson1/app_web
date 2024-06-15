@@ -15,6 +15,10 @@ import 'react-toastify/dist/ReactToastify.css'
 import { ToastContainer } from 'react-toastify'
 import { useQuery } from '@tanstack/react-query'
 import { useUserDataStore } from '@/store/UserDataStore'
+import { Card } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Select, SelectContent, SelectGroup, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 export default function Cultos() {
   const { token } = useUserDataStore.getState()
@@ -111,171 +115,182 @@ export default function Cultos() {
       <ToastContainer />
 
       <div className="relative w-full px-2 py-2 mx-auto">
-        <div className="relative w-full px-2 mx-auto mt-3 mb-4">
+        <Card className="relative w-full mx-auto mt-3 mb-4">
           <Calendar />
-          <Modal
-            titleButton="Cadastrar"
-            icon={PencilSquareIcon}
-            titleModal="Cadastro de Culto"
-            buttonProps={{
-              className:
-                'rounded-md bg-[#014874] px-4 py-2 text-sm mt-3 shadow-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5',
-            }}
-          >
-            <form onSubmit={handleSubmit(onSubmit)}>
-              <div className="pb-10">
-                <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-8">
-                  <div className="sm:col-span-4">
-                    <label
-                      htmlFor="data_inicio_culto"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Data Início
-                    </label>
-                    <div className="mt-3">
-                      <input
-                        {...register('data_inicio_culto')}
-                        type="datetime-local"
-                        name="data_inicio_culto"
-                        id="data_inicio_culto"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                      />
+          <div className='p-2'>
+            <Modal
+              titleButton="Cadastrar"
+              icon={PencilSquareIcon}
+              titleModal="Cadastro de Culto"
+              buttonProps={{
+                className:
+                  'bg-btnIbb text-sm mt-3 shadow-sm font-medium text-white hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] sm:w-2/5',
+              }}
+            >
+              <form onSubmit={handleSubmit(onSubmit)}>
+                <div className="pb-10">
+                  <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-8">
+                    <div className="sm:col-span-4">
+                      <label
+                        htmlFor="data_inicio_culto"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Data Início
+                      </label>
+                      <div className="mt-3">
+                        <Input
+                          {...register('data_inicio_culto')}
+                          type="datetime-local"
+                          name="data_inicio_culto"
+                          id="data_inicio_culto"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="sm:col-span-4">
+                      <label
+                        htmlFor="data_termino_culto"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Data Término
+                      </label>
+                      <div className="mt-3">
+                        <Input
+                          {...register('data_termino_culto')}
+                          type="datetime-local"
+                          name="data_termino_culto"
+                          id="data_termino_culto"
+                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                        />
+                      </div>
                     </div>
                   </div>
 
-                  <div className="sm:col-span-4">
-                    <label
-                      htmlFor="data_termino_culto"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Data Término
-                    </label>
-                    <div className="mt-3">
-                      <input
-                        {...register('data_termino_culto')}
-                        type="datetime-local"
-                        name="data_termino_culto"
-                        id="data_termino_culto"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
-                </div>
-
-                {/* INFORMAÇÕES DO REINO */}
-                <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-6">
-                  <div className="sm:col-span-3">
-                    <label
-                      htmlFor="culto_semana"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Culto da Semana
-                    </label>
-                    <div className="mt-3">
-                      <select
-                        {...register('culto_semana')}
-                        id="culto_semana"
-                        name="culto_semana"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                  {/* INFORMAÇÕES DO REINO */}
+                  <div className="grid grid-cols-1 mt-10 gap-x-2 gap-y-4 sm:grid-cols-6">
+                    <div className="sm:col-span-3">
+                      <label
+                        htmlFor="culto_semana"
+                        className="block text-sm font-medium leading-6 text-slate-700"
                       >
-                        {isLoading ? (
-                          <option value="">Carregando cultos...</option>
-                        ) : (
-                          <option value="">Selecione</option>
-                        )}
-                        {cultosSemanais &&
-                          cultosSemanais?.map((cultoDaSemana) => (
-                            <option
-                              key={cultoDaSemana.id}
-                              value={cultoDaSemana.id}
-                            >
-                              {cultoDaSemana.nome}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  </div>
-                  <div className="sm:col-span-3">
-                    <label
-                      htmlFor="status"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Status do Culto
-                    </label>
-                    <div className="mt-3">
-                      <select
-                        {...register('status')}
-                        id="status"
-                        name="status"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                      >
-                        {isLoading ? (
-                          <option value="">Carregando status...</option>
-                        ) : (
-                          <>
-                            <option value="">Selecione</option>
-                            <option value="Agendado">Agendado</option>
-                            <option value="Cancelado">Cancelado</option>
-                            <option value="Realizado">Realizado</option>
-                          </>
-                        )}
-                      </select>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Botões para submeter Forms */}
-                <div className="flex items-center justify-end mt-6 gap-x-6">
-                  <button
-                    type="button"
-                    onClick={() => reset()}
-                    className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
-                  >
-                    Cancelar
-                  </button>
-                  {isLoadingSubmitForm ? (
-                    <div>
-                      <button
-                        type="submit"
-                        disabled={isLoadingSubmitForm}
-                        className="flex items-center justify-center w-full gap-2 px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                      >
-                        <svg
-                          className="w-5 h-5 mr-3 text-gray-400 animate-spin"
-                          xmlns="http://www.w3.org/2000/svg"
-                          fill="none"
-                          viewBox="0 0 24 24"
+                        Culto da Semana
+                      </label>
+                      <div className="mt-3">
+                        <Select
+                          {...register('culto_semana')}
                         >
-                          <circle
-                            className="opacity-25"
-                            cx="12"
-                            cy="12"
-                            r="10"
-                            stroke="currentColor"
-                            strokeWidth="4"
-                          ></circle>
-                          <path
-                            className="opacity-75"
-                            fill="currentColor"
-                            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                          ></path>
-                        </svg>
-                        <span>Cadastrando...</span>
-                      </button>
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione um culto" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {isLoading ? (
+                                <SelectItem value="u">Carregando cultos...</SelectItem>
+                              ) : (
+                                <SelectItem value="i">Selecione</SelectItem>
+                              )}
+                              {cultosSemanais &&
+                                cultosSemanais?.map((cultoDaSemana) => (
+                                  <SelectItem
+                                    key={cultoDaSemana.id}
+                                    value={cultoDaSemana.id}
+                                  >
+                                    {cultoDaSemana.nome}
+                                  </SelectItem>
+                                ))}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
                     </div>
-                  ) : (
-                    <button
-                      type="submit"
-                      className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                    <div className="sm:col-span-3">
+                      <label
+                        htmlFor="status"
+                        className="block text-sm font-medium leading-6 text-slate-700"
+                      >
+                        Status do Culto
+                      </label>
+                      <div className="mt-3">
+                        <Select
+                          {...register('status')}
+                        >
+                          <SelectTrigger className="w-full">
+                            <SelectValue placeholder="Selecione um status" />
+                          </SelectTrigger>
+                          <SelectContent>
+                            <SelectGroup>
+                              {isLoading ? (
+                                <SelectItem value="t">Carregando status...</SelectItem>
+                              ) : (
+                                <>
+                                  <SelectItem value="y">Selecione</SelectItem>
+                                  <SelectItem value="Agendado">Agendado</SelectItem>
+                                  <SelectItem value="Cancelado">Cancelado</SelectItem>
+                                  <SelectItem value="Realizado">Realizado</SelectItem>
+                                </>
+                              )}
+                            </SelectGroup>
+                          </SelectContent>
+                        </Select>
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* Botões para submeter Forms */}
+                  <div className="flex items-center justify-end mt-6 gap-x-6">
+                    <Button
+                      type="button"
+                      variant={'destructive'}
+                      onClick={() => reset()}
+                      className="px-3 py-2 text-sm font-semibold hover:rounded-md hover:px-3 hover:py-2 "
                     >
-                      <span>Cadastrar</span>
-                    </button>
-                  )}
+                      Cancelar
+                    </Button>
+                    {isLoadingSubmitForm ? (
+                      <div>
+                        <Button
+                          type="submit"
+                          disabled={isLoadingSubmitForm}
+                          className="flex items-center justify-center w-full gap-2 px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                        >
+                          <svg
+                            className="w-5 h-5 mr-3 text-gray-400 animate-spin"
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                          >
+                            <circle
+                              className="opacity-25"
+                              cx="12"
+                              cy="12"
+                              r="10"
+                              stroke="currentColor"
+                              strokeWidth="4"
+                            ></circle>
+                            <path
+                              className="opacity-75"
+                              fill="currentColor"
+                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                            ></path>
+                          </svg>
+                          <span>Cadastrando...</span>
+                        </Button>
+                      </div>
+                    ) : (
+                      <Button
+                        type="submit"
+                        className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      >
+                        <span>Cadastrar</span>
+                      </Button>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </form>
-          </Modal>
-        </div>
+              </form>
+            </Modal>
+          </div>
+        </Card>
       </div>
     </>
   )

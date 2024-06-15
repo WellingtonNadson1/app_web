@@ -15,6 +15,8 @@ import { CheckFat, Warning } from "@phosphor-icons/react"
 import dayjs from "dayjs"
 import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
+import { Input } from "@/components/ui/input"
+import { Button } from "@/components/ui/button"
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -116,7 +118,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                   />{
 
                   }
-                  <input type="date"
+                  <Input type="date"
                     disabled
                     placeholder={dayjs.utc(data_1discipulado_ocorreu).format('YYYY-MM-DD')}
                     value={dayjs.utc(data_1discipulado_ocorreu).format('YYYY-MM-DD')}
@@ -127,7 +129,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     id="first_discipulado"
                     className="block w-full rounded-md border-0 py-1.5 mb-4 text-slate-400 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6" />
                   {isPending ? (
-                    <button
+                    <Button
                       type="submit"
                       disabled={true}
                       className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
@@ -153,11 +155,11 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         ></path>
                       </svg>
                       <span>Registrando...</span>
-                    </button>
+                    </Button>
                   ) : (
-                    <button disabled className='mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] opacity-40 px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100' type="submit">
+                    <Button disabled className='mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] opacity-40 px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100' type="submit">
                       Registrar
-                    </button>
+                    </Button>
                   )}
                 </form>
               </Disclosure.Panel>
@@ -185,7 +187,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  <input type="date"
+                  <Input type="date"
                     key={discipulo_id + 7}
                     disabled={isSuccess}
                     {...register(`data_ocorreu`, {
@@ -194,7 +196,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     id="first_discipulado"
                     className={cn(`block w-full text-sm rounded-md border-0 py-1.5 mb-4 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6`)} />
                   {isPending ? (
-                    <button
+                    <Button
                       type="submit"
                       disabled={isPending}
                       className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
@@ -220,13 +222,13 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         ></path>
                       </svg>
                       <span>Registrando...</span>
-                    </button>
+                    </Button>
                   ) :
-                    <button
+                    <Button
                       disabled={isPending || isSuccess}
                       className='mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]' type="submit">
                       Registrar
-                    </button>
+                    </Button>
                   }
                 </form>
               </Disclosure.Panel>

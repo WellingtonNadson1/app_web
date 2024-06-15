@@ -1,6 +1,7 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { X } from 'lucide-react'
 import React, { Fragment, useRef, useState } from 'react'
+import { Button } from '../ui/button'
 
 type IconHeaderModal = {
   icon: React.ForwardRefExoticComponent<
@@ -43,13 +44,14 @@ export default function Modal({
       {/* Mudar o tipo do botão quando necessário */}
       <div className="flex items-center justify-between">
         <div></div>
-        <button
+        <Button
+          className='btn-ibb'
           type="button"
           onClick={openModal} // Ativa o modal ao clicar no botão
           {...buttonProps}
         >
           {titleButton}
-        </button>
+        </Button>
       </div>
       <Transition.Root show={isOpen} as={Fragment}>
         <Dialog
@@ -101,13 +103,13 @@ export default function Modal({
                         </div>
                       </div>
                       <div className="flex flex-row-reverse rounded-full bg-gray-50">
-                        <button
+                        <Button
                           type="submit"
-                          className="inline-flex w-auto justify-center rounded-md bg-slate-200 px-1 py-1 text-xs font-thin text-slate-500 shadow-sm hover:bg-gray-300 hover:text-slate-800"
+                          className="inline-flex w-auto justify-center rounded-md bg-slate-200 px-2 py-1 text-xs font-thin text-slate-500 shadow-sm hover:bg-gray-300 hover:text-slate-800"
                           onClick={closeModal}
                         >
                           <X width={16} height={16} />
-                        </button>
+                        </Button>
                       </div>
                     </div>
                     {isOpen === false ? null : (

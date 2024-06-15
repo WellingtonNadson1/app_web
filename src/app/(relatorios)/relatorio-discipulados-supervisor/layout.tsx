@@ -5,7 +5,7 @@ import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
-import './globals.css'
+import '@/./app/globals.css'
 import { InitializerUserStore } from '@/store/InitializerUserStore'
 import { auth } from '@/auth'
 
