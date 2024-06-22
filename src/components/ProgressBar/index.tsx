@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import { motion } from "framer-motion";
+// import { motion } from "framer-motion";
 import { IntersectionContext } from "../intersection-observer";
 
 interface ProgressBarProps {
@@ -8,18 +8,18 @@ interface ProgressBarProps {
   duration?: number;
   delay?: number;
   easing?:
-  | [number, number, number, number]
-  | "linear"
-  | "easeIn"
-  | "easeOut"
-  | "easeInOut"
-  | "circIn"
-  | "circOut"
-  | "circInOut"
-  | "backIn"
-  | "backOut"
-  | "backInOut"
-  | "anticipate";
+    | [number, number, number, number]
+    | "linear"
+    | "easeIn"
+    | "easeOut"
+    | "easeInOut"
+    | "circIn"
+    | "circOut"
+    | "circInOut"
+    | "backIn"
+    | "backOut"
+    | "backInOut"
+    | "anticipate";
   barWidth?: number;
   barHeight?: number;
   progressColor?: string;
@@ -61,22 +61,22 @@ export const ProgressBar: React.FC<ProgressBarProps> = ({
     <div className="flex my-1 items-center">
       <div
         className={`relative overflow-hidden ${baseColor}`}
-        style={{ width: barWidth, height: barHeight, borderRadius: '0.5rem' }}
+        style={{ width: barWidth, height: barHeight, borderRadius: "0.5rem" }}
       >
-        <motion.div
+        {/* <motion.div
           className={`absolute top-0 left-0 ${progressColor}`}
           style={{ width: '100%', height: '100%' }}
           variants={variants}
           initial="enter"
           animate={inView ? "animate" : "enter"}
           exit="enter"
-        />
+        /> */}
 
         {caption && (
           <div
             className="relative text-right pr-2"
             style={{
-              fontSize: barHeight >= 20 ? '1rem' : '8px',
+              fontSize: barHeight >= 20 ? "1rem" : "8px",
               lineHeight: `${barHeight}px`,
             }}
           >
