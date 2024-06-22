@@ -1,14 +1,5 @@
 {
-  "node": {
-    "bae5fc1c3f3d8b14c626a05db4eaeee783776a63": {
-      "workers": {
-        "app/(login)/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fwellingtonnadson%2Fwellington%2Fibb%2Fapp_web%2Factions%2Flogin.ts%22%2C%5B%22loginFunction%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(login)/login/page": "action-browser"
-      }
-    }
-  },
+  "node": {},
   "edge": {},
-  "encryptionKey": "kamtUgUrTvQ4py2N/RS47MfHscVYmc+00Xdkbh6klHI="
+  "encryptionKey": "clEH9gNnXUYMxlRpvOePTDTH4eOR4bRbvmK7BcTCT9I="
 }
