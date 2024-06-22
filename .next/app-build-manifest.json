@@ -17,6 +17,23 @@
       "static/css/app/(celula)/celula/page.css",
       "static/chunks/app/(celula)/celula/page.js"
     ],
+    "/(discipuladosregisterliderelula)/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(discipuladosregisterliderelula)/layout.css",
+      "static/chunks/app/(discipuladosregisterliderelula)/layout.js"
+    ],
+    "/(discipuladosregisterliderelula)/loading": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(discipuladosregisterliderelula)/loading.js"
+    ],
+    "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.css",
+      "static/chunks/app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js"
+    ],
     "/not-found": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",

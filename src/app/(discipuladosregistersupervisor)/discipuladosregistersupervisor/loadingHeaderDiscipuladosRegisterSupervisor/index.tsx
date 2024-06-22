@@ -1,10 +1,10 @@
-'use client'
-import React from 'react'
+"use client";
+import React from "react";
 
 function HeaderDiscipuladosLoadSupervisor() {
   return (
     <>
-      <nav className="relative flex items-center justify-between h-12 p-1 mx-2 mt-3 bg-white rounded-full shadow-none">
+      <nav className="relative flex items-center justify-between h-12 p-1 mx-1 mt-1 mb-6 bg-white rounded-full shadow-none">
         {/* Title Header */}
         <div className="flex flex-wrap items-center justify-start w-full gap-2 mx-auto ml-2 animate-pulse">
           <div className="w-8 h-4 px-3 bg-gray-400 rounded"></div>
@@ -21,14 +21,15 @@ function HeaderDiscipuladosLoadSupervisor() {
             <div className="flex items-center gap-4">
               <div className="relative w-8 h-8 bg-gray-400 rounded-full cursor-pointer"></div>
               {/* Profile dropdown */}
-              <div className={`cursor-pointer w-8 h-8 rounded-full bg-gray-400 shadow`}></div>
+              <div
+                className={`cursor-pointer w-8 h-8 rounded-full bg-gray-400 shadow`}
+              ></div>
             </div>
-
           </>
         </div>
       </nav>
     </>
-  )
+  );
 }
 
-export default HeaderDiscipuladosLoadSupervisor
+export default HeaderDiscipuladosLoadSupervisor;

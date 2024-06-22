@@ -1,8 +1,8 @@
-'use client'
-import { Menu, Transition } from '@headlessui/react'
-import { EllipsisVerticalIcon } from '@heroicons/react/24/outline'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { BookBookmark, Church, Cross, Student } from '@phosphor-icons/react'
+"use client";
+import { Menu, Transition } from "@headlessui/react";
+import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
+import { BookBookmark, Church, Cross, Student } from "@phosphor-icons/react";
 import {
   add,
   eachDayOfInterval,
@@ -17,68 +17,67 @@ import {
   parse,
   parseISO,
   startOfToday,
-} from 'date-fns'
-import pt from 'date-fns/locale/pt'
-import { useSession } from 'next-auth/react'
-import { Fragment, useState } from 'react'
-import DeleteCulto from './DeleteCulto'
-import UpdateCulto from './UpdateCulto'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useQuery } from '@tanstack/react-query'
+} from "date-fns";
+import pt from "date-fns/locale/pt";
+import { useSession } from "next-auth/react";
+import { Fragment, useState } from "react";
+import DeleteCulto from "./DeleteCulto";
+import UpdateCulto from "./UpdateCulto";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useQuery } from "@tanstack/react-query";
 
 export type meeting = {
-  id: string
+  id: string;
   culto_semana: {
-    nome: string
-  }
-  imageUrl: string
-  data_inicio_culto: string
-  data_termino_culto: string
-}
+    nome: string;
+  };
+  imageUrl: string;
+  data_inicio_culto: string;
+  data_termino_culto: string;
+};
 
-const hostname = 'app-ibb.onrender.com'
-const URLCultosInd = `https://${hostname}/cultosindividuais`
+const hostname = "app-ibb.onrender.com";
+const URLCultosInd = `https://${hostname}/cultosindividuais`;
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Example() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
 
   const { data: meetings } = useQuery<meeting[]>({
     queryKey: ["supervisoes"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLCultosInd)
-      return await response.data
+      const response = await axiosAuth.get(URLCultosInd);
+      return await response.data;
     },
-  })
+  });
 
-  const today = startOfToday()
-  const [selectedDay, setSelectedDay] = useState(today)
-  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+  const today = startOfToday();
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
+  const firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
-  })
+  });
 
   function previousMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 })
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
+    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
   function nextMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
+    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
+    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
   }
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
-  )
+  );
 
   return (
     <div className="pt-4">
@@ -88,7 +87,7 @@ export default function Example() {
             <div className="md:pr-10">
               <div className="flex items-center">
                 <h2 className="flex-auto font-semibold text-gray-900">
-                  {format(firstDayCurrentMonth, 'MMMM yyyy', { locale: pt })}
+                  {format(firstDayCurrentMonth, "MMMM yyyy", { locale: pt })}
                 </h2>
                 <button
                   type="button"
@@ -121,63 +120,85 @@ export default function Example() {
                   <div
                     key={day.toString()}
                     className={classNames(
-                      (dayIdx === 0 && colStartClasses[getDay(day)]) || '',
-                      'py-1',
+                      (dayIdx === 0 && colStartClasses[getDay(day)]) || "",
+                      "py-1",
                     )}
                   >
                     <button
                       type="button"
                       onClick={() => setSelectedDay(day)}
                       className={classNames(
-                        isEqual(day, selectedDay) ? 'text-white' : '',
+                        isEqual(day, selectedDay) ? "text-white" : "",
                         !isEqual(day, selectedDay) && isToday(day)
-                          ? 'text-red-500'
-                          : '',
+                          ? "text-red-500"
+                          : "",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           isSameMonth(day, firstDayCurrentMonth)
-                          ? 'text-gray-900'
-                          : '',
+                          ? "text-gray-900"
+                          : "",
                         !isEqual(day, selectedDay) &&
                           !isToday(day) &&
                           !isSameMonth(day, firstDayCurrentMonth)
-                          ? 'text-gray-400'
-                          : '',
+                          ? "text-gray-400"
+                          : "",
                         isEqual(day, selectedDay) && isToday(day)
-                          ? 'bg-red-500'
-                          : '',
+                          ? "bg-red-500"
+                          : "",
                         isEqual(day, selectedDay) && !isToday(day)
-                          ? 'bg-gray-900'
-                          : '',
-                        !isEqual(day, selectedDay) ? 'hover:bg-gray-200' : '',
+                          ? "bg-gray-900"
+                          : "",
+                        !isEqual(day, selectedDay) ? "hover:bg-gray-200" : "",
                         isEqual(day, selectedDay) || isToday(day)
-                          ? 'font-semibold'
-                          : '',
-                        'mx-auto flex h-8 w-8 items-center justify-center rounded-full',
+                          ? "font-semibold"
+                          : "",
+                        "mx-auto flex h-8 w-8 items-center justify-center rounded-full",
                       )}
                     >
-                      <time dateTime={format(day, 'yyyy-MM-dd')}>
-                        {format(day, 'd')}
+                      <time dateTime={format(day, "yyyy-MM-dd")}>
+                        {format(day, "d")}
                       </time>
                     </button>
                     {/* Pontos de Eventos */}
-                    <div className="flex items-center justify-center gap-1 mx-auto">
-                      {meetings &&
-                        meetings?.some((meeting) =>
-                          isSameDay(parseISO(meeting.data_inicio_culto), day),
-                        ) && (
+
+                    {isEqual(day, selectedDay) && isToday(day) ? (
+                      <div className="flex items-center justify-center gap-1 mx-auto">
+                        {meetings &&
+                          meetings?.some((meeting) =>
+                            isSameDay(parseISO(meeting.data_inicio_culto), day),
+                          ) && (
+                            <span className="relative flex h-3 w-3">
+                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                              <span className="relative inline-flex rounded-full h-3 w-3 bg-sky-500"></span>
+                            </span>
+                          )}
+                        {isSunday(day) ? (
                           <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
                           </div>
+                        ) : (
+                          ""
                         )}
-                      {isSunday(day) ? (
-                        <div className="w-1 h-1 mt-1">
-                          <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-                        </div>
-                      ) : (
-                        ''
-                      )}
-                    </div>
+                      </div>
+                    ) : (
+                      <div className="flex items-center justify-center gap-1 mx-auto">
+                        {meetings &&
+                          meetings?.some((meeting) =>
+                            isSameDay(parseISO(meeting.data_inicio_culto), day),
+                          ) && (
+                            <div className="w-1 h-1 mt-1">
+                              <div className="w-1 h-1 rounded-full bg-sky-500"></div>
+                            </div>
+                          )}
+                        {isSunday(day) ? (
+                          <div className="w-1 h-1 mt-1">
+                            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
+                          </div>
+                        ) : (
+                          ""
+                        )}
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>
@@ -185,11 +206,11 @@ export default function Example() {
             {/* Section for the Events Day */}
             <section className="mt-12 md:mt-0 md:pl-14">
               <h2 className="font-semibold text-gray-900">
-                Agenda para{' '}
+                Agenda para{" "}
                 <time
-                  dateTime={format(selectedDay, 'yyyy-MM-dd', { locale: pt })}
+                  dateTime={format(selectedDay, "yyyy-MM-dd", { locale: pt })}
                 >
-                  {format(selectedDay, 'PP', { locale: pt })}
+                  {format(selectedDay, "PP", { locale: pt })}
                 </time>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -206,32 +227,38 @@ export default function Example() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function Meeting({ meeting }: { meeting: meeting }) {
   // eslint-disable-next-line camelcase
-  const data_inicio_culto = parseISO(meeting.data_inicio_culto)
+  const data_inicio_culto = parseISO(meeting.data_inicio_culto);
   // eslint-disable-next-line camelcase
-  const data_termino_culto = parseISO(meeting.data_termino_culto)
+  const data_termino_culto = parseISO(meeting.data_termino_culto);
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
-      {meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Domingo de Sacrifício' ? (
+      {meeting &&
+      meeting.culto_semana &&
+      meeting.culto_semana.nome === "Domingo de Sacrifício" ? (
         <Cross
           width={10}
           height={10}
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Culto de Edificação' ? (
+      ) : meeting &&
+        meeting.culto_semana &&
+        meeting.culto_semana.nome === "Culto de Edificação" ? (
         <BookBookmark
           width={10}
           height={10}
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) : meeting && meeting.culto_semana && meeting.culto_semana.nome === 'Capacitação Para Discípulos' ? (
+      ) : meeting &&
+        meeting.culto_semana &&
+        meeting.culto_semana.nome === "Capacitação Para Discípulos" ? (
         <Student
           width={10}
           height={10}
@@ -251,11 +278,11 @@ function Meeting({ meeting }: { meeting: meeting }) {
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting.data_inicio_culto}>
-            {format(data_inicio_culto, 'H:mm', { locale: pt })}h
-          </time>{' '}
-          -{' '}
+            {format(data_inicio_culto, "H:mm", { locale: pt })}h
+          </time>{" "}
+          -{" "}
           <time dateTime={meeting.data_termino_culto}>
-            {format(data_termino_culto, 'H:mm', { locale: pt })}h
+            {format(data_termino_culto, "H:mm", { locale: pt })}h
           </time>
         </p>
       </div>
@@ -282,9 +309,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
           <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-black ring-opacity-5 focus:outline-none">
             <div className="py-1">
               <Menu.Item>
-                <UpdateCulto
-                  cultoId={meeting.id}
-                />
+                <UpdateCulto cultoId={meeting.id} />
               </Menu.Item>
               <Menu.Item>
                 <DeleteCulto
@@ -297,15 +322,15 @@ function Meeting({ meeting }: { meeting: meeting }) {
         </Transition>
       </Menu>
     </li>
-  )
+  );
 }
 
 const colStartClasses = [
-  '',
-  'col-start-2',
-  'col-start-3',
-  'col-start-4',
-  'col-start-5',
-  'col-start-6',
-  'col-start-7',
-]
+  "",
+  "col-start-2",
+  "col-start-3",
+  "col-start-4",
+  "col-start-5",
+  "col-start-6",
+  "col-start-7",
+];
