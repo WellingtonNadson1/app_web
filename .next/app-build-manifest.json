@@ -45,11 +45,6 @@
       "static/chunks/main-app.js",
       "static/css/app/(relatorios)/relatorio-culto-supervisor/layout.css",
       "static/chunks/app/(relatorios)/relatorio-culto-supervisor/layout.js"
-    ],
-    "/not-found": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/not-found.js"
     ]
   }
 }

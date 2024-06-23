@@ -105,20 +105,20 @@ export default function StatsCardRelatorios() {
     try {
       setIsLoadingSubmitForm(true);
 
-      startDate = dayjs(startDate).tz("America/Sao_Paulo").toISOString();
-      endDate = dayjs(endDate).tz("America/Sao_Paulo").toISOString();
+      // Adicionando um dia ao endDate
+      const adjustedEndDate = dayjs(endDate).add(1, "day").toISOString();
 
       // Executando as chamadas de API em paralelo com Promise.all
       const [presencaGeralResponse, relatorioResponse] = await Promise.all([
         axiosAuth.post(URLPresencaGeralCultos, {
           startDate,
-          endDate,
+          endDate: adjustedEndDate,
           superVisionId,
         }),
         axiosAuth.post(URLRelatorioPresenceCulto, {
           superVisionId,
           startDate,
-          endDate,
+          endDate: adjustedEndDate,
         }),
       ]);
 

@@ -1,6 +1,6 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
   "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
+  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
   "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
 }

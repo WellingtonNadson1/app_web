@@ -1,83 +1,80 @@
-import React, { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { FormRelatorioSchema, ISupervisoes } from './schema'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useSession } from 'next-auth/react'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import { useQuery } from '@tanstack/react-query'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Button } from '@/components/ui/button'
+import React, { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { FormRelatorioSchema, ISupervisoes } from "./schema";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useSession } from "next-auth/react";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { useQuery } from "@tanstack/react-query";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Button } from "@/components/ui/button";
 
 function FormRelatorio() {
-  const { data: session } = useSession()
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const { data: session } = useSession();
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
 
-  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
 
   const onSubmit: SubmitHandler<FormRelatorioSchema> = async ({
     superVisionId,
     startDate,
-    endDate
+    endDate,
   }) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
-
-      startDate = formatDatatoISO8601(startDate)
-      endDate = formatDatatoISO8601(endDate)
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
       const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
         superVisionId,
         startDate,
-        endDate
-      })
-      const relatorioPresenceCulto = response.data
+        endDate,
+      });
+      const relatorioPresenceCulto = response.data;
 
       if (relatorioPresenceCulto) {
-        setIsLoadingSubmitForm(false)
-        success('Célula Cadastrada')
+        setIsLoadingSubmitForm(false);
+        success("Célula Cadastrada");
       } else {
-        errorCadastro('Erro ao Cadastrar Célula')
+        errorCadastro("Erro ao Cadastrar Célula");
       }
     } catch (error) {
-      console.log(error)
-      setIsLoadingSubmitForm(false)
-      errorCadastro('Erro ao Cadastrar Célula')
+      console.log(error);
+      setIsLoadingSubmitForm(false);
+      errorCadastro("Erro ao Cadastrar Célula");
     }
-    reset()
-  }
+    reset();
+  };
 
   const { data: dataSupervisoes, isLoading } = useQuery<ISupervisoes[]>({
-    queryKey: ['supervisoes'],
+    queryKey: ["supervisoes"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLSupervisoes)
-      const dataSupervisoes = response.data
-      return dataSupervisoes
+      const response = await axiosAuth.get(URLSupervisoes);
+      const dataSupervisoes = response.data;
+      return dataSupervisoes;
     },
     retry: false,
-  })
+  });
 
   if (!isLoading) {
-    return dataSupervisoes && setSupervisoes(dataSupervisoes)
+    return dataSupervisoes && setSupervisoes(dataSupervisoes);
   }
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   return (
     <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
@@ -104,7 +101,7 @@ function FormRelatorio() {
                           </Label>
                           <div className="mt-3">
                             <Input
-                              {...register('startDate')}
+                              {...register("startDate")}
                               type="datetime-local"
                               name="startDate"
                               id="startDate"
@@ -122,7 +119,7 @@ function FormRelatorio() {
                           </Label>
                           <div className="mt-3">
                             <Input
-                              {...register('endDate')}
+                              {...register("endDate")}
                               type="datetime-local"
                               name="endDate"
                               id="endDate"
@@ -143,22 +140,25 @@ function FormRelatorio() {
                           </label>
                           <div className="mt-3">
                             <select
-                              {...register('superVisionId')}
+                              {...register("superVisionId")}
                               id="superVisionId"
                               name="superVisionId"
                               className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                               onChange={handleSupervisaoSelecionada}
                             >
                               {!supervisoes ? (
-                                <option value="">Carregando supervisões...</option>
-                              ) : (
                                 <option value="">
-                                  Selecione
+                                  Carregando supervisões...
                                 </option>
+                              ) : (
+                                <option value="">Selecione</option>
                               )}
                               {supervisoes &&
                                 supervisoes?.map((supervisao) => (
-                                  <option key={supervisao.id} value={supervisao.id}>
+                                  <option
+                                    key={supervisao.id}
+                                    value={supervisao.id}
+                                  >
                                     {supervisao.nome}
                                   </option>
                                 ))}
@@ -220,7 +220,7 @@ function FormRelatorio() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default FormRelatorio
+export default FormRelatorio;
