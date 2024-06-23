@@ -1,5 +1,6 @@
 {
   "/not-found": "app/not-found.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js"
+  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
+  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
+  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
 }
