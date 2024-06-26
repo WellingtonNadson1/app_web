@@ -1,98 +1,91 @@
-'use client'
-import {
-  CultoDaSemana,
-  NewCulto,
-} from '@/app/(central)/cultos/schemaNewCulto'
-import {
-  BASE_URL,
-  errorCadastro,
-  success,
-} from '@/functions/functions'
-import { UserMinusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import ModalCalendar from './ModalCalendar'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useQuery } from '@tanstack/react-query'
+"use client";
+import { CultoDaSemana, NewCulto } from "@/app/(central)/cultos/schemaNewCulto";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { UserMinusIcon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import ModalCalendar from "./ModalCalendar";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useQuery } from "@tanstack/react-query";
 
 export default function UpdateCulto({
   cultoId,
 }: // shouldFetch,
-  {
-    cultoId: string
-    // shouldFetch: boolean
-  }) {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+{
+  cultoId: string;
+  // shouldFetch: boolean
+}) {
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
 
-  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
-  const URLCultosSemanais = `${BASE_URL}/cultossemanais`
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [dataCultos, setDataCultos] = useState<NewCulto[]>()
-  const router = useRouter()
+  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`;
+  const URLCultosSemanais = `${BASE_URL}/cultossemanais`;
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [dataCultos, setDataCultos] = useState<NewCulto[]>();
+  const router = useRouter();
   const { register, handleSubmit, reset } = useForm<NewCulto>({
     defaultValues: async () => {
-      if (!cultoId) return {}
+      if (!cultoId) return {};
 
       const response = await fetch(URLCultosIndividuais, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${session?.user.token}`,
         },
-      })
-      const data = await response.json()
-      console.log('Data in the Update Culto', data)
-      return data
+      });
+      const data = await response.json();
+      console.log("Data in the Update Culto", data);
+      return data;
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<NewCulto> = async (data) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
-      data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
-      data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
+      // data.data_inicio_culto = formatDatatoISO8601(data.data_inicio_culto)
+      // data.data_termino_culto = formatDatatoISO8601(data.data_termino_culto)
 
       const response = await fetch(URLCultosIndividuais, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${session?.user.token}`,
         },
         body: JSON.stringify(data),
-      })
+      });
 
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
-        setFormSuccess(true)
-        router.refresh()
-        success('Culto Cadastrado')
+        setIsLoadingSubmitForm(false);
+        setFormSuccess(true);
+        router.refresh();
+        success("Culto Cadastrado");
       } else {
-        errorCadastro('Erro ao cadastrar Culto')
+        errorCadastro("Erro ao cadastrar Culto");
       }
     } catch (error) {
-      console.log(error)
-      errorCadastro('Erro ao cadastrar Culto')
+      console.log(error);
+      errorCadastro("Erro ao cadastrar Culto");
     }
-    reset()
-  }
+    reset();
+  };
 
   const { data: cultosSemanais, isLoading } = useQuery<CultoDaSemana[]>({
     queryKey: ["cultossemanais"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLCultosSemanais)
-      return await response.data
+      const response = await axiosAuth.get(URLCultosSemanais);
+      return await response.data;
     },
-  })
+  });
 
   const fetchCultos = useCallback(async () => {
     try {
@@ -100,31 +93,31 @@ export default function UpdateCulto({
         headers: {
           Authorization: `Bearer ${session?.user.token}`,
         },
-      })
+      });
       if (!response.ok) {
-        console.log('Failed to fetch get Cultos.')
+        console.log("Failed to fetch get Cultos.");
       }
-      const cultos = await response.json()
-      setDataCultos(cultos)
+      const cultos = await response.json();
+      setDataCultos(cultos);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }, [URLCultosIndividuais, session?.user.token])
+  }, [URLCultosIndividuais, session?.user.token]);
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
-    fetchCultos()
-  }, [fetchCultos])
+    fetchCultos();
+  }, [fetchCultos]);
 
   // UseEffect para buscar as células após o envio do formulário
   useEffect(() => {
     if (formSuccess) {
-      fetchCultos()
+      fetchCultos();
     }
-  }, [formSuccess, fetchCultos])
+  }, [formSuccess, fetchCultos]);
 
   if (dataCultos) {
-    console.log('data Cultos Modal Eventos', dataCultos)
+    console.log("data Cultos Modal Eventos", dataCultos);
   }
 
   return (
@@ -137,7 +130,7 @@ export default function UpdateCulto({
       titleButton="Atualizar"
       buttonProps={{
         className:
-          'group flex w-full cursor-pointer items-center rounded-md bg-white px-2 py-2 text-sm text-gray-900 hover:bg-slate-500 hover:text-white',
+          "group flex w-full cursor-pointer items-center rounded-md bg-white px-2 py-2 text-sm text-gray-900 hover:bg-slate-500 hover:text-white",
       }}
     >
       <form onSubmit={handleSubmit(onSubmit)}>
@@ -152,7 +145,7 @@ export default function UpdateCulto({
               </label>
               <div className="mt-3">
                 <input
-                  {...register('data_inicio_culto')}
+                  {...register("data_inicio_culto")}
                   type="datetime-local"
                   name="data_inicio_culto"
                   id="data_inicio_culto"
@@ -170,7 +163,7 @@ export default function UpdateCulto({
               </label>
               <div className="mt-3">
                 <input
-                  {...register('data_termino_culto')}
+                  {...register("data_termino_culto")}
                   type="datetime-local"
                   name="data_termino_culto"
                   id="data_termino_culto"
@@ -191,7 +184,7 @@ export default function UpdateCulto({
               </label>
               <div className="mt-3">
                 <select
-                  {...register('culto_semana')}
+                  {...register("culto_semana")}
                   id="culto_semana"
                   name="culto_semana"
                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -219,7 +212,7 @@ export default function UpdateCulto({
               </label>
               <div className="mt-3">
                 <select
-                  {...register('status')}
+                  {...register("status")}
                   id="status"
                   name="status"
                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -290,7 +283,7 @@ export default function UpdateCulto({
         </div>
       </form>
     </ModalCalendar>
-  )
+  );
 }
 
 function EditActiveIcon(props: any) {
@@ -308,5 +301,5 @@ function EditActiveIcon(props: any) {
         strokeWidth="2"
       />
     </svg>
-  )
+  );
 }
