@@ -1,23 +1,24 @@
-import authConfig from '@/auth/auth.config';
-import axios, { AxiosError } from 'axios';
-import NextAuth from 'next-auth';
-import { NextAuthRequest } from 'next-auth/lib';
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import authConfig from "@/auth/auth.config";
+import axios, { AxiosError } from "axios";
+import NextAuth from "next-auth";
+import { NextAuthRequest } from "next-auth/lib";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
-export interface FetchError extends AxiosError { }
+export interface FetchError extends AxiosError {}
 
 // const hostname = 'backibb-production.up.railway.app'
-const hostname = 'app-ibb.onrender.com'
-export const BASE_URL = `https://${hostname}`
+// const hostname = 'app-ibb.onrender.com'
+const hostname = "back-ibb.vercel.app";
+export const BASE_URL = `https://${hostname}`;
 
-const hostnameLocal = 'localhost:8080'
-export const BASE_URL_LOCAL = `http://${hostnameLocal}`
+const hostnameLocal = "localhost:8080";
+export const BASE_URL_LOCAL = `http://${hostnameLocal}`;
 
 export async function fetchWithToken(
   url: string,
-  methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos
-  token: string
+  methodType: "GET" | "POST" | "PUT" | "DELETE", // Aceita os tipos de método axios permitidos
+  token: string,
 ) {
   try {
     const response = await axios({
@@ -33,12 +34,12 @@ export async function fetchWithToken(
     if (axios.isAxiosError(error)) {
       const fetchError: FetchError = {
         ...error,
-        message: 'Failed to fetch data with token.',
+        message: "Failed to fetch data with token.",
       };
       throw fetchError;
     } else {
-      console.error('Unknown error occurred:', error);
-      throw new Error('Unknown error occurred.');
+      console.error("Unknown error occurred:", error);
+      throw new Error("Unknown error occurred.");
     }
   }
 }
@@ -46,26 +47,26 @@ export async function fetchWithToken(
 // Notification success or error Submit Forms
 export const success = (message: string) =>
   toast.success(`${message}`, {
-    position: 'top-right',
+    position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
-    theme: 'light',
+    theme: "light",
   });
 
 export const errorCadastro = (message: string) =>
   toast.error(`${message}`, {
-    position: 'top-right',
+    position: "top-right",
     autoClose: 5000,
     hideProgressBar: false,
     closeOnClick: true,
     pauseOnHover: false,
     draggable: true,
     progress: undefined,
-    theme: 'light',
+    theme: "light",
   });
 
 const { auth } = NextAuth(authConfig);
@@ -73,7 +74,5 @@ const { auth } = NextAuth(authConfig);
 export default auth((req: NextAuthRequest) => {
   const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
-  return console.log('isLoggedIn', isLoggedIn)
-})
-
-
+  return console.log("isLoggedIn", isLoggedIn);
+});

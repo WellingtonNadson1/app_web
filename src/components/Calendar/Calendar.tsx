@@ -25,6 +25,7 @@ import DeleteCulto from "./DeleteCulto";
 import UpdateCulto from "./UpdateCulto";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useQuery } from "@tanstack/react-query";
+import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
 
 export type meeting = {
   id: string;
@@ -36,43 +37,50 @@ export type meeting = {
   data_termino_culto: string;
 };
 
-const hostname = "app-ibb.onrender.com";
-const URLCultosInd = `https://${hostname}/cultosindividuais`;
+const URLCultosInd = `${BASE_URL_LOCAL}/cultosindividuais`;
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
 }
 
-export default function Example() {
+export default function MyCalendar() {
   const { data: session } = useSession();
   const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-
-  const { data: meetings } = useQuery<meeting[]>({
-    queryKey: ["supervisoes"],
-    queryFn: async () => {
-      const response = await axiosAuth.get(URLCultosInd);
-      return await response.data;
-    },
-  });
 
   const today = startOfToday();
   const [selectedDay, setSelectedDay] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(format(today, "MMM-yyyy"));
   const firstDayCurrentMonth = parse(currentMonth, "MMM-yyyy", new Date());
+  const [year, setYear] = useState(firstDayCurrentMonth.getFullYear());
+  const [month, setMonth] = useState(firstDayCurrentMonth.getMonth() + 1);
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
   });
 
+  const { data: meetings } = useQuery<meeting[]>({
+    queryKey: ["cultosMarcados", year, month],
+    queryFn: async () => {
+      const response = await axiosAuth.get(
+        `${URLCultosInd}?year=${year}&month=${month}`,
+      );
+      return response.data;
+    },
+  });
+
   function previousMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
-    setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+    const firstDayPreviousMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayPreviousMonth, "MMM-yyyy"));
+    setYear(firstDayPreviousMonth.getFullYear());
+    setMonth(firstDayPreviousMonth.getMonth() + 1);
   }
 
   function nextMonth() {
     const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
     setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
+    setYear(firstDayNextMonth.getFullYear());
+    setMonth(firstDayNextMonth.getMonth() + 1);
   }
 
   const selectedDayMeetings = meetings?.filter((meeting) =>

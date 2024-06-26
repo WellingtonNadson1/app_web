@@ -1,50 +1,26 @@
 {
   "pages": {
-    "/(relatorios)/relatorio-culto-supervisao/[id]/page": [
+    "/(celula)/celula/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-culto-supervisao/[id]/page.css",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/[id]/page.js"
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ],
-    "/(relatorios)/relatorio-culto-supervisao/layout": [
+    "/(celula)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-culto-supervisao/layout.css",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisao/layout.js"
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
     ],
-    "/(central)/layout": [
+    "/(celula)/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/layout.css",
-      "static/chunks/app/(central)/layout.js"
+      "static/chunks/app/(celula)/loading.js"
     ],
-    "/(central)/loading": [
+    "/_not-found/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/loading.css",
-      "static/chunks/app/(central)/loading.js"
-    ],
-    "/(central)/relatorios/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(central)/relatorios/page.js"
-    ],
-    "/(central)/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(central)/dashboard/page.js"
-    ],
-    "/(relatorios)/relatorio-culto-supervisor/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-culto-supervisor/[id]/page.css",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
-    ],
-    "/(relatorios)/relatorio-culto-supervisor/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-culto-supervisor/layout.css",
-      "static/chunks/app/(relatorios)/relatorio-culto-supervisor/layout.js"
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

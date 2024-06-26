@@ -1,9 +1,9 @@
-'use client'
-import { UserMinusIcon } from '@heroicons/react/24/outline'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-import ModalCalendar from './ModalCalendar'
+"use client";
+import { UserMinusIcon } from "@heroicons/react/24/outline";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import ModalCalendar from "./ModalCalendar";
 
 function DeleteCulto({
   culto,
@@ -11,37 +11,38 @@ function DeleteCulto({
 }: // isOpen,
 // onClose,
 {
-  culto: string
-  cultoName: string
+  culto: string;
+  cultoName: string;
   // isOpen: boolean
   // onClose: () => void
 }) {
-  const hostname = 'app-ibb.onrender.com'
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const hostname = "back-ibb.vercel.app";
+  // const hostname = 'app-ibb.onrender.com'
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
   // const cancelButtonRef = useRef(null)
 
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleDelete = async (cultoId: string) => {
-    const URLCultosInd = `https://${hostname}/cultosindividuais/${cultoId}`
-    setIsLoadingSubmitForm(true)
+    const URLCultosInd = `https://${hostname}/cultosindividuais/${cultoId}`;
+    setIsLoadingSubmitForm(true);
     const response = await fetch(URLCultosInd, {
-      method: 'DELETE',
+      method: "DELETE",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
         Authorization: `Bearer ${session?.user.token}`,
       },
-    })
+    });
     if (response.ok) {
-      setIsLoadingSubmitForm(false)
-      router.refresh()
+      setIsLoadingSubmitForm(false);
+      router.refresh();
     } else {
-      setIsLoadingSubmitForm(false)
+      setIsLoadingSubmitForm(false);
     }
-  }
+  };
 
   return (
     <ModalCalendar
@@ -53,7 +54,7 @@ function DeleteCulto({
       titleButton="Deletar"
       buttonProps={{
         className:
-          'group flex w-full cursor-pointer items-center rounded-md bg-white px-2 py-2 text-sm text-gray-900 hover:bg-slate-500 hover:text-white',
+          "group flex w-full cursor-pointer items-center rounded-md bg-white px-2 py-2 text-sm text-gray-900 hover:bg-slate-500 hover:text-white",
       }}
     >
       {/* Incio do Forms */}
@@ -63,7 +64,7 @@ function DeleteCulto({
             <div className="mx-auto rounded-lg bg-white p-6">
               <div className="texte-center flex flex-col items-center justify-center gap-3 border-b border-gray-900/10 pb-12">
                 <h2 className="text-sm uppercase leading-normal text-gray-400">
-                  Você dejesa Deletar este Culto?{' '}
+                  Você dejesa Deletar este Culto?{" "}
                 </h2>
                 <h2 className="font-semibold text-gray-600">{cultoName}</h2>
               </div>
@@ -121,7 +122,7 @@ function DeleteCulto({
         </div>
       </div>
     </ModalCalendar>
-  )
+  );
 }
 
 function DeleteInactiveIcon(props: any) {
@@ -144,7 +145,7 @@ function DeleteInactiveIcon(props: any) {
       <path d="M3 6H17" stroke="#ffb9b4dc" strokeWidth="2" />
       <path d="M8 6V4H12V6" stroke="#ffb9b4dc" strokeWidth="2" />
     </svg>
-  )
+  );
 }
 
-export default DeleteCulto
+export default DeleteCulto;

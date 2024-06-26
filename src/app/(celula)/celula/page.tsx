@@ -258,8 +258,7 @@ export default function ControleCelulaSupervision() {
                                         Frequência de Culto -{" "}
                                         {format(
                                           new Date(
-                                            selectedDayMeetings[1]
-                                              ?.data_inicio_culto,
+                                            selectedDayMeetings[1]?.data_inicio_culto,
                                           ),
                                           "Pp",
                                           { locale: pt },

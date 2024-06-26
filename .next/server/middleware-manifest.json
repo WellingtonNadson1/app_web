@@ -1,7 +1,5 @@
 {
-  "sortedMiddleware": [
-    "/"
-  ],
+  "version": 3,
   "middleware": {
     "/": {
       "files": [
@@ -17,9 +15,12 @@
         }
       ],
       "wasm": [],
-      "assets": []
+      "assets": [],
+      "environments": {}
     }
   },
   "functions": {},
-  "version": 2
+  "sortedMiddleware": [
+    "/"
+  ]
 }

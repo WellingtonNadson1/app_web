@@ -1,6 +1,4 @@
 {
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
-  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
-  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(celula)/celula/page": "app/(celula)/celula/page.js"
 }

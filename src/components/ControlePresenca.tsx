@@ -1,10 +1,10 @@
-'use client'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
-import { UserFocus } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { z } from 'zod'
+"use client";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { UserFocus } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
+import { useSession } from "next-auth/react";
+import { z } from "zod";
 // import { useEffect, useState } from 'react'
 
 const UserSchema = z.object({
@@ -16,7 +16,7 @@ const UserSchema = z.object({
   cargo_de_lideranca: z.object({
     nome: z.string(),
   }),
-})
+});
 
 const CelulaSchema = z.object({
   id: z.string(),
@@ -35,27 +35,31 @@ const CelulaSchema = z.object({
   supervisaoId: z.string(),
   membros: z.array(UserSchema),
   userId: z.string(),
-})
+});
 
-type Celula = z.infer<typeof CelulaSchema>
+type Celula = z.infer<typeof CelulaSchema>;
 
 export default function ControlePresenca() {
-  const { data: session } = useSession()
-  const { token } = useUserDataStore.getState()
+  const { data: session } = useSession();
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
+  const axiosAuth = useAxiosAuthToken(token);
 
+  // const hostname = 'app-ibb.onrender.com'
+  const hostname = "back-ibb.vercel.app";
+  const URL = `https://${hostname}/celulas/${session?.user?.celulaId}`;
 
-  const hostname = 'app-ibb.onrender.com'
-  const URL = `https://${hostname}/celulas/${session?.user?.celulaId}`
-
-  const { data: celula, isError: error, isLoading } = useQuery<Celula>({
+  const {
+    data: celula,
+    isError: error,
+    isLoading,
+  } = useQuery<Celula>({
     queryKey: ["celula"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URL)
-      return await response.data
+      const response = await axiosAuth.get(URL);
+      return await response.data;
     },
-  })
+  });
 
   if (error) {
     return (
@@ -64,7 +68,7 @@ export default function ControlePresenca() {
           <div>failed to load</div>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -74,7 +78,7 @@ export default function ControlePresenca() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    )
+    );
   }
 
   return (
@@ -120,14 +124,15 @@ export default function ControlePresenca() {
                       </td>
                       <td className="text-center">
                         <span
-                          className={`inline w-full rounded-md px-2 py-1 text-center ${user.situacao_no_reino?.nome === 'Ativo'
-                            ? 'border border-green-200 bg-green-100 ring-green-500'
-                            : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                                ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                                : 'border border-red-200 bg-red-100 ring-red-500'
-                            }`}
+                          className={`inline w-full rounded-md px-2 py-1 text-center ${
+                            user.situacao_no_reino?.nome === "Ativo"
+                              ? "border border-green-200 bg-green-100 ring-green-500"
+                              : user.situacao_no_reino?.nome === "Normal"
+                                ? "border border-blue-200 bg-blue-100 ring-blue-500"
+                                : user.situacao_no_reino?.nome === "Frio"
+                                  ? "border border-orange-200 bg-orange-100 ring-orange-500"
+                                  : "border border-red-200 bg-red-100 ring-red-500"
+                          }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
@@ -177,5 +182,5 @@ export default function ControlePresenca() {
         </div>
       </div>
     </>
-  )
+  );
 }

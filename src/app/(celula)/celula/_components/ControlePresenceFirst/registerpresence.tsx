@@ -26,6 +26,7 @@ import { useSession } from "next-auth/react";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { AxiosError } from "axios";
 import { FormSchema, dataForms } from "./shcema-controle-first-presence";
+import { Badge } from "@/components/ui/badge";
 
 function isError(error: unknown): error is Error {
   return error instanceof Error;
@@ -287,17 +288,33 @@ export function RegisterPresenceFormFirst({
 
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
-                                      <span
-                                        className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-red-200 bg-red-100 ring-red-500"}`}
-                                      >
-                                        {"Normal"}
-                                      </span>
+                                      {member.situacao_no_reino.nome ===
+                                      "Normal" ? (
+                                        <Badge
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
+                                        >
+                                          {member.situacao_no_reino.nome}
+                                        </Badge>
+                                      ) : member.situacao_no_reino.nome ===
+                                        "Ativo" ? (
+                                        <Badge
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-sky-200 bg-sky-100 ring-sky-500"}`}
+                                        >
+                                          {member.situacao_no_reino.nome}
+                                        </Badge>
+                                      ) : (
+                                        <Badge
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"}`}
+                                        >
+                                          {member.situacao_no_reino.nome}
+                                        </Badge>
+                                      )}
                                     </div>
 
                                     {/* Cargo */}
                                     <div className="hidden w-full text-center sm:grid col-span-1 mx-2">
                                       <span className="w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
-                                        {"Normal"}
+                                        {member.cargo_de_lideranca.nome}
                                       </span>
                                     </div>
 
