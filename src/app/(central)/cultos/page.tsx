@@ -139,7 +139,7 @@ export default function Cultos() {
 
       errorCadastro("😰 Erro ao cadastrar Culto");
     }
-    reset();
+    // reset();
   };
 
   const fetchCultos = useCallback(async () => {
