@@ -37,7 +37,7 @@ export type meeting = {
   data_termino_culto: string;
 };
 
-const URLCultosInd = `${BASE_URL_LOCAL}/cultosindividuais`;
+const URLCultosInd = `${BASE_URL}/cultosindividuais`;
 
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(" ");
