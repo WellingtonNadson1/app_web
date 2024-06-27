@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(central)/dashboard/page": [
+    "/(central)/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(central)/dashboard/page.js"
+      "static/chunks/app/(central)/page.js"
     ],
     "/(central)/layout": [
       "static/chunks/webpack.js",
@@ -35,11 +35,27 @@
       "static/css/app/(login)/login/loading.css",
       "static/chunks/app/(login)/login/loading.js"
     ],
-    "/(central)/novo-membro/page": [
+    "/(central)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/novo-membro/page.css",
-      "static/chunks/app/(central)/novo-membro/page.js"
+      "static/chunks/app/(central)/dashboard/page.js"
+    ],
+    "/(central)/relatorios/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/(central)/relatorios/page.js"
+    ],
+    "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.css",
+      "static/chunks/app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js"
+    ],
+    "/(relatorios)/relatorio-presenca-celula-supervisao/layout": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(relatorios)/relatorio-presenca-celula-supervisao/layout.css",
+      "static/chunks/app/(relatorios)/relatorio-presenca-celula-supervisao/layout.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
