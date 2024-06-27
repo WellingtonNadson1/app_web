@@ -12,8 +12,10 @@ export interface FetchError extends AxiosError {}
 // const hostname = "back-ibb.vercel.app";
 // const hostnameLocal = "localhost:8080";
 
-export const BASE_URL = process.env.HOSTNAME_URL;
-export const BASE_URL_LOCAL = process.env.HOSTNAME_URL_LOCAL;
+export const BASE_URL =
+  "https://back-ibb.vercel.app" || process.env.HOSTNAME_URL;
+export const BASE_URL_LOCAL =
+  "http://localhost:8080" || process.env.HOSTNAME_URL_LOCAL;
 
 export async function fetchWithToken(
   url: string,
