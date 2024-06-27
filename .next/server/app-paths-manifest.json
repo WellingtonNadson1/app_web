@@ -1,4 +1,7 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(central)/novo-membro/page": "app/(central)/novo-membro/page.js",
+  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
+  "/(login)/login/page": "app/(login)/login/page.js"
 }
