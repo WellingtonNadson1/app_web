@@ -19,7 +19,7 @@ export default async function Dashboard() {
 
   const axiosAuth = axios.create({
     // baseURL: 'https://app-ibb.onrender.com',
-    baseURL: "back-ibb.vercel.app",
+    baseURL: "https://back-ibb.vercel.app",
     headers: {
       Authorization: `Bearer ${token}`,
       "Content-Type": "application/json",
