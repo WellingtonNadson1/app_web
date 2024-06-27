@@ -9,11 +9,11 @@ export interface FetchError extends AxiosError {}
 
 // const hostname = 'backibb-production.up.railway.app'
 // const hostname = 'app-ibb.onrender.com'
-const hostname = "back-ibb.vercel.app";
-export const BASE_URL = `https://${hostname}`;
+// const hostname = "back-ibb.vercel.app";
+// const hostnameLocal = "localhost:8080";
 
-const hostnameLocal = "localhost:8080";
-export const BASE_URL_LOCAL = `http://${hostnameLocal}`;
+export const BASE_URL = process.env.HOSTNAME_URL;
+export const BASE_URL_LOCAL = process.env.HOSTNAME_URL_LOCAL;
 
 export async function fetchWithToken(
   url: string,
