@@ -1,26 +1,25 @@
 import axios from "axios";
-import MainSide from "@/components/MainSide";
 import { auth } from "@/auth";
-import { Session } from "next-auth";
 import ClientDashboard from "./ClientDashboard";
 
 // Função que roda no servidor para obter os dados
 async function fetchServerData() {
   const session = await auth();
   const token = session?.user.token;
-
-  const axiosAuth = axios.create({
-    baseURL: "https://back-ibb.vercel.app",
-    headers: {
-      Authorization: `Bearer ${token}`,
-      "Content-Type": "application/json",
-      Accept: "application/json",
-    },
-  });
-
   const DataCombinetedt = async () => {
+    const axiosAuth = axios.create({
+      baseURL: "https://back-ibb.vercel.app",
+      // baseURL: "http://0.0.0.0:8080",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+
     try {
       const { data } = await axiosAuth.get("/users/all");
+      console.log("dataReturnALL:", data);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

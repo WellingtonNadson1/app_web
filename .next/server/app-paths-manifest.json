@@ -1,5 +1,4 @@
 {
-  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(central)/cultos/page": "app/(central)/cultos/page.js"
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(central)/dashboard/page": "app/(central)/dashboard/page.js"
 }

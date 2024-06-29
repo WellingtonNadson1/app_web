@@ -2,7 +2,7 @@
 
 import { useEffect } from "react";
 import MainSide from "@/components/MainSide";
-import { useCombinetedStore } from "@/store/DataCombineted";
+import { useCombinedStore } from "@/store/DataCombineted";
 import { InitializerStore } from "@/store/InitializerStore";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
 
@@ -29,6 +29,7 @@ interface Result {
   encontros: any[];
   situacoesNoReino: any[];
   cargoLideranca: any[];
+  almasGanhasNoMes: number;
 }
 
 interface ClientDashboardProps {
@@ -50,7 +51,7 @@ export default function ClientDashboard({
   const refreshToken = session?.user.refreshToken;
 
   useEffect(() => {
-    useCombinetedStore.setState({
+    useCombinedStore.setState({
       state: {
         // @ts-ignore
         supervisoes: result[0] ?? [],

@@ -1,22 +1,28 @@
-'use client'
-import ThemeImage from '@/components/theme-image'
-import { TypeLogin } from '@/types'
-import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { loginFunction } from '../../../../actions/login'
-import { useMutation } from '@tanstack/react-query'
+"use client";
+import ThemeImage from "@/components/theme-image";
+import { TypeLogin } from "@/types";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { loginFunction } from "../../../../actions/login";
+import { useMutation } from "@tanstack/react-query";
 import { FormError } from "@/components/Info/form-error";
 import { FormSuccess } from "@/components/Info/form-sucesso";
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card'
-
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Spinner } from "@phosphor-icons/react/dist/ssr";
 
 export default function Login() {
   const [error, setError] = useState<string | undefined>("");
   const [success, setSuccess] = useState<string | undefined>("");
-  const { handleSubmit, register } = useForm<TypeLogin>()
+  const { handleSubmit, register } = useForm<TypeLogin>();
 
   const loginFn = async ({ email, password }: TypeLogin) => {
     const registered = await loginFunction({
@@ -31,26 +37,20 @@ export default function Login() {
     mutationFn: loginFn,
   });
 
-  const onSubmit: SubmitHandler<TypeLogin> = async ({
-    email,
-    password,
-  }) => {
+  const onSubmit: SubmitHandler<TypeLogin> = async ({ email, password }) => {
     setError("");
     setSuccess("");
     try {
-      console.log('email e senha', email, password)
+      console.log("email e senha", email, password);
 
-      const login = await loginFunc({ email, password }).then(
-        (data) => {
-          setError(data?.error);
-          setSuccess(data?.sucesso);
-        },
-      );
+      const login = await loginFunc({ email, password }).then((data) => {
+        setError(data?.error);
+        setSuccess(data?.sucesso);
+      });
     } catch (error) {
       console.error(error);
     }
   };
-
 
   return (
     <>
@@ -70,20 +70,19 @@ export default function Login() {
           <div className="flex items-center max-w-3xl p-6 bg-white shadow-lg rounded-2xl">
             <div className="md:w-1/2">
               <CardHeader>
-                <CardTitle className='text-xl'>Seja Bem-vindo!</CardTitle>
-                <CardDescription>Para logar, entre com seus dados.</CardDescription>
+                <CardTitle className="text-xl">Seja Bem-vindo!</CardTitle>
+                <CardDescription>
+                  Para logar, entre com seus dados.
+                </CardDescription>
               </CardHeader>
               <CardContent>
                 <div className="md:mx-auto md:w-full md:max-w-sm">
-                  <form
-                    className="space-y-5"
-                    onSubmit={handleSubmit(onSubmit)}
-                  >
+                  <form className="space-y-5" onSubmit={handleSubmit(onSubmit)}>
                     <div>
                       <Label htmlFor="email">Email</Label>
                       <div className="mt-2">
                         <Input
-                          {...register('email')}
+                          {...register("email")}
                           id="email"
                           type="email"
                           autoComplete="email"
@@ -97,11 +96,10 @@ export default function Login() {
                     <div>
                       <div className="flex items-center justify-between">
                         <Label htmlFor="password">Senha</Label>
-
                       </div>
                       <div className="mt-2">
                         <Input
-                          {...register('password')}
+                          {...register("password")}
                           id="password"
                           type="password"
                           autoComplete="current-password"
@@ -147,29 +145,10 @@ export default function Login() {
                       {isPending ? (
                         <Button
                           type="submit"
-                          // disabled
+                          disabled
                           className="flex w-full items-center justify-center gap-2 bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
-                          <svg
-                            className="w-5 h-5 mr-3 text-white animate-spin"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
+                          <Spinner className="animate-spin" />
                           <span>Entrando...</span>
                         </Button>
                       ) : (
@@ -212,7 +191,6 @@ export default function Login() {
               {/* form */}
             </div>
 
-
             {/* image */}
             <div className="items-center justify-center hidden w-1/2 px-14 md:block">
               <ThemeImage
@@ -227,5 +205,5 @@ export default function Login() {
         </Card>
       </section>
     </>
-  )
+  );
 }
