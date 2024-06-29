@@ -1,24 +1,15 @@
-// "use client"
 import axios from "axios";
 import MainSide from "@/components/MainSide";
-import { useCombinetedStore } from "@/store/DataCombineted";
-import { InitializerStore } from "@/store/InitializerStore";
-import { InitializerUserStore } from "@/store/InitializerUserStore";
 import { auth } from "@/auth";
+import { Session } from "next-auth";
+import ClientDashboard from "./ClientDashboard";
 
-export default async function Dashboard() {
+// Função que roda no servidor para obter os dados
+async function fetchServerData() {
   const session = await auth();
-  const id = session?.user.id;
-  const role = session?.user.role;
-  const user_roles = session?.user.user_roles;
-  const email = session?.user.token;
-  const image_url = session?.user.image_url;
-  const first_name = session?.user.first_name;
   const token = session?.user.token;
-  const refreshToken = session?.user.refreshToken;
 
   const axiosAuth = axios.create({
-    // baseURL: 'https://app-ibb.onrender.com',
     baseURL: "https://back-ibb.vercel.app",
     headers: {
       Authorization: `Bearer ${token}`,
@@ -37,53 +28,30 @@ export default async function Dashboard() {
       } else {
         console.error(error);
       }
+      return null;
     }
   };
 
   const result = await DataCombinetedt();
 
   if (!result) {
-    // Handle the case where data is not fetched
-    // You might redirect to an error page or display a loading message
-    console.error("Failed to fetch data");
-    return <div>Error fetching data</div>; // Or redirect, etc.
+    return {
+      error: "Failed to fetch data",
+    };
   }
 
-  useCombinetedStore.setState({
-    state: {
-      supervisoes: result[0] ?? [],
-      escolas: result[1] ?? [], // Adicione esta linha
-      encontros: result[2] ?? [], // Adicione esta linha
-      situacoesNoReino: result[3] ?? [], // Adicione esta linha
-      cargoLideranca: result[4] ?? [], // Adicione esta linha
-    },
-  });
+  return {
+    session,
+    result,
+  };
+}
 
-  return (
-    <>
-      <div className="w-full px-2 py-2 mx-auto">
-        <InitializerUserStore
-          id={id ?? ""}
-          role={role ?? ""}
-          user_roles={user_roles ?? []}
-          email={email ?? ""}
-          image_url={image_url ?? ""}
-          first_name={first_name ?? ""}
-          token={token ?? ""}
-          refreshToken={
-            refreshToken ?? { id: "", expiresIn: 0, userIdRefresh: "" }
-          }
-        />
-        <InitializerStore
-          supervisoes={result[0] ?? []}
-          escolas={result[1] ?? []}
-          encontros={result[2] ?? []}
-          situacoesNoReino={result[3] ?? []}
-          cargoLideranca={result[4] ?? []}
-        />
+export default async function DashboardPage() {
+  const { session, result, error } = await fetchServerData();
 
-        <MainSide />
-      </div>
-    </>
-  );
+  if (error) {
+    return <div>Error fetching data: {error}</div>;
+  }
+
+  return <ClientDashboard session={session} result={result} />;
 }
