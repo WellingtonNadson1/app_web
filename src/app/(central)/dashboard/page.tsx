@@ -30,7 +30,6 @@ export default async function Dashboard() {
   const DataCombinetedt = async () => {
     try {
       const { data } = await axiosAuth.get("/users/all");
-      console.log("data", data);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
