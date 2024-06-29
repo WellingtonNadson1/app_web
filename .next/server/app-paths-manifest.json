@@ -1,5 +1,5 @@
 {
   "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/(central)/cultos/page": "app/(central)/cultos/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(central)/cultos/page": "app/(central)/cultos/page.js"
 }
