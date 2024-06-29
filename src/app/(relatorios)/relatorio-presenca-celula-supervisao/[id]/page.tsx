@@ -1,78 +1,80 @@
-'use client'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import dayjs from 'dayjs'
-import { useSession } from 'next-auth/react'
-import React, { Fragment, useEffect, useState } from 'react'
-import utc from 'dayjs/plugin/utc'
-import timezone from "dayjs/plugin/timezone"
-import ptBr from "dayjs/locale/pt-br"
-import localizedFormat from 'dayjs/plugin/localizedFormat'
-import { FormRelatorioSchema, TSupervisionData } from './schema'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import Image from 'next/image'
-import { useCombinetedStore } from '@/store/DataCombineted'
-import Link from 'next/link'
-import TabelRelatorio from './FormRelatorio'
-dayjs.extend(localizedFormat)
+"use client";
+import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import dayjs from "dayjs";
+import { useSession } from "next-auth/react";
+import React, { Fragment, useEffect, useState } from "react";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import ptBr from "dayjs/locale/pt-br";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import { FormRelatorioSchema, TSupervisionData } from "./schema";
+import { SubmitHandler, useForm } from "react-hook-form";
+import Image from "next/image";
+import { useCombinedStore } from "@/store/DataCombineted";
+import Link from "next/link";
+import TabelRelatorio from "./FormRelatorio";
+dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
-dayjs.tz.setDefault('America/Sao_Paulo')
+dayjs.tz.setDefault("America/Sao_Paulo");
 
 export default function RelatoriosPresencaCelula() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
-  const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
+  const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`;
   const [RelatorioData, setRelatorioData] = useState<TSupervisionData>();
-  const { register, handleSubmit } = useForm<FormRelatorioSchema>()
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const { register, handleSubmit } = useForm<FormRelatorioSchema>();
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
-  const { supervisoes } = useCombinetedStore.getState().state
+  const { supervisoes } = useCombinedStore.getState().state;
 
-  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId }) => {
+  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
+    startDate,
+    endDate,
+    superVisionId,
+  }) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
       dayjs(startDate).tz("America/Sao_Paulo").toISOString();
       dayjs(endDate).tz("America/Sao_Paulo").toISOString();
 
       const response = await axiosAuth.post(URLPresencaReuniaoCelula, {
         superVisionId,
         startDate,
-        endDate
+        endDate,
       });
 
-      const result = await response.data
-      setRelatorioData(result)
-      setIsLoadingSubmitForm(false)
-      console.log('data', result)
-
+      const result = await response.data;
+      setRelatorioData(result);
+      setIsLoadingSubmitForm(false);
+      console.log("data", result);
+    } catch (error) {
+      console.error(error);
     }
-    catch (error) {
-      console.error(error)
-    }
-  }
+  };
 
   useEffect(() => {
-    console.log('RelatorioData', RelatorioData) // Mostrar o estado atualizado
-  }, [RelatorioData])
+    console.log("RelatorioData", RelatorioData); // Mostrar o estado atualizado
+  }, [RelatorioData]);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   return (
     <Fragment>
-      <div className='relative z-40 p-2 bg-white rounded-sm'>
+      <div className="relative z-40 p-2 bg-white rounded-sm">
         <div className="px-3 mt-2 mb-3">
           <Fragment>
             <form onSubmit={handleSubmit(handleRelatorio)}>
               <div className="p-3">
-                <div className='flex items-center justify-start gap-4'>
-                  <Link href={'/dashboard'}>
+                <div className="flex items-center justify-start gap-4">
+                  <Link href={"/dashboard"}>
                     <Image
                       src="/images/logo-ibb-1.svg"
                       width={62}
@@ -100,7 +102,7 @@ export default function RelatoriosPresencaCelula() {
                     </label>
                     <div className="mt-3">
                       <input
-                        {...register('startDate', { required: true })}
+                        {...register("startDate", { required: true })}
                         type="datetime-local"
                         name="startDate"
                         id="startDate"
@@ -118,7 +120,7 @@ export default function RelatoriosPresencaCelula() {
                     </label>
                     <div className="mt-3">
                       <input
-                        {...register('endDate', { required: true })}
+                        {...register("endDate", { required: true })}
                         type="datetime-local"
                         name="endDate"
                         id="endDate"
@@ -137,7 +139,7 @@ export default function RelatoriosPresencaCelula() {
                     </label>
                     <div className="mt-3">
                       <select
-                        {...register('superVisionId', { required: true })}
+                        {...register("superVisionId", { required: true })}
                         id="superVisionId"
                         name="superVisionId"
                         className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -146,9 +148,7 @@ export default function RelatoriosPresencaCelula() {
                         {!supervisoes ? (
                           <option value="">Carregando supervisões...</option>
                         ) : (
-                          <option value="">
-                            Selecione
-                          </option>
+                          <option value="">Selecione</option>
                         )}
                         {supervisoes &&
                           supervisoes?.map((supervisao) => (
@@ -206,14 +206,19 @@ export default function RelatoriosPresencaCelula() {
           </Fragment>
         </div>
         {/* Inicio Relatorio */}
-        {RelatorioData && RelatorioData?.supervisionData?.celulas?.map((celula) => (
-          <>
-            <div className='flex flex-col gap-1'>
-              <TabelRelatorio celula={celula} supervisionData={RelatorioData} key={celula.id} />
-            </div>
-          </>
-        ))}
+        {RelatorioData &&
+          RelatorioData?.supervisionData?.celulas?.map((celula) => (
+            <>
+              <div className="flex flex-col gap-1">
+                <TabelRelatorio
+                  celula={celula}
+                  supervisionData={RelatorioData}
+                  key={celula.id}
+                />
+              </div>
+            </>
+          ))}
       </div>
     </Fragment>
-  )
+  );
 }

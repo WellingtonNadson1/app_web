@@ -1,88 +1,102 @@
-'use client'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import dayjs from 'dayjs'
-import React, { useState, Fragment } from 'react'
-import utc from 'dayjs/plugin/utc'
-import timezone from "dayjs/plugin/timezone"
-import ptBr from "dayjs/locale/pt-br"
-import { FormRelatorioSchema, MemberDataDiscipulado, MembersDataDiscipulado } from './schema'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import Image from 'next/image'
-import { useCombinetedStore } from '@/store/DataCombineted'
-import { cn } from '@/lib/utils'
-import Link from 'next/link'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useUserDataStore } from '@/store/UserDataStore'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
+"use client";
+import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import dayjs from "dayjs";
+import React, { useState, Fragment } from "react";
+import utc from "dayjs/plugin/utc";
+import timezone from "dayjs/plugin/timezone";
+import ptBr from "dayjs/locale/pt-br";
+import {
+  FormRelatorioSchema,
+  MemberDataDiscipulado,
+  MembersDataDiscipulado,
+} from "./schema";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
+import Image from "next/image";
+import { useCombinedStore } from "@/store/DataCombineted";
+import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { useUserDataStore } from "@/store/UserDataStore";
+import SpinnerButton from "@/components/spinners/SpinnerButton";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
-dayjs.tz.setDefault('America/Sao_Paulo')
+dayjs.tz.setDefault("America/Sao_Paulo");
 
 export default function DiscipuladosRelatoriosSupervisor() {
-  const { token } = useUserDataStore.getState()
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
-  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
+  const axiosAuth = useAxiosAuthToken(token);
+  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`;
 
-  const [discipuladoForCell, setDiscipuladoForCellForCell] = useState<Record<string, MemberDataDiscipulado[]>>();
-  const [corSupervisao, setCorSupervisao] = useState('');
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [discipuladoForCell, setDiscipuladoForCellForCell] =
+    useState<Record<string, MemberDataDiscipulado[]>>();
+  const [corSupervisao, setCorSupervisao] = useState("");
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
+  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
+  const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
-  const queryClient = useQueryClient()
+  const { supervisoes, cargoLideranca } = useCombinedStore.getState().state;
 
-  const { supervisoes, cargoLideranca } = useCombinetedStore.getState().state
+  const cargoLiderancaFilter = cargoLideranca.filter(
+    (cargo) =>
+      cargo.nome !== "Pastor" &&
+      cargo.nome !== "Líder de Célula" &&
+      cargo.nome !== "Membro" &&
+      cargo.nome !== "Líder Auxiliar",
+  );
 
-  const cargoLiderancaFilter = cargoLideranca.filter(cargo =>
-    cargo.nome !== "Pastor" &&
-    cargo.nome !== "Líder de Célula" &&
-    cargo.nome !== "Membro" &&
-    cargo.nome !== "Líder Auxiliar"
-  )
-
-  const DiscipuladosSupervisor = async (
-    { startDate,
-      endDate,
-      superVisionId,
-      cargoLiderancaId }: {
-        startDate: string,
-        endDate: string,
-        superVisionId: string,
-        cargoLiderancaId: string[]
-      }
-  ): Promise<MembersDataDiscipulado[]> => {
-    setIsLoadingSubmitForm(true)
+  const DiscipuladosSupervisor = async ({
+    startDate,
+    endDate,
+    superVisionId,
+    cargoLiderancaId,
+  }: {
+    startDate: string;
+    endDate: string;
+    superVisionId: string;
+    cargoLiderancaId: string[];
+  }): Promise<MembersDataDiscipulado[]> => {
+    setIsLoadingSubmitForm(true);
 
     const { data } = await axiosAuth.post(URLDiscipuladosSupervisor, {
       startDate,
       endDate,
       superVisionId,
-      cargoLiderancaId
-    })
+      cargoLiderancaId,
+    });
 
-    data && setIsLoadingSubmitForm(false)
-    console.log('data', data)
-    return data as MembersDataDiscipulado[]
-  }
+    data && setIsLoadingSubmitForm(false);
+    console.log("data", data);
+    return data as MembersDataDiscipulado[];
+  };
 
-  const { data: DiscipuladosSupervisorData, mutateAsync: DiscipuladosSupervisoesFn, isPending, isSuccess } = useMutation({
-    mutationKey: ['getDiscipuladosSupervisor'],
+  const {
+    data: DiscipuladosSupervisorData,
+    mutateAsync: DiscipuladosSupervisoesFn,
+    isPending,
+    isSuccess,
+  } = useMutation({
+    mutationKey: ["getDiscipuladosSupervisor"],
     mutationFn: DiscipuladosSupervisor,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["getDiscipuladosSupervisor"] })
-    }
-  })
+      queryClient.invalidateQueries({
+        queryKey: ["getDiscipuladosSupervisor"],
+      });
+    },
+  });
 
   // Função para agrupar os discipulados por célula
-  async function groupDiscipuladoByCell(relatorio: MembersDataDiscipulado): Promise<Record<string, MemberDataDiscipulado[]>> {
+  async function groupDiscipuladoByCell(
+    relatorio: MembersDataDiscipulado,
+  ): Promise<Record<string, MemberDataDiscipulado[]>> {
     const celula: Record<string, MemberDataDiscipulado[]> = {};
 
-    relatorio.membros.forEach(membro => {
+    relatorio.membros.forEach((membro) => {
       const cellName = membro?.first_name;
 
       if (cellName) {
@@ -91,57 +105,64 @@ export default function DiscipuladosRelatoriosSupervisor() {
         }
         celula[cellName].push(membro);
       }
-    })
+    });
     return Promise.resolve(celula);
   }
 
-  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({ startDate, endDate, superVisionId, cargoLiderancaId }) => {
-
-    setIsLoadingSubmitForm(true)
+  const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
+    startDate,
+    endDate,
+    superVisionId,
+    cargoLiderancaId,
+  }) => {
+    setIsLoadingSubmitForm(true);
 
     DiscipuladosSupervisoesFn({
       startDate,
       endDate,
       superVisionId,
-      cargoLiderancaId
-    })
+      cargoLiderancaId,
+    });
 
     if (!isPending && DiscipuladosSupervisorData) {
-      const dataGroupedForCell = await groupDiscipuladoByCell(DiscipuladosSupervisorData[0]);
-      console.log('dataGroupedForCell', dataGroupedForCell)
+      const dataGroupedForCell = await groupDiscipuladoByCell(
+        DiscipuladosSupervisorData[0],
+      );
+      console.log("dataGroupedForCell", dataGroupedForCell);
       setDiscipuladoForCellForCell(dataGroupedForCell);
-      setCorSupervisao(DiscipuladosSupervisorData[0]?.membros[0]?.supervisao_pertence?.nome)
+      setCorSupervisao(
+        DiscipuladosSupervisorData[0]?.membros[0]?.supervisao_pertence?.nome,
+      );
     }
   };
 
-  const newCorSupervisao = CorSupervision(corSupervisao)
-  const Supervisor = ListSupervisores(corSupervisao)
+  const newCorSupervisao = CorSupervision(corSupervisao);
+  const Supervisor = ListSupervisores(corSupervisao);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   if (discipuladoForCell) {
-    const view = Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
-      discipuladoForCell[cellName].map((member) => (
-        console.log('member', member)
-
-      ))
-    ))
-    view
+    const view = Object.keys(discipuladoForCell).map((cellName, cellIndex) =>
+      discipuladoForCell[cellName].map((member) =>
+        console.log("member", member),
+      ),
+    );
+    view;
   }
 
   return (
     <Fragment>
-      <div className='relative z-40 p-2 bg-white rounded-sm'>
+      <div className="relative z-40 p-2 bg-white rounded-sm">
         <div className="px-3 mt-2 mb-3">
           <Fragment>
             <form onSubmit={handleSubmit(handleRelatorio)}>
               <div className="flex flex-col gap-4 p-3">
-                <div className='flex items-center justify-start gap-4'>
-                  <Link href={'/dashboard'}>
+                <div className="flex items-center justify-start gap-4">
+                  <Link href={"/dashboard"}>
                     <Image
                       src="/images/logo-ibb-1.svg"
                       width={62}
@@ -159,7 +180,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                   </div>
                 </div>
 
-                <div className='flex items-center mt-4 gap-x-4'>
+                <div className="flex items-center mt-4 gap-x-4">
                   <div className="p-3">
                     <div className="flex items-center gap-x-5">
                       <div>
@@ -171,7 +192,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('startDate', { required: true })}
+                            {...register("startDate", { required: true })}
                             type="datetime-local"
                             name="startDate"
                             id="startDate"
@@ -189,7 +210,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('endDate', { required: true })}
+                            {...register("endDate", { required: true })}
                             type="datetime-local"
                             name="endDate"
                             id="endDate"
@@ -208,22 +229,25 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register('superVisionId', { required: true })}
+                            {...register("superVisionId", { required: true })}
                             id="superVisionId"
                             name="superVisionId"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             onChange={handleSupervisaoSelecionada}
                           >
                             {!supervisoes ? (
-                              <option value="">Carregando supervisões...</option>
-                            ) : (
                               <option value="">
-                                Selecione
+                                Carregando supervisões...
                               </option>
+                            ) : (
+                              <option value="">Selecione</option>
                             )}
                             {supervisoes &&
                               supervisoes?.map((supervisao) => (
-                                <option key={supervisao.id} value={supervisao.id}>
+                                <option
+                                  key={supervisao.id}
+                                  value={supervisao.id}
+                                >
                                   {supervisao.nome}
                                 </option>
                               ))}
@@ -237,13 +261,12 @@ export default function DiscipuladosRelatoriosSupervisor() {
                     <div className="flex items-center justify-between mt-4 gap-x-6">
                       {supervisoes ? (
                         cargoLiderancaFilter?.map((cargo) => (
-                          <div
-                            key={cargo.id}
-                            className="flex gap-x-3"
-                          >
+                          <div key={cargo.id} className="flex gap-x-3">
                             <div className="flex items-center h-6">
                               <input
-                                {...register('cargoLiderancaId', { required: true })}
+                                {...register("cargoLiderancaId", {
+                                  required: true,
+                                })}
                                 id={cargo.id}
                                 value={cargo.id}
                                 type="checkbox"
@@ -313,217 +336,355 @@ export default function DiscipuladosRelatoriosSupervisor() {
         </div>
 
         {/* TABELA DE REGISTRO DE DISCIPULADOS DA SUPERVISÃO */}
-        {isPending ? <p className='flex items-center justify-center gap-2 text-center'> <SpinnerButton message='' /> Carregando dados...</p>
-          :
-          DiscipuladosSupervisorData ?
-            (
-              <Fragment>
-                {/* Inicio Relatorio */}
-                <div className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400`, newCorSupervisao)}>
-                  <div className='pt-2 pb-0'>
-                    {corSupervisao ? (
-                      <h1 className='py-1 font-bold uppercase'>RELATÓRIO DE DISCIPUALDOS - SUPERVISÃO {corSupervisao}</h1>
-                    ) : (
-                      <h1 className='py-1 font-bold uppercase'>RELATÓRIO - SUPERVISÃO - Sem Dados</h1>
-                    )}
-                  </div>
-                  {
-                    isSuccess ? (
-                      <div className='pb-2 pl-2'>
-                        <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>{Supervisor}</span></p>
-                      </div>
-                    ) : (
-                      <div className='pb-2 pl-2'>
-                        <p className='p-2 text-base font-medium uppercase text-start'>SUPERVISOR(ES): <span className='font-normal '>Sem Dados</span></p>
-                      </div>
-                    )
-                  }
+        {isPending ? (
+          <p className="flex items-center justify-center gap-2 text-center">
+            {" "}
+            <SpinnerButton message="" /> Carregando dados...
+          </p>
+        ) : DiscipuladosSupervisorData ? (
+          <Fragment>
+            {/* Inicio Relatorio */}
+            <div
+              className={cn(
+                `text-center text-white bg-yellow-400 dark:bg-yellow-400`,
+                newCorSupervisao,
+              )}
+            >
+              <div className="pt-2 pb-0">
+                {corSupervisao ? (
+                  <h1 className="py-1 font-bold uppercase">
+                    RELATÓRIO DE DISCIPUALDOS - SUPERVISÃO {corSupervisao}
+                  </h1>
+                ) : (
+                  <h1 className="py-1 font-bold uppercase">
+                    RELATÓRIO - SUPERVISÃO - Sem Dados
+                  </h1>
+                )}
+              </div>
+              {isSuccess ? (
+                <div className="pb-2 pl-2">
+                  <p className="p-2 text-base font-medium uppercase text-start">
+                    SUPERVISOR(ES):{" "}
+                    <span className="font-normal ">{Supervisor}</span>
+                  </p>
                 </div>
-                <table className='text-sm text-left text-gray-500 auto-table dark:text-gray-400'>
-                  {/* Cabeçalho da tabela */}
-                  <thead className={cn(`text-center text-white bg-yellow-400 dark:bg-yellow-400 p-2`, newCorSupervisao)}>
-                    <Fragment>
-                      <tr className={`mx-4 p-2`}>
-                        <th>
-                          <h1 className='p-2 font-bold text-center text-white uppercase'>DISCIPULADOR(A)</h1>
-                        </th>
-                        <th>
-                          <h1 className='p-2 font-bold text-center text-white uppercase'>DISCÍPULO</h1>
-                        </th>
-                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                          <div>
-                            <h1 className='font-bold text-center uppercase'>% DISCIP. TOTAL</h1>
-                          </div>
-                        </th>
-                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                          <div className='text-center'>
-                            <h1 className='font-bold text-center uppercase'>1º</h1>
-                            <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
-                          </div>
-                        </th>
-                        <th className='flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700'>
-                          <div className='text-center'>
-                            <h1 className='font-bold text-center uppercase'>2º</h1>
-                            <h1 className='font-bold text-center uppercase'>DISCIPULADO</h1>
-                          </div>
-                        </th>
-                      </tr>
-                    </Fragment>
-                  </thead>
-                  <tbody>
-                    {DiscipuladosSupervisorData && discipuladoForCell &&
-                      Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
-                        <tr key={cellName + cellIndex}>
-                          {/* Coluna para Discipulador */}
-                          <td className='px-4 border border-b bg-gray-50 border-zinc-300'>
-                            <p className='text-base font-medium text-black'>{cellName}</p>
-                            <p className='text-sm text-slate-600'>
-                              Tipo: <span className='capitalize'>{discipuladoForCell[cellName][0].cargo_de_lideranca.nome}</span>
-                            </p>
-                            <p className='text-sm text-slate-600'>
-                              Qnt Discip.: <span>{discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length}</span>
-                            </p>
-                          </td>
-                          {/* Coluna para Discípulos */}
-                          <td>
+              ) : (
+                <div className="pb-2 pl-2">
+                  <p className="p-2 text-base font-medium uppercase text-start">
+                    SUPERVISOR(ES):{" "}
+                    <span className="font-normal ">Sem Dados</span>
+                  </p>
+                </div>
+              )}
+            </div>
+            <table className="text-sm text-left text-gray-500 auto-table dark:text-gray-400">
+              {/* Cabeçalho da tabela */}
+              <thead
+                className={cn(
+                  `text-center text-white bg-yellow-400 dark:bg-yellow-400 p-2`,
+                  newCorSupervisao,
+                )}
+              >
+                <Fragment>
+                  <tr className={`mx-4 p-2`}>
+                    <th>
+                      <h1 className="p-2 font-bold text-center text-white uppercase">
+                        DISCIPULADOR(A)
+                      </h1>
+                    </th>
+                    <th>
+                      <h1 className="p-2 font-bold text-center text-white uppercase">
+                        DISCÍPULO
+                      </h1>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div>
+                        <h1 className="font-bold text-center uppercase">
+                          % DISCIP. TOTAL
+                        </h1>
+                      </div>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">1º</h1>
+                        <h1 className="font-bold text-center uppercase">
+                          DISCIPULADO
+                        </h1>
+                      </div>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">2º</h1>
+                        <h1 className="font-bold text-center uppercase">
+                          DISCIPULADO
+                        </h1>
+                      </div>
+                    </th>
+                  </tr>
+                </Fragment>
+              </thead>
+              <tbody>
+                {DiscipuladosSupervisorData &&
+                  discipuladoForCell &&
+                  Object.keys(discipuladoForCell).map((cellName, cellIndex) => (
+                    <tr key={cellName + cellIndex}>
+                      {/* Coluna para Discipulador */}
+                      <td className="px-4 border border-b bg-gray-50 border-zinc-300">
+                        <p className="text-base font-medium text-black">
+                          {cellName}
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          Tipo:{" "}
+                          <span className="capitalize">
                             {
-                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ?
-                                (discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulo) => (
-
-                                  <tr className='w-20 h-20 py-4 border border-zinc-200' key={cellName}>
-                                    <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize'>
-                                      {discipulo.user_discipulador_usuario_usuario_idTouser.first_name}
-                                    </div>
-                                  </tr>
-
-                                )))
-                                : (
-                                  <tr className='w-20 h-20 py-4 border border-zinc-200' key={cellName}>
-                                    <div className='flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-red-500 capitalize'>
-                                      Sem discípulo
-                                    </div>
-                                  </tr>
-                                )
+                              discipuladoForCell[cellName][0].cargo_de_lideranca
+                                .nome
                             }
-                          </td>
-
-                          {/* Colunas dinâmicas para porcentagem */}
-                          <td className='mx-4 text-center' key={cellName + cellIndex}>
+                          </span>
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          Qnt Discip.:{" "}
+                          <span>
                             {
-                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
-                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexMember) => {
-                                  const totalDiscipulado = discipulado?.discipulado.length;
-                                  return (
-                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexMember}>
-                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexMember}>
-                                        {totalDiscipulado ? (
-                                          <Fragment>
-                                            {totalDiscipulado === 1 ?
-                                              <p className='text-sky-600'>{'50%'}</p>
-                                              :
-                                              <p className='text-green-600'>{'100%'}</p>
-                                            }
-                                          </Fragment>
+                              discipuladoForCell[cellName][0]
+                                .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                                .length
+                            }
+                          </span>
+                        </p>
+                      </td>
+                      {/* Coluna para Discípulos */}
+                      <td>
+                        {discipuladoForCell[cellName][0]
+                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .length !== 0 ? (
+                          discipuladoForCell[
+                            cellName
+                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                            (discipulo) => (
+                              <tr
+                                className="w-20 h-20 py-4 border border-zinc-200"
+                                key={cellName}
+                              >
+                                <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
+                                  {
+                                    discipulo
+                                      .user_discipulador_usuario_usuario_idTouser
+                                      .first_name
+                                  }
+                                </div>
+                              </tr>
+                            ),
+                          )
+                        ) : (
+                          <tr
+                            className="w-20 h-20 py-4 border border-zinc-200"
+                            key={cellName}
+                          >
+                            <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-red-500 capitalize">
+                              Sem discípulo
+                            </div>
+                          </tr>
+                        )}
+                      </td>
+
+                      {/* Colunas dinâmicas para porcentagem */}
+                      <td
+                        className="mx-4 text-center"
+                        key={cellName + cellIndex}
+                      >
+                        {discipuladoForCell[cellName][0]
+                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .length !== 0 ? (
+                          discipuladoForCell[
+                            cellName
+                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                            (discipulado, indexMember) => {
+                              const totalDiscipulado =
+                                discipulado?.discipulado.length;
+                              return (
+                                <tr
+                                  className="border border-zinc-200"
+                                  key={
+                                    discipulado
+                                      .user_discipulador_usuario_usuario_idTouser
+                                      .first_name + indexMember
+                                  }
+                                >
+                                  <div
+                                    className="flex flex-col justify-center h-24 font-bold w-36"
+                                    key={indexMember}
+                                  >
+                                    {totalDiscipulado ? (
+                                      <Fragment>
+                                        {totalDiscipulado === 1 ? (
+                                          <p className="text-sky-600">
+                                            {"50%"}
+                                          </p>
                                         ) : (
-                                          <p className='text-red-600' key={indexMember}>
-                                            {'00%'}
+                                          <p className="text-green-600">
+                                            {"100%"}
                                           </p>
                                         )}
-                                      </div>
-                                    </tr>
-                                  );
-                                })
-                              ) : (
-                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
-                                  <p className='flex flex-col justify-center h-24 font-bold text-red-600 w-36' key={cellName + cellIndex}>
-                                    {'00%'}
+                                      </Fragment>
+                                    ) : (
+                                      <p
+                                        className="text-red-600"
+                                        key={indexMember}
+                                      >
+                                        {"00%"}
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
+                              );
+                            },
+                          )
+                        ) : (
+                          <tr
+                            className="border border-zinc-200"
+                            key={cellName + cellIndex}
+                          >
+                            <p
+                              className="flex flex-col justify-center h-24 font-bold text-red-600 w-36"
+                              key={cellName + cellIndex}
+                            >
+                              {"00%"}
+                            </p>
+                          </tr>
+                        )}
+                      </td>
+                      {/* // 1º Discipulado */}
+                      <td className="mx-4 text-center" key={cellName}>
+                        {discipuladoForCell[cellName][0]
+                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .length !== 0 ? (
+                          discipuladoForCell[
+                            cellName
+                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                            (discipulado, indexDiscipulado) => {
+                              const discipulado1 =
+                                discipulado?.discipulado[0]?.data_ocorreu;
+                              return (
+                                <tr
+                                  className="border border-zinc-200"
+                                  key={
+                                    discipulado
+                                      .user_discipulador_usuario_usuario_idTouser
+                                      .first_name + indexDiscipulado
+                                  }
+                                >
+                                  <div
+                                    className="flex flex-col justify-center h-24 font-bold w-36"
+                                    key={indexDiscipulado}
+                                  >
+                                    {discipulado1 ? (
+                                      <Fragment>
+                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                      </Fragment>
+                                    ) : (
+                                      <p key={indexDiscipulado}>
+                                        <p className="font-normal text-slate-600">
+                                          -
+                                        </p>
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
+                              );
+                            },
+                          )
+                        ) : (
+                          <tr
+                            className="border border-zinc-200"
+                            key={cellName + cellIndex}
+                          >
+                            <div
+                              className="flex flex-col justify-center h-24 font-bold w-36"
+                              key={cellName + cellIndex}
+                            >
+                              {
+                                <p key={cellName + cellIndex}>
+                                  <p className="font-normal text-slate-600">
+                                    -
                                   </p>
-                                </tr>
-                              )
-                            }
-                          </td>
-                          {/* // 1º Discipulado */}
-                          <td className='mx-4 text-center' key={cellName}>
-                            {
-                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
-                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexDiscipulado) => {
-                                  const discipulado1 = discipulado?.discipulado[0]?.data_ocorreu;
-                                  return (
-                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexDiscipulado}>
-                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexDiscipulado}>
-                                        {discipulado1 ? (
-                                          <Fragment>
-                                            {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                            <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
-                                          </Fragment>
-                                        ) : (
-                                          <p key={indexDiscipulado}>
-                                            <p className='font-normal text-slate-600'>-</p>
-                                          </p>
-                                        )}
-                                      </div>
-                                    </tr>
-                                  );
-                                })
-                              ) : (
-                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
-                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={cellName + cellIndex}>
-                                    {(
-                                      <p key={cellName + cellIndex}>
-                                        <p className='font-normal text-slate-600'>-</p>
+                                </p>
+                              }
+                            </div>
+                          </tr>
+                        )}
+                      </td>
+                      {/* // 2º Discipulado */}
+                      <td className="mx-4 text-center " key={cellIndex}>
+                        {discipuladoForCell[cellName][0]
+                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .length !== 0 ? (
+                          discipuladoForCell[
+                            cellName
+                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                            (discipulado, indexDiscipulado) => {
+                              const discipulado1 =
+                                discipulado?.discipulado[1]?.data_ocorreu;
+                              return (
+                                <tr
+                                  className="border border-zinc-200"
+                                  key={
+                                    discipulado
+                                      .user_discipulador_usuario_usuario_idTouser
+                                      .first_name + indexDiscipulado
+                                  }
+                                >
+                                  <div
+                                    className="flex flex-col justify-center h-24 font-bold w-36"
+                                    key={indexDiscipulado}
+                                  >
+                                    {discipulado1 ? (
+                                      <Fragment>
+                                        {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
+                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                      </Fragment>
+                                    ) : (
+                                      <p key={indexDiscipulado}>
+                                        <p className="font-normal text-slate-600">
+                                          -
+                                        </p>
                                       </p>
                                     )}
                                   </div>
                                 </tr>
-                              )
-                            }
-                          </td>
-                          {/* // 2º Discipulado */}
-                          <td className='mx-4 text-center ' key={cellIndex}>
-                            {
-                              discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.length !== 0 ? (
-                                discipuladoForCell[cellName][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map((discipulado, indexDiscipulado) => {
-                                  const discipulado1 = discipulado?.discipulado[1]?.data_ocorreu;
-                                  return (
-                                    <tr className='border border-zinc-200' key={discipulado.user_discipulador_usuario_usuario_idTouser.first_name + indexDiscipulado}>
-                                      <div className='flex flex-col justify-center h-24 font-bold w-36' key={indexDiscipulado}>
-                                        {discipulado1 ? (
-                                          <Fragment>
-                                            {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                            <p className='text-green-600'>{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
-                                          </Fragment>
-                                        ) : (
-                                          <p key={indexDiscipulado}>
-                                            <p className='font-normal text-slate-600'>-</p>
-                                          </p>
-                                        )}
-                                      </div>
-                                    </tr>
-                                  );
-                                })
-                              ) : (
-                                <tr className='border border-zinc-200' key={cellName + cellIndex}>
-                                  <div className='flex flex-col justify-center h-24 font-bold w-36' key={cellName + cellIndex}>
-                                    {(
-                                      <p key={cellName + cellIndex}>
-                                        <p className='font-normal text-slate-600'>-</p>
-                                      </p>
-                                    )}
-                                  </div>
-                                </tr>
-                              )
-                            }
-                          </td>
-                        </tr>
-                      ))}
-                  </tbody>
-                </table>
-              </Fragment>
-            )
-            :
-            (<span></span>)
-        }
+                              );
+                            },
+                          )
+                        ) : (
+                          <tr
+                            className="border border-zinc-200"
+                            key={cellName + cellIndex}
+                          >
+                            <div
+                              className="flex flex-col justify-center h-24 font-bold w-36"
+                              key={cellName + cellIndex}
+                            >
+                              {
+                                <p key={cellName + cellIndex}>
+                                  <p className="font-normal text-slate-600">
+                                    -
+                                  </p>
+                                </p>
+                              }
+                            </div>
+                          </tr>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </table>
+          </Fragment>
+        ) : (
+          <span></span>
+        )}
       </div>
     </Fragment>
-  )
+  );
 }

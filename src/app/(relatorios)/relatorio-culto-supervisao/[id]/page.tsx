@@ -20,7 +20,7 @@ import { useQuery } from "@tanstack/react-query";
 import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useCombinetedStore } from "@/store/DataCombineted";
+import { useCombinedStore } from "@/store/DataCombineted";
 import Link from "next/link";
 import { Label } from "@/components/ui/label";
 import { Input } from "@/components/ui/input";
@@ -95,7 +95,7 @@ export default function StatsCardRelatorios() {
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
     useState<number>(0);
 
-  const { supervisoes } = useCombinetedStore.getState().state;
+  const { supervisoes } = useCombinedStore.getState().state;
 
   const handleRelatorio = async ({
     startDate,
