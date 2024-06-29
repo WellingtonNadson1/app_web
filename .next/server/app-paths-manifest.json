@@ -1,6 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
   "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": "app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js",
-  "/(login)/login/page": "app/(login)/login/page.js"
+  "/(central)/cultos/page": "app/(central)/cultos/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }

@@ -1,9 +1,9 @@
 {
   "pages": {
-    "/(central)/page": [
+    "/(central)/dashboard/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/chunks/app/(central)/page.js"
+      "static/chunks/app/(central)/dashboard/page.js"
     ],
     "/(central)/layout": [
       "static/chunks/webpack.js",
@@ -17,45 +17,11 @@
       "static/css/app/(central)/loading.css",
       "static/chunks/app/(central)/loading.js"
     ],
-    "/(login)/login/page": [
+    "/(central)/cultos/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/page.css",
-      "static/chunks/app/(login)/login/page.js"
-    ],
-    "/(login)/login/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
-    ],
-    "/(login)/login/loading": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(login)/login/loading.css",
-      "static/chunks/app/(login)/login/loading.js"
-    ],
-    "/(central)/dashboard/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(central)/dashboard/page.js"
-    ],
-    "/(central)/relatorios/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/(central)/relatorios/page.js"
-    ],
-    "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.css",
-      "static/chunks/app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js"
-    ],
-    "/(relatorios)/relatorio-presenca-celula-supervisao/layout": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/css/app/(relatorios)/relatorio-presenca-celula-supervisao/layout.css",
-      "static/chunks/app/(relatorios)/relatorio-presenca-celula-supervisao/layout.js"
+      "static/css/app/(central)/cultos/page.css",
+      "static/chunks/app/(central)/cultos/page.js"
     ],
     "/_not-found/page": [
       "static/chunks/webpack.js",
