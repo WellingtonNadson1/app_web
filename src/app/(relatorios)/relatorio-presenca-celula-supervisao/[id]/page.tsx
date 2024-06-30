@@ -31,7 +31,7 @@ export default function RelatoriosPresencaCelula() {
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
   // @ts-ignore
-  const { data: cargoCtxSup, error, isLoading } = useData();
+  const { data: cargoCtxSup } = useData();
   const supervisoes = cargoCtxSup?.combinedData[0];
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({

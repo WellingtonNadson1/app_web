@@ -90,7 +90,7 @@ export default function StatsCardRelatorios() {
     useState<number>(0);
 
   // @ts-ignore
-  const { data: cargoCtxSup, error, isLoading } = useData();
+  const { data: cargoCtxSup } = useData();
   const supervisoes = cargoCtxSup?.combinedData[0];
 
   const handleRelatorio = async ({
