@@ -17,15 +17,23 @@ import { handleCPFNumber, handlePhoneNumber } from "./utils";
 import { handleZipCode } from "@/functions/zipCodeUtils";
 import { BASE_URL, errorCadastro, success } from "@/functions/functions";
 import { useUserDataStore } from "@/store/UserDataStore";
+import { useData } from "@/providers/providers";
+import { useSession } from "next-auth/react";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 
 function AddNewMember() {
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user.token as string);
+  const token = session?.user.token;
   const URLUsers = `${BASE_URL}/users`;
   // Zustand Store
-  const { token } = useUserDataStore.getState();
-  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } =
-    useCombinedStore.getState().state;
-
-  const axiosAuth = useAxiosAuthToken(token);
+  // @ts-ignore
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const escolas = dataAllCtx?.combinedData[1];
+  const encontros = dataAllCtx?.combinedData[2];
+  const situacoesNoReino = dataAllCtx?.combinedData[3];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
 
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
@@ -151,6 +159,7 @@ function AddNewMember() {
   };
 
   const celulasFiltradas = (supervisoes ?? []).find(
+    // @ts-ignore
     (supervisao) => supervisao.id === supervisaoSelecionada,
   )?.celulas;
   return (
@@ -553,6 +562,7 @@ function AddNewMember() {
                           >
                             <option value={""}>Selecione</option>
                             {supervisoes ? (
+                              // @ts-ignore
                               supervisoes?.map((supervisao) => (
                                 <option
                                   key={supervisao.id}
@@ -583,6 +593,7 @@ function AddNewMember() {
                           >
                             <option value={""}>Selecione</option>
                             {supervisoes ? (
+                              // @ts-ignore
                               celulasFiltradas?.map((celula) => (
                                 <option key={celula.id} value={celula.id}>
                                   {celula.nome}
@@ -605,6 +616,7 @@ function AddNewMember() {
                           </legend>
                           <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                             {supervisoes ? (
+                              // @ts-ignore
                               escolas?.map((escola) => (
                                 <div
                                   key={escola.id}
@@ -646,6 +658,7 @@ function AddNewMember() {
                           </legend>
                           <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                             {supervisoes ? (
+                              // @ts-ignore
                               encontros?.map((encontro) => (
                                 <div
                                   key={encontro.id}
@@ -692,6 +705,7 @@ function AddNewMember() {
                           >
                             <option value={""}>Selecione</option>
                             {supervisoes ? (
+                              // @ts-ignore
                               situacoesNoReino?.map((situacao) => (
                                 <option key={situacao.id} value={situacao.id}>
                                   {situacao.nome}
@@ -720,6 +734,7 @@ function AddNewMember() {
                           >
                             <option value={""}>Selecione</option>
                             {supervisoes ? (
+                              // @ts-ignore
                               cargoLideranca?.map((cargo) => (
                                 <option key={cargo.id} value={cargo.id}>
                                   {cargo.nome}

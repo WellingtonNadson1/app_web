@@ -2,6 +2,7 @@
 import { ICelula } from "@/components/ListCelulas";
 import ListCelulasSupervision from "@/components/ListCelulasSupervision";
 import StatsCardSupervision from "@/components/StatsCardSupervision";
+import { useData } from "@/providers/providers";
 import { useCombinedStore } from "@/store/DataCombineted";
 
 interface IUser {
@@ -29,8 +30,11 @@ export default function Supervisao({
 }: {
   params: { supervisaoId: string };
 }) {
-  const { supervisoes } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
   const supervisao = supervisoes?.filter(
+    // @ts-ignore
     (supervisao) => supervisao.id === supervisaoId,
   );
 

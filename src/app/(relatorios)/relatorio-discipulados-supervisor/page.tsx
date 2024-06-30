@@ -40,14 +40,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
   const queryClient = useQueryClient();
 
   // @ts-ignore
-  const { data: cargoCtxCargo } = useData();
-  const cargoLideranca = cargoCtxCargo?.combinedData[4];
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
 
-  // @ts-ignore
-  const { data: cargoCtxSup } = useData();
-  const supervisoes = cargoCtxSup?.combinedData[0];
-
-  const cargoLiderancaFilter = cargoLideranca.filter(
+  const cargoLiderancaFilter = cargoLideranca?.filter(
     // @ts-ignore
     (cargo) =>
       cargo.nome !== "Pastor" &&

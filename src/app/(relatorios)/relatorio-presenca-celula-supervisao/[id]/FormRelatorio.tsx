@@ -50,7 +50,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
           </div>
         )}
       </div>
-      <table className="text-sm text-left text-gray-500 auto-table dark:text-gray-400">
+      <table className="border-b border-slate-600 text-sm text-left text-gray-500 auto-table dark:text-gray-400">
         {/* Cabeçalho da tabela */}
         <thead
           className={cn(`bg-yellow-400 p-2 text-center`, `${newCorSupervisao}`)}
@@ -91,7 +91,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
           </Fragment>
         </thead>
         <tbody>
-          <tr className={`border-b border-slate-600`}>
+          <tr>
             {/* Coluna fixa */}
             <td className="px-4 bg-gray-50">
               <p className="text-base font-medium text-black">{celula?.nome}</p>
@@ -104,10 +104,13 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
               </p>
             </td>
             {/* Coluna para membros */}
-            <td className="px-4">
+            <td className="">
+              <tr className=" w-20 h-20">
+                <div className="flex flex-col justify-center h-20"></div>
+              </tr>
               {celula?.membros?.map((member) => (
                 <tr className="w-20 h-20 py-4" key={member?.id}>
-                  <div className="flex flex-col justify-center h-20">
+                  <div className="px-4 flex flex-col justify-center h-20">
                     {member?.first_name}
                   </div>
                 </tr>

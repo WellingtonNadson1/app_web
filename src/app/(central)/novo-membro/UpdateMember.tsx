@@ -16,6 +16,9 @@ import { handleZipCode } from "@/functions/zipCodeUtils";
 import axios from "axios";
 import { useCombinedStore } from "@/store/DataCombineted";
 import { useUserDataStore } from "@/store/UserDataStore";
+import { useSession } from "next-auth/react";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
+import { useData } from "@/providers/providers";
 
 function UpdateMember({
   memberId,
@@ -27,12 +30,17 @@ function UpdateMember({
   const URLUsersId = `${BASE_URL}/users/${memberId}`;
   const URLUsers = `${BASE_URL}/users`;
 
-  const { token } = useUserDataStore.getState();
-
-  const axiosAuth = useAxiosAuthToken(token);
-
-  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } =
-    useCombinedStore.getState().state;
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user.token as string);
+  const token = session?.user.token;
+  // Zustand Store
+  // @ts-ignore
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const escolas = dataAllCtx?.combinedData[1];
+  const encontros = dataAllCtx?.combinedData[2];
+  const situacoesNoReino = dataAllCtx?.combinedData[3];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
 
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
     useState<string>();
@@ -582,6 +590,7 @@ function UpdateMember({
                           onChange={handleSupervisaoSelecionada}
                         >
                           {supervisoes ? (
+                            // @ts-ignore
                             (supervisoes ?? []).map((supervisao) => (
                               <option key={supervisao.id} value={supervisao.id}>
                                 {supervisao.nome}
@@ -608,6 +617,7 @@ function UpdateMember({
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           {supervisoes ? (
+                            // @ts-ignore
                             (celulasFiltradas ?? []).map((celula) => (
                               <option key={celula.id} value={celula.id}>
                                 {celula.nome}
@@ -630,6 +640,7 @@ function UpdateMember({
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {supervisoes ? (
+                            // @ts-ignore
                             escolas?.map((escola) => (
                               <div
                                 key={escola.id}
@@ -671,6 +682,7 @@ function UpdateMember({
                         </legend>
                         <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
                           {{ supervisoes } ? (
+                            // @ts-ignore
                             encontros?.map((encontro) => (
                               <div
                                 key={encontro.id}
@@ -716,6 +728,7 @@ function UpdateMember({
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           {supervisoes ? (
+                            // @ts-ignore
                             situacoesNoReino?.map((situacao) => (
                               <option key={situacao.id} value={situacao.id}>
                                 {situacao.nome}
@@ -743,6 +756,7 @@ function UpdateMember({
                           className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                         >
                           {supervisoes ? (
+                            // @ts-ignore
                             cargoLideranca?.map((cargo) => (
                               <option key={cargo.id} value={cargo.id}>
                                 {cargo.nome}

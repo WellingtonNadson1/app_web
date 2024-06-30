@@ -90,8 +90,8 @@ export default function StatsCardRelatorios() {
     useState<number>(0);
 
   // @ts-ignore
-  const { data: cargoCtxSup } = useData();
-  const supervisoes = cargoCtxSup?.combinedData[0];
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
 
   const handleRelatorio = async ({
     startDate,

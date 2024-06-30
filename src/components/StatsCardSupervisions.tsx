@@ -3,10 +3,12 @@ import React from "react";
 import { UsersFour } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
 import { twMerge } from "tailwind-merge";
-import { useCombinedStore } from "@/store/DataCombineted";
+import { useData } from "@/providers/providers";
 
 export default function StatsCardSupervisions() {
-  const { supervisoes } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
   const router = useRouter();
 
   const handleSupervisaoSelecionada = (
@@ -21,6 +23,7 @@ export default function StatsCardSupervisions() {
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {supervisoes &&
+            // @ts-ignore
             supervisoes?.map((supervisao) => (
               <div
                 onClick={handleSupervisaoSelecionada}

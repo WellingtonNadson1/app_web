@@ -26,7 +26,6 @@ const DataProvider = ({ children }: IProps) => {
 
   const fetchDataFunction = async () => {
     const response = await axiosAuth.get("/users/all");
-    console.log(response.data);
     return response.data;
   };
 
@@ -35,6 +34,8 @@ const DataProvider = ({ children }: IProps) => {
     queryFn: fetchDataFunction,
     enabled: !!session, // Só executa a query se a sessão existir
   });
+
+  data && console.log(data);
 
   return (
     <DataContext.Provider value={{ data, error, isLoading }}>

@@ -28,8 +28,6 @@ dayjs.tz.setDefault("America/Sao_Paulo");
 export default function StatsCardRelatoriosSupervisores() {
   const { data: session } = useSession();
   const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-
-  const URLSupervisoes = `${BASE_URL}/supervisoes`;
   const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`;
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
 
@@ -59,14 +57,11 @@ export default function StatsCardRelatoriosSupervisores() {
     useState<number>(0);
 
   // @ts-ignore
-  const { data: cargoCtxSup } = useData();
-  const supervisoes = cargoCtxSup?.combinedData[0];
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
 
-  // @ts-ignore
-  const { data: cargoCtxCargo } = useData();
-  const cargoLideranca = cargoCtxCargo?.combinedData[4];
-
-  const cargoLiderancaFilter = cargoLideranca.filter(
+  const cargoLiderancaFilter = cargoLideranca?.filter(
     // @ts-ignore
     (cargo) =>
       cargo.nome !== "Pastor" &&
@@ -118,11 +113,8 @@ export default function StatsCardRelatoriosSupervisores() {
         const datasArray: string[] = Array.from(datasUnicas).sort();
         setDatasUnic(datasArray);
         // Fim do get for datas unicas para o THeader
-        console.log("presencaGeralCultos", presencaGeralCultos);
 
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
-
-        console.log("dataGroupedForCell", dataGroupedForCell);
         setGroupedForCell(dataGroupedForCell);
       }
 
