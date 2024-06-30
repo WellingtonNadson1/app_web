@@ -14,11 +14,9 @@ import {
 import { SubmitHandler, useForm } from "react-hook-form";
 import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import Image from "next/image";
-import { useCombinedStore } from "@/store/DataCombineted";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserDataStore } from "@/store/UserDataStore";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
 import { useSession } from "next-auth/react";
 import { useData } from "@/providers/providers";

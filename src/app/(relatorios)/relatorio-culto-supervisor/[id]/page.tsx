@@ -18,6 +18,7 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useData } from "@/providers/providers";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
