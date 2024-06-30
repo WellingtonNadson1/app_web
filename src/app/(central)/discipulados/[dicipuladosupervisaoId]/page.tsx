@@ -1,9 +1,9 @@
 "use client";
 import { ICelula } from "@/components/ListCelulas";
-import { useCombinedStore } from "@/store/DataCombineted";
 import { useParams } from "next/navigation";
 import StatsCardSupervisionDiscipulado from "@/app/(central)/discipulados/Components/StatsCardSupervisionDiscipulado";
 import ListDisicipuladoCelulasSupervision from "@/app/(central)/discipulados/Components/ListDisicipuladoCelulasSupervision";
+import { useData } from "@/providers/providers";
 
 interface IUser {
   id: string;
@@ -31,9 +31,13 @@ export default function Supervisao({
   params: { supervisaoId: string };
 }) {
   const id = useParams();
-  const { supervisoes } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+
+  const supervisoes = data?.combinedData[0];
   console.log("supervisoes", supervisoes);
   const supervisao = supervisoes?.filter(
+    // @ts-ignore
     (supervisao) => supervisao.id === id.dicipuladosupervisaoId,
   );
 

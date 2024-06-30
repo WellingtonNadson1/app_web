@@ -47,6 +47,7 @@ async function fetchServerData() {
 
 export default async function DashboardPage() {
   const { session, result, error } = await fetchServerData();
+  console.log({ result });
 
   if (error) {
     return <div>Error fetching data: {error}</div>;

@@ -17,23 +17,38 @@
       "static/css/app/(central)/loading.css",
       "static/chunks/app/(central)/loading.js"
     ],
-    "/(login)/login/page": [
+    "/(central)/discipulados/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/page.css",
-      "static/chunks/app/(login)/login/page.js"
+      "static/chunks/app/(central)/discipulados/page.js"
     ],
-    "/(login)/login/layout": [
+    "/(central)/discipulados/[dicipuladosupervisaoId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/layout.css",
-      "static/chunks/app/(login)/login/layout.js"
+      "static/chunks/app/(central)/discipulados/[dicipuladosupervisaoId]/page.js"
     ],
-    "/(login)/login/loading": [
+    "/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(login)/login/loading.css",
-      "static/chunks/app/(login)/login/loading.js"
+      "static/css/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.css",
+      "static/chunks/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js"
+    ],
+    "/(central)/celulas/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(central)/celulas/page.css",
+      "static/chunks/app/(central)/celulas/page.js"
+    ],
+    "/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/css/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/page.css",
+      "static/chunks/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/page.js"
+    ],
+    "/_not-found/page": [
+      "static/chunks/webpack.js",
+      "static/chunks/main-app.js",
+      "static/chunks/app/_not-found/page.js"
     ]
   }
 }

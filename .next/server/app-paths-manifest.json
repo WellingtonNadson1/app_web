@@ -1,4 +1,8 @@
 {
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(central)/dashboard/page": "app/(central)/dashboard/page.js"
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(central)/discipulados/page": "app/(central)/discipulados/page.js",
+  "/(central)/discipulados/[dicipuladosupervisaoId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/page.js",
+  "/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js",
+  "/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/page.js",
+  "/(central)/celulas/page": "app/(central)/celulas/page.js"
 }
