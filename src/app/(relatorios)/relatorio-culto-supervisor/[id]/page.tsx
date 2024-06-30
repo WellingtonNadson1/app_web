@@ -58,12 +58,12 @@ export default function StatsCardRelatoriosSupervisores() {
     useState<number>(0);
 
   // @ts-ignore
-  const { data: cargoCtx } = useData();
-  const cargoLideranca = cargoCtx?.combinedData[4];
+  const { data: cargoCtxSup } = useData();
+  const supervisoes = cargoCtxSup?.combinedData[0];
 
   // @ts-ignore
-  const { data, error, isLoading } = useData();
-  const supervisoes = data?.combinedData[0];
+  const { data: cargoCtxCargo } = useData();
+  const cargoLideranca = cargoCtxCargo?.combinedData[4];
 
   const cargoLiderancaFilter = cargoLideranca.filter(
     // @ts-ignore
@@ -72,12 +72,7 @@ export default function StatsCardRelatoriosSupervisores() {
       cargo.nome !== "Líder de Célula" &&
       cargo.nome !== "Membro" &&
       cargo.nome !== "Líder Auxiliar",
-    // cargo.nome !== "Líder de Célula Supervisor"
   );
-  // const { data: supervisoes, isLoading } = useQuery<ISupervisoes[]>({
-  //   queryKey: ["supervisoes"],
-  //   queryFn: DataSupervisoes,
-  // })
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
     startDate,
