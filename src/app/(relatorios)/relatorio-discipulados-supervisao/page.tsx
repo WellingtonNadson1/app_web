@@ -40,8 +40,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
   const queryClient = useQueryClient();
 
   // @ts-ignore
-  const { data, error, isLoading } = useData();
-  const supervisoes = data?.combinedData[0];
+  const { data: cargoCtxSup, error, isLoading } = useData();
+  const supervisoes = cargoCtxSup?.combinedData[0];
 
   const DiscipuladosSupervisoes = async ({
     startDate,

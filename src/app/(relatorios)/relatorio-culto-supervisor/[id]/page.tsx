@@ -58,8 +58,8 @@ export default function StatsCardRelatoriosSupervisores() {
     useState<number>(0);
 
   // @ts-ignore
-  const { data, error, isLoading } = useData();
-  const cargoLideranca = data?.combinedData[4];
+  const { data: cargoCtx, error, isLoading } = useData();
+  const cargoLideranca = cargoCtx?.combinedData[4];
 
   // @ts-ignore
   const { data, error, isLoading } = useData();
