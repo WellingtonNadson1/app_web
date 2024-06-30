@@ -11,15 +11,12 @@ import localizedFormat from "dayjs/plugin/localizedFormat";
 import {
   FormRelatorioSchema,
   GroupedForCulto,
-  ISupervisoes,
   Pessoa,
   PresencaForDate,
 } from "./schema";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
 import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import Image from "next/image";
-import { useCombinedStore } from "@/store/DataCombineted";
 import { cn } from "@/lib/utils";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -30,10 +27,6 @@ dayjs.tz.setDefault("America/Sao_Paulo");
 export default function StatsCardRelatoriosSupervisores() {
   const { data: session } = useSession();
   const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-
-  // const URLPresencaGeralCultos = `http://localhost:3333/presencacultos/relatorios/supervisores`
-  // const URLRelatorioPresenceCulto = `http://localhost:3333/cultosindividuais/fordate`
-  // const URLSupervisoes = `http://localhost:3333/supervisoes`
 
   const URLSupervisoes = `${BASE_URL}/supervisoes`;
   const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`;
@@ -64,15 +57,16 @@ export default function StatsCardRelatoriosSupervisores() {
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
     useState<number>(0);
 
-  // const DataSupervisoes = async () => {
-  //   const { data } = await axiosAuth.get(URLSupervisoes)
-  //   return data
-  // }
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const cargoLideranca = data?.combinedData[4];
 
-  const { supervisoes, situacoesNoReino, cargoLideranca, encontros, escolas } =
-    useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const supervisoes = data?.combinedData[0];
 
   const cargoLiderancaFilter = cargoLideranca.filter(
+    // @ts-ignore
     (cargo) =>
       cargo.nome !== "Pastor" &&
       cargo.nome !== "Líder de Célula" &&
@@ -379,6 +373,7 @@ export default function StatsCardRelatoriosSupervisores() {
                               <option value="">Selecione</option>
                             )}
                             {supervisoes &&
+                              // @ts-ignore
                               supervisoes?.map((supervisao) => (
                                 <option
                                   key={supervisao.id}
@@ -395,6 +390,7 @@ export default function StatsCardRelatoriosSupervisores() {
 
                     <div className="flex items-center justify-between mt-4 gap-x-6">
                       {supervisoes ? (
+                        // @ts-ignore
                         cargoLiderancaFilter?.map((cargo) => (
                           <div key={cargo.id} className="flex gap-x-3">
                             <div className="flex items-center h-6">

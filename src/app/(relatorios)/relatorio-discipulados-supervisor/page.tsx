@@ -18,17 +18,17 @@ import { useCombinedStore } from "@/store/DataCombineted";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useUserDataStore } from "@/store/UserDataStore";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
+import { useSession } from "next-auth/react";
+import { useData } from "@/providers/providers";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
 dayjs.tz.setDefault("America/Sao_Paulo");
 
 export default function DiscipuladosRelatoriosSupervisor() {
-  const { token } = useUserDataStore.getState();
-
-  const axiosAuth = useAxiosAuthToken(token);
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
   const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`;
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
@@ -40,9 +40,16 @@ export default function DiscipuladosRelatoriosSupervisor() {
   const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
   const queryClient = useQueryClient();
 
-  const { supervisoes, cargoLideranca } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const cargoLideranca = data?.combinedData[4];
+
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const supervisoes = data?.combinedData[0];
 
   const cargoLiderancaFilter = cargoLideranca.filter(
+    // @ts-ignore
     (cargo) =>
       cargo.nome !== "Pastor" &&
       cargo.nome !== "Líder de Célula" &&
@@ -243,6 +250,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                               <option value="">Selecione</option>
                             )}
                             {supervisoes &&
+                              // @ts-ignore
                               supervisoes?.map((supervisao) => (
                                 <option
                                   key={supervisao.id}
@@ -260,6 +268,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                     {/* Lista de Cargos */}
                     <div className="flex items-center justify-between mt-4 gap-x-6">
                       {supervisoes ? (
+                        // @ts-ignore
                         cargoLiderancaFilter?.map((cargo) => (
                           <div key={cargo.id} className="flex gap-x-3">
                             <div className="flex items-center h-6">

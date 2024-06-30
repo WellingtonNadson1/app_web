@@ -14,6 +14,7 @@ import Image from "next/image";
 import { useCombinedStore } from "@/store/DataCombineted";
 import Link from "next/link";
 import TabelRelatorio from "./FormRelatorio";
+import { useData } from "@/providers/providers";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -29,7 +30,9 @@ export default function RelatoriosPresencaCelula() {
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
-  const { supervisoes } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const supervisoes = data?.combinedData[0];
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
     startDate,
@@ -151,6 +154,7 @@ export default function RelatoriosPresencaCelula() {
                           <option value="">Selecione</option>
                         )}
                         {supervisoes &&
+                          // @ts-ignore
                           supervisoes?.map((supervisao) => (
                             <option key={supervisao.id} value={supervisao.id}>
                               {supervisao.nome}

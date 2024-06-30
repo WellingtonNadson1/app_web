@@ -20,16 +20,16 @@ import Link from "next/link";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useUserDataStore } from "@/store/UserDataStore";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
+import { useSession } from "next-auth/react";
+import { useData } from "@/providers/providers";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
 dayjs.tz.setDefault("America/Sao_Paulo");
 
 export default function DiscipuladosRelatoriosSupervisoes() {
-  const { token } = useUserDataStore.getState();
-
-  const axiosAuth = useAxiosAuthToken(token);
-  const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`;
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
   const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`;
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
@@ -39,7 +39,9 @@ export default function DiscipuladosRelatoriosSupervisoes() {
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const queryClient = useQueryClient();
 
-  const { supervisoes, cargoLideranca } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const supervisoes = data?.combinedData[0];
 
   const DiscipuladosSupervisoes = async ({
     startDate,
@@ -212,6 +214,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                               <option value="">Selecione</option>
                             )}
                             {supervisoes &&
+                              // @ts-ignore
                               supervisoes?.map((supervisao) => (
                                 <option
                                   key={supervisao.id}

@@ -10,24 +10,17 @@ import ptBr from "dayjs/locale/pt-br";
 import localizedFormat from "dayjs/plugin/localizedFormat";
 import {
   FormRelatorioDataSchema,
-  FormRelatorioSchema,
   GroupedForCulto,
   Pessoa,
   PresencaForDate,
 } from "./schema";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { useQuery } from "@tanstack/react-query";
 import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
-import { useCombinedStore } from "@/store/DataCombineted";
 import Link from "next/link";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
   SelectTrigger,
   SelectValue,
@@ -52,6 +45,8 @@ import format from "date-fns/format";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { Calendar } from "@/components/ui/calendar";
 import ptBR from "date-fns/locale/pt-BR";
+import { useData } from "@/providers/providers";
+import { useForm } from "react-hook-form";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -62,7 +57,6 @@ export default function StatsCardRelatorios() {
   const { data: session } = useSession();
   const axiosAuth = useAxiosAuthToken(session?.user.token as string);
 
-  const URLSupervisoes = `${BASE_URL}/supervisoes`;
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
 
@@ -95,7 +89,9 @@ export default function StatsCardRelatorios() {
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
     useState<number>(0);
 
-  const { supervisoes } = useCombinedStore.getState().state;
+  // @ts-ignore
+  const { data, error, isLoading } = useData();
+  const supervisoes = data?.combinedData[0];
 
   const handleRelatorio = async ({
     startDate,
@@ -442,6 +438,7 @@ export default function StatsCardRelatorios() {
                               </FormControl>
                               <SelectContent>
                                 {supervisoes &&
+                                  // @ts-ignore
                                   supervisoes?.map((supervisao) => (
                                     <SelectItem
                                       key={supervisao.id}
