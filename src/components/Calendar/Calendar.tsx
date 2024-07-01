@@ -26,6 +26,26 @@ import UpdateCulto from "./UpdateCulto";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../ui/dropdown-menu";
+import { Button } from "../ui/button";
+import { MoreVertical } from "lucide";
+import { MoreVerticalIcon } from "lucide-react";
+import { PencilSimple, Trash } from "@phosphor-icons/react/dist/ssr";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "../ui/dialog";
 
 export type meeting = {
   id: string;
@@ -245,7 +265,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
   const data_termino_culto = parseISO(meeting.data_termino_culto);
 
   return (
-    <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
+    <li className="flex border items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       {meeting &&
       meeting.culto_semana &&
       meeting.culto_semana.nome === "Domingo de Sacrifício" ? (
@@ -294,7 +314,55 @@ function Meeting({ meeting }: { meeting: meeting }) {
           </time>
         </p>
       </div>
-      <Menu
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="outline" className="h-8 w-8">
+            <MoreVerticalIcon className="h-3.5 w-3.5" />
+            <span className="sr-only">More</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <Dialog>
+            <DialogTrigger className="w-full">
+              <DropdownMenuItem
+                className="w-full flex items-center justify-between"
+                onSelect={(e) => e.preventDefault()}
+              >
+                Editar
+                <PencilSimple size={18} />
+              </DropdownMenuItem>
+            </DialogTrigger>
+            <DialogContent className="sm:max-w-[580px]">
+              <DialogHeader>
+                <DialogTitle>Editar Culto</DialogTitle>
+                <DialogDescription>
+                  Edite o culto preenchendo o formulário?
+                </DialogDescription>
+              </DialogHeader>
+              <div className="text-center py-2">
+                {meeting.culto_semana.nome}
+              </div>
+              {/* FORMULARIO CADASTRO CULTO */}
+              <div className="flex flex-col-reverse gap-2 sm:gap-0 sm:flex-row sm:justify-end sm:space-x-2">
+                <Button variant={"outline"}>Cancelar</Button>
+                <Button className="bg-green-600 hover:bg-green-700 hover:opacity-95">
+                  Salvar
+                </Button>
+              </div>
+            </DialogContent>
+          </Dialog>
+
+          <DropdownMenuSeparator />
+
+          {/* FORMS */}
+
+          <DeleteCulto
+            culto={meeting.id}
+            cultoName={meeting.culto_semana.nome}
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
+      {/* <Menu
         as="div"
         className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
       >
@@ -328,7 +396,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
             </div>
           </Menu.Items>
         </Transition>
-      </Menu>
+      </Menu> */}
     </li>
   );
 }

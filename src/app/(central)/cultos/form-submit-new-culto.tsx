@@ -114,8 +114,9 @@ export default function FormNewCulto() {
       await createNewCultoFn(data);
       toast({
         title: "Sucesso!!!",
-        description: "Culto criado com Sucesso. 🥳",
+        description: "Culto criado com Sucesso!!! 🥳",
       });
+      form.reset();
     } catch (error) {
       toast({
         title: "Erro!!!",
@@ -169,11 +170,11 @@ export default function FormNewCulto() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          disabled={
-                            (date) => date < new Date()
-                            // ||
-                            // date < new Date("1900-01-01")
-                          }
+                          disabled={(date) => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return date < today;
+                          }}
                           initialFocus
                         />
                         <div className="p-3 border-t border-border">
@@ -227,10 +228,11 @@ export default function FormNewCulto() {
                           mode="single"
                           selected={field.value}
                           onSelect={field.onChange}
-                          // disabled={(date) =>
-                          //   date > new Date() ||
-                          //   date < new Date("1900-01-01")
-                          // }
+                          disabled={(date) => {
+                            const today = new Date();
+                            today.setHours(0, 0, 0, 0);
+                            return date < today;
+                          }}
                           initialFocus
                         />
                         <div className="p-3 border-t border-border">

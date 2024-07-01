@@ -1,10 +1,6 @@
 {
   "/_not-found/page": "app/_not-found/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/(central)/relatorios/[id]/page": "app/(central)/relatorios/[id]/page.js",
-  "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": "app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js",
-  "/(central)/cultos/page": "app/(central)/cultos/page.js",
   "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/(relatorios)/relatorio-discipulados-supervisao/page": "app/(relatorios)/relatorio-discipulados-supervisao/page.js",
-  "/(relatorios)/relatorio-discipulados-supervisor/page": "app/(relatorios)/relatorio-discipulados-supervisor/page.js"
+  "/(central)/cultos/page": "app/(central)/cultos/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }
