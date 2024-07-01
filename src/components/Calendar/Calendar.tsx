@@ -1,6 +1,4 @@
 "use client";
-import { Menu, Transition } from "@headlessui/react";
-import { EllipsisVerticalIcon } from "@heroicons/react/24/outline";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
 import { BookBookmark, Church, Cross, Student } from "@phosphor-icons/react";
 import {
@@ -20,41 +18,31 @@ import {
 } from "date-fns";
 import pt from "date-fns/locale/pt";
 import { useSession } from "next-auth/react";
-import { Fragment, useState } from "react";
+import { useState } from "react";
 import DeleteCulto from "./DeleteCulto";
-import UpdateCulto from "./UpdateCulto";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useQuery } from "@tanstack/react-query";
 import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
 import { Button } from "../ui/button";
-import { MoreVertical } from "lucide";
 import { MoreVerticalIcon } from "lucide-react";
-import { PencilSimple, Trash } from "@phosphor-icons/react/dist/ssr";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "../ui/dialog";
+import FormUpdateCulto from "@/app/(central)/cultos/form-update-culto";
 
 export type meeting = {
   id: string;
   culto_semana: {
+    id: string;
     nome: string;
   };
   imageUrl: string;
   data_inicio_culto: string;
   data_termino_culto: string;
+  status: string;
 };
 
 const URLCultosInd = `${BASE_URL}/cultosindividuais`;
@@ -322,39 +310,9 @@ function Meeting({ meeting }: { meeting: meeting }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
-          <Dialog>
-            <DialogTrigger className="w-full">
-              <DropdownMenuItem
-                className="w-full flex items-center justify-between"
-                onSelect={(e) => e.preventDefault()}
-              >
-                Editar
-                <PencilSimple size={18} />
-              </DropdownMenuItem>
-            </DialogTrigger>
-            <DialogContent className="sm:max-w-[580px]">
-              <DialogHeader>
-                <DialogTitle>Editar Culto</DialogTitle>
-                <DialogDescription>
-                  Edite o culto preenchendo o formulário?
-                </DialogDescription>
-              </DialogHeader>
-              <div className="text-center py-2">
-                {meeting.culto_semana.nome}
-              </div>
-              {/* FORMULARIO CADASTRO CULTO */}
-              <div className="flex flex-col-reverse gap-2 sm:gap-0 sm:flex-row sm:justify-end sm:space-x-2">
-                <Button variant={"outline"}>Cancelar</Button>
-                <Button className="bg-green-600 hover:bg-green-700 hover:opacity-95">
-                  Salvar
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <FormUpdateCulto meeting={meeting} />
 
           <DropdownMenuSeparator />
-
-          {/* FORMS */}
 
           <DeleteCulto
             culto={meeting.id}
