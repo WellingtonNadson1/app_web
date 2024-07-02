@@ -45,7 +45,7 @@ export default function ListMembers({ members }: ListMembersProps) {
 
   return (
     <>
-      <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
+      <div className="relative w-full py-2 mx-auto bg-white shadow-lg rounded-xl">
         <div className="w-full px-2 py-2 ">
           <div className="w-full px-1 py-2 rounded-md">
             <div className="flex items-center justify-between w-full gap-3">

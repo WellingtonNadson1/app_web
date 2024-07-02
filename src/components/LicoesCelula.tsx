@@ -1,46 +1,45 @@
-'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { FilePdf } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { z } from 'zod'
-import SpinnerButton from './spinners/SpinnerButton'
-import { useUserDataStore } from '@/store/UserDataStore'
-import dayjs from 'dayjs'
-import { Card } from './ui/card'
-dayjs().locale()
+"use client";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { FilePdf } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
+import { z } from "zod";
+import SpinnerButton from "./spinners/SpinnerButton";
+import { useUserDataStore } from "@/store/UserDataStore";
+import dayjs from "dayjs";
+import { Card } from "./ui/card";
+dayjs().locale();
 
+const ResponseSchema = z.string().array();
 
-const ResponseSchema = z.string().array()
-
-type ApiResponse = z.infer<typeof ResponseSchema>
+type ApiResponse = z.infer<typeof ResponseSchema>;
 
 export default function LicoesCelula() {
-  const URLLicoesCelula = `${BASE_URL}/licoescelulas`
-  const { token } = useUserDataStore.getState()
+  const URLLicoesCelula = `${BASE_URL}/licoescelulas`;
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
+  const axiosAuth = useAxiosAuthToken(token);
 
   const LicoesCelulaData = async () => {
-    const { data } = await axiosAuth.get(URLLicoesCelula)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLLicoesCelula);
+    return data;
+  };
   const { data, isLoading, isError } = useQuery<ApiResponse>({
-    queryKey: ['licoesCelula'],
+    queryKey: ["licoesCelula"],
     queryFn: LicoesCelulaData,
-  })
-  if (isLoading) return <SpinnerButton message={''} />
+  });
+  if (isLoading) return <SpinnerButton message={""} />;
   if (isError) {
-    return <div>Atualize a página para carregar os dados.</div>
+    return <div>Atualize a página para carregar os dados.</div>;
   }
 
   // Pegamos o mês e ano atual
   const month = dayjs().month();
   const year = dayjs().year();
-  const toDay = dayjs()
+  const toDay = dayjs();
 
   // Definimos a primeira data do mês
-  let startDate = dayjs().set('month', month).set('date', 1);
+  let startDate = dayjs().set("month", month).set("date", 1);
 
   // Criamos um array para armazenar as semanas
   const weeks: { start: dayjs.Dayjs; end: dayjs.Dayjs }[] = [];
@@ -52,66 +51,92 @@ export default function LicoesCelula() {
     const dayOfWeek = startDate.day();
 
     // Ajustamos a data para o início da semana (domingo)
-    const weekStart = startDate.subtract(dayOfWeek, 'day');
+    const weekStart = startDate.startOf("week");
 
     // Ajustamos a data para o fim da semana (sábado)
-    const weekEnd = weekStart.add(6, 'day');
+    const weekEnd = weekStart.add(6, "day");
+
+    // Ajustamos a data de início e fim da semana para garantir que estejam dentro do mês atual
+    const validWeekStart = weekStart.month() === month ? weekStart : startDate;
+    const validWeekEnd =
+      weekEnd.month() === month ? weekEnd : startDate.endOf("month");
+
+    // Ajustamos a data para o início da semana (domingo) caso o mes inicie no domingo
+    // const weekStart = startDate.subtract(dayOfWeek, "day");
+
+    // Ajustamos a data para o início da semana (segunda-feira, no caso de 1 de julho de 2024)
+    // const weekStart = startDate.subtract(
+    //   dayOfWeek === 0 ? 6 : dayOfWeek - 1,
+    //   "day",
+    // );
+
+    // Adicionamos a semana ao array
+    // weeks.push({
+    //   start: weekStart,
+    //   end: weekEnd,
+    // });
 
     // Adicionamos a semana ao array
     weeks.push({
-      start: weekStart,
-      end: weekEnd,
+      start: validWeekStart,
+      end: validWeekEnd,
     });
 
+    // weeksDate.push({
+    //   start: weekStart.format("DD/MM"),
+    //   end: weekEnd.format("DD/MM"),
+    // });
+    //
     weeksDate.push({
-      start: weekStart.format('DD/MM'),
-      end: weekEnd.format('DD/MM'),
+      start: validWeekStart.format("DD/MM"),
+      end: validWeekEnd.format("DD/MM"),
     });
 
     // Incrementamos a data para o início da próxima semana
-    startDate = weekEnd.add(1, 'day');
+    startDate = weekEnd.add(1, "day");
   }
 
-  const temaMesCelula = 'A Volta de Jesus'
-  const subTemaMesCelula = 'Mas cada um por sua vez: Cristo, as primícias; depois, quando ele vier, os que lhe pertencem. 1Coríntios 15:23'
+  const temaMesCelula = "Servir o Próximo";
+  const subTemaMesCelula =
+    "Mas entre vocês não pode ser assim. Pelo contrário, o mais importante deve ser como o menos importante; e o que manda deve ser como o que é mandado. Lucas 22:26";
 
   const statusLicoes = [
     {
       id: 1,
-      title: 'A Esperança da Segunda Vinda',
+      title: "Jesus: nosso exemplo de servo",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: '1Ts 4:16-18',
+      versiculo: "Lc 22:27",
     },
     {
       id: 2,
-      title: 'Como cooperar com a vinda de Jesus',
+      title: "Chamados para servir",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: 'IIPe 3:9-12',
+      versiculo: "IPe 4:10",
     },
     {
       id: 3,
-      title: 'A Noiva de Jesus',
+      title: "Ministério x Servir Pessoas",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: 'Ap 19:6-8',
+      versiculo: "Ef 6:7",
     },
     {
       id: 4,
-      title: 'A prestação de Contas',
+      title: "Servir com os Bens",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: 'Mt 16:25-27',
+      versiculo: "Lc 3:10-11",
     },
-    // {
-    //   id: 5,
-    //   title: 'O Cuidado de Deus',
-    //   periodo: '29 de Out a 04 de Fev/2024',
-    //   icon: FilePdf,
-    //   versiculo: 'Ez 34:11-12',
-    // },
-  ]
+    {
+      id: 5,
+      title: "Jesus serviu a humanidade com sua vida",
+      periodo: weeks,
+      icon: FilePdf,
+      versiculo: "Mc 10:45",
+    },
+  ];
 
   return (
     <Card className="bg-white relative w-full px-2 mx-auto mb-4">
@@ -119,15 +144,16 @@ export default function LicoesCelula() {
         <div className="relative flex-col w-full p-4 bg-white rounded-lg flex-warp hover:bg-white/95">
           <div className="flex flex-col items-start justify-start mb-3">
             <h1 className="p-2 mb-3 text-lg font-semibold leading-7">Lições</h1>
-            <div className='flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50'>
-              <span className='mb-1 text-base'>
-                <span className="font-semibold">Tema: </span>{temaMesCelula}
+            <div className="flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50">
+              <span className="mb-1 text-base">
+                <span className="font-semibold">Tema: </span>
+                {temaMesCelula}
               </span>
               <span className="mb-3 text-base italic">{subTemaMesCelula}</span>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
-            {statusLicoes.map((stat, index) => (
+            {statusLicoes.map((stat, index) =>
               data ? (
                 <a
                   href={`${data?.[index]}`}
@@ -147,17 +173,19 @@ export default function LicoesCelula() {
                               {stat.versiculo}
                             </span>
                           </div>
-                          <div className='mt-2 text-sm'>
+                          {/* as posso colocar mais um dia somando
+                          para regular os dias */}
+                          <div className="mt-2 text-sm">
                             Período:
                             <span className="ml-2 text-sm leading-6 text-gray-500">
-                              {weeksDate[index + 1]?.start} à
+                              {weeksDate[index]?.start} à
                             </span>
                             <span className="ml-1 text-sm leading-6 text-gray-500">
-                              {weeksDate[index + 1]?.end}
+                              {weeksDate[index]?.end}
                             </span>
                           </div>
                           <div className="flex items-center mt-3">
-                            {stat.periodo[index + 1]?.end.isAfter(toDay) ? (
+                            {stat.periodo[index]?.end.isAfter(toDay) ? (
                               <span className="text-sm font-normal leading-6 text-red-500">
                                 pendente
                               </span>
@@ -179,14 +207,14 @@ export default function LicoesCelula() {
                     </div>
                   </div>
                 </a>
-
               ) : (
                 // Handle the case where data or data[index] is not valid
                 <div key={stat.id}>Invalid Data</div>
-              )))}
+              ),
+            )}
           </div>
         </div>
       </div>
     </Card>
-  )
+  );
 }

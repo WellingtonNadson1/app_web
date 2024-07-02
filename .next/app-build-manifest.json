@@ -1,27 +1,21 @@
 {
   "pages": {
-    "/(central)/cultos/page": [
+    "/(celula)/celula/page": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/cultos/page.css",
-      "static/chunks/app/(central)/cultos/page.js"
+      "static/css/app/(celula)/celula/page.css",
+      "static/chunks/app/(celula)/celula/page.js"
     ],
-    "/(central)/layout": [
+    "/(celula)/layout": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/layout.css",
-      "static/chunks/app/(central)/layout.js"
+      "static/css/app/(celula)/layout.css",
+      "static/chunks/app/(celula)/layout.js"
     ],
-    "/(central)/loading": [
+    "/(celula)/loading": [
       "static/chunks/webpack.js",
       "static/chunks/main-app.js",
-      "static/css/app/(central)/loading.css",
-      "static/chunks/app/(central)/loading.js"
-    ],
-    "/_not-found/page": [
-      "static/chunks/webpack.js",
-      "static/chunks/main-app.js",
-      "static/chunks/app/_not-found/page.js"
+      "static/chunks/app/(celula)/loading.js"
     ]
   }
 }

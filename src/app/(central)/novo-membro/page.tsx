@@ -8,10 +8,15 @@ import { useQuery } from "@tanstack/react-query";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { Suspense } from "react";
+import { DataTable } from "./table-users/data-table";
+import { columns } from "./table-users/columns";
+import { z } from "zod";
+import { userSchemaTable } from "./table-users/schema";
 
 export default function NovoMembro() {
   const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string);
 
   const URL = `${BASE_URL}/users`;
 
@@ -33,7 +38,7 @@ export default function NovoMembro() {
     isError: error,
     isLoading,
     isSuccess,
-  } = useQuery<ReturnMembers[]>({
+  } = useQuery<z.infer<typeof userSchemaTable>>({
     queryKey: ["members"],
     queryFn: Members,
   });
@@ -41,7 +46,7 @@ export default function NovoMembro() {
   if (error) {
     return (
       <div className="w-full px-2 py-2 mx-auto">
-        <div className="w-full mx-auto">
+        <div className="w-full mx-auto z-20">
           <div>
             Falha ao carregar, por favor, saia e entre no App novamente.
           </div>
@@ -53,7 +58,7 @@ export default function NovoMembro() {
   if (isLoading) {
     return (
       <>
-        <div className="relative w-full px-6 py-2 mx-auto mt-8 bg-white shadow-lg rounded-xl">
+        <div className="relative w-full px-4 py-2 mx-auto mt-8 shadow-lg rounded-xl">
           <div className="w-full px-2 py-2 ">
             <div className="w-full px-1 py-2 rounded-md">
               <div className="flex items-center justify-between">
@@ -141,9 +146,16 @@ export default function NovoMembro() {
 
   return (
     <>
-      <div className="relative w-full px-2 mx-auto mt-4 mb-4">
+      <Suspense fallback="Carregando...">
+        {isSuccess && (
+          <div className="relative w-full px-2 rounded-xl mx-auto mt-4 mb-4">
+            <DataTable columns={columns} data={members as any} />
+          </div>
+        )}
+      </Suspense>
+      {/* <div className="relative w-full px-2 mx-auto mt-4 mb-4">
         {isSuccess && <ListMembers members={members} />}
-      </div>
+      </div> */}
     </>
   );
 }
