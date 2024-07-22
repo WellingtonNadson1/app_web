@@ -39,7 +39,7 @@ const encontroSchema = z.object({
 
 export const userSchemaTable = z.object({
   id: z.string().uuid(),
-  role: z.enum(["MEMBER"]),
+  role: z.string(),
   discipulador: z.array(
     discipuladorUsuarioSchema,
   ).optional(),
@@ -58,7 +58,7 @@ export const userSchemaTable = z.object({
   first_name: z.string(),
   last_name: z.string(),
   date_nascimento: z.date().optional(),
-  sexo: z.enum(["F", "M"]),
+  sexo: z.string(),
   cpf: z.string().optional(),
   telefone: z.string(),
   escolaridade: z.string(),

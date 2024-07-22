@@ -126,26 +126,31 @@ export type CargoLidereanca = z.infer<typeof CargoLidereancaSchema>
 export interface ReturnMembers {
   id: string
   role: string
-  image_url: string | null
+  user_roles: {
+    rolenew: {
+      name: string
+    },
+  }[],
+  image_url: string | undefined
   email: string
   first_name: string
   last_name: string
   cpf: string
-  date_nascimento: string
+  date_nascimento: Date
   sexo: string
   telefone: string
   escolaridade: string
   profissao: string
-  batizado: boolean
-  date_batizado: string
-  is_discipulado: boolean
+  batizado: string
+  date_batizado: Date
+  is_discipulado: string
   discipuladorId: string
   estado_civil: string
   nome_conjuge: string
-  date_casamento: string
-  has_filho: boolean
+  date_casamento: Date
+  has_filho: string
   quantidade_de_filho: number
-  date_decisao: string
+  date_decisao: Date
   cep: string
   estado: string
   cidade: string
