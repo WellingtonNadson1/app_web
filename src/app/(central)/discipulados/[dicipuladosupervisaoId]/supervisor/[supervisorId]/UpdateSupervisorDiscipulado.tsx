@@ -1,19 +1,19 @@
 'use client'
+import { Member } from '@/app/(central)/novo-membro/schema'
 import Modal from '@/components/modal'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
-import React, { Fragment, useRef, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from '@/functions/functions'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
 import axios from 'axios'
-import { Member } from '@/app/(central)/novo-membro/schema'
+import { Fragment, useRef, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { UpdateSupervisorProps, dataUpdateDiscipulador } from './schema'
 
 function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
@@ -64,7 +64,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<dataUpdateDiscipulador> = async (data) => {
-    data.id = props?.member?.user_discipulador_usuario_usuario_idTouser?.id;
+    data.id = props?.member?.user_discipulos?.id;
     selectedMember && (data.discipuladorId = selectedMember?.id);
     setIsLoadingSubmitUpDate(true)
     try {
@@ -153,7 +153,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                               <input
                                 type="text"
                                 name="membro"
-                                value={props?.member?.user_discipulador_usuario_usuario_idTouser?.first_name}
+                                value={props?.member?.user_discipulos?.first_name}
                                 id="membro"
                                 disabled
                                 autoComplete="family-name"

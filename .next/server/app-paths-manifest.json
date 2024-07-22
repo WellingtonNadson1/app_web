@@ -1,3 +1,7 @@
 {
-  "/(celula)/celula/page": "app/(celula)/celula/page.js"
+  "/(relatorios)/relatorio-discipulados-supervisor/page": "app/(relatorios)/relatorio-discipulados-supervisor/page.js",
+  "/(relatorios)/relatorio-discipulados-supervisao/page": "app/(relatorios)/relatorio-discipulados-supervisao/page.js",
+  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
+  "/(central)/discipulados/page": "app/(central)/discipulados/page.js",
+  "/(central)/discipulados/[dicipuladosupervisaoId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/page.js"
 }

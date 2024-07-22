@@ -17,8 +17,8 @@ export type dataSchemaReturnExistDiscipuladoAllCell = {
       id: string
       nome: string
     }
-    discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-      user_discipulador_usuario_discipulador_idTouser: {
+    discipulador: {
+      user_discipulador: {
         id: string
         first_name: string
       }
@@ -29,8 +29,8 @@ export type dataSchemaReturnExistDiscipuladoAllCell = {
         data_ocorreu: string
       }[]
     }[]
-    discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-      user_discipulador_usuario_usuario_idTouser: {
+    discipulos: {
+      user_discipulos: {
         id: string
         first_name: string
       }
@@ -73,8 +73,8 @@ export interface MembroSupervisor {
     nome: string
   }
   // Discipulador
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-    user_discipulador_usuario_discipulador_idTouser: {
+  discipulador: {
+    user_discipulador: {
       id: string
       first_name: string
     }
@@ -85,8 +85,8 @@ export interface MembroSupervisor {
       data_ocorreu: string
     }[]
     // Discipulos
-    discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-      user_discipulador_usuario_usuario_idTouser: {
+    discipulos: {
+      user_discipulos: {
         id: string
         first_name: string
       }
@@ -101,7 +101,7 @@ export interface MembroSupervisor {
 }
 
 export interface DiscipuloOfSupervisor {
-  user_discipulador_usuario_usuario_idTouser: {
+  user_discipulos: {
     id: string;
     first_name: string;
   };
@@ -122,15 +122,15 @@ export interface Supervisor {
     image_url: string;
     role: string;
     // Discipulador
-    discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-      user_discipulador_usuario_discipulador_idTouser: {
+    discipulador: {
+      user_discipulador: {
         id: string,
         first_name: string
       },
     }[],
     // Discipulos
-    discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-      user_discipulador_usuario_usuario_idTouser: {
+    discipulos: {
+      user_discipulos: {
         id: string,
         first_name: string
       },

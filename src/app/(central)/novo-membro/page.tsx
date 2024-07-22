@@ -1,6 +1,4 @@
 "use client";
-import ListMembers from "@/components/listMembers";
-import { ReturnMembers } from "./schema";
 import { BASE_URL } from "@/functions/functions";
 import { UserFocus } from "@phosphor-icons/react";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
@@ -9,10 +7,10 @@ import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { Suspense } from "react";
-import { DataTable } from "./table-users/data-table";
 import { columns } from "./table-users/columns";
 import { z } from "zod";
 import { userSchemaTable } from "./table-users/schema";
+import { DataTableUsers } from "./table-users/data-table-users";
 
 export default function NovoMembro() {
   const { data: session } = useSession();
@@ -58,7 +56,7 @@ export default function NovoMembro() {
   if (isLoading) {
     return (
       <>
-        <div className="relative w-full px-4 py-2 mx-auto mt-8 shadow-lg rounded-xl">
+        <div className="bg-white relative w-full px-4 py-2 mx-auto mt-8 shadow-lg rounded-xl">
           <div className="w-full px-2 py-2 ">
             <div className="w-full px-1 py-2 rounded-md">
               <div className="flex items-center justify-between">
@@ -149,13 +147,10 @@ export default function NovoMembro() {
       <Suspense fallback="Carregando...">
         {isSuccess && (
           <div className="relative w-full px-2 rounded-xl mx-auto mt-4 mb-4">
-            <DataTable columns={columns} data={members as any} />
+            <DataTableUsers columns={columns} data={members as any} />
           </div>
         )}
       </Suspense>
-      {/* <div className="relative w-full px-2 mx-auto mt-4 mb-4">
-        {isSuccess && <ListMembers members={members} />}
-      </div> */}
     </>
   );
 }

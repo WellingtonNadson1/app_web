@@ -7,14 +7,14 @@ export interface Membro {
     id: string;
     nome: string;
   };
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-    user_discipulador_usuario_discipulador_idTouser: {
+  discipulador: {
+    user_discipulador: {
       id: string,
       first_name: string
     },
   }[],
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-    user_discipulador_usuario_usuario_idTouser: {
+  discipulos: {
+    user_discipulos: {
       id: string,
       first_name: string
     },
@@ -65,8 +65,8 @@ const SupervisaoDataSchema = z
     supervisor: z.object({
       id: z.string(),
       first_name: z.string(),
-      discipulador_usuario_discipulador_usuario_discipulador_idTouser: z.object({
-        user_discipulador_usuario_usuario_idTouser: z.object({
+      discipulos: z.object({
+        user_discipulos: z.object({
           id: z.string(),
           first_name: z.string(),
         }),

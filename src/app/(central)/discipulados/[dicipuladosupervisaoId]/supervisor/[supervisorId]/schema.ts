@@ -4,7 +4,7 @@ export type dataUpdateDiscipulador = {
 }
 
 interface Membro {
-  user_discipulador_usuario_usuario_idTouser: {
+  user_discipulos: {
     id: string;
     first_name: string;
   }
@@ -13,8 +13,8 @@ interface Membro {
 interface Supervisor {
   id: string;
   first_name: string;
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-    user_discipulador_usuario_usuario_idTouser: {
+  discipulos: {
+    user_discipulos: {
       id: string;
       first_name: string;
     };

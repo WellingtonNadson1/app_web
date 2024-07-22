@@ -1,20 +1,20 @@
 'use client'
-import { SubmitHandler, useForm } from "react-hook-form"
-import { MembroCell, dataSchemaCreateDiscipulado } from "./schema"
-import { useUserDataStore } from "@/store/UserDataStore"
+import { BASE_URL, errorCadastro, success } from "@/functions/functions"
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken"
-import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from "@/functions/functions"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Disclosure } from "@headlessui/react"
-import { Fragment, useState } from "react"
-import { ChevronUpIcon } from "lucide-react"
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer } from 'react-toastify'
 import { cn } from "@/lib/utils"
+import { useUserDataStore } from "@/store/UserDataStore"
+import { Disclosure } from "@headlessui/react"
 import { CheckFat, Warning } from "@phosphor-icons/react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
+import utc from "dayjs/plugin/utc"
+import { ChevronUpIcon } from "lucide-react"
+import { Fragment } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { MembroCell, dataSchemaCreateDiscipulado } from "./schema"
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -27,10 +27,10 @@ export default function FormSecondDiscipulado(membro: PropsForm) {
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
   const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
-  const discipulador = membro?.membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name
-  const discipulador_id = membro?.membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.user_discipulador_usuario_discipulador_idTouser?.id
-  const quantidade_discipulado = membro?.membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?._count?.discipulado
-  const data_2discipulado_ocorreu = membro?.membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser[0]?.discipulado[1]?.data_ocorreu
+  const discipulador = membro?.membro?.discipulador[0]?.user_discipulador?.first_name
+  const discipulador_id = membro?.membro?.discipulador[0]?.user_discipulador?.id
+  const quantidade_discipulado = membro?.membro?.discipulador[0]?._count?.discipulado
+  const data_2discipulado_ocorreu = membro?.membro?.discipulador[0]?.discipulado[1]?.data_ocorreu
   const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>()
 
   // Register New Discipulado

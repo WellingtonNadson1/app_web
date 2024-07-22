@@ -1,31 +1,30 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import {
+  BASE_URL,
+  errorCadastro,
+  success
+} from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { Disclosure } from "@headlessui/react";
+import { CheckFat, Warning } from "@phosphor-icons/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { ChevronUpIcon } from "lucide-react";
+import { Fragment } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import {
   DiscipuloOfSupervisor,
   dataSchemaCreateDiscipulado,
   dataSchemaReturnCreateDiscipulado,
 } from "./schema";
-import { useUserDataStore } from "@/store/UserDataStore";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import {
-  BASE_URL,
-  BASE_URL_LOCAL,
-  errorCadastro,
-  success,
-} from "@/functions/functions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Disclosure } from "@headlessui/react";
-import { Fragment } from "react";
-import { ChevronUpIcon } from "lucide-react";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import { cn } from "@/lib/utils";
-import { CheckFat, Warning } from "@phosphor-icons/react";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -50,7 +49,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
   const data_1discipulado_ocorreu =
     membro?.membro?.discipulado[0]?.data_ocorreu || null;
   const discipulo_id =
-    membro?.membro?.user_discipulador_usuario_usuario_idTouser.id;
+    membro?.membro?.user_discipulos.id;
   const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>();
 
   // Register New Discipulado
@@ -137,7 +136,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                   aria-disabled
                   key={discipulo_id}
                   id={discipulo_id}
-                  // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
+                // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
                 >
                   <input
                     key={discipulo_id}
@@ -151,7 +150,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  {}
+                  { }
                   <Input
                     type="date"
                     disabled
@@ -162,7 +161,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                       .utc(data_1discipulado_ocorreu)
                       .format("YYYY-MM-DD")}
                     key={
-                      membro?.membro?.user_discipulador_usuario_usuario_idTouser
+                      membro?.membro?.user_discipulos
                         .id + 7
                     }
                     {...register(`data_ocorreu`, {

@@ -1,9 +1,9 @@
 'use client'
+import UpdateSupervisorDisicipulado from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/UpdateSupervisorDiscipulado'
+import Pagination from '@/components/Pagination'
 import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { SupervisaoData } from './schema'
-import UpdateSupervisorDisicipulado from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/UpdateSupervisorDiscipulado'
-import Pagination from '@/components/Pagination'
 
 export default function ListMembersDiscipuladoSupervisor(SupervisaoData: SupervisaoData) {
   const [shouldFetch, setShouldFetch] = useState<boolean>(false)
@@ -18,7 +18,7 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
-  const membersSort = SupervisaoData?.supervisor?.discipulador_usuario_discipulador_usuario_discipulador_idTouser?.sort((a, b) => a?.user_discipulador_usuario_usuario_idTouser?.first_name.localeCompare(b?.user_discipulador_usuario_usuario_idTouser?.first_name))
+  const membersSort = SupervisaoData?.supervisor?.discipulos?.sort((a, b) => a?.user_discipulos?.first_name.localeCompare(b?.user_discipulos?.first_name))
   console.log('membersSort', membersSort)
   const displayedMembers = membersSort?.slice(startIndex, endIndex)
   console.log('displayedMembers', displayedMembers)
@@ -58,14 +58,14 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
                   displayedMembers?.map((user, index) => (
                     <tr
                       className="hover:bg-gray-50/90"
-                      key={user.user_discipulador_usuario_usuario_idTouser.id}
+                      key={user.user_discipulos.id}
                     >
                       <td className='px-2 py-1 border-b border-gray-200'>
                         <div className="flex items-center justify-start gap-2">
                           <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
                             <User size={22} color='#6D8396' />
                           </div>
-                          <h2 className="ml-4">{user.user_discipulador_usuario_usuario_idTouser.first_name}</h2>
+                          <h2 className="ml-4">{user.user_discipulos.first_name}</h2>
                         </div>
                       </td>
                       {/* <td className="px-2 py-1 text-center border-b border-gray-200"> */}
@@ -84,14 +84,14 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
                       {/* </td> */}
                       {/* <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
-                          {user?.user_discipulador_usuario_usuario_idTouser?.first_name}
+                          {user?.user_discipulos?.first_name}
                         </span>
                       </td> */}
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <div className='flex items-center justify-center' onClick={() => setShouldFetch(true)}>
                           <UpdateSupervisorDisicipulado
                             member={membersSort[0]} // Pass the member object
-                            key={membersSort[0].user_discipulador_usuario_usuario_idTouser.id}
+                            key={membersSort[0].user_discipulos.id}
                             supervisor={SupervisaoData?.supervisor} // Pass the supervisor object
                           />
                         </div>

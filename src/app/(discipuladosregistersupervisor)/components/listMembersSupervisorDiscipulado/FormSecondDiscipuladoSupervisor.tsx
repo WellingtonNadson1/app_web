@@ -1,27 +1,26 @@
 "use client";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { DiscipuloOfSupervisor, dataSchemaCreateDiscipulado } from "./schema";
-import { useUserDataStore } from "@/store/UserDataStore";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import {
   BASE_URL,
-  BASE_URL_LOCAL,
   errorCadastro,
-  success,
+  success
 } from "@/functions/functions";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { Disclosure } from "@headlessui/react";
-import { Fragment } from "react";
-import { ChevronUpIcon } from "lucide-react";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { Disclosure } from "@headlessui/react";
 import { CheckFat, Warning } from "@phosphor-icons/react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import utc from "dayjs/plugin/utc";
+import { ChevronUpIcon } from "lucide-react";
+import { Fragment } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import { DiscipuloOfSupervisor, dataSchemaCreateDiscipulado } from "./schema";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -42,7 +41,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
   const data_2discipulado_ocorreu =
     membro?.membro?.discipulado[1]?.data_ocorreu;
   const discipulo_id =
-    membro?.membro?.user_discipulador_usuario_usuario_idTouser.id;
+    membro?.membro?.user_discipulos.id;
   const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>();
 
   // Register New Discipulado
@@ -127,7 +126,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                   aria-disabled
                   key={discipulo_id}
                   id={discipulo_id}
-                  // onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
+                // onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
                 >
                   <input
                     key={discipulo_id}
@@ -141,7 +140,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  {}
+                  { }
                   <Input
                     type="date"
                     disabled

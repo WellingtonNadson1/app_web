@@ -1,16 +1,15 @@
 'use client'
+import Pagination from '@/components/Pagination'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
 import { UserFocus } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
-import { ListMembersCelulaProps, dataSchemaGetDiscipuladoAllCell, dataSchemaReturnExistDiscipuladoAllCell } from './schema'
 import FormFirstDiscipulado from './FormFirstDiscipulado'
 import FormSecondDiscipulado from './FormSecondDiscipulado'
-import { useQuery } from '@tanstack/react-query'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
-import { useUserDataStore } from '@/store/UserDataStore'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import Pagination from '@/components/Pagination'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
 import Scheleton from './scheleton'
+import { ListMembersCelulaProps, dataSchemaGetDiscipuladoAllCell, dataSchemaReturnExistDiscipuladoAllCell } from './schema'
 
 export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelulaProps) {
   // console.log('data', data)
@@ -42,8 +41,8 @@ export default function ListMembersCelulaDiscipulado({ data }: ListMembersCelula
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const membersSort = registerDiscipuladosCell?.data[0]?.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
-  // console.log('membersSort', membersSort)
   const displayedMembers = membersSort?.slice(startIndex, endIndex)
+  console.log('membersSort', displayedMembers)
 
   return (
     <>

@@ -26,6 +26,7 @@ import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
@@ -310,6 +311,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
           </Button>
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Opções</DropdownMenuLabel>
           <FormUpdateCulto meeting={meeting} />
 
           <DropdownMenuSeparator />

@@ -1,25 +1,25 @@
 "use client";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import SpinnerButton from "@/components/spinners/SpinnerButton";
+import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useData } from "@/providers/providers";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import React, { useState, Fragment } from "react";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import ptBr from "dayjs/locale/pt-br";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import React, { Fragment, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import {
   FormRelatorioSchema,
   MemberDataDiscipulado,
   MembersDataDiscipulado,
 } from "./schema";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { useSession } from "next-auth/react";
-import { useData } from "@/providers/providers";
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
@@ -452,7 +452,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           <span>
                             {
                               discipuladoForCell[cellName][0]
-                                .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                                .discipulos
                                 .length
                             }
                           </span>
@@ -461,11 +461,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* Coluna para Discípulos */}
                       <td>
                         {discipuladoForCell[cellName][0]
-                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .discipulos
                           .length !== 0 ? (
                           discipuladoForCell[
                             cellName
-                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                          ][0].discipulos.map(
                             (discipulo) => (
                               <tr
                                 className="w-20 h-20 py-4 border border-zinc-200"
@@ -474,7 +474,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                 <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
                                   {
                                     discipulo
-                                      .user_discipulador_usuario_usuario_idTouser
+                                      .user_discipulos
                                       .first_name
                                   }
                                 </div>
@@ -499,11 +499,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         key={cellName + cellIndex}
                       >
                         {discipuladoForCell[cellName][0]
-                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .discipulos
                           .length !== 0 ? (
                           discipuladoForCell[
                             cellName
-                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                          ][0].discipulos.map(
                             (discipulado, indexMember) => {
                               const totalDiscipulado =
                                 discipulado?.discipulado.length;
@@ -512,7 +512,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                   className="border border-zinc-200"
                                   key={
                                     discipulado
-                                      .user_discipulador_usuario_usuario_idTouser
+                                      .user_discipulos
                                       .first_name + indexMember
                                   }
                                 >
@@ -562,11 +562,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* // 1º Discipulado */}
                       <td className="mx-4 text-center" key={cellName}>
                         {discipuladoForCell[cellName][0]
-                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .discipulos
                           .length !== 0 ? (
                           discipuladoForCell[
                             cellName
-                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                          ][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
                                 discipulado?.discipulado[0]?.data_ocorreu;
@@ -575,7 +575,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                   className="border border-zinc-200"
                                   key={
                                     discipulado
-                                      .user_discipulador_usuario_usuario_idTouser
+                                      .user_discipulos
                                       .first_name + indexDiscipulado
                                   }
                                 >
@@ -623,11 +623,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* // 2º Discipulado */}
                       <td className="mx-4 text-center " key={cellIndex}>
                         {discipuladoForCell[cellName][0]
-                          .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                          .discipulos
                           .length !== 0 ? (
                           discipuladoForCell[
                             cellName
-                          ][0].discipulador_usuario_discipulador_usuario_discipulador_idTouser.map(
+                          ][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
                                 discipulado?.discipulado[1]?.data_ocorreu;
@@ -636,7 +636,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                   className="border border-zinc-200"
                                   key={
                                     discipulado
-                                      .user_discipulador_usuario_usuario_idTouser
+                                      .user_discipulos
                                       .first_name + indexDiscipulado
                                   }
                                 >

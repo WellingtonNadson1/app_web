@@ -1,21 +1,21 @@
 "use client";
+import Scheleton from "@/app/(discipuladosregisterliderelula)/components/listMembersCelulaDiscipulado/scheleton";
+import Pagination from "@/components/Pagination";
+import { Badge } from "@/components/ui/badge";
+import { Card } from "@/components/ui/card";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
 import { UserFocus } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
+import FormFirstDiscipuladoSupervisor from "./FormFirstDiscipuladoSupervisor";
+import FormSecondDiscipuladoSupervisor from "./FormSecondDiscipuladoSupervisor";
 import {
   Supervisor,
   dataSchemaGetDiscipuladoAllSupervisor,
   dataSchemaReturnExistDiscipuladoAllCell,
 } from "./schema";
-import FormFirstDiscipuladoSupervisor from "./FormFirstDiscipuladoSupervisor";
-import FormSecondDiscipuladoSupervisor from "./FormSecondDiscipuladoSupervisor";
-import { useQuery } from "@tanstack/react-query";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
-import { useUserDataStore } from "@/store/UserDataStore";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import Pagination from "@/components/Pagination";
-import Scheleton from "@/app/(discipuladosregisterliderelula)/components/listMembersCelulaDiscipulado/scheleton";
-import { Card } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
 
 export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   // console.log('data', data)
@@ -61,10 +61,10 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const membersSort =
-    registerDiscipuladosSupervisor?.data[0]?.discipulador_usuario_discipulador_usuario_discipulador_idTouser.sort(
+    registerDiscipuladosSupervisor?.data[0]?.discipulos.sort(
       (a, b) =>
-        a.user_discipulador_usuario_usuario_idTouser.first_name.localeCompare(
-          b.user_discipulador_usuario_usuario_idTouser.first_name,
+        a.user_discipulos.first_name.localeCompare(
+          b.user_discipulos.first_name,
         ),
     );
   // console.log('membersSort', membersSort)
@@ -106,7 +106,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                 {!isLoading ? (
                   displayedMembers?.map((user) => (
                     <Card
-                      key={user.user_discipulador_usuario_usuario_idTouser.id}
+                      key={user.user_discipulos.id}
                       className="my-2 flex items-start content-start"
                     >
                       <tr className="w-full flex items-start justify-between">
@@ -119,7 +119,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                   <h2 className="ml-3">
                                     {
                                       user
-                                        .user_discipulador_usuario_usuario_idTouser
+                                        .user_discipulos
                                         .first_name
                                     }
                                   </h2>
@@ -131,7 +131,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                       <FormFirstDiscipuladoSupervisor
                                         key={
                                           user
-                                            .user_discipulador_usuario_usuario_idTouser
+                                            .user_discipulos
                                             .id
                                         }
                                         discipulador_name={
@@ -153,7 +153,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                       <FormSecondDiscipuladoSupervisor
                                         key={
                                           user
-                                            .user_discipulador_usuario_usuario_idTouser
+                                            .user_discipulos
                                             .id
                                         }
                                         discipulador_name={
@@ -192,7 +192,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
               currentPage={currentPage}
               totalPages={Math.ceil(
                 (data
-                  .discipulador_usuario_discipulador_usuario_discipulador_idTouser
+                  .discipulos
                   ?.length || 0) / itemsPerPage,
               )}
               onPageChange={handlePageChange}

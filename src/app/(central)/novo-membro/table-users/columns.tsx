@@ -16,6 +16,7 @@ import Link from "next/link";
 import { z } from "zod";
 import { userSchemaTable } from "./schema";
 import { UserCircle } from "@phosphor-icons/react";
+import UpdateMember from "../UpdateMember";
 
 export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   // NOME MEMBRO
@@ -144,7 +145,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const notification = row.original;
+      const user = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -155,14 +156,12 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end">
             <DropdownMenuLabel>Opções</DropdownMenuLabel>
-            <DropdownMenuItem
-              onClick={() => navigator.clipboard.writeText(notification.id)}
-            >
-              Editar
-            </DropdownMenuItem>
+            <UpdateMember member={user} />
+
             <DropdownMenuSeparator />
+
             <DropdownMenuItem asChild>
-              <Link href={`/pdf/${notification.id}`}>Deletar</Link>
+              <Link href={`/pdf/${user.id}`}>Deletar</Link>
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

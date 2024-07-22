@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const discipuladorUsuarioSchema = z.object({
-  user_discipulador_usuario_discipulador_idTouser: z.object({
+  user_discipulador: z.object({
     id: z.string().uuid(),
     first_name: z.string(),
   }),
@@ -27,7 +27,7 @@ const cargoDeLiderancaSchema = z.object({
   nome: z.string(),
 });
 
-const escolaSchema = z.object({
+export const escolaSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
 });
@@ -40,23 +40,37 @@ const encontroSchema = z.object({
 export const userSchemaTable = z.object({
   id: z.string().uuid(),
   role: z.enum(["MEMBER"]),
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: z.array(
+  discipulador: z.array(
     discipuladorUsuarioSchema,
-  ),
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: z.array(
+  ).optional(),
+  discipulos: z.array(
     z.unknown(),
-  ),
-  user_roles: z.array(z.unknown()),
-  image_url: z.string().nullable(),
+  ).optional(),
+  user_roles: z
+    .object({
+      rolenew: z.object({
+        name: z.string(),
+      }),
+    })
+    .array(),
+  image_url: z.string().optional(),
   email: z.string().email(),
   first_name: z.string(),
   last_name: z.string(),
-  date_nascimento: z.string().datetime().nullable(),
+  date_nascimento: z.date().optional(),
   sexo: z.enum(["F", "M"]),
+  cpf: z.string().optional(),
   telefone: z.string(),
-  batizado: z.boolean(),
-  date_batizado: z.string().datetime().nullable(),
-  is_discipulado: z.boolean(),
+  escolaridade: z.string(),
+  profissao: z.string().optional(),
+  batizado: z.string(),
+  date_batizado: z.date().optional(),
+  is_discipulado: z.string(),
+  estado_civil: z.string(),
+  nome_conjuge: z.string().optional(),
+  date_casamento: z.date().optional(),
+  has_filho: z.string(),
+  quantidade_de_filho: z.number().optional(),
   discipuladorId: z.string().uuid(),
   supervisao_pertence: supervisaoPertenceSchema,
   celula: celulaSchema,
@@ -66,21 +80,29 @@ export const userSchemaTable = z.object({
   escolas: z.array(escolaSchema),
   encontros: z.array(encontroSchema),
   presencas_aulas_escolas: z.array(z.unknown()),
+  cep: z.string().optional(),
+  cidade: z.string().optional(),
+  estado: z.string().optional(),
+  bairro: z.string().optional(),
+  endereco: z.string().optional(),
+  numero_casa: z.string().optional(),
 });
+
+export type TUser = z.infer<typeof userSchemaTable>;
 
 // Validando um objeto
 // const data = {
 //   id: "25c9929e-0ef9-49f3-a46f-7eba5e409e56",
 //   role: "MEMBER",
-//   discipulador_usuario_discipulador_usuario_usuario_idTouser: [
+//   discipulador: [
 //     {
-//       user_discipulador_usuario_discipulador_idTouser: {
+//       user_discipulador: {
 //         id: "de0f4160-02a5-416a-8920-a3971ad5127f",
 //         first_name: "Yasmin Vitória",
 //       },
 //     },
 //   ],
-//   discipulador_usuario_discipulador_usuario_discipulador_idTouser: [],
+//   discipulos: [],
 //   user_roles: [],
 //   image_url: null,
 //   email: "lilianvitriateste@teste.com",

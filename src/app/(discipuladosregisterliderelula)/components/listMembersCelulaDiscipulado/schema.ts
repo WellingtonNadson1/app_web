@@ -18,8 +18,8 @@ export type dataSchemaReturnExistDiscipuladoAllCell = {
         id: string
         nome: string
       }
-      discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-        user_discipulador_usuario_discipulador_idTouser: {
+      discipulador: {
+        user_discipulador: {
           id: string
           first_name: string
         }
@@ -62,8 +62,8 @@ export interface MembroCell {
     id: string
     nome: string
   }
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-    user_discipulador_usuario_discipulador_idTouser: {
+  discipulador: {
+    user_discipulador: {
       id: string
       first_name: string
     }
@@ -84,15 +84,15 @@ export interface Membro {
     nome: string;
   };
   // Discipulador
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-    user_discipulador_usuario_discipulador_idTouser: {
+  discipulador: {
+    user_discipulador: {
       id: string,
       first_name: string
     },
   }[],
   // Discipulos
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-    user_discipulador_usuario_usuario_idTouser: {
+  discipulos: {
+    user_discipulos: {
       id: string,
       first_name: string
     },

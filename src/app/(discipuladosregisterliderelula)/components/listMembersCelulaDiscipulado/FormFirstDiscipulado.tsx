@@ -1,20 +1,20 @@
 'use client'
-import { SubmitHandler, useForm } from "react-hook-form"
-import { MembroCell, dataSchemaCreateDiscipulado, dataSchemaReturnCreateDiscipulado } from "./schema"
-import { useUserDataStore } from "@/store/UserDataStore"
+import { BASE_URL, errorCadastro, success } from "@/functions/functions"
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken"
-import { BASE_URL, BASE_URL_LOCAL, errorCadastro, success } from "@/functions/functions"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import { Disclosure } from "@headlessui/react"
-import { Fragment } from "react"
-import { ChevronUpIcon } from "lucide-react"
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer } from 'react-toastify'
 import { cn } from "@/lib/utils"
+import { useUserDataStore } from "@/store/UserDataStore"
+import { Disclosure } from "@headlessui/react"
 import { CheckFat, Warning } from "@phosphor-icons/react"
+import { useMutation, useQueryClient } from "@tanstack/react-query"
 import dayjs from "dayjs"
-import utc from "dayjs/plugin/utc"
 import timezone from "dayjs/plugin/timezone"
+import utc from "dayjs/plugin/utc"
+import { ChevronUpIcon } from "lucide-react"
+import { Fragment } from "react"
+import { SubmitHandler, useForm } from "react-hook-form"
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { MembroCell, dataSchemaCreateDiscipulado, dataSchemaReturnCreateDiscipulado } from "./schema"
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,10 +28,10 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
   const { token } = useUserDataStore.getState()
   const axiosAuth = useAxiosAuthToken(token)
   const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
-  const discipulador = membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser?.[0]?.user_discipulador_usuario_discipulador_idTouser?.first_name || 'Sem Registro'
-  const discipulador_id = membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser?.[0]?.user_discipulador_usuario_discipulador_idTouser?.id
-  const quantidade_discipulado = membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser?.[0]?._count?.discipulado || 0
-  const data_1discipulado_ocorreu = membro?.discipulador_usuario_discipulador_usuario_usuario_idTouser?.[0]?.discipulado?.[0]?.data_ocorreu || null
+  const discipulador = membro?.discipulador?.[0]?.user_discipulador?.first_name || 'Sem Registro'
+  const discipulador_id = membro?.discipulador?.[0]?.user_discipulador?.id
+  const quantidade_discipulado = membro?.discipulador?.[0]?._count?.discipulado || 0
+  const data_1discipulado_ocorreu = membro?.discipulador?.[0]?.discipulado?.[0]?.data_ocorreu || null
   const { register, handleSubmit, setValue } = useForm<dataSchemaCreateDiscipulado>()
 
   // Register New Discipulado

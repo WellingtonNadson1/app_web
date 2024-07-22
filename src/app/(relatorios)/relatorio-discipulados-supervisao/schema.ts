@@ -5,7 +5,7 @@ const UserDiscipuladorUsuarioDiscipuladorIdTouser = z.object({
 })
 
 const DiscipuladorUsuario = z.object({
-  user_discipulador_usuario_discipulador_idTouser: UserDiscipuladorUsuarioDiscipuladorIdTouser
+  user_discipulador: UserDiscipuladorUsuarioDiscipuladorIdTouser
 })
 
 const Discipulado = z.object({
@@ -14,7 +14,7 @@ const Discipulado = z.object({
 })
 
 const DiscipuladorUsuarioDiscipuladorUsuarioUsuarioIdTouser = z.object({
-  user_discipulador_usuario_discipulador_idTouser: z.object({
+  user_discipulador: z.object({
     first_name: z.string()
   }),
   discipulado: Discipulado.array()
@@ -34,7 +34,7 @@ const MembroDiscipuladoSchema = z.object({
     id: z.string(),
     nome: z.string()
   }),
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: DiscipuladorUsuarioDiscipuladorUsuarioUsuarioIdTouser.array()
+  discipulador: DiscipuladorUsuarioDiscipuladorUsuarioUsuarioIdTouser.array()
 })
 
 const MembrosDiscipuladoSchema = z.object({
