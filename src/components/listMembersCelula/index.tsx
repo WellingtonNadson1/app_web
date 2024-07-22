@@ -1,6 +1,7 @@
 'use client'
 import AddNewMember from '@/app/(central)/novo-membro/AddNewMember'
 import DeleteMember from '@/app/(central)/novo-membro/DeleteMember'
+import { ReturnMembers } from '@/app/(central)/novo-membro/schema'
 import UpdateMember from '@/app/(central)/novo-membro/UpdateMember'
 import { UserFocus } from '@phosphor-icons/react'
 import { useState } from 'react'
@@ -26,7 +27,7 @@ interface Membro {
 export interface CelulaData {
   id: string;
   nome: string;
-  membros: Membro[];
+  membros: ReturnMembers[];
   lider: {
     id: string;
     first_name: string;
@@ -142,7 +143,7 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
                         />
                         <div onClick={() => setShouldFetch(true)}>
                           <UpdateMember
-                            memberId={user.id}
+                            member={user}
                           />
                         </div>
                       </td>
