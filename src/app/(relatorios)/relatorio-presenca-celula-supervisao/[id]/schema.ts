@@ -1,4 +1,4 @@
-import { array, z } from "zod";
+import { z } from "zod";
 
 const Membro = z.object({
   id: z.string(),
@@ -56,8 +56,12 @@ export type TCelula = z.infer<typeof CelulaSchema>;
 
 export const FormRelatorioDataSchema = z.object({
   superVisionId: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.date({
+    required_error: "Você precisar colocar uma data inicial.",
+  }),
+  endDate: z.date({
+    required_error: "Você precisar colocar uma data final.",
+  }),
 });
 
 export type FormRelatorioSchema = z.infer<typeof FormRelatorioDataSchema>;

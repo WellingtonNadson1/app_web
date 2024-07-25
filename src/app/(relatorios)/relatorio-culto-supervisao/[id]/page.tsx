@@ -1,32 +1,6 @@
 "use client";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
-import React, { Fragment, useEffect, useState } from "react";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import ptBr from "dayjs/locale/pt-br";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import {
-  FormRelatorioDataSchema,
-  GroupedForCulto,
-  Pessoa,
-  PresencaForDate,
-} from "./schema";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import {
   Form,
   FormControl,
@@ -40,13 +14,39 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover";
-import { Button } from "@/components/ui/button";
-import format from "date-fns/format";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { Calendar } from "@/components/ui/calendar";
-import ptBR from "date-fns/locale/pt-BR";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
 import { useData } from "@/providers/providers";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
+import format from "date-fns/format";
+import ptBR from "date-fns/locale/pt-BR";
+import dayjs from "dayjs";
+import ptBr from "dayjs/locale/pt-br";
+import localizedFormat from "dayjs/plugin/localizedFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import Link from "next/link";
+import { Fragment, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { z } from "zod";
+import {
+  FormRelatorioDataSchema,
+  GroupedForCulto,
+  Pessoa,
+  PresencaForDate,
+} from "./schema";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -72,7 +72,6 @@ export default function StatsCardRelatorios() {
   const [numberOfRowsCell, setNumberOfRowsCell] = useState<
     number[] | undefined
   >();
-  // const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
     resolver: zodResolver(FormRelatorioDataSchema),
   });
@@ -285,12 +284,6 @@ export default function StatsCardRelatorios() {
 
     setNumberOfRowsCell(rowsNameCell);
   }, [groupedForCell, idCultos]); // Add dependencies to useEffect
-
-  const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSupervisaoSelecionada(event.target.value);
-  };
 
   return (
     <Fragment>

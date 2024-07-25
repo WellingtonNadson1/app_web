@@ -1,22 +1,5 @@
 {
-  "node": {
-    "7752103832f18ceac9c86fe2cd20c612701ed284": {
-      "workers": {
-        "app/(login)/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fwellingtonnadson%2Fwellington%2Fibb%2Fapp_web%2Factions%2Flogin.ts%22%2C%5B%22%24%24ACTION_0%22%2C%22loginFunction%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(login)/login/page": "action-browser"
-      }
-    },
-    "bae5fc1c3f3d8b14c626a05db4eaeee783776a63": {
-      "workers": {
-        "app/(login)/login/page": "(action-browser)/./node_modules/next/dist/build/webpack/loaders/next-flight-action-entry-loader.js?actions=%5B%5B%22%2FUsers%2Fwellingtonnadson%2Fwellington%2Fibb%2Fapp_web%2Factions%2Flogin.ts%22%2C%5B%22%24%24ACTION_0%22%2C%22loginFunction%22%5D%5D%5D&__client_imported__=true!"
-      },
-      "layer": {
-        "app/(login)/login/page": "action-browser"
-      }
-    }
-  },
+  "node": {},
   "edge": {},
-  "encryptionKey": "/42as3wNTLrtk8pFb5ruBTke1iUpaxQtA/brf/Avmow="
+  "encryptionKey": "rKhNGYWGEUVstbQG3vDWFhJ3p75QsPxfnQoPog3Dslc="
 }

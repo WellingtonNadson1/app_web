@@ -88,8 +88,12 @@ export const PresencaForDateSchema = z.object({
 
 export const FormRelatorioDataSchema = z.object({
   superVisionId: z.string(),
-  startDate: z.string(),
-  endDate: z.string(),
+  startDate: z.date({
+    required_error: "Você precisar colocar uma data inicial.",
+  }),
+  endDate: z.date({
+    required_error: "Você precisar colocar uma data final.",
+  }),
 })
 
 

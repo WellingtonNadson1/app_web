@@ -1,7 +1,10 @@
 {
-  "/(relatorios)/relatorio-discipulados-supervisor/page": "app/(relatorios)/relatorio-discipulados-supervisor/page.js",
+  "/_not-found/page": "app/_not-found/page.js",
+  "/(relatorios)/relatorio-culto-supervisao/[id]/page": "app/(relatorios)/relatorio-culto-supervisao/[id]/page.js",
+  "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": "app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js",
+  "/(relatorios)/relatorio-culto-supervisor/[id]/page": "app/(relatorios)/relatorio-culto-supervisor/[id]/page.js",
+  "/(central)/relatorios/[id]/page": "app/(central)/relatorios/[id]/page.js",
   "/(relatorios)/relatorio-discipulados-supervisao/page": "app/(relatorios)/relatorio-discipulados-supervisao/page.js",
-  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
-  "/(central)/discipulados/page": "app/(central)/discipulados/page.js",
-  "/(central)/discipulados/[dicipuladosupervisaoId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/page.js"
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(relatorios)/relatorio-discipulados-supervisor/page": "app/(relatorios)/relatorio-discipulados-supervisor/page.js"
 }

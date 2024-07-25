@@ -1,5 +1,5 @@
-import axios from "axios";
 import { auth } from "@/auth";
+import axios from "axios";
 import ClientDashboard from "./ClientDashboard";
 
 // Função que roda no servidor para obter os dados
@@ -19,7 +19,6 @@ async function fetchServerData() {
 
     try {
       const { data } = await axiosAuth.get("/users/all");
-      console.log("dataReturnALL:", data);
       return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
@@ -47,8 +46,6 @@ async function fetchServerData() {
 
 export default async function DashboardPage() {
   const { session, result, error } = await fetchServerData();
-  console.log({ result });
-
   if (error) {
     return <div>Error fetching data: {error}</div>;
   }

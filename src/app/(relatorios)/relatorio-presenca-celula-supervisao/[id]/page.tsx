@@ -1,19 +1,31 @@
 "use client";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useData } from "@/providers/providers";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { Spinner } from "@phosphor-icons/react/dist/ssr";
+import format from "date-fns/format";
+import ptBR from "date-fns/locale/pt-BR";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
-import React, { Fragment, useEffect, useState } from "react";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import ptBr from "dayjs/locale/pt-br";
 import localizedFormat from "dayjs/plugin/localizedFormat";
-import { FormRelatorioSchema, TSupervisionData } from "./schema";
-import { SubmitHandler, useForm } from "react-hook-form";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { Fragment, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { z } from "zod";
 import TabelRelatorio from "./FormRelatorio";
-import { useData } from "@/providers/providers";
+import { FormRelatorioDataSchema, FormRelatorioSchema, TSupervisionData } from "./schema";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -25,8 +37,9 @@ export default function RelatoriosPresencaCelula() {
   const axiosAuth = useAxiosAuthToken(session?.user.token as string);
   const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`;
   const [RelatorioData, setRelatorioData] = useState<TSupervisionData>();
-  const { register, handleSubmit } = useForm<FormRelatorioSchema>();
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
+    resolver: zodResolver(FormRelatorioDataSchema),
+  })
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
   // @ts-ignore
@@ -40,32 +53,17 @@ export default function RelatoriosPresencaCelula() {
   }) => {
     try {
       setIsLoadingSubmitForm(true);
-      dayjs(startDate).tz("America/Sao_Paulo").toISOString();
-      dayjs(endDate).tz("America/Sao_Paulo").toISOString();
-
       const response = await axiosAuth.post(URLPresencaReuniaoCelula, {
         superVisionId,
         startDate,
         endDate,
       });
-
       const result = await response.data;
       setRelatorioData(result);
       setIsLoadingSubmitForm(false);
-      console.log("data", result);
     } catch (error) {
       console.error(error);
     }
-  };
-
-  useEffect(() => {
-    console.log("RelatorioData", RelatorioData); // Mostrar o estado atualizado
-  }, [RelatorioData]);
-
-  const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSupervisaoSelecionada(event.target.value);
   };
 
   return (
@@ -73,139 +71,180 @@ export default function RelatoriosPresencaCelula() {
       <div className="relative z-40 p-2 bg-white rounded-sm">
         <div className="px-3 mt-2 mb-3">
           <Fragment>
-            <form onSubmit={handleSubmit(handleRelatorio)}>
-              <div className="p-3">
-                <div className="flex items-center justify-start gap-4">
-                  <Link href={"/dashboard"}>
-                    <Image
-                      src="/images/logo-ibb-1.svg"
-                      width={62}
-                      height={64}
-                      alt="Logo IBB"
-                    />
-                  </Link>
-                  <div>
-                    <h1 className="text-base leading-normal text-gray-600 uppercase">
-                      Igreja Batista Betânia - Lugar do derramar de Deus
-                    </h1>
-                    <h2 className="text-sm leading-normal text-gray-400 uppercase">
-                      Relatório de Presença nas Reuniões de Células
-                    </h2>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
-                  <div className="sm:col-span-2">
-                    <label
-                      htmlFor="startDate"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Dt. Início
-                    </label>
-                    <div className="mt-3">
-                      <input
-                        {...register("startDate", { required: true })}
-                        type="datetime-local"
-                        name="startDate"
-                        id="startDate"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="sm:col-span-2">
-                    <label
-                      htmlFor="endDate"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Dt. Final
-                    </label>
-                    <div className="mt-3">
-                      <input
-                        {...register("endDate", { required: true })}
-                        type="datetime-local"
-                        name="endDate"
-                        id="endDate"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                      />
-                    </div>
-                  </div>
-
-                  {/* INFORMAÇÕES DO REINO */}
-                  <div className="sm:col-span-2">
-                    <label
-                      htmlFor="superVisionId"
-                      className="block text-sm font-medium leading-6 text-slate-700"
-                    >
-                      Supervisão
-                    </label>
-                    <div className="mt-3">
-                      <select
-                        {...register("superVisionId", { required: true })}
-                        id="superVisionId"
-                        name="superVisionId"
-                        className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        onChange={handleSupervisaoSelecionada}
-                      >
-                        {!supervisoes ? (
-                          <option value="">Carregando supervisões...</option>
-                        ) : (
-                          <option value="">Selecione</option>
-                        )}
-                        {supervisoes &&
-                          // @ts-ignore
-                          supervisoes?.map((supervisao) => (
-                            <option key={supervisao.id} value={supervisao.id}>
-                              {supervisao.nome}
-                            </option>
-                          ))}
-                      </select>
-                    </div>
-                  </div>
-                  {/* Botões para submeter Forms */}
-                  <div className="flex flex-col justify-end sm:col-span-2">
-                    <div className="">
-                      {isLoadingSubmitForm ? (
-                        <button
-                          type="submit"
-                          // disabled={isLoadingSubmitForm}
-                          className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-                        >
-                          <svg
-                            className="w-5 h-5 mr-3 text-white animate-spin"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          <span>Gerando Relat...</span>
-                        </button>
-                      ) : (
-                        <button
-                          type="submit"
-                          className="px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
-                        >
-                          <span>Gerar Relatório</span>
-                        </button>
-                      )}
-                    </div>
-                  </div>
+            <div className="p-3">
+              <div className="flex items-center justify-start gap-4">
+                <Link href={"/dashboard"}>
+                  <Image
+                    src="/images/logo-ibb-1.svg"
+                    width={62}
+                    height={64}
+                    alt="Logo IBB"
+                  />
+                </Link>
+                <div>
+                  <h1 className="text-base leading-normal text-gray-600 uppercase">
+                    Igreja Batista Betânia - Lugar do derramar de Deus
+                  </h1>
+                  <h2 className="text-sm leading-normal text-gray-400 uppercase">
+                    Relatório de Presença nas Reuniões de Células
+                  </h2>
                 </div>
               </div>
-            </form>
+              {/* FORMS */}
+              <Form {...form}>
+                <form onSubmit={form.handleSubmit(handleRelatorio)}>
+                  <div className="grid grid-cols-1 items-center justify-center mt-10 gap-2 gap-y-6 sm:grid-cols-12">
+                    <div className="sm:col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="startDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Data de início</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      " pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "P", { locale: ptBR })
+                                    ) : (
+                                      <span>Selecione uma data</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* DATA FINAL */}
+                    <div className="sm:col-span-2">
+                      <FormField
+                        control={form.control}
+                        name="endDate"
+                        render={({ field }) => (
+                          <FormItem className="flex flex-col">
+                            <FormLabel>Data final</FormLabel>
+                            <Popover>
+                              <PopoverTrigger asChild>
+                                <FormControl>
+                                  <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                      " pl-3 text-left font-normal",
+                                      !field.value && "text-muted-foreground",
+                                    )}
+                                  >
+                                    {field.value ? (
+                                      format(field.value, "P", { locale: ptBR })
+                                    ) : (
+                                      <span>Selecione uma data</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                  </Button>
+                                </FormControl>
+                              </PopoverTrigger>
+                              <PopoverContent
+                                className="w-auto p-0"
+                                align="start"
+                              >
+                                <Calendar
+                                  mode="single"
+                                  selected={field.value}
+                                  onSelect={field.onChange}
+                                  disabled={(date) =>
+                                    date > new Date() ||
+                                    date < new Date("1900-01-01")
+                                  }
+                                  initialFocus
+                                />
+                              </PopoverContent>
+                            </Popover>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+
+                    {/* SELECAO SUPERVISAO */}
+                    <div className="sm:col-span-3">
+                      <FormField
+                        control={form.control}
+                        name="superVisionId"
+                        render={({ field }) => (
+                          <FormItem className="space-y-2 flex flex-col">
+                            <FormLabel>Supervisão</FormLabel>
+                            <Select
+                              onValueChange={field.onChange}
+                              defaultValue={field.value}
+                            >
+                              <FormControl>
+                                <SelectTrigger>
+                                  <SelectValue placeholder="Selecione uma supervisão" />
+                                </SelectTrigger>
+                              </FormControl>
+                              <SelectContent>
+                                {supervisoes &&
+                                  // @ts-ignore
+                                  supervisoes?.map((supervisao) => (
+                                    <SelectItem
+                                      key={supervisao.id}
+                                      value={supervisao.id}
+                                    >
+                                      {supervisao.nome}
+                                    </SelectItem>
+                                  ))}
+                              </SelectContent>
+                            </Select>
+                            <FormMessage />
+                          </FormItem>
+                        )}
+                      />
+                    </div>
+                    {/* Botões para submeter Forms */}
+                    <div className="flex flex-col w-full sm:col-span-2">
+                      <div className="sm:mt-5">
+                        <Button
+                          type="submit"
+                          className="w-full text-white bg-blue-700 shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                          disabled={isLoadingSubmitForm}
+                        >
+                          {isLoadingSubmitForm ? (
+                            <>
+                              <Spinner className="animate-spin mr-2" />
+                              <span>Gerando...</span>
+                            </>
+                          ) : (
+                            <span>Relatório</span>
+                          )}
+                        </Button>
+                      </div>
+                    </div>
+                  </div>
+                </form>
+              </Form>
+            </div>
           </Fragment>
         </div>
         {/* Inicio Relatorio */}
