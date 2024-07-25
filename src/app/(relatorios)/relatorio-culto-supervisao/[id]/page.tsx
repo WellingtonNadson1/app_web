@@ -28,6 +28,7 @@ import { cn } from "@/lib/utils";
 import { useData } from "@/providers/providers";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { addYears } from "date-fns";
 import format from "date-fns/format";
 import ptBR from "date-fns/locale/pt-BR";
 import dayjs from "dayjs";
@@ -76,7 +77,8 @@ export default function StatsCardRelatorios() {
     resolver: zodResolver(FormRelatorioDataSchema),
   });
 
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const today = new Date()
+  const yearCalendar = addYears(today, 5).getFullYear()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
   const [totalCultos, setTotalCultos] = useState<number>(0);
   const [totalCultosPrimicias, setTotalCultosPrimicias] = useState<number>(0);
@@ -347,8 +349,12 @@ export default function StatsCardRelatorios() {
                               >
                                 <Calendar
                                   mode="single"
+                                  className="flex items-center justify-center gap-1"
+                                  captionLayout="dropdown-buttons"
                                   selected={field.value}
                                   onSelect={field.onChange}
+                                  fromYear={2023}
+                                  toYear={yearCalendar}
                                   // disabled={(date) =>
                                   //   date > new Date() ||
                                   //   date < new Date("1900-01-01")
@@ -396,8 +402,11 @@ export default function StatsCardRelatorios() {
                               >
                                 <Calendar
                                   mode="single"
+                                  captionLayout="dropdown-buttons"
                                   selected={field.value}
                                   onSelect={field.onChange}
+                                  fromYear={2023}
+                                  toYear={yearCalendar}
                                   disabled={(date) =>
                                     date > new Date() ||
                                     date < new Date("1900-01-01")
