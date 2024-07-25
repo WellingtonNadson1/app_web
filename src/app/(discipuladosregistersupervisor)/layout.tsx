@@ -1,18 +1,23 @@
 // import { getServerSession } from 'next-auth'
 // import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
+import '@/./app/globals.css'
+import { auth } from '@/auth'
 import Sidebar from '@/components/sidebar/Sidebar'
 import { Providers } from '@/providers/providers'
+import { InitializerUserStore } from '@/store/InitializerUserStore'
 import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React from 'react'
-import '@/./app/globals.css'
-import { InitializerUserStore } from '@/store/InitializerUserStore'
-import { auth } from '@/auth'
 
 export const metadata = {
   title: 'App IBB',
   description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
+  icons: {
+    icon: ['/favicon.ico'],
+    apple: ['/apple-touch-icon.png?v=4'],
+    shortcut: ['/apple-touch-icon.png']
+  }
 }
 
 export default async function RootLayout({
