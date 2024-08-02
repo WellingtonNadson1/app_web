@@ -1,12 +1,13 @@
 "use client";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useUserDataStore } from "@/store/UserDataStore";
 import { FilePdf } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
 import { z } from "zod";
 import SpinnerButton from "./spinners/SpinnerButton";
-import { useUserDataStore } from "@/store/UserDataStore";
-import dayjs from "dayjs";
 import { Card } from "./ui/card";
 dayjs().locale();
 
@@ -96,46 +97,47 @@ export default function LicoesCelula() {
     startDate = weekEnd.add(1, "day");
   }
 
-  const temaMesCelula = "Servir o Próximo";
+  const temaMesCelula = "Santidade";
   const subTemaMesCelula =
-    "Mas entre vocês não pode ser assim. Pelo contrário, o mais importante deve ser como o menos importante; e o que manda deve ser como o que é mandado. Lucas 22:26";
+    "'em santidade e justiça perante ele, todos os nossos dias.' - Lucas 1:75";
 
   const statusLicoes = [
     {
       id: 1,
-      title: "Jesus: nosso exemplo de servo",
+      title: "SANTIDADE COMO ESTILO DE VIDA",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Lc 22:27",
+      versiculo: "Lv 20:26",
     },
     {
       id: 2,
-      title: "Chamados para servir",
+      title: "SANTIFICADOS PELA PALAVRA",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "IPe 4:10",
+      versiculo: "Jo 17:17",
     },
     {
       id: 3,
-      title: "Ministério x Servir Pessoas",
+      title: "O MUNDO NÃO É O PADRÃO",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Ef 6:7",
+      versiculo: "Tg 4:4",
     },
     {
       id: 4,
-      title: "Servir com os Bens",
+      title: "SEM SANTIFICAÇÃO NINGUÉM VERÁ A DEUS",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Lc 3:10-11",
+      versiculo: "Hb 12:14",
+      lancando: true
     },
-    {
-      id: 5,
-      title: "Jesus serviu a humanidade com sua vida",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Mc 10:45",
-    },
+    // {
+    //   id: 5,
+    //   title: "Jesus serviu a humanidade com sua vida",
+    //   periodo: weeks,
+    //   icon: FilePdf,
+    //   versiculo: "Mc 10:45",
+    // },
   ];
 
   return (
@@ -159,7 +161,7 @@ export default function LicoesCelula() {
                   href={`${data?.[index]}`}
                   target="_blank"
                   key={stat.id}
-                  className="rounded-md cursor-pointer bg-gray-50 hover:bg-gray-100/80"
+                  className={cn("rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80", stat.lancando && "bg-blue-50 hover:bg-blue-100/75")}
                 >
                   <div className="p-2 sm:col-span-1">
                     <div className="flex items-center justify-between w-full gap-4">
@@ -173,12 +175,11 @@ export default function LicoesCelula() {
                               {stat.versiculo}
                             </span>
                           </div>
-                          {/* as posso colocar mais um dia somando
-                          para regular os dias */}
                           <div className="mt-2 text-sm">
                             Período:
                             <span className="ml-2 text-sm leading-6 text-gray-500">
-                              {weeksDate[index]?.start} à
+                              {/*adiciono ou subtraio um dia para regular os dias */}
+                              {weeksDate[index + 1]?.start} à
                             </span>
                             <span className="ml-1 text-sm leading-6 text-gray-500">
                               {weeksDate[index]?.end}
