@@ -182,11 +182,11 @@ export default function LicoesCelula() {
                               {weeksDate[index + 1]?.start} à
                             </span>
                             <span className="ml-1 text-sm leading-6 text-gray-500">
-                              {weeksDate[index]?.end}
+                              {weeksDate[index + 1]?.end}
                             </span>
                           </div>
                           <div className="flex items-center mt-3">
-                            {stat.periodo[index]?.end.isAfter(toDay) ? (
+                            {stat.periodo[index + 1]?.end.isAfter(toDay) ? (
                               <span className="text-sm font-normal leading-6 text-red-500">
                                 pendente
                               </span>
