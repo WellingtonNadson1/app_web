@@ -1,6 +1,8 @@
 'use client'
-import ListMembersCelula, { CelulaData } from '@/components/listMembersCelula'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
+import { columns } from '@/app/(central)/novo-membro/table-users/columns'
+import { DataTableUsers } from '@/app/(central)/novo-membro/table-users/data-table-users'
+import { CelulaData } from '@/components/listMembersCelula'
+import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -62,7 +64,8 @@ export default function ControleCelulaSupervision({
       </div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
         {isSuccess &&
-          <ListMembersCelula data={celula} />
+          <DataTableUsers columns={columns} data={celula.membros as any} />
+          // <ListMembersCelula data={celula} />
         }
       </div>
       {/* <div className="relative w-full px-2 mx-auto mb-4">

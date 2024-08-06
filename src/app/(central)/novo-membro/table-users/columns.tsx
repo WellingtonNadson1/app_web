@@ -1,7 +1,6 @@
 "use client";
 
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,12 +10,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Badge } from "@/components/ui/badge";
-import Link from "next/link";
-import { z } from "zod";
-import { userSchemaTable } from "./schema";
 import { UserCircle } from "@phosphor-icons/react";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { z } from "zod";
+import DeleteMember from "../DeleteMember";
 import UpdateMember from "../UpdateMember";
+import { userSchemaTable } from "./schema";
 
 export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   // NOME MEMBRO
@@ -161,7 +161,8 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
             <DropdownMenuSeparator />
 
             <DropdownMenuItem asChild>
-              <Link href={`/pdf/${user.id}`}>Deletar</Link>
+              <DeleteMember memberId={user.id} memberName={user.first_name} />
+              {/* <Link href={`/pdf/${user.id}`}>Deletar</Link> */}
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>

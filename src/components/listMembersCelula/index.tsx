@@ -138,7 +138,7 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
 
                       <td className="flex items-center justify-center gap-2 px-2 py-1 text-center border-b border-gray-200">
                         <DeleteMember
-                          member={user.id}
+                          memberId={user.id}
                           memberName={user.first_name}
                         />
                         <div onClick={() => setShouldFetch(true)}>

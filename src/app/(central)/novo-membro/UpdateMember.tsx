@@ -71,12 +71,11 @@ dayjs.extend(utc);
 dayjs.extend(timezone);
 
 const estadoCivil = [
-  { label: "Casado(a)", value: "casado" },
   { label: "Solteiro(a)", value: "solteiro" },
-  { label: "Viúvo(a)", value: "viuvo" },
+  { label: "Casado(a)", value: "casado" },
   { label: "Divorciado(a)", value: "divorciado" },
   { label: "Uniao Estável", value: "uniao_estavel" },
-  { label: "Casado(a)", value: "casado" },
+  { label: "Viúvo(a)", value: "viuvo" },
 
 ]
 const trueFalse = [
@@ -93,6 +92,7 @@ function UpdateMember({ member }: { member: TUser }) {
   // Zustand Store
   // @ts-ignore
   const { data: dataAllCtx } = useData();
+  console.log('dataAllCtx', dataAllCtx)
   const supervisoes: SupervisaoData[] = dataAllCtx?.combinedData[0];
   const escolas: z.infer<typeof escolaSchema>[] = dataAllCtx?.combinedData[1];
   const encontros = dataAllCtx?.combinedData[2];
@@ -1028,7 +1028,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                 Encontros Participados
                               </legend>
                               <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
-                                {{ supervisoes } ? (
+                                {supervisoes ? (
                                   // @ts-ignore
                                   encontros?.map((encontro) => (
                                     <div
