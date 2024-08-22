@@ -273,7 +273,7 @@ function MeetingComponent({ meeting }: { meeting: meetingsch }) {
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) : meeting?.culto_semana?.nome === "Capacitação Para Discípulos" ? (
+      ) : meeting?.culto_semana?.nome === "Capacitação Para Discípulos - CPD" ? (
         <Student
           width={10}
           height={10}
