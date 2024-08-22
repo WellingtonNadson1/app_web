@@ -3,7 +3,6 @@ import { ICelula } from "@/components/ListCelulas";
 import ListCelulasSupervision from "@/components/ListCelulasSupervision";
 import StatsCardSupervision from "@/components/StatsCardSupervision";
 import { useData } from "@/providers/providers";
-import { useCombinedStore } from "@/store/DataCombineted";
 
 interface IUser {
   id: string;

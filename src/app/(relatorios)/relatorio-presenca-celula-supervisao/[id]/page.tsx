@@ -11,8 +11,6 @@ import { useData } from "@/providers/providers";
 import { CalendarIcon } from "@heroicons/react/24/outline";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import format from "date-fns/format";
-import ptBR from "date-fns/locale/pt-BR";
 import dayjs from "dayjs";
 import ptBr from "dayjs/locale/pt-br";
 import localizedFormat from "dayjs/plugin/localizedFormat";
@@ -112,7 +110,12 @@ export default function RelatoriosPresencaCelula() {
                                     )}
                                   >
                                     {field.value ? (
-                                      format(field.value, "P", { locale: ptBR })
+                                      dayjs(field.value)
+                                        // .subtract(3, "hours")
+                                        .utc()
+                                        .local()
+                                        .locale("pt-br")
+                                        .format("DD-MM-YYYY HH:mm:ss")
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -157,7 +160,12 @@ export default function RelatoriosPresencaCelula() {
                                     )}
                                   >
                                     {field.value ? (
-                                      format(field.value, "P", { locale: ptBR })
+                                      dayjs(field.value)
+                                        // .subtract(3, "hours")
+                                        .utc()
+                                        .local()
+                                        .locale("pt-br")
+                                        .format("DD-MM-YYYY HH:mm:ss")
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}

@@ -1,5 +1,5 @@
 'use client'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { useQuery } from '@tanstack/react-query'
