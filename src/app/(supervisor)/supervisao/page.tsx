@@ -1,5 +1,8 @@
 /* eslint-disable camelcase */
 'use client'
+import CalendarLoading from '@/app/(celula)/celula/loadingUi/CalendarLoading'
+import LicoesLoading from '@/app/(celula)/celula/loadingUi/LicoesLoading'
+import { Meeting } from '@/app/(celula)/celula/schema'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
@@ -8,17 +11,15 @@ import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
+import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
-import HeaderSupervisao from './HeaderSupervisao'
-import { Meeting } from '@/app/(celula)/celula/schema'
-import HeaderSupervisorLoad from './loadingUi'
-import axios from 'axios'
-import CalendarLoading from '@/app/(celula)/celula/loadingUi/CalendarLoading'
-import LicoesLoading from '@/app/(celula)/celula/loadingUi/LicoesLoading'
-import ControlePresenceSupervisorSecond from './_components/ControlePresenceSupervisorSecond'
 import ControlePresenceSupervisorFirst from './_components/ControlePresenceSupervisorFirst'
+import ControlePresenceSupervisorSecond from './_components/ControlePresenceSupervisorSecond'
+import HeaderSupervisao from './HeaderSupervisao'
+import HeaderSupervisorLoad from './loadingUi'
 
 export default function ControleSupervisor() {
   const { data: session } = useSession()
@@ -104,7 +105,17 @@ export default function ControleSupervisor() {
                               {({ open }) => (
                                 <>
                                   <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
-                                    <span>Frequência de Culto - {format(new Date(selectedDayMeetings[0].data_inicio_culto), 'Pp', { locale: pt })}</span>
+                                    <span>Frequência de Culto - {""}
+                                      {
+                                        format(
+                                          dayjs(new Date(
+                                            selectedDayMeetings[0].data_inicio_culto,
+                                          )).add(3, "hour").toDate(),
+                                          "Pp",
+                                          { locale: pt },
+                                        )
+                                      }
+                                    </span>
                                     <ChevronUpIcon
                                       className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                                     />
@@ -176,7 +187,17 @@ export default function ControleSupervisor() {
                                 {({ open }) => (
                                   <>
                                     <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
-                                      <span>Frequência de Culto - {format(new Date(selectedDayMeetings[1]?.data_inicio_culto), 'Pp', { locale: pt })}</span>
+                                      <span>Frequência de Culto -{""}
+                                        {
+                                          format(
+                                            dayjs(new Date(
+                                              selectedDayMeetings[1].data_inicio_culto,
+                                            )).add(3, "hour").toDate(),
+                                            "Pp",
+                                            { locale: pt },
+                                          )
+                                        }
+                                      </span>
                                       <ChevronUpIcon
                                         className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
                                       />

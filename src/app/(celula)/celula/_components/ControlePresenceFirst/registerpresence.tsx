@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   Form,
@@ -17,38 +18,36 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { Spinner, User } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ControlePresencaCelulaProps } from "../../schema";
-import { useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import { ControlePresencaCelulaProps } from "../../schema";
 import { FormSchema, dataForms } from "./shcema-controle-first-presence";
-import { Badge } from "@/components/ui/badge";
 
 function isError(error: unknown): error is Error {
   return error instanceof Error;
 }
-
-const URLControlePresenca = `${BASE_URL}/presencacultos/speed`;
 
 export function RegisterPresenceFormFirst({
   id,
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
+  const URLControlePresenca = `${BASE_URL}/presencacultos/speed`;
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`;
   const { data: session } = useSession();
   const axiosAuth = useAxiosAuth(session?.user.token as string);
+  const queryClient = useQueryClient();
   const [progress, setProgress] = useState<number>(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
   const { toast } = useToast();
 
   const getPresenceRegistered = async () => {
-    const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`;
-
     const { data } = await axiosAuth.get(URLPresencaCultoId);
     return data;
   };
@@ -56,7 +55,6 @@ export function RegisterPresenceFormFirst({
   const {
     data: PresenceExistRegistered,
     isLoading,
-    isSuccess: isSuccessGetPresence,
     error,
   } = useQuery({
     queryKey: ["presenceExistRegistered"],
@@ -67,7 +65,6 @@ export function RegisterPresenceFormFirst({
   const celulaSort = celula?.membros.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
   );
-  const queryClient = useQueryClient();
 
   const createPresencaCultoFunction = async ({
     presence_culto,
@@ -176,11 +173,10 @@ export function RegisterPresenceFormFirst({
         toast({
           variant: "destructive",
           title: "Ocorreu um Erro",
-          description: `${
-            axiosError.response?.status === 409
-              ? "Presença de Culto já Registrada para hoje!"
-              : axiosError.message
-          }`,
+          description: `${axiosError.response?.status === 409
+            ? "Presença de Culto já Registrada para hoje!"
+            : axiosError.message
+            }`,
         });
       } else {
         toast({
@@ -289,7 +285,7 @@ export function RegisterPresenceFormFirst({
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
                                       {member.situacao_no_reino.nome ===
-                                      "Normal" ? (
+                                        "Normal" ? (
                                         <Badge
                                           className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                         >

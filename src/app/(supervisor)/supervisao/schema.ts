@@ -61,8 +61,10 @@ export const ControlePresencaSupervisorPropsSchema = z.object({
 
 export type ControlePresencaSupervisorProps = z.infer<typeof ControlePresencaSupervisorPropsSchema>
 
-const attendanceSchema = z.object({
-  status: z.string(),
+export const attendanceSchema = z.object({
+  status: z.enum(["true", "false"], {
+    required_error: "Selecione",
+  }),
   membro: z.string(),
   presenca_culto: z.string(),
 })

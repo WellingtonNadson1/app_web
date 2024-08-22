@@ -1,6 +1,17 @@
 "use client";
+import { meeting } from "@/components/Calendar/Calendar";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import {
   Form,
   FormControl,
@@ -21,34 +32,23 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/components/ui/use-toast";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { cn } from "@/lib/utils";
 import { CalendarIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { PencilSimple, Spinner } from "@phosphor-icons/react/dist/ssr";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useSession } from "next-auth/react";
+import { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { CultoSchema } from "./schemaNewCulto";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { toast } from "@/components/ui/use-toast";
-import { Toaster } from "@/components/ui/toaster";
-import { PencilSimple, Spinner } from "@phosphor-icons/react/dist/ssr";
-import { useSession } from "next-auth/react";
-import {
-  Dialog,
-  DialogContent,
-  DialogDescription,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { useState } from "react";
-import { meeting } from "@/components/Calendar/Calendar";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -103,23 +103,31 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
     resolver: zodResolver(CultoSchema),
     defaultValues: {
       culto_semana: meeting?.meeting?.culto_semana.id,
-      data_inicio_culto: new Date(meeting?.meeting?.data_inicio_culto),
-      data_termino_culto: new Date(meeting?.meeting?.data_termino_culto),
+      data_inicio_culto: dayjs(new Date(meeting?.meeting?.data_inicio_culto)).add(3, "hour").toDate(),
+      data_termino_culto: dayjs(new Date(meeting?.meeting?.data_termino_culto)).add(3, "hour").toDate(),
       status: meeting?.meeting?.status,
     },
   });
 
   const UpdateCultoFunction = async (data: z.infer<typeof CultoSchema>) => {
+    // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
+    const data_inicio_culto1 = dayjs(data.data_inicio_culto).subtract(3, "hour").toISOString()
+    const data_termino_culto2 = dayjs(data.data_termino_culto).subtract(3, "hour").toISOString()
+    const data_inicio_culto = new Date(data_inicio_culto1)
+    const data_termino_culto = new Date(data_termino_culto2)
+
+    var data = { ...data, data_inicio_culto, data_termino_culto }
+
     const response = await axiosAuth.put(URLCultoIndividual, {
       data,
     });
+    form.reset();
     return response.data;
   };
 
   const {
     mutateAsync: updateCultoFn,
     isPending,
-    isSuccess,
   } = useMutation({
     mutationFn: UpdateCultoFunction,
     onSettled: () => {
@@ -163,7 +171,7 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
           <DialogHeader>
             <DialogTitle>Editar Culto</DialogTitle>
             <DialogDescription>
-              Edite o culto preenchendo o formulário?
+              Edite o culto preenchendo o formulário.
             </DialogDescription>
           </DialogHeader>
           <div className="text-center my-2 py-2 text-gray-700 border rounded-md bg-gray-50">
@@ -193,7 +201,7 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
                               >
                                 {field.value ? (
                                   dayjs(field.value)
-                                    .subtract(3, "hours")
+                                    // .add(3, "hour")
                                     .utc()
                                     .local()
                                     .locale("pt-br")
@@ -254,7 +262,7 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
                               >
                                 {field.value ? (
                                   dayjs(field.value)
-                                    .subtract(3, "hours")
+                                    // .add(3, "hour")
                                     .utc()
                                     .local()
                                     .locale("pt-br")

@@ -1,6 +1,11 @@
 "use client";
+import FormUpdateCulto from "@/app/(central)/cultos/form-update-culto";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { BookBookmark, Church, Cross, Student } from "@phosphor-icons/react";
+import { Player } from '@lordicon/react';
+import { BookBookmark, Cross, Student } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
 import {
   add,
   eachDayOfInterval,
@@ -16,13 +21,14 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns";
-import pt from "date-fns/locale/pt";
+import { ptBR } from "date-fns/locale/pt-BR";
+import { useEffect, useRef, useState } from 'react';
+const Ceia = require('@/app/assets/wired-outline-1486-food-as-resources.json');
+
+import dayjs from "dayjs";
+import { MoreVerticalIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
-import DeleteCulto from "./DeleteCulto";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useQuery } from "@tanstack/react-query";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { Button } from "../ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -30,9 +36,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "../ui/dropdown-menu";
-import { Button } from "../ui/button";
-import { MoreVerticalIcon } from "lucide-react";
-import FormUpdateCulto from "@/app/(central)/cultos/form-update-culto";
+import DeleteCulto from "./DeleteCulto";
 
 export type meeting = {
   id: string;
@@ -104,7 +108,7 @@ export default function MyCalendar() {
             <div className="md:pr-10">
               <div className="flex items-center">
                 <h2 className="flex-auto font-semibold text-gray-900">
-                  {format(firstDayCurrentMonth, "MMMM yyyy", { locale: pt })}
+                  {format(firstDayCurrentMonth, "MMMM yyyy", { locale: ptBR })}
                 </h2>
                 <button
                   type="button"
@@ -225,9 +229,9 @@ export default function MyCalendar() {
               <h2 className="font-semibold text-gray-900">
                 Agenda para{" "}
                 <time
-                  dateTime={format(selectedDay, "yyyy-MM-dd", { locale: pt })}
+                  dateTime={format(selectedDay, "yyyy-MM-dd", { locale: ptBR })}
                 >
-                  {format(selectedDay, "PP", { locale: pt })}
+                  {format(selectedDay, "PP", { locale: ptBR })}
                 </time>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -248,16 +252,22 @@ export default function MyCalendar() {
 }
 
 function Meeting({ meeting }: { meeting: meeting }) {
+  // ANIMACAO DO ICON
+  const playerRef = useRef<Player>(null);
+
+  useEffect(() => {
+    playerRef.current?.playFromBeginning();
+  }, [])
   // eslint-disable-next-line camelcase
-  const data_inicio_culto = parseISO(meeting.data_inicio_culto);
+  const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto)).add(3, "hour").toDate();
   // eslint-disable-next-line camelcase
-  const data_termino_culto = parseISO(meeting.data_termino_culto);
+  const data_termino_culto = dayjs(new Date(meeting.data_termino_culto)).add(3, "hour").toDate();
 
   return (
     <li className="flex border items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
       {meeting &&
-      meeting.culto_semana &&
-      meeting.culto_semana.nome === "Domingo de Sacrifício" ? (
+        meeting.culto_semana &&
+        meeting.culto_semana.nome === "Domingo de Sacrifício" ? (
         <Cross
           width={10}
           height={10}
@@ -283,11 +293,11 @@ function Meeting({ meeting }: { meeting: meeting }) {
           className="flex-none w-10 h-10 rounded-full"
         />
       ) : (
-        <Church
-          width={10}
-          height={10}
-          weight="thin"
-          className="flex-none w-10 h-10 rounded-full"
+        <Player
+          ref={playerRef}
+          icon={Ceia}
+          size={50}
+          onComplete={() => playerRef.current?.playFromBeginning()}
         />
       )}
 
@@ -295,11 +305,11 @@ function Meeting({ meeting }: { meeting: meeting }) {
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting.data_inicio_culto}>
-            {format(data_inicio_culto, "H:mm", { locale: pt })}h
+            {format(data_inicio_culto, "H:mm", { locale: ptBR })}h
           </time>{" "}
           -{" "}
           <time dateTime={meeting.data_termino_culto}>
-            {format(data_termino_culto, "H:mm", { locale: pt })}h
+            {format(data_termino_culto, "H:mm", { locale: ptBR })}h
           </time>
         </p>
       </div>
@@ -312,6 +322,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuLabel>Opções</DropdownMenuLabel>
+          {/* UPADATE CULTO */}
           <FormUpdateCulto meeting={meeting} />
 
           <DropdownMenuSeparator />
@@ -322,41 +333,6 @@ function Meeting({ meeting }: { meeting: meeting }) {
           />
         </DropdownMenuContent>
       </DropdownMenu>
-      {/* <Menu
-        as="div"
-        className="relative opacity-0 focus-within:opacity-100 group-hover:opacity-100"
-      >
-        <div>
-          <Menu.Button className="-m-2 flex items-center rounded-full p-1.5 text-gray-500 hover:text-gray-600">
-            <span className="sr-only">Open options</span>
-            <EllipsisVerticalIcon className="w-6 h-6" aria-hidden="true" />
-          </Menu.Button>
-        </div>
-
-        <Transition
-          as={Fragment}
-          enter="transition ease-out duration-100"
-          enterFrom="transform opacity-0 scale-95"
-          enterTo="transform opacity-100 scale-100"
-          leave="transition ease-in duration-75"
-          leaveFrom="transform opacity-100 scale-100"
-          leaveTo="transform opacity-0 scale-95"
-        >
-          <Menu.Items className="absolute right-0 z-10 mt-2 origin-top-right bg-white rounded-md shadow-lg w-36 ring-black ring-opacity-5 focus:outline-none">
-            <div className="py-1">
-              <Menu.Item>
-                <UpdateCulto cultoId={meeting.id} />
-              </Menu.Item>
-              <Menu.Item>
-                <DeleteCulto
-                  culto={meeting.id}
-                  cultoName={meeting?.culto_semana?.nome}
-                />
-              </Menu.Item>
-            </div>
-          </Menu.Items>
-        </Transition>
-      </Menu> */}
     </li>
   );
 }

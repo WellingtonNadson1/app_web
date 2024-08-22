@@ -3,26 +3,27 @@
 import CalendarLiderCelula from "@/components/CalendarLiderCelula";
 import LicoesCelula from "@/components/LicoesCelula";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { Card } from "@/components/ui/card";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
 import { Disclosure } from "@headlessui/react";
 import { ChevronUpIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { format, isSameDay, parseISO, startOfToday } from "date-fns";
 import { pt } from "date-fns/locale";
+import dayjs from "dayjs";
 import { useSession } from "next-auth/react";
+import { useState } from "react";
+import { RegisterPresenceFormFirst } from "./_components/ControlePresenceFirst/registerpresence";
+import { RegisterPresenceFormSecond } from "./_components/ControlePresenceSecond/registerpresencesecond";
 import ControlePresencaReuniaoCelula from "./ControlePresencaReuniaoCelula";
 import HeaderCelula from "./HeaderCelula";
-import { CelulaProps, Meeting } from "./schema";
-import HeaderCelulaLoad from "./loadingUi/HeaderCelulaLoading";
-import axios from "axios";
-import { useUserDataStore } from "@/store/UserDataStore";
 import CalendarLoading from "./loadingUi/CalendarLoading";
+import HeaderCelulaLoad from "./loadingUi/HeaderCelulaLoading";
 import LicoesLoading from "./loadingUi/LicoesLoading";
-import { Card } from "@/components/ui/card";
-import { RegisterPresenceFormFirst } from "./_components/ControlePresenceFirst/registerpresence";
-import { useState } from "react";
-import { RegisterPresenceFormSecond } from "./_components/ControlePresenceSecond/registerpresencesecond";
+import { CelulaProps, Meeting } from "./schema";
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession();
@@ -157,22 +158,21 @@ export default function ControleCelulaSupervision() {
                                   <span>
                                     Frequência de Culto -{" "}
                                     {format(
-                                      new Date(
+                                      dayjs(new Date(
                                         selectedDayMeetings[0].data_inicio_culto,
-                                      ),
+                                      )).add(3, "hour").toDate(),
                                       "Pp",
                                       { locale: pt },
                                     )}
                                   </span>
                                   <ChevronUpIcon
-                                    className={`${
-                                      open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                    className={`${open ? "rotate-180 transform" : ""
+                                      } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                   {selectedDayMeetings &&
-                                  !presenceIsRegister ? (
+                                    !presenceIsRegister ? (
                                     <RegisterPresenceFormFirst
                                       id={selectedDayMeetings[0].id}
                                       key={selectedDayMeetings[0].id}
@@ -208,9 +208,8 @@ export default function ControleCelulaSupervision() {
                                 <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                   <span>Frequência de Culto</span>
                                   <ChevronUpIcon
-                                    className={`${
-                                      open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                    className={`${open ? "rotate-180 transform" : ""
+                                      } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -233,8 +232,8 @@ export default function ControleCelulaSupervision() {
             selectedDayMeetings?.length > 1 && (
               <Card className="bg-white relative w-full mx-auto mb-4">
                 {selectedDayMeetings &&
-                isLoading &&
-                selectedDayMeetings?.length <= 2 ? (
+                  isLoading &&
+                  selectedDayMeetings?.length <= 2 ? (
                   <SpinnerButton message={""} />
                 ) : selectedDayMeetings &&
                   selectedDayMeetings?.length <= 2 &&
@@ -256,23 +255,24 @@ export default function ControleCelulaSupervision() {
                                     <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                       <span>
                                         Frequência de Culto -{" "}
-                                        {format(
-                                          new Date(
-                                            selectedDayMeetings[1]?.data_inicio_culto,
-                                          ),
-                                          "Pp",
-                                          { locale: pt },
-                                        )}
+                                        {
+                                          format(
+                                            dayjs(new Date(
+                                              selectedDayMeetings[1].data_inicio_culto,
+                                            )).add(3, "hour").toDate(),
+                                            "Pp",
+                                            { locale: pt },
+                                          )
+                                        }
                                       </span>
                                       <ChevronUpIcon
-                                        className={`${
-                                          open ? "rotate-180 transform" : ""
-                                        } h-5 w-5 text-blue-500`}
+                                        className={`${open ? "rotate-180 transform" : ""
+                                          } h-5 w-5 text-blue-500`}
                                       />
                                     </Disclosure.Button>
                                     <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                       {selectedDayMeetings &&
-                                      !secondPresenceIsRegister ? (
+                                        !secondPresenceIsRegister ? (
                                         <RegisterPresenceFormSecond
                                           id={selectedDayMeetings[1]?.id}
                                           key={selectedDayMeetings[1]?.id}
@@ -311,9 +311,8 @@ export default function ControleCelulaSupervision() {
                                   <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                     <span>Frequência de Culto</span>
                                     <ChevronUpIcon
-                                      className={`${
-                                        open ? "rotate-180 transform" : ""
-                                      } h-5 w-5 text-blue-500`}
+                                      className={`${open ? "rotate-180 transform" : ""
+                                        } h-5 w-5 text-blue-500`}
                                     />
                                   </Disclosure.Button>
                                   <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -347,9 +346,8 @@ export default function ControleCelulaSupervision() {
                                   {format(today, "P", { locale: pt })}
                                 </span>
                                 <ChevronUpIcon
-                                  className={`${
-                                    open ? "rotate-180 transform" : ""
-                                  } h-5 w-5 text-blue-500`}
+                                  className={`${open ? "rotate-180 transform" : ""
+                                    } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -378,9 +376,8 @@ export default function ControleCelulaSupervision() {
                               <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                 <span>Frequência de Célula</span>
                                 <ChevronUpIcon
-                                  className={`${
-                                    open ? "rotate-180 transform" : ""
-                                  } h-5 w-5 text-blue-500`}
+                                  className={`${open ? "rotate-180 transform" : ""
+                                    } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">

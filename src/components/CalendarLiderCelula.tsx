@@ -1,8 +1,10 @@
 "use client";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { Meeting } from "@/app/(celula)/celula/schema";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { BookBookmark, Church, Cross, Student } from "@phosphor-icons/react";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { Player } from '@lordicon/react';
+import { BookBookmark, Cross, Student } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import {
   add,
@@ -19,13 +21,13 @@ import {
   parseISO,
   startOfToday,
 } from "date-fns";
-import pt from "date-fns/locale/pt";
-import { useState } from "react";
+import { ptBR } from "date-fns/locale";
+import dayjs from "dayjs";
+import { useEffect, useRef, useState } from 'react';
 import { z } from "zod";
 import SpinnerButton from "./spinners/SpinnerButton";
-import { Meeting } from "@/app/(celula)/celula/schema";
-import { useUserDataStore } from "@/store/UserDataStore";
 import { Card } from "./ui/card";
+const Ceia = require('@/app/assets/wired-outline-1486-food-as-resources.json');
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -113,7 +115,7 @@ export default function CalendarLiderCelula() {
               <div className="md:pr-10">
                 <div className="flex items-center">
                   <h2 className="flex-auto font-semibold text-gray-900 capitalize">
-                    {format(firstDayCurrentMonth, "MMMM yyyy", { locale: pt })}
+                    {format(firstDayCurrentMonth, "MMMM yyyy", { locale: ptBR })}
                   </h2>
                   {/* <button
                   type="button"
@@ -220,9 +222,9 @@ export default function CalendarLiderCelula() {
                 <h2 className="font-semibold text-gray-900">
                   Agenda para{" "}
                   <time
-                    dateTime={format(selectedDay, "yyyy-MM-dd", { locale: pt })}
+                    dateTime={format(selectedDay, "yyyy-MM-dd", { locale: ptBR })}
                   >
-                    {format(selectedDay, "PP", { locale: pt })}
+                    {format(selectedDay, "PP", { locale: ptBR })}
                   </time>
                 </h2>
                 <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -244,10 +246,15 @@ export default function CalendarLiderCelula() {
 }
 
 function MeetingComponent({ meeting }: { meeting: meetingsch }) {
+  const playerRef = useRef<Player>(null);
+
+  useEffect(() => {
+    playerRef.current?.playFromBeginning();
+  }, [])
   // eslint-disable-next-line camelcase
-  const data_inicio_culto = parseISO(meeting?.data_inicio_culto);
+  const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto)).add(3, "hour").toDate();
   // eslint-disable-next-line camelcase
-  const data_termino_culto = parseISO(meeting?.data_termino_culto);
+  const data_termino_culto = dayjs(new Date(meeting.data_termino_culto)).add(3, "hour").toDate();
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
@@ -273,23 +280,29 @@ function MeetingComponent({ meeting }: { meeting: meetingsch }) {
           className="flex-none w-10 h-10 rounded-full"
         />
       ) : (
-        <Church
-          width={10}
-          height={10}
-          weight="thin"
-          className="flex-none w-10 h-10 rounded-full"
+        <Player
+          ref={playerRef}
+          icon={Ceia}
+          size={50}
+          onComplete={() => playerRef.current?.playFromBeginning()}
         />
+        // <Church
+        //   width={10}
+        //   height={10}
+        //   weight="thin"
+        //   className="flex-none w-10 h-10 rounded-full"
+        // />
       )}
 
       <div className="flex-auto">
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
         <p className="mt-0.5">
           <time dateTime={meeting?.data_inicio_culto}>
-            {format(data_inicio_culto, "H:mm", { locale: pt })}h
+            {format(data_inicio_culto, "H:mm", { locale: ptBR })}h
           </time>{" "}
           -{" "}
           <time dateTime={meeting?.data_termino_culto}>
-            {format(data_termino_culto, "H:mm", { locale: pt })}h
+            {format(data_termino_culto, "H:mm", { locale: ptBR })}h
           </time>
         </p>
       </div>
