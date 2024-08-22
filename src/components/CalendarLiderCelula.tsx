@@ -5,6 +5,7 @@ import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useUserDataStore } from "@/store/UserDataStore";
 import { Player } from '@lordicon/react';
 import { BookBookmark, Cross, Student } from "@phosphor-icons/react";
+import { Church } from "@phosphor-icons/react/dist/ssr";
 import { useQuery } from "@tanstack/react-query";
 import {
   add,
@@ -279,20 +280,35 @@ function MeetingComponent({ meeting }: { meeting: meetingsch }) {
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) : (
-        <Player
-          ref={playerRef}
-          icon={Ceia}
-          size={50}
-          onComplete={() => playerRef.current?.playFromBeginning()}
+      ) : meeting?.culto_semana?.nome === "Culto de Celebração - Manhã" ? (
+        <Church
+          width={10}
+          height={10}
+          weight="thin"
+          className="flex-none w-10 h-10 rounded-full"
         />
-        // <Church
-        //   width={10}
-        //   height={10}
-        //   weight="thin"
-        //   className="flex-none w-10 h-10 rounded-full"
-        // />
-      )}
+      ) :
+        meeting?.culto_semana?.nome === "Culto de Celebração - Tarde" ? (
+          <Church
+            width={10}
+            height={10}
+            weight="thin"
+            className="flex-none w-10 h-10 rounded-full"
+          />
+        ) : (
+          <Player
+            ref={playerRef}
+            icon={Ceia}
+            size={50}
+            onComplete={() => playerRef.current?.playFromBeginning()}
+          />
+          // <Church
+          //   width={10}
+          //   height={10}
+          //   weight="thin"
+          //   className="flex-none w-10 h-10 rounded-full"
+          // />
+        )}
 
       <div className="flex-auto">
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>
