@@ -2,35 +2,37 @@ import { z } from "zod";
 
 const combinedDataSchema = z.array(
   z.union([
-    z.array(
-      z.object({
+
+    // z.array(
+    z.object({
+      id: z.string().uuid(),
+      nome: z.string(),
+      cor: z.string(),
+      supervisor: z.object({
         id: z.string().uuid(),
-        nome: z.string(),
-        cor: z.string(),
-        supervisor: z.object({
-          id: z.string().uuid(),
-          first_name: z.string(),
-          discipulos: z.array(
-            z.object({
-              user_discipulos: z.object({
-                id: z.string().uuid(),
-                first_name: z.string(),
-              }),
-            })
-          ),
-        }),
-        celulas: z.array(
+        first_name: z.string(),
+        discipulos: z.array(
           z.object({
-            id: z.string().uuid(),
-            nome: z.string(),
-            lider: z.object({
+            user_discipulos: z.object({
               id: z.string().uuid(),
               first_name: z.string(),
             }),
           })
         ),
       }),
-    ),
+      celulas: z.array(
+        z.object({
+          id: z.string().uuid(),
+          nome: z.string(),
+          lider: z.object({
+            id: z.string().uuid(),
+            first_name: z.string(),
+          }),
+        })
+      ),
+    })
+    // )
+    ,
 
     z.array(
       z.object({

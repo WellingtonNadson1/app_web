@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+import { useData } from "@/providers/providers";
 import { UsersFour } from "@phosphor-icons/react";
 import { useRouter } from "next/navigation";
+import React from "react";
 import { twMerge } from "tailwind-merge";
-import { useData } from "@/providers/providers";
 
 export default function StatsDiscipuladosCardSupervisions() {
   // @ts-ignore
@@ -12,6 +12,7 @@ export default function StatsDiscipuladosCardSupervisions() {
   const router = useRouter();
   const supervisoes = data?.combinedData[0];
 
+  console.log('supervisoes', supervisoes)
   const handleDiscipuladosSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {

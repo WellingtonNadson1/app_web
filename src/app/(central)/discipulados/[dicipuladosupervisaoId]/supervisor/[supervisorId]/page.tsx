@@ -22,6 +22,7 @@ export default function ControleDiscipuladoSupervisior({
 
   const id = useParams();
 
+  // @ts-ignore
   const supervisao = supervisoes?.filter(
     // @ts-ignore
     (supervisao) => supervisao.id === id.supervisorId,
