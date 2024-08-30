@@ -5,9 +5,11 @@
 @media (prefers-color-scheme: dark) {
     .imgLight {
         display: none;
+        cursor: pointer;
     }
 
     .imgDark {
         display: unset;
+        cursor: pointer;
     }
 }

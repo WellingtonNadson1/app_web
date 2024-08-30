@@ -1,24 +1,24 @@
 "use client";
+import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useData } from "@/providers/providers";
 import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
-import React, { useEffect, useState, Fragment } from "react";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
 import ptBr from "dayjs/locale/pt-br";
 import localizedFormat from "dayjs/plugin/localizedFormat";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import { useSession } from "next-auth/react";
+import Image from "next/image";
+import React, { Fragment, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import {
   FormRelatorioSchema,
   GroupedForCulto,
   Pessoa,
   PresencaForDate,
 } from "./schema";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import Image from "next/image";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -283,6 +283,7 @@ export default function StatsCardRelatoriosSupervisores() {
               <div className="flex flex-col gap-4 p-3">
                 <div className="flex items-center justify-start gap-4">
                   <Image
+                    className="cursor-pointer"
                     src="/images/logo-ibb-1.svg"
                     width={62}
                     height={64}

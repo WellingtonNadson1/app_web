@@ -1,18 +1,27 @@
 /* eslint-disable camelcase */
 "use client";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   BASE_URL,
-  BASE_URL_LOCAL,
   errorCadastro,
-  success,
+  success
 } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { UserFocus } from "@phosphor-icons/react";
+import ProgressBar from "@ramonak/react-progress-bar";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { AxiosError } from "axios";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import ProgressBar from "@ramonak/react-progress-bar";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import {
@@ -22,19 +31,8 @@ import {
   reuniaoCelulaData,
   reuniaoCelulaData2,
   reuniaoCelulaUpdate,
-  reuniaoCelulaUpdateReturn,
-  reuniaoCelulaUpdateSchema,
+  reuniaoCelulaUpdateSchema
 } from "./schema";
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import dayjs from "dayjs";
-import utc from "dayjs/plugin/utc";
-import timezone from "dayjs/plugin/timezone";
-import { AxiosError } from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -59,7 +57,6 @@ async function updateData({ URL, newData, token }: UpdateDataParams) {
   if (!response.ok) {
     throw new Error("Failed to update data");
   }
-
   return response.json();
 }
 
@@ -140,8 +137,6 @@ export default function ControlePresencaReuniaoCelula({
       queryClient.invalidateQueries({ queryKey: ["reuniaocelula"] });
       const { id } = responseData as ReuniaoCelulaSuccessData;
       setReuniaRegisteredId(id);
-
-      console.debug("success mutate", responseData);
     },
     onError: async (errorData) => {
       const axiosError = errorData as AxiosError;
@@ -195,11 +190,15 @@ export default function ControlePresencaReuniaoCelula({
 
   const formUpdate = useForm<reuniaoCelulaUpdate>({
     resolver: zodResolver(reuniaoCelulaUpdateSchema),
+    defaultValues: {
+      visitantes: 0,
+      almas_ganhas: 0
+    }
   });
 
   const dataSendUpdate: reuniaoCelulaUpdate = {
-    visitantes: formUpdate.getValues().visitantes,
-    almas_ganhas: formUpdate.getValues().almas_ganhas,
+    visitantes: formUpdate.watch().visitantes,
+    almas_ganhas: formUpdate.watch().almas_ganhas,
     id: reuniaoRegisteredId!,
   };
 
@@ -337,7 +336,7 @@ export default function ControlePresencaReuniaoCelula({
                               type="number"
                               min={0}
                               required
-                              defaultValue={0}
+                              // defaultValue={0}
                               disabled={isPending}
                               id="visitantes"
                               className=" w-full rounded-md border-0.5 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -356,7 +355,7 @@ export default function ControlePresencaReuniaoCelula({
                               {...formUpdate.register("almas_ganhas")}
                               type="number"
                               min={0}
-                              defaultValue={0}
+                              // defaultValue={0}
                               required
                               disabled={isPending}
                               id="almas_ganhas"
@@ -418,17 +417,16 @@ export default function ControlePresencaReuniaoCelula({
                               {/* STATUS */}
                               <div className="hidden sm:block">
                                 <span
-                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${
-                                    user.situacao_no_reino?.nome === "Ativo"
-                                      ? "border border-green-200 bg-green-100 ring-green-500"
+                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === "Ativo"
+                                    ? "border border-green-200 bg-green-100 ring-green-500"
+                                    : user.situacao_no_reino?.nome ===
+                                      "Normal"
+                                      ? "border border-blue-200 bg-blue-100 ring-blue-500"
                                       : user.situacao_no_reino?.nome ===
-                                          "Normal"
-                                        ? "border border-blue-200 bg-blue-100 ring-blue-500"
-                                        : user.situacao_no_reino?.nome ===
-                                            "Frio"
-                                          ? "border border-orange-200 bg-orange-100 ring-orange-500"
-                                          : "border border-red-200 bg-red-100 ring-red-500"
-                                  }`}
+                                        "Frio"
+                                        ? "border border-orange-200 bg-orange-100 ring-orange-500"
+                                        : "border border-red-200 bg-red-100 ring-red-500"
+                                    }`}
                                 >
                                   {user.situacao_no_reino?.nome}
                                 </span>

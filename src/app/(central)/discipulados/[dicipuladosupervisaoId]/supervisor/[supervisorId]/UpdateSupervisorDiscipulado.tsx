@@ -149,7 +149,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                             >
                               Discípulo
                             </label>
-                            <div className="mt-3">
+                            <div className="mt-3 pl-2">
                               <input
                                 type="text"
                                 name="membro"
@@ -157,7 +157,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                                 id="membro"
                                 disabled
                                 autoComplete="family-name"
-                                className="disabled:opacity-75 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                className="disabled:opacity-75 pl-2 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                               />
                             </div>
                           </div>
@@ -179,7 +179,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                                 value={nome}
                                 id="is_discipulado"
                                 disabled
-                                className="disabled:opacity-75 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                                className="disabled:opacity-75 pl-2 block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                               />
                             </div>
                           </div>

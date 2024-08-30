@@ -3,5 +3,14 @@
     "next/core-web-vitals",
     "@rocketseat/eslint-config/react",
     "plugin:@tanstack/eslint-plugin-query/recommended"
-  ]
+  ],
+  "plugins": ["simple-import-sort"],
+  "rules": {
+    "simple-import-sort/imports": "error",
+    "simple-import-sort/exports": "error"
+  },
+  "parserOptions": {
+    "sourceType": "module",
+    "ecmaVersion": "latest"
+  }
 }

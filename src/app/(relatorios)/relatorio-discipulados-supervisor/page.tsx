@@ -167,6 +167,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                 <div className="flex items-center justify-start gap-4">
                   <Link href={"/dashboard"}>
                     <Image
+                      className="cursor-pointer"
                       src="/images/logo-ibb-1.svg"
                       width={62}
                       height={64}

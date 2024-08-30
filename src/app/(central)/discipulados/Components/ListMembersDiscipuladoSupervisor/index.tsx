@@ -14,14 +14,12 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
   // Pagination
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
-  console.log('data', SupervisaoData)
 
   const startIndex = (currentPage - 1) * itemsPerPage
   const endIndex = startIndex + itemsPerPage
   const membersSort = SupervisaoData?.supervisor?.discipulos?.sort((a, b) => a?.user_discipulos?.first_name.localeCompare(b?.user_discipulos?.first_name))
-  console.log('membersSort', membersSort)
+
   const displayedMembers = membersSort?.slice(startIndex, endIndex)
-  console.log('displayedMembers', displayedMembers)
 
   return (
     <>
@@ -58,14 +56,14 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
                   displayedMembers?.map((user, index) => (
                     <tr
                       className="hover:bg-gray-50/90"
-                      key={user.user_discipulos.id}
+                      key={user?.user_discipulos?.id}
                     >
                       <td className='px-2 py-1 border-b border-gray-200'>
                         <div className="flex items-center justify-start gap-2">
                           <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
                             <User size={22} color='#6D8396' />
                           </div>
-                          <h2 className="ml-4">{user.user_discipulos.first_name}</h2>
+                          <h2 className="ml-4">{user?.user_discipulos?.first_name}</h2>
                         </div>
                       </td>
                       {/* <td className="px-2 py-1 text-center border-b border-gray-200"> */}
@@ -91,7 +89,7 @@ export default function ListMembersDiscipuladoSupervisor(SupervisaoData: Supervi
                         <div className='flex items-center justify-center' onClick={() => setShouldFetch(true)}>
                           <UpdateSupervisorDisicipulado
                             member={membersSort[0]} // Pass the member object
-                            key={membersSort[0].user_discipulos.id}
+                            key={membersSort[0]?.user_discipulos?.id}
                             supervisor={SupervisaoData?.supervisor} // Pass the supervisor object
                           />
                         </div>
