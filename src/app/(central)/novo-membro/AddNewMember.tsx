@@ -1,25 +1,22 @@
 "use client";
-import React, { Fragment, useState } from "react";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
-import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "@/components/modal";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { handleZipCode } from "@/functions/zipCodeUtils";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
+import { useData } from "@/providers/providers";
 import { Combobox, Transition } from "@headlessui/react";
-import { useCombinedStore } from "@/store/DataCombineted";
 import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import React, { Fragment, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { Member } from "./schema";
 import { handleCPFNumber, handlePhoneNumber } from "./utils";
-import { handleZipCode } from "@/functions/zipCodeUtils";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { useData } from "@/providers/providers";
-import { useSession } from "next-auth/react";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 
 function AddNewMember() {
   const { data: session } = useSession();
@@ -146,11 +143,11 @@ function AddNewMember() {
     query === ""
       ? queryMembers
       : queryMembers?.filter((person) =>
-          person.first_name
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, "")),
-        );
+        person.first_name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(query.toLowerCase().replace(/\s+/g, "")),
+      );
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -158,6 +155,7 @@ function AddNewMember() {
     setSupervisaoSelecionada(event.target.value);
   };
 
+  // @ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     // @ts-ignore
     (supervisao) => supervisao.id === supervisaoSelecionada,
@@ -492,7 +490,7 @@ function AddNewMember() {
                               >
                                 <Combobox.Options className="absolute w-full py-1.5 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
-                                  query !== "" ? (
+                                    query !== "" ? (
                                     <div className="relative px-4 py-1.5 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
@@ -501,10 +499,9 @@ function AddNewMember() {
                                       <Combobox.Option
                                         key={person.id}
                                         className={({ active }) =>
-                                          `relative cursor-default select-none py-1.5 pl-10 pr-4 ${
-                                            active
-                                              ? "bg-[#E5F3FF] text-black"
-                                              : "text-gray-900"
+                                          `relative cursor-default select-none py-1.5 pl-10 pr-4 ${active
+                                            ? "bg-[#E5F3FF] text-black"
+                                            : "text-gray-900"
                                           }`
                                         }
                                         value={person}
@@ -512,21 +509,19 @@ function AddNewMember() {
                                         {({ selected, active }) => (
                                           <>
                                             <span
-                                              className={`block truncate ${
-                                                selected
+                                              className={`block truncate ${selected
                                                   ? "font-medium"
                                                   : "font-normal"
-                                              }`}
+                                                }`}
                                             >
                                               {person.first_name}
                                             </span>
                                             {selected ? (
                                               <span
-                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                                  active
+                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
                                                     ? "text-white"
                                                     : "text-teal-600"
-                                                }`}
+                                                  }`}
                                               >
                                                 <CheckIcon
                                                   className="w-5 h-5"

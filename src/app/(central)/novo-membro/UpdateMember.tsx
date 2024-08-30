@@ -63,8 +63,7 @@ import { useRouter } from "next/navigation";
 import React, { useRef, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { z } from "zod";
-import { CargoLidereanca, SituacoesNoReino, SupervisaoData } from "./schema";
-import type { escolaSchema, TUser } from "./table-users/schema";
+import type { TUser } from "./table-users/schema";
 import { userSchemaTable } from "./table-users/schema";
 import { handleCPFNumber, handlePhoneNumber } from "./utils";
 dayjs.extend(utc);
@@ -93,11 +92,12 @@ function UpdateMember({ member }: { member: TUser }) {
   // @ts-ignore
   const { data: dataAllCtx } = useData();
   console.log('dataAllCtx', dataAllCtx)
-  const supervisoes: SupervisaoData[] = dataAllCtx?.combinedData[0];
-  const escolas: z.infer<typeof escolaSchema>[] = dataAllCtx?.combinedData[1];
+  const supervisoes = (dataAllCtx?.combinedData[0] || []);
+
+  const escolas = (dataAllCtx?.combinedData[1] || []);
   const encontros = dataAllCtx?.combinedData[2];
-  const situacoesNoReino: SituacoesNoReino[] = dataAllCtx?.combinedData[3];
-  const cargoLideranca: CargoLidereanca[] = dataAllCtx?.combinedData[4];
+  const situacoesNoReino = (dataAllCtx?.combinedData[3] || []);
+  const cargoLideranca = (dataAllCtx?.combinedData[4] || []);
   const masculinoFeminino = ["M", "F"];
   const escolaridade = [
     "Sem Escolaridade",
@@ -229,6 +229,7 @@ function UpdateMember({ member }: { member: TUser }) {
     setSupervisaoSelecionadaUpDate(supervisao);
   };
 
+  //@ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao: { id: string | undefined }) =>
       supervisao.id === supervisaoSelecionadaUpDate,
@@ -928,54 +929,56 @@ function UpdateMember({ member }: { member: TUser }) {
                                       Escolas
                                     </FormLabel>
                                   </div>
-                                  {escolas.map((escola) => (
-                                    <FormField
-                                      key={escola.id}
-                                      control={form.control}
-                                      name="escolas"
-                                      render={({ field }) => {
-                                        const isChecked = field.value?.some(
-                                          (value) => value.id === escola.id,
-                                        );
-                                        return (
-                                          <div
-                                            key={escola.id + 1}
-                                            className="flex"
-                                          >
-                                            <FormItem
-                                              key={escola.id}
-                                              className="flex flex-row items-start space-x-3 space-y-0"
+                                  {
+                                    //@ts-ignore
+                                    escolas?.map((escola) => (
+                                      <FormField
+                                        key={escola.id}
+                                        control={form.control}
+                                        name="escolas"
+                                        render={({ field }) => {
+                                          const isChecked = field.value?.some(
+                                            (value) => value.id === escola.id,
+                                          );
+                                          return (
+                                            <div
+                                              key={escola.id + 1}
+                                              className="flex"
                                             >
-                                              <FormControl>
-                                                <Checkbox
-                                                  checked={isChecked}
-                                                  onCheckedChange={(
-                                                    checked,
-                                                  ) => {
-                                                    return checked
-                                                      ? field.onChange([
-                                                        ...field.value,
-                                                        escola,
-                                                      ])
-                                                      : field.onChange(
-                                                        field.value?.filter(
-                                                          (value) =>
-                                                            value.id !==
-                                                            escola.id,
-                                                        ),
-                                                      );
-                                                  }}
-                                                />
-                                              </FormControl>
-                                              <FormLabel className="text-sm font-normal">
-                                                {escola.nome}
-                                              </FormLabel>
-                                            </FormItem>
-                                          </div>
-                                        );
-                                      }}
-                                    />
-                                  ))}
+                                              <FormItem
+                                                key={escola.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                              >
+                                                <FormControl>
+                                                  <Checkbox
+                                                    checked={isChecked}
+                                                    onCheckedChange={(
+                                                      checked,
+                                                    ) => {
+                                                      return checked
+                                                        ? field.onChange([
+                                                          ...field.value,
+                                                          escola,
+                                                        ])
+                                                        : field.onChange(
+                                                          field.value?.filter(
+                                                            (value) =>
+                                                              value.id !==
+                                                              escola.id,
+                                                          ),
+                                                        );
+                                                    }}
+                                                  />
+                                                </FormControl>
+                                                <FormLabel className="text-sm font-normal">
+                                                  {escola.nome}
+                                                </FormLabel>
+                                              </FormItem>
+                                            </div>
+                                          );
+                                        }}
+                                      />
+                                    ))}
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -1079,11 +1082,13 @@ function UpdateMember({ member }: { member: TUser }) {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      {situacoesNoReino?.map((situacao) => (
-                                        <SelectItem key={situacao.id} value={situacao.id}>
-                                          {situacao.nome}
-                                        </SelectItem>
-                                      ))}
+                                      {
+                                        //@ts-ignore
+                                        situacoesNoReino?.map((situacao) => (
+                                          <SelectItem key={situacao.id} value={situacao.id}>
+                                            {situacao.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -1137,11 +1142,13 @@ function UpdateMember({ member }: { member: TUser }) {
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
-                                      {cargoLideranca?.map((cargo) => (
-                                        <SelectItem key={cargo.id} value={cargo.id}>
-                                          {cargo.nome}
-                                        </SelectItem>
-                                      ))}
+                                      {
+                                        //@ts-ignore
+                                        cargoLideranca?.map((cargo) => (
+                                          <SelectItem key={cargo.id} value={cargo.id}>
+                                            {cargo.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />

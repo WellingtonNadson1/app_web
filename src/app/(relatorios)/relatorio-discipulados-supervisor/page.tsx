@@ -43,7 +43,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
   const { data: dataAllCtx } = useData();
   const supervisoes = dataAllCtx?.combinedData[0];
   const cargoLideranca = dataAllCtx?.combinedData[4];
-
+  //@ts-ignore
   const cargoLiderancaFilter = cargoLideranca?.filter(
     // @ts-ignore
     (cargo) =>

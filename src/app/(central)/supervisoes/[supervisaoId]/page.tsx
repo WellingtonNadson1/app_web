@@ -32,6 +32,7 @@ export default function Supervisao({
   // @ts-ignore
   const { data: dataAllCtx } = useData();
   const supervisoes = dataAllCtx?.combinedData[0];
+  //@ts-ignore
   const supervisao = supervisoes?.filter(
     // @ts-ignore
     (supervisao) => supervisao.id === supervisaoId,
