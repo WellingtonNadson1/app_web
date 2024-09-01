@@ -1,10 +1,10 @@
 "use client";
 
-import { useEffect } from "react";
 import MainSide from "@/components/MainSide";
 import { useCombinedStore } from "@/store/DataCombineted";
 import { InitializerStore } from "@/store/InitializerStore";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
+import { useEffect } from "react";
 
 interface Session {
   user: {
@@ -30,6 +30,7 @@ interface Result {
   situacoesNoReino: any[];
   cargoLideranca: any[];
   almasGanhasNoMes: number;
+  almasGanhasNoAno: number;
 }
 
 interface ClientDashboardProps {

@@ -82,6 +82,7 @@ const combinedDataSchema = z.array(
 const schemaDataCombineted = z.object({
   combinedData: combinedDataSchema,
   almasGanhasNoMes: z.number(),
+  almasGanhasNoAno: z.number(),
 });
 
 export type DataCombineted = z.infer<typeof schemaDataCombineted>;

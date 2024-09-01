@@ -1,11 +1,11 @@
 "use client";
+import { useAlmasAnoStore, useAlmasStore } from "@/store/AlmasStorage";
 import { ChartLineUp, Confetti, HandsPraying } from "@phosphor-icons/react";
 import { Card } from "../ui/card";
-import { useAlmasStore } from "@/store/AlmasStorage";
 
-import { useEffect } from "react";
-import { useSession } from "next-auth/react";
 import axios from "axios";
+import { useSession } from "next-auth/react";
+import { useEffect, useState } from "react";
 
 export default function StatsCard() {
   const { data } = useSession();
@@ -34,27 +34,39 @@ export default function StatsCard() {
     }
   };
 
-  // Função para buscar dados da API e atualizar o estado
-  async function fetchAndUpdateAlmasGanhasNoMes() {
-    // Supondo que você tenha a função DataCombineteded que retorna o valor correto
-    const { almasGanhasNoMes } = await DataCombineteded();
+  // Estado local para controlar a hidratação da store
+  const [isHydrated, setIsHydrated] = useState(false);
 
-    // Atualiza o estado no Zustand
-    const setAlmasGanhasNoMes = useAlmasStore.getState().setAlmasGanhasNoMes;
-    setAlmasGanhasNoMes(almasGanhasNoMes);
+  // Acessa e atualiza o estado de almas ganhas no Zustand
+  const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasStore();
+  const { almasGanhasNoAno, setAlmasGanhasNoAno } = useAlmasAnoStore();
+
+  // Função para buscar dados da API e atualizar o estado
+  async function fetchAndUpdateAlmasGanhas() {
+    const data = await DataCombineteded();
+    if (data) {
+      setAlmasGanhasNoMes(data.almasGanhasNoMes);
+      setAlmasGanhasNoAno(data.almasGanhasNoAno);
+    }
   }
 
-  // Chame essa função onde for apropriado no ciclo de vida do seu aplicativo,
-  // por exemplo, em um efeito colateral em um componente React.
+  // useEffect para carregar os dados ao montar o componente
   useEffect(() => {
-    fetchAndUpdateAlmasGanhasNoMes();
+    fetchAndUpdateAlmasGanhas().then(() => {
+      setIsHydrated(true); // Apenas define como true após carregar os dados
+    });
   }, []);
-  const { almasGanhasNoMes } = useAlmasStore();
+
+
+  if (!isHydrated) {
+    return <div>Carregando...</div>;
+  }
+
   const statusIbb = [
     {
       title: "Conversões Células/Mês",
       porcentagem: "--.--%",
-      total: `${almasGanhasNoMes}`,
+      total: almasGanhasNoMes !== undefined ? almasGanhasNoMes : "Carregando...",
       status: "up",
       icon: HandsPraying,
       color: "bg-[#6074E1]",
@@ -63,7 +75,7 @@ export default function StatsCard() {
     {
       title: "Conversões/Ano",
       porcentagem: "--.--%",
-      total: "---",
+      total: almasGanhasNoAno !== undefined ? almasGanhasNoAno : "Carregando...",
       status: "up",
       icon: Confetti,
       color: "bg-[#F55343]",

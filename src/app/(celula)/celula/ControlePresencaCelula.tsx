@@ -2,12 +2,12 @@
 import SpinnerButton from "@/components/spinners/SpinnerButton";
 import {
   BASE_URL,
-  BASE_URL_LOCAL,
   errorCadastro,
-  success,
+  success
 } from "@/functions/functions";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { User } from "@phosphor-icons/react";
+import ProgressBar from "@ramonak/react-progress-bar";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
@@ -15,7 +15,6 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ControlePresencaCelulaProps, attendance } from "./schema";
-import ProgressBar from "@ramonak/react-progress-bar";
 
 export default function ControlePresencaCelula({
   id,
@@ -186,17 +185,16 @@ export default function ControlePresencaCelula({
                               </div>
                               <div className="hidden w-full text-center sm:block">
                                 <span
-                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
-                                    user.situacao_no_reino?.nome === "Ativo"
+                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === "Ativo"
                                       ? "border border-green-200 bg-green-100 ring-green-500"
                                       : user.situacao_no_reino?.nome ===
-                                          "Normal"
+                                        "Normal"
                                         ? "border border-blue-200 bg-blue-100 ring-blue-500"
                                         : user.situacao_no_reino?.nome ===
-                                            "Frio"
+                                          "Frio"
                                           ? "border border-orange-200 bg-orange-100 ring-orange-500"
                                           : "border border-red-200 bg-red-100 ring-red-500"
-                                  }`}
+                                    }`}
                                 >
                                   {user.situacao_no_reino.nome}
                                 </span>

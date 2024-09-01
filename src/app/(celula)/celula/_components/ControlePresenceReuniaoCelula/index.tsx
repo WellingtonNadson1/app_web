@@ -17,14 +17,14 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/toaster";
 import { useToast } from "@/components/ui/use-toast";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { Spinner, User } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { ControlePresencaCelulaProps } from "../../schema";
-import { useEffect, useRef, useState } from "react";
-import { useSession } from "next-auth/react";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { AxiosError } from "axios";
+import { useSession } from "next-auth/react";
+import { useEffect, useRef, useState } from "react";
+import { ControlePresencaCelulaProps } from "../../schema";
 import {
   FormSchema,
   dataForms,
@@ -182,11 +182,10 @@ export function RegisterPresenceFormReuniaoCelula({
         toast({
           variant: "destructive",
           title: "Ocorreu um Erro",
-          description: `${
-            axiosError.response?.status === 409
+          description: `${axiosError.response?.status === 409
               ? "Presença de Culto já Registrada para hoje!"
               : axiosError.message
-          }`,
+            }`,
         });
       } else {
         toast({
