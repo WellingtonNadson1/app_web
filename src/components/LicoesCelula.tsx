@@ -97,38 +97,38 @@ export default function LicoesCelula() {
     startDate = weekEnd.add(1, "day");
   }
 
-  const temaMesCelula = "Santidade";
+  const temaMesCelula = "Visão";
   const subTemaMesCelula =
-    "'em santidade e justiça perante ele, todos os nossos dias.' - Lucas 1:75";
+    "Ganhar - Consolidar - Discipular - Enviar";
 
   const statusLicoes = [
     {
       id: 1,
-      title: "SANTIDADE COMO ESTILO DE VIDA",
+      title: "CHAMADOS PARA CUIDAR",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Lv 20:26",
+      versiculo: "I Co 12:25",
     },
     {
       id: 2,
-      title: "SANTIFICADOS PELA PALAVRA",
+      title: "A IMPORTÂNCIA DO TREINAMENTO",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Jo 17:17",
+      versiculo: "At 18:18",
     },
     {
       id: 3,
-      title: "O MUNDO NÃO É O PADRÃO",
+      title: "PRECISA-SE DE TRABALHADORES",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Tg 4:4",
+      versiculo: "Lc 10:1-2",
     },
     {
       id: 4,
-      title: "SEM SANTIFICAÇÃO NINGUÉM VERÁ A DEUS",
+      title: "PESCADORES DE HOMENS",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Hb 12:14",
+      versiculo: "Mc 1:17-18",
       lancando: true,
     },
     // {
@@ -182,14 +182,15 @@ export default function LicoesCelula() {
                             Período:
                             <span className="ml-2 text-sm leading-6 text-gray-500">
                               {/*adiciono ou subtraio um dia para regular os dias */}
-                              {weeksDate[index + 1]?.start} à
+                              {/* {weeksDate[index + 1]?.start} à */}
+                              {weeksDate[index]?.start} à
                             </span>
                             <span className="ml-1 text-sm leading-6 text-gray-500">
-                              {weeksDate[index + 1]?.end}
+                              {weeksDate[index]?.end}
                             </span>
                           </div>
                           <div className="flex items-center mt-3">
-                            {stat.periodo[index + 1]?.end.isAfter(toDay) ? (
+                            {stat.periodo[index]?.end.isAfter(toDay) ? (
                               <span className="text-sm font-normal leading-6 text-red-500">
                                 pendente
                               </span>
