@@ -3,25 +3,24 @@
 import {
   ColumnDef,
   ColumnFiltersState,
-  SortingState,
   FilterFn,
-  SortingFn,
+  SortingState,
   flexRender,
   getCoreRowModel,
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  sortingFns,
-  useReactTable,
+  useReactTable
 } from "@tanstack/react-table";
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import {
   RankingInfo,
-  rankItem,
-  compareItems,
+  rankItem
 } from "@tanstack/match-sorter-utils";
 
+import { DataTablePagination } from "@/app/(central)/novo-membro/table-users/table-pagination";
+import { Input } from "@/components/ui/input";
 import {
   Table,
   TableBody,
@@ -30,9 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Input } from "@/components/ui/input";
 import { useState } from "react";
-import { DataTablePagination } from "@/app/(central)/novo-membro/table-users/table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -64,20 +61,20 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
 };
 
 // Define a custom fuzzy sort function that will sort by rank if the row has ranking information
-const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
+// const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
+//   let dir = 0;
 
-  // Only sort by rank if the column has ranking information
-  if (rowA.columnFiltersMeta[columnId]) {
-    dir = compareItems(
-      rowA.columnFiltersMeta[columnId]?.itemRank!,
-      rowB.columnFiltersMeta[columnId]?.itemRank!,
-    );
-  }
+//   // Only sort by rank if the column has ranking information
+//   if (rowA.columnFiltersMeta[columnId]) {
+//     dir = compareItems(
+//       rowA.columnFiltersMeta[columnId]?.itemRank!,
+//       rowB.columnFiltersMeta[columnId]?.itemRank!,
+//     );
+//   }
 
-  // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
+//   // Provide an alphanumeric fallback for when the item ranks are equal
+//   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
+// };
 
 export function DataTable<TData, TValue>({
   columns,
@@ -112,10 +109,10 @@ export function DataTable<TData, TValue>({
     // @ts-ignore
     (situatio) => situatio?.situacao_no_reino?.nome === "Normal",
   );
-  const situationAtivo = data.filter(
-    // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Ativo",
-  );
+  // const situationAtivo = data.filter(
+  //   // @ts-ignore
+  //   (situatio) => situatio?.situacao_no_reino?.nome === "Ativo",
+  // );
 
   return (
     <div className="px-4 py-4 rounded-xl bg-white">
@@ -142,9 +139,9 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   );
                 })}

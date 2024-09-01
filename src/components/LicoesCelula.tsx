@@ -36,7 +36,7 @@ export default function LicoesCelula() {
 
   // Pegamos o mês e ano atual
   const month = dayjs().month();
-  const year = dayjs().year();
+  // const year = dayjs().year();
   const toDay = dayjs();
 
   // Definimos a primeira data do mês
@@ -49,7 +49,7 @@ export default function LicoesCelula() {
   // Loop para iterar pelas semanas do mês
   while (startDate.month() === month) {
     // Pegamos o dia da semana da data atual (0 = domingo, 6 = sábado)
-    const dayOfWeek = startDate.day();
+    // const dayOfWeek = startDate.day();
 
     // Ajustamos a data para o início da semana (domingo)
     const weekStart = startDate.startOf("week");
@@ -129,7 +129,7 @@ export default function LicoesCelula() {
       periodo: weeks,
       icon: FilePdf,
       versiculo: "Hb 12:14",
-      lancando: true
+      lancando: true,
     },
     // {
     //   id: 5,
@@ -161,7 +161,10 @@ export default function LicoesCelula() {
                   href={`${data?.[index]}`}
                   target="_blank"
                   key={stat.id}
-                  className={cn("rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80", stat.lancando && "bg-blue-50 hover:bg-blue-100/75")}
+                  className={cn(
+                    "rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80",
+                    stat.lancando && "bg-blue-50 hover:bg-blue-100/75",
+                  )} rel="noreferrer"
                 >
                   <div className="p-2 sm:col-span-1">
                     <div className="flex items-center justify-between w-full gap-4">

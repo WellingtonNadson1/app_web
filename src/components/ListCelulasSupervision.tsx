@@ -1,29 +1,31 @@
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { useRouter } from 'next/navigation'
-import React from 'react'
+import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
+import { useRouter } from "next/navigation";
+import React from "react";
 
 export interface ICelula {
-  id: string
-  nome: string
+  id: string;
+  nome: string;
   lider: {
-    id: string
-    first_name: string
-  }
+    id: string;
+    first_name: string;
+  };
 }
 
 interface ListCelulasProps {
-  data: ICelula[]
+  data: ICelula[];
 }
 
 export default function ListCelulasSupervision({ data }: ListCelulasProps) {
-  const router = useRouter()
-  const contextParamsSupervisaoId = useSupervisaoContext()
-  const dataSort = data.sort((a, b) => a.nome.localeCompare(b.nome))
+  const router = useRouter();
+  const contextParamsSupervisaoId = useSupervisaoContext();
+  const dataSort = data.sort((a, b) => a.nome.localeCompare(b.nome));
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-    const idCelula = event.currentTarget.id
-    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
-  }
+    const idCelula = event.currentTarget.id;
+    router.push(
+      `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
+    );
+  };
   return (
     <div>
       <div className="relative w-full p-2 mx-auto mt-1">
@@ -34,33 +36,39 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
             </h2>
             <div className="p-2">
               <table className="w-full px-2 border-separate table-auto">
-                <thead className='bg-[#F8FAFC]'>
+                <thead className="bg-[#F8FAFC]">
                   <tr>
-                    <th className="px-2 py-3 font-medium text-[#6D8396] text-start">Ord.</th>
-                    <th className="px-2 py-3 font-medium text-[#6D8396] text-start">Célula</th>
+                    <th className="px-2 py-3 font-medium text-[#6D8396] text-start">
+                      Ord.
+                    </th>
+                    <th className="px-2 py-3 font-medium text-[#6D8396] text-start">
+                      Célula
+                    </th>
                     <th className="hidden px-2 py-3 font-medium text-[#6D8396] text-start sm:block">
                       Líder(es)
                     </th>
-                    <th className="px-2 py-3 font-medium text-[#6D8396]">Detalhes</th>
+                    <th className="px-2 py-3 font-medium text-[#6D8396]">
+                      Detalhes
+                    </th>
                   </tr>
                 </thead>
-                <tbody className='text-sm font-normal text-gray-700'>
+                <tbody className="text-sm font-normal text-gray-700">
                   {dataSort?.map((celula, index) => (
                     <tr
                       className="py-8 border-b border-gray-200 rounded-lg hover:bg-gray-50/90"
                       key={celula.id}
                     >
-                      <td className='px-2 py-1 border-b border-gray-200'>
+                      <td className="px-2 py-1 border-b border-gray-200">
                         <h2 className="pl-2">{index + 1}</h2>
                       </td>
-                      <td className='px-2 py-1 border-b border-gray-200'>
+                      <td className="px-2 py-1 border-b border-gray-200">
                         <h2 className="pl-2">{celula.nome}</h2>
                       </td>
 
                       <td className="hidden px-2 py-1 text-gray-700 border-b border-gray-200 text-start sm:table-cell">
                         {celula.lider?.first_name}
                       </td>
-                      <td className='px-2 py-2 mx-auto border-b border-gray-200'>
+                      <td className="px-2 py-2 mx-auto border-b border-gray-200">
                         <div className="flex items-center justify-center">
                           <button
                             onClick={handleClickCelula}
@@ -80,5 +88,5 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

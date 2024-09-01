@@ -7,16 +7,16 @@ export interface Membro {
   };
   discipulador: {
     user_discipulador: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   discipulos: {
     user_discipulos: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   user: {
     id: string;
     first_name: string;

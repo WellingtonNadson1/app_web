@@ -1,22 +1,30 @@
 // 'use client'
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
-import { UsersFour } from '@phosphor-icons/react'
-import { useRouter } from 'next/navigation';
-import { twMerge } from 'tailwind-merge'
-import { SupervisaoDataType } from './schema';
+import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
+import { UsersFour } from "@phosphor-icons/react";
+import { useRouter } from "next/navigation";
+import { twMerge } from "tailwind-merge";
+import { SupervisaoDataType } from "./schema";
 
-export default function StatsCardSupervisionDiscipulado({ idSupervisao, cor, nome, supervisor }: SupervisaoDataType) {
-  const router = useRouter()
-  const contextParamsSupervisaoId = useSupervisaoContext()
-  console.log('idSupervisao', idSupervisao)
+export default function StatsCardSupervisionDiscipulado({
+  idSupervisao,
+  cor,
+  nome,
+  supervisor,
+}: SupervisaoDataType) {
+  const router = useRouter();
+  const contextParamsSupervisaoId = useSupervisaoContext();
+  console.log("idSupervisao", idSupervisao);
 
-  const handleClickDiscipuladoSUpervisor = (event: React.MouseEvent<HTMLElement>) => {
-    const idSupervisao = event.currentTarget.id
-    router.push(`/discipulados/${contextParamsSupervisaoId}/supervisor/${idSupervisao}`)
-  }
+  const handleClickDiscipuladoSUpervisor = (
+    event: React.MouseEvent<HTMLElement>,
+  ) => {
+    const idSupervisao = event.currentTarget.id;
+    router.push(
+      `/discipulados/${contextParamsSupervisaoId}/supervisor/${idSupervisao}`,
+    );
+  };
   return (
     <>
-
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           <div
@@ -27,7 +35,10 @@ export default function StatsCardSupervisionDiscipulado({ idSupervisao, cor, nom
                 {nome}
               </div>
               <div
-                className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${cor}`)}
+                className={twMerge(
+                  `rounded-full p-2 drop-shadow-md`,
+                  `bg-${cor}`,
+                )}
               >
                 <UsersFour width={24} height={24} color="#fff" />
               </div>
@@ -44,7 +55,8 @@ export default function StatsCardSupervisionDiscipulado({ idSupervisao, cor, nom
               <button
                 onClick={handleClickDiscipuladoSUpervisor}
                 id={idSupervisao}
-                className="px-4 py-2 text-sm font-medium text-white transition-all bg-green-500 rounded-md cursor-pointer hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600">
+                className="px-4 py-2 text-sm font-medium text-white transition-all bg-green-500 rounded-md cursor-pointer hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-600"
+              >
                 Editar
               </button>
             </div>
@@ -52,5 +64,5 @@ export default function StatsCardSupervisionDiscipulado({ idSupervisao, cor, nom
         </div>
       </div>
     </>
-  )
+  );
 }

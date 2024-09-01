@@ -10,33 +10,33 @@ const schemaMember = z.object({
   situacao_no_reino: z.object({
     id: z.string(),
     nome: z.string(),
-  })
-})
+  }),
+});
 
-export type Member = z.infer<typeof schemaMember>
+export type Member = z.infer<typeof schemaMember>;
 
 const schemaLider = z.object({
   id: z.string(),
   first_name: z.string(),
-})
+});
 
-export type Lider = z.infer<typeof schemaLider>
+export type Lider = z.infer<typeof schemaLider>;
 
 const schemaSupervisao = z.object({
   id: z.string(),
   nome: z.string(),
-})
+});
 
-export type Supervisao = z.infer<typeof schemaSupervisao>
+export type Supervisao = z.infer<typeof schemaSupervisao>;
 
 const schemaReuniaoCelula = z.object({
   id: z.string(),
   data_reuniao: z.string(),
   status: z.string(),
-  presencas_membros_reuniao_celula: z.any().array() // You can replace 'any' with the appropriate type if needed
-})
+  presencas_membros_reuniao_celula: z.any().array(), // You can replace 'any' with the appropriate type if needed
+});
 
-export type ReuniaoCelula = z.infer<typeof schemaReuniaoCelula>
+export type ReuniaoCelula = z.infer<typeof schemaReuniaoCelula>;
 
 const DataCelula = z.object({
   id: z.string(),
@@ -45,8 +45,8 @@ const DataCelula = z.object({
   lider: schemaLider,
   supervisao: schemaSupervisao,
   date_que_ocorre: z.string(),
-  reunioes_celula: z.array(schemaReuniaoCelula)
-})
+  reunioes_celula: z.array(schemaReuniaoCelula),
+});
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -67,13 +67,15 @@ const schemaFormCelula = z.object({
   date_inicio: z.string().datetime(),
   date_multipicar: z.string().datetime(),
   date_que_ocorre: z.string().datetime(),
-  membros: z.object({
-    id: z.string().uuid(),
-    first_name: z.string(),
-  }).array(),
-})
+  membros: z
+    .object({
+      id: z.string().uuid(),
+      first_name: z.string(),
+    })
+    .array(),
+});
 
-export type FormCelula = z.infer<typeof schemaFormCelula>
+export type FormCelula = z.infer<typeof schemaFormCelula>;
 
 const schemaCelula = z.object({
   id: z.string(),
@@ -81,32 +83,31 @@ const schemaCelula = z.object({
   lider: z.object({
     id: z.string(),
     first_name: z.string(),
-  })
-})
+  }),
+});
 
-export type Celula = z.infer<typeof schemaCelula>
+export type Celula = z.infer<typeof schemaCelula>;
 
 const schemaUser = z.object({
   id: z.string(),
   first_name: z.string().optional(),
   cargo_de_lideranca: z.object({
     id: z.string(),
-    nome: z.string()
+    nome: z.string(),
   }),
   situacao_no_reino: z.object({
     id: z.string(),
-    nome: z.string()
-  })
-})
+    nome: z.string(),
+  }),
+});
 
-export type User = z.infer<typeof schemaUser>
+export type User = z.infer<typeof schemaUser>;
 
 const SchemaSupervisaoData = z.object({
   id: z.string(),
   nome: z.string(),
   membros: z.array(schemaUser),
-  celulas: z.array(schemaCelula)
-})
+  celulas: z.array(schemaCelula),
+});
 
-export type SupervisaoData = z.infer<typeof SchemaSupervisaoData>
-
+export type SupervisaoData = z.infer<typeof SchemaSupervisaoData>;

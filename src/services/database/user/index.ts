@@ -3,7 +3,7 @@ import axios from "axios";
 
 export const findUserById = async (id: string) => {
   const result = await axios.get(`${BASE_URL}/users/${id}`);
-  console.log('resultFindUserByID', result);
+  console.log("resultFindUserByID", result);
   return result.data; // Acessar a propriedade 'data' para obter o resultado
 };
 
@@ -12,9 +12,9 @@ const axiosAuth = axios.create({
 });
 
 export const findUserByEmail = async (email: string) => {
-  "use server"
-  console.log('email', email)
+  "use server";
+  console.log("email", email);
   const result = await axiosAuth.post(email); // Enviar o email em um objeto
-  console.log('resultFindUserByEmail', result);
+  console.log("resultFindUserByEmail", result);
   return result.data; // Acessar a propriedade 'data' para obter o resultado
 };

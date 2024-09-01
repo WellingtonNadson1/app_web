@@ -1,18 +1,18 @@
-'use client'
-import { ICelula } from '@/components/ListCelulas'
-import ListTemaLicoesCelula from '@/components/ListTemaLicoesCelula'
-import Modal from '@/components/modal'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useRouter } from 'next/navigation'
-import React, { useCallback, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
-import { z } from 'zod'
-import { useQuery } from '@tanstack/react-query'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { handleZipCode } from '@/functions/zipCodeUtils'
-import { useUserDataStore } from '@/store/UserDataStore'
+"use client";
+import { ICelula } from "@/components/ListCelulas";
+import ListTemaLicoesCelula from "@/components/ListTemaLicoesCelula";
+import Modal from "@/components/modal";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import React, { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import "react-toastify/dist/ReactToastify.css";
+import { z } from "zod";
+import { useQuery } from "@tanstack/react-query";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { handleZipCode } from "@/functions/zipCodeUtils";
+import { useUserDataStore } from "@/store/UserDataStore";
 
 const schemaFormCelula = z.object({
   nome: z.string(),
@@ -28,53 +28,53 @@ const schemaFormCelula = z.object({
   date_multipicar: z.string().datetime(),
   date_que_ocorre: z.string().datetime(),
   membros: z.string().uuid().array(),
-})
+});
 
-type FormCelula = z.infer<typeof schemaFormCelula>
+type FormCelula = z.infer<typeof schemaFormCelula>;
 
 interface Celula {
-  id: string
-  nome: string
+  id: string;
+  nome: string;
   lider: {
-    id: string
-    first_name: string
-  }
+    id: string;
+    first_name: string;
+  };
 }
 
 interface FetchError extends Error {
-  status?: number
+  status?: number;
 }
 
 interface User {
-  id: string
-  first_name?: string
+  id: string;
+  first_name?: string;
 }
 
 export interface SupervisaoData {
-  id: string
-  nome: string
-  celulas: Celula[]
-  membros: User[]
+  id: string;
+  nome: string;
+  celulas: Celula[];
+  membros: User[];
 }
 
 export default function AddNewTemaLicoesCelula() {
   // const hostname = 'backibb-w7ri-dev.fl0.io'
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLCelulas = `${BASE_URL}/celulas`
-  const router = useRouter()
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const router = useRouter();
 
-  const { token } = useUserDataStore.getState()
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
+  const axiosAuth = useAxiosAuthToken(token);
 
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
-  >([])
-  const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
+  >([]);
+  const [dataCelulas, setDataCelulas] = useState<ICelula[]>();
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>();
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
     handleZipCode(e, setValue);
@@ -82,47 +82,51 @@ export default function AddNewTemaLicoesCelula() {
 
   const onSubmit: SubmitHandler<FormCelula> = async (data) => {
     try {
-      console.log('Celula: ', data)
-      setIsLoadingSubmitForm(true)
+      console.log("Celula: ", data);
+      setIsLoadingSubmitForm(true);
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
-      data.date_inicio = formatDatatoISO8601(data.date_inicio)
-      data.date_multipicar = formatDatatoISO8601(data.date_multipicar)
+      data.date_inicio = formatDatatoISO8601(data.date_inicio);
+      data.date_multipicar = formatDatatoISO8601(data.date_multipicar);
 
       const response = await fetch(URLCelulas, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(data),
-      })
+      });
 
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
-        setFormSuccess(true)
-        success('Célula Cadastrada')
+        setIsLoadingSubmitForm(false);
+        setFormSuccess(true);
+        success("Célula Cadastrada");
       } else {
-        errorCadastro('Erro ao Cadastrar Célula')
+        errorCadastro("Erro ao Cadastrar Célula");
       }
     } catch (error) {
-      console.log(error)
-      errorCadastro('Erro ao Cadastrar Célula')
+      console.log(error);
+      errorCadastro("Erro ao Cadastrar Célula");
     }
-    reset()
-  }
+    reset();
+  };
 
-  const { data: supervisoes, isError: error, isLoading } = useQuery<SupervisaoData[]>({
+  const {
+    data: supervisoes,
+    isError: error,
+    isLoading,
+  } = useQuery<SupervisaoData[]>({
     queryKey: ["supervisoes"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLSupervisoes)
-      return await response.data
+      const response = await axiosAuth.get(URLSupervisoes);
+      return await response.data;
     },
-  })
+  });
 
   const fetchCelulas = useCallback(async () => {
     try {
@@ -130,50 +134,50 @@ export default function AddNewTemaLicoesCelula() {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      })
+      });
       if (!response.ok) {
-        const error: FetchError = new Error('Failed to fetch get Celulas.')
-        error.status = response.status
-        throw error
+        const error: FetchError = new Error("Failed to fetch get Celulas.");
+        error.status = response.status;
+        throw error;
       }
-      const celulas = await response.json()
-      setDataCelulas(celulas)
+      const celulas = await response.json();
+      setDataCelulas(celulas);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }, [URLCelulas, token])
+  }, [URLCelulas, token]);
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
-    fetchCelulas()
-  }, [fetchCelulas])
+    fetchCelulas();
+  }, [fetchCelulas]);
 
   // UseEffect para buscar as células após o envio do formulário
   useEffect(() => {
     if (formSuccess) {
-      fetchCelulas()
+      fetchCelulas();
     }
-  }, [formSuccess, fetchCelulas])
+  }, [formSuccess, fetchCelulas]);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   useEffect(() => {
     if (supervisaoSelecionada) {
       // Use the selected supervision ID to filter the list of users
       const selectedSupervisao = supervisoes?.find(
         (supervisao) => supervisao.id === supervisaoSelecionada,
-      )
+      );
       if (selectedSupervisao) {
-        setUsersSupervisaoSelecionada(selectedSupervisao.membros)
+        setUsersSupervisaoSelecionada(selectedSupervisao.membros);
       } else {
-        setUsersSupervisaoSelecionada([])
+        setUsersSupervisaoSelecionada([]);
       }
     }
-  }, [supervisaoSelecionada, supervisoes])
+  }, [supervisaoSelecionada, supervisoes]);
 
   if (error)
     return (
@@ -182,7 +186,7 @@ export default function AddNewTemaLicoesCelula() {
           <div className="text-white">failed to load</div>
         </div>
       </div>
-    )
+    );
 
   if (isLoading)
     return (
@@ -191,7 +195,7 @@ export default function AddNewTemaLicoesCelula() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    )
+    );
 
   return (
     <>
@@ -201,7 +205,7 @@ export default function AddNewTemaLicoesCelula() {
         titleButton="+ Add Tema de Lições de Célula"
         buttonProps={{
           className:
-            'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]',
+            "z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]",
         }}
       >
         <div className="relative w-full px-2 py-2 mx-auto">
@@ -224,7 +228,7 @@ export default function AddNewTemaLicoesCelula() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('nome')}
+                            {...register("nome")}
                             type="text"
                             name="nome"
                             id="nome"
@@ -243,7 +247,7 @@ export default function AddNewTemaLicoesCelula() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('date_inicio')}
+                            {...register("date_inicio")}
                             type="datetime-local"
                             name="date_inicio"
                             id="date_inicio"
@@ -261,7 +265,7 @@ export default function AddNewTemaLicoesCelula() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('date_multipicar')}
+                            {...register("date_multipicar")}
                             type="datetime-local"
                             name="date_multipicar"
                             id="date_multipicar"
@@ -291,7 +295,7 @@ export default function AddNewTemaLicoesCelula() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('cep')}
+                            {...register("cep")}
                             maxLength={9}
                             onKeyUp={handleZipCodeChange}
                             type="text"
@@ -311,7 +315,7 @@ export default function AddNewTemaLicoesCelula() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register('cidade')}
+                            {...register("cidade")}
                             type="text"
                             name="cidade"
                             id="cidade"
@@ -320,8 +324,6 @@ export default function AddNewTemaLicoesCelula() {
                         </div>
                       </div>
                     </div>
-
-
 
                     {/* Botões para submeter Forms */}
                     <div className="flex items-center justify-end mt-6 gap-x-6">
@@ -376,7 +378,6 @@ export default function AddNewTemaLicoesCelula() {
         </div>
       </Modal>
 
-
       {/* Cadastrar Nova Célula */}
 
       <div className="relative z-10 w-full px-2 py-2 mx-auto">
@@ -387,5 +388,5 @@ export default function AddNewTemaLicoesCelula() {
         )}
       </div>
     </>
-  )
+  );
 }

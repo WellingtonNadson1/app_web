@@ -1,11 +1,11 @@
-'use client'
-import AddNewMember from '@/app/(central)/novo-membro/AddNewMember'
-import DeleteMember from '@/app/(central)/novo-membro/DeleteMember'
-import { ReturnMembers } from '@/app/(central)/novo-membro/schema'
-import UpdateMember from '@/app/(central)/novo-membro/UpdateMember'
-import { UserFocus } from '@phosphor-icons/react'
-import { useState } from 'react'
-import Pagination from '../Pagination'
+"use client";
+import AddNewMember from "@/app/(central)/novo-membro/AddNewMember";
+import DeleteMember from "@/app/(central)/novo-membro/DeleteMember";
+import { ReturnMembers } from "@/app/(central)/novo-membro/schema";
+import UpdateMember from "@/app/(central)/novo-membro/UpdateMember";
+import { UserFocus } from "@phosphor-icons/react";
+import { useState } from "react";
+import Pagination from "../Pagination";
 
 interface Membro {
   id: string;
@@ -43,23 +43,23 @@ export interface ListMembersCelulaProps {
   data: CelulaData;
 }
 
-
 export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
 
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const membersSort = data.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
-  const displayedMembers = membersSort?.slice(startIndex, endIndex)
-
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const membersSort = data.membros.sort((a, b) =>
+    a.first_name.localeCompare(b.first_name),
+  );
+  const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
   return (
     <>
@@ -67,19 +67,18 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
         <div className="w-full px-2 py-2 ">
           <div className="w-full px-1 py-2 rounded-md">
             <div className="flex items-center justify-between mb-7">
-              <div className='flex flex-col items-start gap-2'>
+              <div className="flex flex-col items-start gap-2">
                 <h2 className="text-lg font-semibold leading-6 text-gray-800">
                   Membros da Célula
                 </h2>
                 <h2 className="text-lg font-normal leading-7 text-gray-600 uppercase">
                   {data.nome}
                 </h2>
-
               </div>
               <AddNewMember />
             </div>
             <table className="w-full border-separate table-auto">
-              <thead className='bg-[#F8FAFC]'>
+              <thead className="bg-[#F8FAFC]">
                 <tr>
                   <th className="px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
                     Nome
@@ -105,7 +104,7 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
                       className="py-8 border-b border-gray-200 rounded-lg hover:bg-gray-50/90"
                       key={user.id}
                     >
-                      <td className='px-2 py-1 border-b border-gray-200'>
+                      <td className="px-2 py-1 border-b border-gray-200">
                         <div className="flex items-center justify-start gap-3">
                           <UserFocus size={24} />
                           <h2 className="ml-4">{user.first_name}</h2>
@@ -113,14 +112,15 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
-                            ? 'bg-green-100  text-green-700 ring-green-600/20'
-                            : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                                ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
-                                : 'bg-red-100  text-red-700 ring-red-600/20'
-                            }`}
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
+                            user.situacao_no_reino?.nome === "Ativo"
+                              ? "bg-green-100  text-green-700 ring-green-600/20"
+                              : user.situacao_no_reino?.nome === "Normal"
+                                ? "bg-blue-100  text-blue-700 ring-blue-600/20"
+                                : user.situacao_no_reino?.nome === "Frio"
+                                  ? "bg-orange-100  text-orange-700 ring-orange-600/20"
+                                  : "bg-red-100  text-red-700 ring-red-600/20"
+                          }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
@@ -142,9 +142,7 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
                           memberName={user.first_name}
                         />
                         <div onClick={() => setShouldFetch(true)}>
-                          <UpdateMember
-                            member={user}
-                          />
+                          <UpdateMember member={user} />
                         </div>
                       </td>
                     </tr>
@@ -168,5 +166,5 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
         </div>
       </div>
     </>
-  )
+  );
 }

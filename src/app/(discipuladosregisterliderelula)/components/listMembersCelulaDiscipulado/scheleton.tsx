@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function Scheleton() {
   return (
@@ -23,6 +23,5 @@ export default function Scheleton() {
         </div>
       </div>
     </div>
-
-  )
+  );
 }

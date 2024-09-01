@@ -1,25 +1,25 @@
-import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { Fragment, useState } from 'react'
+import { Combobox, Transition } from "@headlessui/react";
+import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
+import { Fragment, useState } from "react";
 
 type people = {
-  id: string
-  first_name: string
-}
+  id: string;
+  first_name: string;
+};
 
 export default function Example(queryMembers: people[]) {
-  const [selected, setSelected] = useState<people>()
-  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<people>();
+  const [query, setQuery] = useState("");
 
   const filteredPeople =
-    query === ''
+    query === ""
       ? queryMembers
       : queryMembers.filter((person) =>
           person.first_name
             .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(query.toLowerCase().replace(/\s+/g, '')),
-        )
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, "")),
+        );
 
   return (
     <div className="fixed top-16 w-72">
@@ -43,10 +43,10 @@ export default function Example(queryMembers: people[]) {
             leave="transition ease-in duration-100"
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
-            afterLeave={() => setQuery('')}
+            afterLeave={() => setQuery("")}
           >
             <Combobox.Options className="absolute mt-1 max-h-60 w-full overflow-auto rounded-md bg-white py-1 text-base shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-              {filteredPeople.length === 0 && query !== '' ? (
+              {filteredPeople.length === 0 && query !== "" ? (
                 <div className="relative cursor-default select-none px-4 py-2 text-gray-700">
                   Nothing found.
                 </div>
@@ -56,7 +56,7 @@ export default function Example(queryMembers: people[]) {
                     key={person.id}
                     className={({ active }) =>
                       `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                        active ? 'bg-teal-600 text-white' : 'text-gray-900'
+                        active ? "bg-teal-600 text-white" : "text-gray-900"
                       }`
                     }
                     value={person}
@@ -65,7 +65,7 @@ export default function Example(queryMembers: people[]) {
                       <>
                         <span
                           className={`block truncate ${
-                            selected ? 'font-medium' : 'font-normal'
+                            selected ? "font-medium" : "font-normal"
                           }`}
                         >
                           {person.first_name}
@@ -73,7 +73,7 @@ export default function Example(queryMembers: people[]) {
                         {selected ? (
                           <span
                             className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                              active ? 'text-white' : 'text-teal-600'
+                              active ? "text-white" : "text-teal-600"
                             }`}
                           >
                             <CheckIcon className="h-5 w-5" aria-hidden="true" />
@@ -89,5 +89,5 @@ export default function Example(queryMembers: people[]) {
         </div>
       </Combobox>
     </div>
-  )
+  );
 }

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 // import ListCelulas from '@/components/ListCelulas'
 
 export default function DiscipualdoSupervisor() {
@@ -9,5 +9,5 @@ export default function DiscipualdoSupervisor() {
       {/* Celulas */}
       {/* <ListCelulas /> */}
     </div>
-  )
+  );
 }

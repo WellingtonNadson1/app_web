@@ -123,7 +123,7 @@ export default function StatsCardRelatoriosSupervisores() {
         dateCultoData &&
         presencaGeralCultos?.length > 0
       ) {
-        let ids = new Set<string>();
+        const ids = new Set<string>();
         presencaGeralCultos.map((membro, index) => {
           // Ordenar os cultos por data
           const presencasOrdenadas = membro.presencasFiltradas.sort(
@@ -254,8 +254,8 @@ export default function StatsCardRelatoriosSupervisores() {
   const Supervisor = ListSupervisores(corSupervisao);
 
   useEffect(() => {
-    let rowsCellName = new Set<number>();
-    let rowsNameCell: number[] =
+    const rowsCellName = new Set<number>();
+    const rowsNameCell: number[] =
       (groupedForCell &&
         idCultos &&
         Object.keys(groupedForCell)?.map((cellName, cellIndex) => {

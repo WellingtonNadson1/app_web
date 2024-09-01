@@ -1,4 +1,4 @@
-import StatsCardEscolas from '@/components/StatsCardEscolas'
+import StatsCardEscolas from "@/components/StatsCardEscolas";
 
 export default function Escolas() {
   return (
@@ -6,5 +6,5 @@ export default function Escolas() {
       <div className="mx-auto w-full"></div>
       <StatsCardEscolas />
     </div>
-  )
+  );
 }

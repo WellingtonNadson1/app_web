@@ -6,4 +6,4 @@ export type SupervisaoDataType = {
     id: string;
     first_name: string;
   };
-}
+};

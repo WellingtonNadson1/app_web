@@ -1,19 +1,17 @@
 "use client";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { fakeCelula } from "@/mocks";
-import { User } from "@phosphor-icons/react/dist/ssr";
-import { useState } from "react";
 import { RegisterPresenceFormFirst } from "@/app/(celula)/celula/_components/ControlePresenceFirst/registerpresence";
-import axios from "axios";
-import { BASE_URL } from "@/functions/functions";
-import { useQuery } from "@tanstack/react-query";
 import { CelulaProps, Meeting } from "@/app/(celula)/celula/schema";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { User } from "@phosphor-icons/react/dist/ssr";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import { isSameDay, parseISO, startOfToday } from "date-fns";
 import { useSession } from "next-auth/react";
-import { useUserDataStore } from "@/store/UserDataStore";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 type member = {
   id: string;
@@ -22,45 +20,52 @@ type member = {
   email: string;
 };
 
-const dataHoje = new Date()
-const dayOfWeek = dataHoje.getDay()
-const today = startOfToday()
-const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
-const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
-const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
+const dataHoje = new Date();
+const today = startOfToday();
+const firstDayOfMonth = new Date(
+  dataHoje.getFullYear(),
+  dataHoje.getMonth(),
+  1,
+);
+const lastDayOfMonth = new Date(
+  dataHoje.getFullYear(),
+  dataHoje.getMonth() + 1,
+  0,
+);
+const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
 
 export default function ControleFirst() {
-  const { data: session } = useSession()
+  const { data: session } = useSession();
 
-  const celulaId = session?.user.celulaId
-  const { token } = useUserDataStore.getState()
+  const celulaId = session?.user.celulaId;
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
-  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+  const axiosAuth = useAxiosAuthToken(token);
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
 
   const CelulaData = async () => {
     try {
-      const result = await axiosAuth.get(URLCelula)
-      return await result.data
+      const result = await axiosAuth.get(URLCelula);
+      return await result.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
-  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ['celula', celulaId],
+  const { data: celula } = useQuery<CelulaProps>({
+    queryKey: ["celula", celulaId],
     queryFn: CelulaData,
     enabled: !!celulaId,
     refetchOnWindowFocus: false,
-    retry: false
-  })
+    retry: false,
+  });
 
   if (!celula) {
-    return
+    return;
   }
 
   const celulaSort = celula?.membros.sort((a, b) =>
@@ -71,27 +76,27 @@ export default function ControleFirst() {
     try {
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
-        lastDayOfMonth
-      })
-      return data
+        lastDayOfMonth,
+      });
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
-  const { data, isLoading, isSuccess } = useQuery<Meeting>({
-    queryKey: ['meetingsData'],
+  const { data } = useQuery<Meeting>({
+    queryKey: ["meetingsData"],
     queryFn: MeetingsData,
     refetchOnWindowFocus: false,
-  })
+  });
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
-  )
+  );
 
   return (
     <>

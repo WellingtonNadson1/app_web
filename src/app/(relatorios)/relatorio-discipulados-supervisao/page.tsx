@@ -43,7 +43,7 @@ import { z } from "zod";
 import {
   FormRelatorioDataSchema,
   MemberDataDiscipulado,
-  MembersDataDiscipulado
+  MembersDataDiscipulado,
 } from "./schema";
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -96,13 +96,9 @@ export default function DiscipuladosRelatoriosSupervisoes() {
       queryClient.invalidateQueries({
         queryKey: ["getDiscipuladosSupervisao"],
       });
-      const dataGroupedForCell = await groupDiscipuladoByCell(
-        data[0],
-      );
+      const dataGroupedForCell = await groupDiscipuladoByCell(data[0]);
       setDiscipuladoForCellForCell(dataGroupedForCell);
-      setCorSupervisao(
-        data[0]?.membros[0]?.supervisao_pertence?.nome,
-      );
+      setCorSupervisao(data[0]?.membros[0]?.supervisao_pertence?.nome);
     },
   });
 
@@ -125,11 +121,9 @@ export default function DiscipuladosRelatoriosSupervisoes() {
     return Promise.resolve(celula);
   }
 
-  const handleRelatorio: SubmitHandler<z.infer<typeof FormRelatorioDataSchema>> = async ({
-    startDate,
-    endDate,
-    superVisionId,
-  }) => {
+  const handleRelatorio: SubmitHandler<
+    z.infer<typeof FormRelatorioDataSchema>
+  > = async ({ startDate, endDate, superVisionId }) => {
     DiscipuladosSupervisoesFn({
       startDate,
       endDate,
@@ -459,8 +453,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                             key={member.id}
                           >
                             {member.first_name ===
-                              discipuladoForCell[cellName][0].celula.lider
-                                .first_name ? (
+                            discipuladoForCell[cellName][0].celula.lider
+                              .first_name ? (
                               <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
                                 {member.first_name}
                               </div>
@@ -481,9 +475,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           >
                             <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 capitalize">
                               {
-                                member
-                                  ?.discipulador[0]
-                                  ?.user_discipulador
+                                member?.discipulador[0]?.user_discipulador
                                   ?.first_name
                               }
                             </div>
@@ -499,9 +491,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                         {discipuladoForCell[cellName].map(
                           (member, indexMember) => {
                             const totalDiscipulado =
-                              member
-                                ?.discipulador[0]
-                                ?.discipulado.length;
+                              member?.discipulador[0]?.discipulado.length;
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -540,9 +530,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                         {discipuladoForCell[cellName].map(
                           (member, indexMember) => {
                             const discipulado1 =
-                              member
-                                ?.discipulador[0]
-                                ?.discipulado[0]?.data_ocorreu;
+                              member?.discipulador[0]?.discipulado[0]
+                                ?.data_ocorreu;
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -575,9 +564,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                         {discipuladoForCell[cellName].map(
                           (member, indexMember) => {
                             const discipulado2 =
-                              member
-                                ?.discipulador[0]
-                                ?.discipulado[1]?.data_ocorreu;
+                              member?.discipulador[0]?.discipulado[1]
+                                ?.data_ocorreu;
                             return (
                               <tr
                                 className="border border-zinc-200"

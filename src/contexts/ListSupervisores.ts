@@ -1,13 +1,14 @@
 export const ListSupervisores = (supervisao: string) => {
-  const supervisores = {
-    amarela: "Carlos e Thaísa",
-    azul: "Zedequias",
-    laranja: "Paulo e Patrícia",
-    verde: "Alécio e Iraneide",
-    vermelha: "Ana Ceila",
-  }[supervisao] || "Falha ao carregar";
-  return supervisores
-}
+  const supervisores =
+    {
+      amarela: "Carlos e Thaísa",
+      azul: "Zedequias",
+      laranja: "Paulo e Patrícia",
+      verde: "Alécio e Iraneide",
+      vermelha: "Ana Ceila",
+    }[supervisao] || "Falha ao carregar";
+  return supervisores;
+};
 
 export const CorSupervision = (corSupervisao: string) => {
   switch (corSupervisao) {
@@ -25,5 +26,3 @@ export const CorSupervision = (corSupervisao: string) => {
       return "w-full bg-yellow-500 dark:bg-yellow-500";
   }
 };
-
-

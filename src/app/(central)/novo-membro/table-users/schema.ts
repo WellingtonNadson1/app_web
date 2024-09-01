@@ -40,12 +40,8 @@ const encontroSchema = z.object({
 export const userSchemaTable = z.object({
   id: z.string().uuid(),
   role: z.string(),
-  discipulador: z.array(
-    discipuladorUsuarioSchema,
-  ).optional(),
-  discipulos: z.array(
-    z.unknown(),
-  ).optional(),
+  discipulador: z.array(discipuladorUsuarioSchema).optional(),
+  discipulos: z.array(z.unknown()).optional(),
   user_roles: z
     .object({
       rolenew: z.object({

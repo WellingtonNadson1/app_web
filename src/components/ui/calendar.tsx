@@ -1,17 +1,23 @@
-"use client"
+"use client";
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons"
-import { ptBR } from "date-fns/locale"
-import * as React from "react"
-import { DayPicker, DropdownProps } from "react-day-picker"
+import { ChevronLeftIcon, ChevronRightIcon } from "@radix-ui/react-icons";
+import { ptBR } from "date-fns/locale";
+import * as React from "react";
+import { DayPicker, DropdownProps } from "react-day-picker";
 
-import { buttonVariants } from "@/components/ui/button"
-import { cn } from "@/lib/utils"
+import { buttonVariants } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
-import { ScrollArea } from "@/components/ui/scroll-area"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ScrollArea } from "@/components/ui/scroll-area";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
-export type CalendarProps = React.ComponentProps<typeof DayPicker>
+export type CalendarProps = React.ComponentProps<typeof DayPicker>;
 
 function Calendar({
   className,
@@ -34,7 +40,7 @@ function Calendar({
         nav: "space-x-1 flex items-center",
         nav_button: cn(
           buttonVariants({ variant: "outline" }),
-          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100"
+          "h-7 w-7 bg-transparent p-0 opacity-50 hover:opacity-100",
         ),
         nav_button_previous: "absolute left-1",
         nav_button_next: "absolute right-1",
@@ -46,7 +52,7 @@ function Calendar({
         cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:bg-accent first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md focus-within:relative focus-within:z-20",
         day: cn(
           buttonVariants({ variant: "ghost" }),
-          "h-8 w-8 p-0 font-normal aria-selected:opacity-100"
+          "h-8 w-8 p-0 font-normal aria-selected:opacity-100",
         ),
         day_range_start: "day-range-start",
         day_range_end: "day-range-end",
@@ -63,19 +69,21 @@ function Calendar({
       }}
       components={{
         Dropdown: ({ value, onChange, children, ...props }: DropdownProps) => {
-          const options = React.Children.toArray(children) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[]
-          const selected = options.find((child) => child.props.value === value)
+          const options = React.Children.toArray(
+            children,
+          ) as React.ReactElement<React.HTMLProps<HTMLOptionElement>>[];
+          const selected = options.find((child) => child.props.value === value);
           const handleChange = (value: string) => {
             const changeEvent = {
               target: { value },
-            } as React.ChangeEvent<HTMLSelectElement>
-            onChange?.(changeEvent)
-          }
+            } as React.ChangeEvent<HTMLSelectElement>;
+            onChange?.(changeEvent);
+          };
           return (
             <Select
               value={value?.toString()}
               onValueChange={(value) => {
-                handleChange(value)
+                handleChange(value);
               }}
             >
               <SelectTrigger className="pr-1.5 focus:ring-0">
@@ -84,23 +92,25 @@ function Calendar({
               <SelectContent position="popper">
                 <ScrollArea className="h-auto">
                   {options.map((option, id: number) => (
-                    <SelectItem key={`${option.props.value}-${id}`} value={option.props.value?.toString() ?? ""}>
+                    <SelectItem
+                      key={`${option.props.value}-${id}`}
+                      value={option.props.value?.toString() ?? ""}
+                    >
                       {option.props.children}
                     </SelectItem>
                   ))}
                 </ScrollArea>
               </SelectContent>
             </Select>
-          )
+          );
         },
         IconLeft: ({ ...props }) => <ChevronLeftIcon className="h-4 w-4" />,
         IconRight: ({ ...props }) => <ChevronRightIcon className="h-4 w-4" />,
       }}
       {...props}
     />
-  )
+  );
 }
-Calendar.displayName = "Calendar"
+Calendar.displayName = "Calendar";
 
-export { Calendar }
-
+export { Calendar };

@@ -1,4 +1,4 @@
-import StatusCard from './statusCards/StatusCard'
+import StatusCard from "./statusCards/StatusCard";
 
 // const userNavigation = [
 //   { name: 'Meu Perfil', href: '#' },
@@ -17,5 +17,5 @@ export default function MainSide() {
 
       <StatusCard />
     </main>
-  )
+  );
 }

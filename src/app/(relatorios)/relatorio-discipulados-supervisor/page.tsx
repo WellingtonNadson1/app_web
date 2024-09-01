@@ -451,33 +451,22 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         <p className="text-sm text-slate-600">
                           Qnt Discip.:{" "}
                           <span>
-                            {
-                              discipuladoForCell[cellName][0]
-                                .discipulos
-                                .length
-                            }
+                            {discipuladoForCell[cellName][0].discipulos.length}
                           </span>
                         </p>
                       </td>
                       {/* Coluna para Discípulos */}
                       <td>
-                        {discipuladoForCell[cellName][0]
-                          .discipulos
-                          .length !== 0 ? (
-                          discipuladoForCell[
-                            cellName
-                          ][0].discipulos.map(
+                        {discipuladoForCell[cellName][0].discipulos.length !==
+                        0 ? (
+                          discipuladoForCell[cellName][0].discipulos.map(
                             (discipulo) => (
                               <tr
                                 className="w-20 h-20 py-4 border border-zinc-200"
                                 key={cellName}
                               >
                                 <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
-                                  {
-                                    discipulo
-                                      .user_discipulos
-                                      .first_name
-                                  }
+                                  {discipulo.user_discipulos.first_name}
                                 </div>
                               </tr>
                             ),
@@ -499,12 +488,9 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         className="mx-4 text-center"
                         key={cellName + cellIndex}
                       >
-                        {discipuladoForCell[cellName][0]
-                          .discipulos
-                          .length !== 0 ? (
-                          discipuladoForCell[
-                            cellName
-                          ][0].discipulos.map(
+                        {discipuladoForCell[cellName][0].discipulos.length !==
+                        0 ? (
+                          discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexMember) => {
                               const totalDiscipulado =
                                 discipulado?.discipulado.length;
@@ -512,9 +498,8 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                 <tr
                                   className="border border-zinc-200"
                                   key={
-                                    discipulado
-                                      .user_discipulos
-                                      .first_name + indexMember
+                                    discipulado.user_discipulos.first_name +
+                                    indexMember
                                   }
                                 >
                                   <div
@@ -562,12 +547,9 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       </td>
                       {/* // 1º Discipulado */}
                       <td className="mx-4 text-center" key={cellName}>
-                        {discipuladoForCell[cellName][0]
-                          .discipulos
-                          .length !== 0 ? (
-                          discipuladoForCell[
-                            cellName
-                          ][0].discipulos.map(
+                        {discipuladoForCell[cellName][0].discipulos.length !==
+                        0 ? (
+                          discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
                                 discipulado?.discipulado[0]?.data_ocorreu;
@@ -575,9 +557,8 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                 <tr
                                   className="border border-zinc-200"
                                   key={
-                                    discipulado
-                                      .user_discipulos
-                                      .first_name + indexDiscipulado
+                                    discipulado.user_discipulos.first_name +
+                                    indexDiscipulado
                                   }
                                 >
                                   <div
@@ -623,12 +604,9 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       </td>
                       {/* // 2º Discipulado */}
                       <td className="mx-4 text-center " key={cellIndex}>
-                        {discipuladoForCell[cellName][0]
-                          .discipulos
-                          .length !== 0 ? (
-                          discipuladoForCell[
-                            cellName
-                          ][0].discipulos.map(
+                        {discipuladoForCell[cellName][0].discipulos.length !==
+                        0 ? (
+                          discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
                                 discipulado?.discipulado[1]?.data_ocorreu;
@@ -636,9 +614,8 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                 <tr
                                   className="border border-zinc-200"
                                   key={
-                                    discipulado
-                                      .user_discipulos
-                                      .first_name + indexDiscipulado
+                                    discipulado.user_discipulos.first_name +
+                                    indexDiscipulado
                                   }
                                 >
                                   <div

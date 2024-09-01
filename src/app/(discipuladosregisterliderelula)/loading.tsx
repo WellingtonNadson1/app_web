@@ -2,5 +2,5 @@ import HeaderCelulaDiscipuladosLoad from "./discipuladoscelularegister/loadingHe
 
 export default function Loading() {
   // You can add any UI inside Loading, including a Skeleton.
-  return <HeaderCelulaDiscipuladosLoad />
+  return <HeaderCelulaDiscipuladosLoad />;
 }

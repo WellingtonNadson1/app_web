@@ -1,26 +1,23 @@
-'use client'
-import { cn } from '@/lib/utils'
-import {
-  HandHeart,
-} from '@phosphor-icons/react'
-import Link from 'next/link'
+"use client";
+import { cn } from "@/lib/utils";
+import { HandHeart } from "@phosphor-icons/react";
+import Link from "next/link";
 
 export default function StatsCardRelatoriosDiscipulados() {
-
   const escolasIbb = [
     {
-      title: 'Discipulados de Células',
-      supervisor: 'Supervisões',
+      title: "Discipulados de Células",
+      supervisor: "Supervisões",
       icon: HandHeart,
-      color: 'bg-black',
-      href: "/relatorio-discipulados-supervisao"
+      color: "bg-black",
+      href: "/relatorio-discipulados-supervisao",
     },
     {
-      title: 'Discipulados',
-      supervisor: 'Supervisores',
+      title: "Discipulados",
+      supervisor: "Supervisores",
       icon: HandHeart,
-      color: 'bg-indigo-800',
-      href: "/relatorio-discipulados-supervisor"
+      color: "bg-indigo-800",
+      href: "/relatorio-discipulados-supervisor",
     },
     // {
     //   title: 'Presença nas Reuniões',
@@ -36,7 +33,7 @@ export default function StatsCardRelatoriosDiscipulados() {
     //   color: 'bg-sky-800',
     //   href: "/relatorio-discipulados/f425-4865-a730-5191bc0821cd"
     // },
-  ]
+  ];
   return (
     <div className="relative z-10 w-full py-2 mx-auto">
       <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
@@ -50,20 +47,21 @@ export default function StatsCardRelatoriosDiscipulados() {
                   {stat.title}
                 </div>
                 <div
-                  className={cn(`rounded-full p-2 drop-shadow-md`, `${stat.color}`)}
+                  className={cn(
+                    `rounded-full p-2 drop-shadow-md`,
+                    `${stat.color}`,
+                  )}
                 >
                   <stat.icon width={24} height={24} color="#fff" />
                 </div>
               </div>
               <div className="flex items-center">
-                <span className="text-lg font-semibold">
-                  {stat.supervisor}
-                </span>
+                <span className="text-lg font-semibold">{stat.supervisor}</span>
               </div>
             </div>
           </Link>
         ))}
       </div>
     </div>
-  )
+  );
 }

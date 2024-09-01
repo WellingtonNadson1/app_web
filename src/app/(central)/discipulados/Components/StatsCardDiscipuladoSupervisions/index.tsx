@@ -12,7 +12,7 @@ export default function StatsDiscipuladosCardSupervisions() {
   const router = useRouter();
   const supervisoes = data?.combinedData[0];
 
-  console.log('supervisoes', supervisoes)
+  console.log("supervisoes", supervisoes);
   const handleDiscipuladosSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {

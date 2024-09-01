@@ -1,7 +1,5 @@
 "use client";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { PencilSimple } from "@phosphor-icons/react/dist/ssr";
-import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { Button } from "../ui/button";
 import {
@@ -14,16 +12,7 @@ import {
 } from "../ui/dialog";
 import { DropdownMenuItem } from "../ui/dropdown-menu";
 
-export default function UpdateCulto({
-  cultoId,
-}: // shouldFetch,
-  {
-    cultoId: string;
-    // shouldFetch: boolean
-  }) {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-
+export default function UpdateCulto() {
   const [open, setOpen] = useState(false);
 
   return (
@@ -44,8 +33,7 @@ export default function UpdateCulto({
             Edite o culto preenchendo o formulário.
           </DialogDescription>
         </DialogHeader>
-        <div className="text-center py-2">
-        </div>
+        <div className="text-center py-2"></div>
         {/* FORMULARIO CADASTRO CULTO */}
         <div className="flex flex-col-reverse gap-2 sm:gap-0 sm:flex-row sm:justify-end sm:space-x-2">
           <Button variant={"outline"} onClick={() => setOpen(false)}>

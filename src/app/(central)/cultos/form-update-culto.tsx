@@ -103,20 +103,28 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
     resolver: zodResolver(CultoSchema),
     defaultValues: {
       culto_semana: meeting?.meeting?.culto_semana.id,
-      data_inicio_culto: dayjs(new Date(meeting?.meeting?.data_inicio_culto)).add(3, "hour").toDate(),
-      data_termino_culto: dayjs(new Date(meeting?.meeting?.data_termino_culto)).add(3, "hour").toDate(),
+      data_inicio_culto: dayjs(new Date(meeting?.meeting?.data_inicio_culto))
+        .add(3, "hour")
+        .toDate(),
+      data_termino_culto: dayjs(new Date(meeting?.meeting?.data_termino_culto))
+        .add(3, "hour")
+        .toDate(),
       status: meeting?.meeting?.status,
     },
   });
 
   const UpdateCultoFunction = async (data: z.infer<typeof CultoSchema>) => {
     // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
-    const data_inicio_culto1 = dayjs(data.data_inicio_culto).subtract(3, "hour").toISOString()
-    const data_termino_culto2 = dayjs(data.data_termino_culto).subtract(3, "hour").toISOString()
-    const data_inicio_culto = new Date(data_inicio_culto1)
-    const data_termino_culto = new Date(data_termino_culto2)
+    const data_inicio_culto1 = dayjs(data.data_inicio_culto)
+      .subtract(3, "hour")
+      .toISOString();
+    const data_termino_culto2 = dayjs(data.data_termino_culto)
+      .subtract(3, "hour")
+      .toISOString();
+    const data_inicio_culto = new Date(data_inicio_culto1);
+    const data_termino_culto = new Date(data_termino_culto2);
 
-    var data = { ...data, data_inicio_culto, data_termino_culto }
+    var data = { ...data, data_inicio_culto, data_termino_culto };
 
     const response = await axiosAuth.put(URLCultoIndividual, {
       data,
@@ -125,10 +133,7 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
     return response.data;
   };
 
-  const {
-    mutateAsync: updateCultoFn,
-    isPending,
-  } = useMutation({
+  const { mutateAsync: updateCultoFn, isPending } = useMutation({
     mutationFn: UpdateCultoFunction,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cultosMarcados"] });

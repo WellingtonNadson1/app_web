@@ -1,60 +1,60 @@
-'use client'
-import { ICelula } from '@/components/ListCelulas'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import React, { useCallback, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import Modal from '@/components/modal'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import 'react-toastify/dist/ReactToastify.css'
-import { ToastContainer } from 'react-toastify'
-import { useQuery } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import { handleZipCode } from '@/functions/zipCodeUtils'
-import { FormCelula, Member, SupervisaoData, User } from './schema'
-import { useUserDataStore } from '@/store/UserDataStore'
+"use client";
+import { ICelula } from "@/components/ListCelulas";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import React, { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import Modal from "@/components/modal";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import "react-toastify/dist/ReactToastify.css";
+import { ToastContainer } from "react-toastify";
+import { useQuery } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import { handleZipCode } from "@/functions/zipCodeUtils";
+import { FormCelula, Member, SupervisaoData, User } from "./schema";
+import { useUserDataStore } from "@/store/UserDataStore";
 
 export default function UpdateCelula({
   celulaId,
   shouldFetch,
 }: {
-  celulaId: string
-  shouldFetch: boolean
+  celulaId: string;
+  shouldFetch: boolean;
 }) {
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
-  const URLCelulas = `${BASE_URL}/celulas`
-  const { token } = useUserDataStore.getState()
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
+  const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`;
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const { token } = useUserDataStore.getState();
 
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>();
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
-  >([])
-  const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const axiosAuth = useAxiosAuthToken(token)
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
+  >([]);
+  const [dataCelulas, setDataCelulas] = useState<ICelula[]>();
+  const axiosAuth = useAxiosAuthToken(token);
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>();
 
   const { data: dataCelula } = useQuery<FormCelula>({
-    queryKey: ['celulas', celulaId],
+    queryKey: ["celulas", celulaId],
     queryFn: async () => {
-      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula = response.data
-      return dataCelula
-    }
-  })
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`);
+      const dataCelula = response.data;
+      return dataCelula;
+    },
+  });
 
   const { data: dataLider } = useQuery<Member>({
-    queryKey: ['celulas', celulaId],
+    queryKey: ["celulas", celulaId],
     queryFn: async () => {
-      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula = response.data
-      return dataCelula
-    }
-  })
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`);
+      const dataCelula = response.data;
+      return dataCelula;
+    },
+  });
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
     handleZipCode(e, setValue);
@@ -73,16 +73,16 @@ export default function UpdateCelula({
     date_inicio,
     date_multipicar,
     date_que_ocorre,
-    membros
+    membros,
   }) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
-      console.log(dayjs(date_inicio).toISOString())
-      console.log(dayjs(date_multipicar).toISOString())
+      console.log(dayjs(date_inicio).toISOString());
+      console.log(dayjs(date_multipicar).toISOString());
 
-      date_inicio = dayjs(date_inicio).toISOString()
-      date_multipicar = dayjs(date_multipicar).toISOString()
+      date_inicio = dayjs(date_inicio).toISOString();
+      date_multipicar = dayjs(date_multipicar).toISOString();
 
       const response = await axiosAuth.put(URLCelulaId, {
         nome,
@@ -97,82 +97,83 @@ export default function UpdateCelula({
         date_inicio,
         date_multipicar,
         date_que_ocorre,
-        membros
-      })
-      const celulaRUpdated = response.data
+        membros,
+      });
+      const celulaRUpdated = response.data;
 
       if (celulaRUpdated) {
-        setIsLoadingSubmitForm(false)
-        setFormSuccess(true)
-        success('Célula Atualizada')
+        setIsLoadingSubmitForm(false);
+        setFormSuccess(true);
+        success("Célula Atualizada");
       } else {
-        errorCadastro('Erro ao Atualizar Célula')
+        errorCadastro("Erro ao Atualizar Célula");
       }
     } catch (error) {
-      console.log(error)
-      setIsLoadingSubmitForm(false)
-      errorCadastro('Erro ao Atualizar Célula')
+      console.log(error);
+      setIsLoadingSubmitForm(false);
+      errorCadastro("Erro ao Atualizar Célula");
     }
-    reset()
-  }
+    reset();
+  };
 
   useEffect(() => {
-    setIsLoading(true)
-    axiosAuth.get(URLSupervisoes)
-      .then(response => {
+    setIsLoading(true);
+    axiosAuth
+      .get(URLSupervisoes)
+      .then((response) => {
         setSupervisoes(response.data);
-        setIsLoading(false)
+        setIsLoading(false);
       })
-      .catch(error => {
-        console.error('Erro na requisição:', error);
-        setIsLoading(false)
+      .catch((error) => {
+        console.error("Erro na requisição:", error);
+        setIsLoading(false);
       });
   }, []);
 
   const fetchCelulas = useCallback(async () => {
     try {
-      const response = await axiosAuth.get(URLCelulas)
-      const getCelulaRegister = response.data
+      const response = await axiosAuth.get(URLCelulas);
+      const getCelulaRegister = response.data;
       if (!getCelulaRegister) {
-        console.log('Failed to fetch get Celulas.')
+        console.log("Failed to fetch get Celulas.");
       }
-      setDataCelulas(getCelulaRegister)
+      setDataCelulas(getCelulaRegister);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }, [token])
+  }, [token]);
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
-    fetchCelulas()
-  }, [fetchCelulas])
+    fetchCelulas();
+  }, [fetchCelulas]);
 
   // UseEffect para buscar as células após o envio do formulário
   useEffect(() => {
     if (formSuccess) {
-      fetchCelulas()
+      fetchCelulas();
     }
-  }, [formSuccess, fetchCelulas])
+  }, [formSuccess, fetchCelulas]);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   useEffect(() => {
     if (supervisaoSelecionada) {
       // Use the selected supervision ID to filter the list of users
       const selectedSupervisao = supervisoes?.find(
         (supervisao) => supervisao.id === supervisaoSelecionada,
-      )
+      );
       if (selectedSupervisao) {
-        setUsersSupervisaoSelecionada(selectedSupervisao.membros)
+        setUsersSupervisaoSelecionada(selectedSupervisao.membros);
       } else {
-        setUsersSupervisaoSelecionada([])
+        setUsersSupervisaoSelecionada([]);
       }
     }
-  }, [supervisaoSelecionada, supervisoes])
+  }, [supervisaoSelecionada, supervisoes]);
   return (
     <>
       <ToastContainer />
@@ -185,7 +186,7 @@ export default function UpdateCelula({
               titleButton="Editar"
               buttonProps={{
                 className:
-                  'z-10 rounded-md bg-[#6F8598] text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700',
+                  "z-10 rounded-md bg-[#6F8598] text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-700",
               }}
             >
               <div className="relative w-full px-2 py-2 mx-auto">
@@ -209,7 +210,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('nome')}
+                                  {...register("nome")}
                                   defaultValue={dataCelula?.nome}
                                   type="text"
                                   id="nome"
@@ -228,14 +229,12 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <select
-                                  {...register('date_que_ocorre')}
+                                  {...register("date_que_ocorre")}
                                   defaultValue={dataCelula?.date_que_ocorre}
                                   id="date_que_ocorre"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
-                                  <option value="">
-                                    Selecione
-                                  </option>
+                                  <option value="">Selecione</option>
                                   <option value="0">Domingo</option>
                                   <option value="1">Segunda</option>
                                   <option value="2">Terça</option>
@@ -256,8 +255,10 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('date_inicio')}
-                                  defaultValue={dayjs(dataCelula?.date_inicio).format('DD/MM/YYYY')}
+                                  {...register("date_inicio")}
+                                  defaultValue={dayjs(
+                                    dataCelula?.date_inicio,
+                                  ).format("DD/MM/YYYY")}
                                   // type="date"
                                   id="date_inicio"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -274,8 +275,10 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('date_multipicar')}
-                                  defaultValue={dayjs(dataCelula?.date_multipicar).format('DD/MM/YYYY')}
+                                  {...register("date_multipicar")}
+                                  defaultValue={dayjs(
+                                    dataCelula?.date_multipicar,
+                                  ).format("DD/MM/YYYY")}
                                   // type="date"
                                   id="date_multipicar"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -295,7 +298,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <select
-                                  {...register('supervisao')}
+                                  {...register("supervisao")}
                                   defaultValue={dataCelula?.supervisao.id}
                                   id="supervisao"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -303,17 +306,18 @@ export default function UpdateCelula({
                                   onBlur={handleSupervisaoSelecionada}
                                 >
                                   {!supervisoes ? (
-                                    <option value="">Carregando supervisões...</option>
-                                  ) : (
                                     <option value="">
-                                      Selecione
+                                      Carregando supervisões...
                                     </option>
+                                  ) : (
+                                    <option value="">Selecione</option>
                                   )}
                                   {supervisoes &&
                                     supervisoes?.map((supervisao) => (
                                       <option
                                         key={supervisao.id}
-                                        value={supervisao.id}>
+                                        value={supervisao.id}
+                                      >
                                         {supervisao.nome}
                                       </option>
                                     ))}
@@ -330,20 +334,23 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <select
-                                  {...register('lider')}
+                                  {...register("lider")}
                                   defaultValue={dataCelula?.lider.id}
                                   id="lider"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
                                   <option value="">Selecione</option>
                                   {supervisoes &&
-                                    supervisoes?.map((membros) => (
+                                    supervisoes?.map((membros) =>
                                       membros.membros.map((membro) => (
-                                        <option key={membro.id} value={membro.id}>
+                                        <option
+                                          key={membro.id}
+                                          value={membro.id}
+                                        >
                                           {membro.first_name}
                                         </option>
-                                      ))
-                                    ))}
+                                      )),
+                                    )}
                                 </select>
                               </div>
                             </div>
@@ -361,25 +368,26 @@ export default function UpdateCelula({
                                 </label>
                                 <div className="mt-3">
                                   <select
-                                    {...register('membros')}
-                                    defaultValue={dataCelula?.membros.map((membro) => (
-                                      membro.id
-                                    ))}
+                                    {...register("membros")}
+                                    defaultValue={dataCelula?.membros.map(
+                                      (membro) => membro.id,
+                                    )}
                                     multiple={true}
                                     id="membros"
                                     className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   >
-                                    <option value="">
-                                      Selecione
-                                    </option>
+                                    <option value="">Selecione</option>
                                     {supervisoes &&
-                                      supervisoes?.map((membros) => (
+                                      supervisoes?.map((membros) =>
                                         membros.membros.map((membro) => (
-                                          <option key={membro.id} value={membro.id}>
+                                          <option
+                                            key={membro.id}
+                                            value={membro.id}
+                                          >
                                             {membro.first_name}
                                           </option>
-                                        ))
-                                      ))}
+                                        )),
+                                      )}
                                   </select>
                                 </div>
                               </div>
@@ -406,7 +414,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('cep')}
+                                  {...register("cep")}
                                   maxLength={9}
                                   onKeyUp={handleZipCodeChange}
                                   type="text"
@@ -425,7 +433,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('cidade')}
+                                  {...register("cidade")}
                                   type="text"
                                   id="cidade"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -442,7 +450,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('estado')}
+                                  {...register("estado")}
                                   type="text"
                                   id="estado"
                                   autoComplete="address-level1"
@@ -462,7 +470,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('bairro')}
+                                  {...register("bairro")}
                                   type="text"
                                   id="bairro"
                                   autoComplete="address-level1"
@@ -479,7 +487,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('endereco')}
+                                  {...register("endereco")}
                                   type="text"
                                   id="endereco"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -495,7 +503,7 @@ export default function UpdateCelula({
                               </label>
                               <div className="mt-3">
                                 <input
-                                  {...register('numero_casa')}
+                                  {...register("numero_casa")}
                                   type="text"
                                   id="numero_casa"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -560,5 +568,5 @@ export default function UpdateCelula({
         </div>
       </div>
     </>
-  )
+  );
 }

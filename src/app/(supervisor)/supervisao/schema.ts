@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
@@ -6,7 +6,7 @@ const ReuniaoCelulaSchema = z.object({
   celula: z.string(),
   data_reuniao: z.string(),
   presencas_reuniao_celula: z.object({}).array(),
-})
+});
 
 const UserSchema = z.object({
   id: z.string(),
@@ -17,7 +17,7 @@ const UserSchema = z.object({
   cargo_de_lideranca: z.object({
     nome: z.string(),
   }),
-})
+});
 
 const CelulaSchema = z.object({
   id: z.string(),
@@ -39,27 +39,29 @@ const CelulaSchema = z.object({
   supervisaoId: z.string(),
   membros: z.array(UserSchema),
   reunioes_celula: z.array(ReuniaoCelulaSchema),
-  userId: z.string()
-})
+  userId: z.string(),
+});
 
-export type CelulaProps = z.infer<typeof CelulaSchema>
+export type CelulaProps = z.infer<typeof CelulaSchema>;
 
 const PresencaCultoSupervisorSchema = z.object({
   id: z.string(),
   status: z.boolean(),
   membro: z.string(),
   presenca_culto: z.string(),
-})
+});
 
-export type PresencaCultoProps = z.infer<typeof PresencaCultoSupervisorSchema>
+export type PresencaCultoProps = z.infer<typeof PresencaCultoSupervisorSchema>;
 
 export const ControlePresencaSupervisorPropsSchema = z.object({
   id: z.string(),
   supervisorId: z.string(),
   culto: z.string(),
-})
+});
 
-export type ControlePresencaSupervisorProps = z.infer<typeof ControlePresencaSupervisorPropsSchema>
+export type ControlePresencaSupervisorProps = z.infer<
+  typeof ControlePresencaSupervisorPropsSchema
+>;
 
 export const attendanceSchema = z.object({
   status: z.enum(["true", "false"], {
@@ -67,6 +69,6 @@ export const attendanceSchema = z.object({
   }),
   membro: z.string(),
   presenca_culto: z.string(),
-})
+});
 
-export type attendance = z.infer<typeof attendanceSchema>
+export type attendance = z.infer<typeof attendanceSchema>;

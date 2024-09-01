@@ -1,4 +1,4 @@
-import React from 'react'
+import React from "react";
 
 export default function CalendarLoading() {
   return (
@@ -25,17 +25,19 @@ export default function CalendarLoading() {
                 <div>S</div>
               </div>
               <div className="grid grid-cols-7 mt-2">
-                {Array(42).fill(null).map((_, dayIdx) => (
-                  <div key={dayIdx} className="py-1">
-                    <div className="w-8 h-8 bg-gray-400 rounded-full animate-pulse"></div>
-                  </div>
-                ))}
+                {Array(42)
+                  .fill(null)
+                  .map((_, dayIdx) => (
+                    <div key={dayIdx} className="py-1">
+                      <div className="w-8 h-8 bg-gray-400 rounded-full animate-pulse"></div>
+                    </div>
+                  ))}
               </div>
             </div>
             {/* Section for Events Day */}
             <section className="mt-12 md:mt-0 md:pl-14">
               <h2 className="font-semibold text-gray-900">
-                Agenda para{' '}
+                Agenda para{" "}
                 <div className="w-24 h-5 bg-gray-400 rounded-md animate-pulse"></div>
               </h2>
               <ol className="mt-4 space-y-1 text-sm leading-6 text-gray-500">
@@ -48,5 +50,5 @@ export default function CalendarLoading() {
         </div>
       </div>
     </div>
-  )
+  );
 }

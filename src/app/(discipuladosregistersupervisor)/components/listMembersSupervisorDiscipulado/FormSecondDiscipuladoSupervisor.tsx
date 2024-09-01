@@ -1,11 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  BASE_URL,
-  errorCadastro,
-  success
-} from "@/functions/functions";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
 import { useUserDataStore } from "@/store/UserDataStore";
@@ -40,8 +36,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
   const quantidade_discipulado = membro?.membro?._count?.discipulado;
   const data_2discipulado_ocorreu =
     membro?.membro?.discipulado[1]?.data_ocorreu;
-  const discipulo_id =
-    membro?.membro?.user_discipulos.id;
+  const discipulo_id = membro?.membro?.user_discipulos.id;
   const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>();
 
   // Register New Discipulado
@@ -126,7 +121,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                   aria-disabled
                   key={discipulo_id}
                   id={discipulo_id}
-                // onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
+                  // onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
                 >
                   <input
                     key={discipulo_id}
@@ -140,7 +135,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  { }
+                  {}
                   <Input
                     type="date"
                     disabled

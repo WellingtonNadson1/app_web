@@ -1,5 +1,5 @@
-import { UsersFour } from '@phosphor-icons/react'
-import { twMerge } from 'tailwind-merge'
+import { UsersFour } from "@phosphor-icons/react";
+import { twMerge } from "tailwind-merge";
 
 type SupervisaoDataType = {
   nome: string;
@@ -8,12 +8,15 @@ type SupervisaoDataType = {
     id: string;
     first_name: string;
   };
-}
+};
 
-export default function StatsCardSupervision({ cor, nome, supervisor }: SupervisaoDataType) {
+export default function StatsCardSupervision({
+  cor,
+  nome,
+  supervisor,
+}: SupervisaoDataType) {
   return (
     <>
-
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           <div
@@ -24,7 +27,10 @@ export default function StatsCardSupervision({ cor, nome, supervisor }: Supervis
                 {nome}
               </div>
               <div
-                className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${cor}`)}
+                className={twMerge(
+                  `rounded-full p-2 drop-shadow-md`,
+                  `bg-${cor}`,
+                )}
               >
                 <UsersFour width={24} height={24} color="#fff" />
               </div>
@@ -46,5 +52,5 @@ export default function StatsCardSupervision({ cor, nome, supervisor }: Supervis
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -7,36 +7,42 @@ export const RoleSchema = z.enum([
   "USERPASTOR",
   "MEMBER",
   "ADMIN",
-])
-
+]);
 
 export const InputsFormAuthSchema = z.object({
-  email: z.string().email({ message: "Endereço de email inválido" }).toLowerCase(),
-  password: z.string().min(6, { message: "* Senha requerida" })
-})
+  email: z
+    .string()
+    .email({ message: "Endereço de email inválido" })
+    .toLowerCase(),
+  password: z.string().min(6, { message: "* Senha requerida" }),
+});
 
-export type InputsFormAuth = z.infer<typeof InputsFormAuthSchema>
+export type InputsFormAuth = z.infer<typeof InputsFormAuthSchema>;
 
 export const loginSchema = z.object({
-  email: z.string({ required_error: "Email é necessário" })
+  email: z
+    .string({ required_error: "Email é necessário" })
     .min(1, "Email é necessário")
     .email("Email inválido"),
-  password: z.string({ required_error: "Senha é necessária" })
+  password: z
+    .string({ required_error: "Senha é necessária" })
     .min(1, "Senha é necessária")
     .min(8, "Deve possuir no mínimo 8 caracteres")
     .max(32, "Quantidade de caracteres excedido"),
-})
+});
 
 export type TypeLogin = z.infer<typeof loginSchema>;
 
 const userSchema = z.object({
   id: z.string(),
   role: z.string(),
-  user_roles: z.object({
-    rolenew: z.object({
-      name: z.string(),
+  user_roles: z
+    .object({
+      rolenew: z.object({
+        name: z.string(),
+      }),
     })
-  }).array(),
+    .array(),
   email: z.string(),
   password: z.string(),
   image_url: z.string(),
@@ -79,6 +85,6 @@ const userSchema = z.object({
     id: z.string(),
     expiresIn: z.number(),
     userIdRefresh: z.string(),
-  })
-})
+  }),
+});
 export type TUser = z.infer<typeof userSchema>;

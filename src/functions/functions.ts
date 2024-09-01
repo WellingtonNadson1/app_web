@@ -5,17 +5,15 @@ import { NextAuthRequest } from "next-auth/lib";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export interface FetchError extends AxiosError {}
+export interface FetchError extends AxiosError { }
 
 // const hostname = 'backibb-production.up.railway.app'
 // const hostname = 'app-ibb.onrender.com'
 // const hostname = "back-ibb.vercel.app";
 // const hostnameLocal = "localhost:8080";
 
-export const BASE_URL =
-  "https://back-ibb.vercel.app" || process.env.HOSTNAME_URL;
-export const BASE_URL_LOCAL =
-  "http://localhost:8080" || process.env.HOSTNAME_URL_LOCAL;
+export const BASE_URL = process.env.HOSTNAME_URL || "https://back-ibb.vercel.app";
+export const BASE_URL_LOCAL = process.env.HOSTNAME_URL_LOCAL || "http://localhost:8080";
 
 export async function fetchWithToken(
   url: string,
@@ -74,7 +72,7 @@ export const errorCadastro = (message: string) =>
 const { auth } = NextAuth(authConfig);
 
 export default auth((req: NextAuthRequest) => {
-  const { nextUrl } = req;
+  // const { nextUrl } = req;
   const isLoggedIn = !!req.auth;
   return console.log("isLoggedIn", isLoggedIn);
 });

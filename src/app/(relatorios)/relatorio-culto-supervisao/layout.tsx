@@ -1,33 +1,33 @@
 // import { getServerSession } from 'next-auth'
 // import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
-import '@/./app/globals.css'
-import { auth } from '@/auth'
-import { Providers } from '@/providers/providers'
-import { RedirectType } from 'next/dist/client/components/redirect'
-import { redirect } from 'next/navigation'
-import NextTopLoader from 'nextjs-toploader'
-import React from 'react'
+import "@/./app/globals.css";
+import { auth } from "@/auth";
+import { Providers } from "@/providers/providers";
+import { RedirectType } from "next/dist/client/components/redirect";
+import { redirect } from "next/navigation";
+import NextTopLoader from "nextjs-toploader";
+import React from "react";
 
 export const metadata = {
-  title: 'App IBB',
-  description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
+  title: "App IBB",
+  description: "Criado para auxiliar no controle e desenvolvimento da IBB",
   icons: {
-    icon: ['/favicon.ico'],
-    apple: ['/apple-touch-icon.png?v=4'],
-    shortcut: ['/apple-touch-icon.png']
-  }
-}
+    icon: ["/favicon.ico"],
+    apple: ["/apple-touch-icon.png?v=4"],
+    shortcut: ["/apple-touch-icon.png"],
+  },
+};
 
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
-  const session = await auth()
+  const session = await auth();
 
   if (!session) {
     // Signed in
-    return redirect('/login', RedirectType.replace)
+    return redirect("/login", RedirectType.replace);
   }
 
   return (
@@ -47,12 +47,10 @@ export default async function RootLayout({
         <div className="overflow-x-auto overflow-y-auto">
           <div className="absolute top-0 min-h-[18.75rem]"></div>
           <div className="flex min-h-screen bg-white">
-            <Providers>
-              {children}
-            </Providers>
+            <Providers>{children}</Providers>
           </div>
         </div>
       </body>
     </html>
-  )
+  );
 }

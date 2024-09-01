@@ -1,11 +1,7 @@
 "use client";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import {
-  BASE_URL,
-  errorCadastro,
-  success
-} from "@/functions/functions";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
 import { useUserDataStore } from "@/store/UserDataStore";
@@ -48,8 +44,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
   const quantidade_discipulado = membro?.membro?._count?.discipulado || 0;
   const data_1discipulado_ocorreu =
     membro?.membro?.discipulado[0]?.data_ocorreu || null;
-  const discipulo_id =
-    membro?.membro?.user_discipulos.id;
+  const discipulo_id = membro?.membro?.user_discipulos.id;
   const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>();
 
   // Register New Discipulado
@@ -136,7 +131,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                   aria-disabled
                   key={discipulo_id}
                   id={discipulo_id}
-                // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
+                  // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
                 >
                   <input
                     key={discipulo_id}
@@ -150,7 +145,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  { }
+                  {}
                   <Input
                     type="date"
                     disabled
@@ -160,10 +155,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     value={dayjs
                       .utc(data_1discipulado_ocorreu)
                       .format("YYYY-MM-DD")}
-                    key={
-                      membro?.membro?.user_discipulos
-                        .id + 7
-                    }
+                    key={membro?.membro?.user_discipulos.id + 7}
                     {...register(`data_ocorreu`, {
                       required: true,
                     })}

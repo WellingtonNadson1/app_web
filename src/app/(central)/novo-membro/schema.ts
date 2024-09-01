@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from "zod";
 
 export const MemberSchema = z.object({
   id: z.string(),
@@ -23,7 +23,7 @@ export const MemberSchema = z.object({
   is_discipulado: z.boolean(),
   user: z.object({
     id: z.string(),
-    first_name: z.string()
+    first_name: z.string(),
   }),
   discipuladorId: z.string().optional(),
   estado_civil: z.string(),
@@ -47,142 +47,138 @@ export const MemberSchema = z.object({
   presencas_cultos: z.string().array().optional(),
   TurmaEscola: z.string().optional(),
   token: z.string(),
-})
+});
 
-export type Member = z.infer<typeof MemberSchema>
+export type Member = z.infer<typeof MemberSchema>;
 
 export type AddressProps = {
-  uf: string
-  bairro: string
-  logradouro: string
-  complemento: string
-  localidade: string
-}
+  uf: string;
+  bairro: string;
+  logradouro: string;
+  complemento: string;
+  localidade: string;
+};
 
-const CelulaSchema = z
-  .object({
+const CelulaSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  lider: z.object({
     id: z.string(),
-    nome: z.string(),
-    lider: z.object({
-      id: z.string(),
-      first_name: z.string(),
-    }),
-  })
+    first_name: z.string(),
+  }),
+});
 
-export type Celula = z.infer<typeof CelulaSchema>
+export type Celula = z.infer<typeof CelulaSchema>;
 
-const SupervisaoDataSchema = z
-  .object({
+const SupervisaoDataSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  cor: z.string(),
+  supervisor: z.object({
     id: z.string(),
-    nome: z.string(),
-    cor: z.string(),
-    supervisor: z.object({
-      id: z.string(),
-      first_name: z.string(),
-      discipulos: z.object({
+    first_name: z.string(),
+    discipulos: z
+      .object({
         user_discipulos: z.object({
           id: z.string(),
           first_name: z.string(),
         }),
-      }).array(),
-    }),
-    celulas: CelulaSchema.array(),
-  })
+      })
+      .array(),
+  }),
+  celulas: CelulaSchema.array(),
+});
 
-export type SupervisaoData = z.infer<typeof SupervisaoDataSchema>
+export type SupervisaoData = z.infer<typeof SupervisaoDataSchema>;
 
-const EscolasSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
+const EscolasSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+});
 
-export type Escolas = z.infer<typeof EscolasSchema>
+export type Escolas = z.infer<typeof EscolasSchema>;
 
-const EncontrosSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
+const EncontrosSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+});
 
-export type Encontros = z.infer<typeof EncontrosSchema>
+export type Encontros = z.infer<typeof EncontrosSchema>;
 
-const SituacoesNoReinoSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
+const SituacoesNoReinoSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+});
 
-export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>
+export type SituacoesNoReino = z.infer<typeof SituacoesNoReinoSchema>;
 
-const CargoLidereancaSchema = z
-  .object({
-    id: z.string(),
-    nome: z.string(),
-  })
+const CargoLidereancaSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+});
 
-export type CargoLidereanca = z.infer<typeof CargoLidereancaSchema>
+export type CargoLidereanca = z.infer<typeof CargoLidereancaSchema>;
 
 export interface ReturnMembers {
-  id: string
-  role: string
+  id: string;
+  role: string;
   user_roles: {
     rolenew: {
-      name: string
-    },
-  }[],
-  image_url: string | undefined
-  email: string
-  first_name: string
-  last_name: string
-  cpf: string
-  date_nascimento: Date
-  sexo: string
-  telefone: string
-  escolaridade: string
-  profissao: string
-  batizado: string
-  date_batizado: Date
-  is_discipulado: string
-  discipuladorId: string
-  estado_civil: string
-  nome_conjuge: string
-  date_casamento: Date
-  has_filho: string
-  quantidade_de_filho: number
-  date_decisao: Date
-  cep: string
-  estado: string
-  cidade: string
-  bairro: string
-  numero_casa: string
+      name: string;
+    };
+  }[];
+  image_url: string | undefined;
+  email: string;
+  first_name: string;
+  last_name: string;
+  cpf: string;
+  date_nascimento: Date;
+  sexo: string;
+  telefone: string;
+  escolaridade: string;
+  profissao: string;
+  batizado: string;
+  date_batizado: Date;
+  is_discipulado: string;
+  discipuladorId: string;
+  estado_civil: string;
+  nome_conjuge: string;
+  date_casamento: Date;
+  has_filho: string;
+  quantidade_de_filho: number;
+  date_decisao: Date;
+  cep: string;
+  estado: string;
+  cidade: string;
+  bairro: string;
+  numero_casa: string;
   supervisao_pertence: {
-    id: string
-    nome: string
-  }
+    id: string;
+    nome: string;
+  };
   celula: {
-    id: string
-    nome: string
-  }
+    id: string;
+    nome: string;
+  };
   celula_lidera: Array<{
-    id: string
-    nome: string
-  }>
+    id: string;
+    nome: string;
+  }>;
   situacao_no_reino: {
-    id: string
-    nome: string
-  }
+    id: string;
+    nome: string;
+  };
   cargo_de_lideranca: {
-    id: string
-    nome: string
-  }
-  escolas: any[] // Update this to the correct type if you have one
-  encontros: any[] // Update this to the correct type if you have one
-  presencas_aulas_escolas: any[] // Update this to the correct type if you have one
+    id: string;
+    nome: string;
+  };
+  escolas: any[]; // Update this to the correct type if you have one
+  encontros: any[]; // Update this to the correct type if you have one
+  presencas_aulas_escolas: any[]; // Update this to the correct type if you have one
   presencas_cultos: Array<{
-    id: string
-    status: boolean
-    userId: string
-    cultoIndividualId: string
-  }>
+    id: string;
+    status: boolean;
+    userId: string;
+    cultoIndividualId: string;
+  }>;
 }

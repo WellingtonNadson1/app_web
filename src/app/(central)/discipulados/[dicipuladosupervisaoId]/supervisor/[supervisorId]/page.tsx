@@ -32,12 +32,12 @@ export default function ControleDiscipuladoSupervisior({
     <div className="relative w-full px-2 py-2 mx-auto">
       <div className="relative w-full mx-auto"></div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
-        {supervisao &&
+        {supervisao && (
           <ListMembersDiscipuladoSupervisor
             //@ts-ignore
             supervisor={supervisao[0]?.supervisor}
           />
-        }
+        )}
       </div>
     </div>
   );

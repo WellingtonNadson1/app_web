@@ -1,4 +1,4 @@
-'use client'
+"use client";
 // import Modal from '@/components/modal'
 // import { BASE_URL } from '@/functions/functions'
 // import { useUserDataStore } from '@/store/UserDataStore'
@@ -120,10 +120,16 @@
 
 // export default DeleteMember
 
-
 // "use client";
 import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";

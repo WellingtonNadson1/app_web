@@ -2,7 +2,16 @@
  * @type {string[]}
  */
 
-export const publicRoutes: string[] = ["/", "/login", "/auth/new-verification", "/portfolio", "/services", "/contato", "/register", "/vistoriador"];
+export const publicRoutes: string[] = [
+  "/",
+  "/login",
+  "/auth/new-verification",
+  "/portfolio",
+  "/services",
+  "/contato",
+  "/register",
+  "/vistoriador",
+];
 
 /**
  * @type {string[]}
@@ -46,7 +55,7 @@ export const privateRoutesSupervisor: string[] = [
  */
 export const privateRoutes: string[] = [
   "/notification",
-  "/auth"
+  "/auth",
   // "/vistoriador",
 ];
 

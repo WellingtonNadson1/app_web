@@ -1,5 +1,5 @@
-import { useForm, UseFormSetValue } from 'react-hook-form';
-import { AddressProps, Member } from '@/app/(central)/novo-membro/schema';
+import { AddressProps, Member } from "@/app/(central)/novo-membro/schema";
+import { UseFormSetValue } from "react-hook-form";
 
 type FlexibleSetValue = UseFormSetValue<Member>;
 
@@ -8,10 +8,10 @@ export const handleZipCode = async (
   setValue: FlexibleSetValue,
 ) => {
   const handleSetDataAddress = (data: AddressProps) => {
-    setValue('cidade', data.localidade);
-    setValue('endereco', data.logradouro);
-    setValue('estado', data.uf);
-    setValue('bairro', data.bairro);
+    setValue("cidade", data.localidade);
+    setValue("endereco", data.logradouro);
+    setValue("estado", data.uf);
+    setValue("bairro", data.bairro);
   };
 
   const handleFetchCep = async (zipCode: string) => {
@@ -20,14 +20,14 @@ export const handleZipCode = async (
       const result = await response.json();
       handleSetDataAddress(result);
     } catch (error) {
-      console.error('Erro ao buscar CEP:', error);
+      console.error("Erro ao buscar CEP:", error);
     }
   };
 
   e.currentTarget.maxLength = 9;
   let value = e.currentTarget.value;
-  value = value.replace(/\D/g, '');
-  value = value.replace(/^(\d{5})(\d)/, '$1-$2');
+  value = value.replace(/\D/g, "");
+  value = value.replace(/^(\d{5})(\d)/, "$1-$2");
   e.currentTarget.value = value;
 
   if (value.length === 9) {

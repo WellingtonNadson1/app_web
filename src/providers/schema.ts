@@ -2,7 +2,6 @@ import { z } from "zod";
 
 const combinedDataSchema = z.array(
   z.union([
-
     // z.array(
     z.object({
       id: z.string().uuid(),
@@ -17,7 +16,7 @@ const combinedDataSchema = z.array(
               id: z.string().uuid(),
               first_name: z.string(),
             }),
-          })
+          }),
         ),
       }),
       celulas: z.array(
@@ -28,12 +27,11 @@ const combinedDataSchema = z.array(
             id: z.string().uuid(),
             first_name: z.string(),
           }),
-        })
+        }),
       ),
-    })
-    // )
-    ,
+    }),
 
+    // )
     z.array(
       z.object({
         id: z.string().uuid(),
@@ -78,9 +76,7 @@ const combinedDataSchema = z.array(
         almas_ganhas: z.number(),
       }),
     ),
-
-  ])
-
+  ]),
 );
 
 const schemaDataCombineted = z.object({
@@ -88,4 +84,4 @@ const schemaDataCombineted = z.object({
   almasGanhasNoMes: z.number(),
 });
 
-export type DataCombineted = z.infer<typeof schemaDataCombineted>
+export type DataCombineted = z.infer<typeof schemaDataCombineted>;

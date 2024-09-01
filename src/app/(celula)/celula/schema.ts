@@ -80,10 +80,12 @@ export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>;
 const ControlePresencaCelulaPropsSchema = z.object({
   id: z.string(),
   celula: CelulaSchema,
-  culto: z.string()
+  culto: z.string(),
 });
 
-export type ControlePresencaCelulaProps = z.infer<typeof ControlePresencaCelulaPropsSchema>
+export type ControlePresencaCelulaProps = z.infer<
+  typeof ControlePresencaCelulaPropsSchema
+>;
 
 const attendanceSchema = z.object({
   status: z.string(),

@@ -1,24 +1,28 @@
-'use client'
-import { User } from '@phosphor-icons/react'
-import { useState } from 'react'
-import { ListMembersCelulaProps } from './schema'
-import UpdateDisicipulador from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
-import Pagination from '@/components/Pagination'
+"use client";
+import { User } from "@phosphor-icons/react";
+import { useState } from "react";
+import { ListMembersCelulaProps } from "./schema";
+import UpdateDisicipulador from "@/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador";
+import Pagination from "@/components/Pagination";
 
-export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps) {
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
+export default function ListMembersDiscipulados({
+  data,
+}: ListMembersCelulaProps) {
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const membersSort = data.membros.sort((a, b) => a.first_name.localeCompare(b.first_name))
-  const displayedMembers = membersSort.slice(startIndex, endIndex)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const membersSort = data.membros.sort((a, b) =>
+    a.first_name.localeCompare(b.first_name),
+  );
+  const displayedMembers = membersSort.slice(startIndex, endIndex);
 
   return (
     <>
@@ -34,7 +38,7 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
               </h2>
             </div>
             <table className="w-full border-separate table-auto">
-              <thead className='bg-[#F8FAFC]'>
+              <thead className="bg-[#F8FAFC]">
                 <tr>
                   <th className="px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
                     Membro
@@ -53,28 +57,26 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
               <tbody className="text-sm font-normal text-gray-700">
                 {data.membros ? (
                   displayedMembers?.map((user, index) => (
-                    <tr
-                      className="hover:bg-gray-50/90"
-                      key={user.id}
-                    >
-                      <td className='px-2 py-1 border-b border-gray-200'>
+                    <tr className="hover:bg-gray-50/90" key={user.id}>
+                      <td className="px-2 py-1 border-b border-gray-200">
                         <div className="flex items-center justify-start gap-2">
-                          <div className='p-1 border rounded-full bg-slate-50 border-[#1F70B6]'>
-                            <User size={22} color='#6D8396' />
+                          <div className="p-1 border rounded-full bg-slate-50 border-[#1F70B6]">
+                            <User size={22} color="#6D8396" />
                           </div>
                           <h2 className="ml-4">{user.first_name}</h2>
                         </div>
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
-                            ? 'bg-green-100  text-green-700 ring-green-600/20'
-                            : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                                ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
-                                : 'bg-red-100  text-red-700 ring-red-600/20'
-                            }`}
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
+                            user.situacao_no_reino?.nome === "Ativo"
+                              ? "bg-green-100  text-green-700 ring-green-600/20"
+                              : user.situacao_no_reino?.nome === "Normal"
+                                ? "bg-blue-100  text-blue-700 ring-blue-600/20"
+                                : user.situacao_no_reino?.nome === "Frio"
+                                  ? "bg-orange-100  text-orange-700 ring-orange-600/20"
+                                  : "bg-red-100  text-red-700 ring-red-600/20"
+                          }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
@@ -85,10 +87,11 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                         </span>
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
-                        <div className='flex items-center justify-center' onClick={() => setShouldFetch(true)}>
-                          <UpdateDisicipulador
-                            member={user}
-                          />
+                        <div
+                          className="flex items-center justify-center"
+                          onClick={() => setShouldFetch(true)}
+                        >
+                          <UpdateDisicipulador member={user} />
                         </div>
                       </td>
                     </tr>
@@ -112,5 +115,5 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
         </div>
       </div>
     </>
-  )
+  );
 }

@@ -9,16 +9,16 @@ export interface Membro {
   };
   discipulador: {
     user_discipulador: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   discipulos: {
     user_discipulos: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   user: {
     id: string;
     first_name: string;
@@ -48,30 +48,30 @@ export interface ListMembersCelulaProps {
   data: CelulaDataDiscipulado;
 }
 
-const CelulaSchema = z
-  .object({
+const CelulaSchema = z.object({
+  id: z.string(),
+  nome: z.string(),
+  lider: z.object({
     id: z.string(),
-    nome: z.string(),
-    lider: z.object({
-      id: z.string(),
-      first_name: z.string(),
-    }),
-  })
+    first_name: z.string(),
+  }),
+});
 
-export type Celula = z.infer<typeof CelulaSchema>
+export type Celula = z.infer<typeof CelulaSchema>;
 
-const SupervisaoDataSchema = z
-  .object({
-    supervisor: z.object({
-      id: z.string(),
-      first_name: z.string(),
-      discipulos: z.object({
+const SupervisaoDataSchema = z.object({
+  supervisor: z.object({
+    id: z.string(),
+    first_name: z.string(),
+    discipulos: z
+      .object({
         user_discipulos: z.object({
           id: z.string(),
           first_name: z.string(),
         }),
-      }).array(),
-    }),
-  })
+      })
+      .array(),
+  }),
+});
 
-export type SupervisaoData = z.infer<typeof SupervisaoDataSchema>
+export type SupervisaoData = z.infer<typeof SupervisaoDataSchema>;

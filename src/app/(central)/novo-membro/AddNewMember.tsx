@@ -143,11 +143,11 @@ function AddNewMember() {
     query === ""
       ? queryMembers
       : queryMembers?.filter((person) =>
-        person.first_name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(query.toLowerCase().replace(/\s+/g, "")),
-      );
+          person.first_name
+            .toLowerCase()
+            .replace(/\s+/g, "")
+            .includes(query.toLowerCase().replace(/\s+/g, "")),
+        );
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
@@ -490,7 +490,7 @@ function AddNewMember() {
                               >
                                 <Combobox.Options className="absolute w-full py-1.5 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
-                                    query !== "" ? (
+                                  query !== "" ? (
                                     <div className="relative px-4 py-1.5 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
@@ -499,9 +499,10 @@ function AddNewMember() {
                                       <Combobox.Option
                                         key={person.id}
                                         className={({ active }) =>
-                                          `relative cursor-default select-none py-1.5 pl-10 pr-4 ${active
-                                            ? "bg-[#E5F3FF] text-black"
-                                            : "text-gray-900"
+                                          `relative cursor-default select-none py-1.5 pl-10 pr-4 ${
+                                            active
+                                              ? "bg-[#E5F3FF] text-black"
+                                              : "text-gray-900"
                                           }`
                                         }
                                         value={person}
@@ -509,19 +510,21 @@ function AddNewMember() {
                                         {({ selected, active }) => (
                                           <>
                                             <span
-                                              className={`block truncate ${selected
+                                              className={`block truncate ${
+                                                selected
                                                   ? "font-medium"
                                                   : "font-normal"
-                                                }`}
+                                              }`}
                                             >
                                               {person.first_name}
                                             </span>
                                             {selected ? (
                                               <span
-                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
+                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                  active
                                                     ? "text-white"
                                                     : "text-teal-600"
-                                                  }`}
+                                                }`}
                                               >
                                                 <CheckIcon
                                                   className="w-5 h-5"

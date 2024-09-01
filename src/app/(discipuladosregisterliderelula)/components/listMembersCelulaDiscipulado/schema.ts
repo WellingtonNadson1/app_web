@@ -1,79 +1,79 @@
 export interface PropsForm {
-  membro: MembroCell
+  membro: MembroCell;
 }
 
 export type dataSchemaReturnCreateDiscipulado = {
-  discipulado_id: string
-  usuario_id: string
-  discipulador_id: string
-  data_ocorreu: string
-}
+  discipulado_id: string;
+  usuario_id: string;
+  discipulador_id: string;
+  data_ocorreu: string;
+};
 
 export type dataSchemaReturnExistDiscipuladoAllCell = {
   data: {
     membros: {
-      id: string
-      first_name: string
+      id: string;
+      first_name: string;
       cargo_de_lideranca: {
-        id: string
-        nome: string
-      }
+        id: string;
+        nome: string;
+      };
       discipulador: {
         user_discipulador: {
-          id: string
-          first_name: string
-        }
+          id: string;
+          first_name: string;
+        };
         _count: {
-          discipulado: number
-        }
+          discipulado: number;
+        };
         discipulado: {
-          data_ocorreu: string
-        }[]
-      }[]
-    }[]
-  }[]
-}
+          data_ocorreu: string;
+        }[];
+      }[];
+    }[];
+  }[];
+};
 
 export type dataSchemaReturnExistDiscipulado = {
   data: {
-    quantidadeDiscipuladoRealizado: number,
+    quantidadeDiscipuladoRealizado: number;
     discipuladosRealizados: {
-      discipulado_id: string
-      data_ocorreu: string
-    }[]
-  }
-}
+      discipulado_id: string;
+      data_ocorreu: string;
+    }[];
+  };
+};
 
 export type dataSchemaGetDiscipuladoAllCell = {
-  cell_id: string
-  data_ocorreu: Date
-}
+  cell_id: string;
+  data_ocorreu: Date;
+};
 
 export type dataSchemaCreateDiscipulado = {
-  usuario_id: string,
-  discipulador_id: string
-  data_ocorreu: Date
-}
+  usuario_id: string;
+  discipulador_id: string;
+  data_ocorreu: Date;
+};
 
 export interface MembroCell {
-  id: string
-  first_name: string
+  id: string;
+  first_name: string;
   cargo_de_lideranca: {
-    id: string
-    nome: string
-  }
+    id: string;
+    nome: string;
+  };
   discipulador: {
     user_discipulador: {
-      id: string
-      first_name: string
-    }
+      id: string;
+      first_name: string;
+    };
     _count: {
-      discipulado: number
-    }
+      discipulado: number;
+    };
     discipulado: {
-      data_ocorreu: string
-    }[]
-  }[]
+      data_ocorreu: string;
+    }[];
+  }[];
 }
 
 export interface Membro {
@@ -86,17 +86,17 @@ export interface Membro {
   // Discipulador
   discipulador: {
     user_discipulador: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   // Discipulos
   discipulos: {
     user_discipulos: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   user: {
     id: string;
     first_name: string;

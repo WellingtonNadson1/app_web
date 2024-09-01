@@ -92,25 +92,26 @@ export default function FormNewCulto() {
 
   const createNewCultoFunction = async (data: z.infer<typeof CultoSchema>) => {
     // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
-    const data_inicio_culto1 = dayjs(data.data_inicio_culto).subtract(3, "hour").toISOString()
-    const data_termino_culto2 = dayjs(data.data_termino_culto).subtract(3, "hour").toISOString()
+    const data_inicio_culto1 = dayjs(data.data_inicio_culto)
+      .subtract(3, "hour")
+      .toISOString();
+    const data_termino_culto2 = dayjs(data.data_termino_culto)
+      .subtract(3, "hour")
+      .toISOString();
 
-    const data_inicio_culto = new Date(data_inicio_culto1)
-    const data_termino_culto = new Date(data_termino_culto2)
+    const data_inicio_culto = new Date(data_inicio_culto1);
+    const data_termino_culto = new Date(data_termino_culto2);
 
-    var data = { ...data, data_inicio_culto, data_termino_culto }
+    var data = { ...data, data_inicio_culto, data_termino_culto };
 
     const response = await axiosAuth.post(URLCultosIndividuais, {
-      data
+      data,
     });
     form.reset();
     return response.data;
   };
 
-  const {
-    mutateAsync: createNewCultoFn,
-    isPending,
-  } = useMutation({
+  const { mutateAsync: createNewCultoFn, isPending } = useMutation({
     mutationFn: createNewCultoFunction,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["cultosMarcados"] });

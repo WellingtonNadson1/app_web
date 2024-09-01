@@ -1,7 +1,7 @@
 export type dataUpdateDiscipulador = {
-  id: string,
-  discipuladorId: string
-}
+  id: string;
+  discipuladorId: string;
+};
 
 export interface Membro {
   id: string;
@@ -12,16 +12,16 @@ export interface Membro {
   };
   discipulador: {
     user_discipulador: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   discipulos: {
     user_discipulos: {
-      id: string,
-      first_name: string
-    },
-  }[],
+      id: string;
+      first_name: string;
+    };
+  }[];
   user: {
     id: string;
     first_name: string;

@@ -1,4 +1,4 @@
-import MainSide from '@/components/MainSide'
+import MainSide from "@/components/MainSide";
 
 export default async function Home() {
   return (
@@ -7,5 +7,5 @@ export default async function Home() {
         <MainSide />
       </div>
     </>
-  )
+  );
 }

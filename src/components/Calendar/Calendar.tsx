@@ -1,8 +1,9 @@
 "use client";
+import Ceia from "@/app/assets/wired-outline-1486-food-as-resources.json";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/solid";
-import { Player } from '@lordicon/react';
+import { Player } from "@lordicon/react";
 import { BookBookmark, Cross, Student } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -21,8 +22,7 @@ import {
   startOfToday,
 } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
-import { useEffect, useRef, useState } from 'react';
-const Ceia = require('@/app/assets/wired-outline-1486-food-as-resources.json');
+import { useEffect, useRef, useState } from "react";
 
 import { Church } from "@phosphor-icons/react/dist/ssr";
 import dayjs from "dayjs";
@@ -247,11 +247,15 @@ function Meeting({ meeting }: { meeting: meeting }) {
 
   useEffect(() => {
     playerRef.current?.playFromBeginning();
-  }, [])
+  }, []);
   // eslint-disable-next-line camelcase
-  const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto)).add(3, "hour").toDate();
+  const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto))
+    .add(3, "hour")
+    .toDate();
   // eslint-disable-next-line camelcase
-  const data_termino_culto = dayjs(new Date(meeting.data_termino_culto)).add(3, "hour").toDate();
+  const data_termino_culto = dayjs(new Date(meeting.data_termino_culto))
+    .add(3, "hour")
+    .toDate();
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
@@ -269,7 +273,8 @@ function Meeting({ meeting }: { meeting: meeting }) {
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) : meeting?.culto_semana?.nome === "Capacitação Para Discípulos - CPD" ? (
+      ) : meeting?.culto_semana?.nome ===
+        "Capacitação Para Discípulos - CPD" ? (
         <Student
           width={10}
           height={10}
@@ -283,28 +288,27 @@ function Meeting({ meeting }: { meeting: meeting }) {
           weight="thin"
           className="flex-none w-10 h-10 rounded-full"
         />
-      ) :
-        meeting?.culto_semana?.nome === "Culto de Celebração - Tarde" ? (
-          <Church
-            width={10}
-            height={10}
-            weight="thin"
-            className="flex-none w-10 h-10 rounded-full"
-          />
-        ) : (
-          <Player
-            ref={playerRef}
-            icon={Ceia}
-            size={50}
-            onComplete={() => playerRef.current?.playFromBeginning()}
-          />
-          // <Church
-          //   width={10}
-          //   height={10}
-          //   weight="thin"
-          //   className="flex-none w-10 h-10 rounded-full"
-          // />
-        )}
+      ) : meeting?.culto_semana?.nome === "Culto de Celebração - Tarde" ? (
+        <Church
+          width={10}
+          height={10}
+          weight="thin"
+          className="flex-none w-10 h-10 rounded-full"
+        />
+      ) : (
+        <Player
+          ref={playerRef}
+          icon={Ceia}
+          size={50}
+          onComplete={() => playerRef.current?.playFromBeginning()}
+        />
+        // <Church
+        //   width={10}
+        //   height={10}
+        //   weight="thin"
+        //   className="flex-none w-10 h-10 rounded-full"
+        // />
+      )}
 
       <div className="flex-auto">
         <p className="text-gray-900">{meeting?.culto_semana?.nome}</p>

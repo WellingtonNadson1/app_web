@@ -1,20 +1,20 @@
 /* eslint-disable camelcase */
 "use client";
-import { BASE_URL, BASE_URL_LOCAL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useQuery } from "@tanstack/react-query";
-import { isSameDay, parseISO, startOfToday } from "date-fns";
-import { useSession } from "next-auth/react";
-import axios from "axios";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { CelulaProps, Meeting } from "../(celula)/celula/schema";
-import { RegisterPresenceFormFirst } from "../(celula)/celula/_components/ControlePresenceFirst/registerpresence";
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
+import { isSameDay, parseISO, startOfToday } from "date-fns";
+import { useSession } from "next-auth/react";
+import { RegisterPresenceFormFirst } from "../(celula)/celula/_components/ControlePresenceFirst/registerpresence";
+import { CelulaProps, Meeting } from "../(celula)/celula/schema";
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession();
@@ -40,7 +40,7 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
+  const { data: celula } = useQuery<CelulaProps>({
     queryKey: ["celula", celulaId],
     queryFn: CelulaData,
     enabled: !!celulaId,
@@ -49,7 +49,6 @@ export default function ControleCelulaSupervision() {
   });
 
   const dataHoje = new Date();
-  const dayOfWeek = dataHoje.getDay();
   const firstDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth(),
@@ -77,7 +76,7 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-  const { data, isLoading, isSuccess } = useQuery<Meeting>({
+  const { data, isSuccess } = useQuery<Meeting>({
     queryKey: ["meetingsData"],
     queryFn: MeetingsData,
     refetchOnWindowFocus: false,

@@ -1,55 +1,55 @@
-'use client'
-import { UsersFour } from '@phosphor-icons/react'
-import Link from 'next/link'
+"use client";
+import { UsersFour } from "@phosphor-icons/react";
+import Link from "next/link";
 
 export default function StatsCardCelula() {
   const supervisoesIbb = [
     {
-      title: 'Vermelha',
-      supervisor: 'Ana Ceila',
-      total: '234',
-      status: 'up',
+      title: "Vermelha",
+      supervisor: "Ana Ceila",
+      total: "234",
+      status: "up",
       icon: UsersFour,
-      color: 'bg-[#F55343]',
-      nivel: 'Área',
+      color: "bg-[#F55343]",
+      nivel: "Área",
     },
     {
-      title: 'Azul',
-      supervisor: 'Zedequias',
-      total: '334',
-      status: 'up',
+      title: "Azul",
+      supervisor: "Zedequias",
+      total: "334",
+      status: "up",
       icon: UsersFour,
-      color: 'bg-[#43a2f5]',
-      nivel: 'Distrito',
+      color: "bg-[#43a2f5]",
+      nivel: "Distrito",
     },
     {
-      title: 'Amarela',
-      supervisor: 'Carlos e Thaisa',
-      total: '234',
-      status: 'up',
+      title: "Amarela",
+      supervisor: "Carlos e Thaisa",
+      total: "234",
+      status: "up",
       icon: UsersFour,
-      color: 'bg-[#e2de5f]',
-      nivel: 'Área',
+      color: "bg-[#e2de5f]",
+      nivel: "Área",
     },
     {
-      title: 'Laranja',
-      supervisor: 'Paulo e Patrícia',
-      total: '234',
-      status: 'up',
+      title: "Laranja",
+      supervisor: "Paulo e Patrícia",
+      total: "234",
+      status: "up",
       icon: UsersFour,
-      color: 'bg-[#f58224]',
-      nivel: 'Área',
+      color: "bg-[#f58224]",
+      nivel: "Área",
     },
     {
-      title: 'Verde',
-      supervisor: 'Alécio e Iraneide',
-      total: '234',
-      status: 'up',
+      title: "Verde",
+      supervisor: "Alécio e Iraneide",
+      total: "234",
+      status: "up",
       icon: UsersFour,
-      color: 'bg-[#5fe2c2]',
-      nivel: 'Área',
+      color: "bg-[#5fe2c2]",
+      nivel: "Área",
     },
-  ]
+  ];
   return (
     <>
       <div className="relative z-10 mx-auto w-full py-2">
@@ -88,5 +88,5 @@ export default function StatsCardCelula() {
         </div>
       </div>
     </>
-  )
+  );
 }

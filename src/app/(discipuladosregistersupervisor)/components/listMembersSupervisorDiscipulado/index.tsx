@@ -60,13 +60,10 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const membersSort =
-    registerDiscipuladosSupervisor?.data[0]?.discipulos.sort(
-      (a, b) =>
-        a.user_discipulos.first_name.localeCompare(
-          b.user_discipulos.first_name,
-        ),
-    );
+  const membersSort = registerDiscipuladosSupervisor?.data[0]?.discipulos.sort(
+    (a, b) =>
+      a.user_discipulos.first_name.localeCompare(b.user_discipulos.first_name),
+  );
   // console.log('membersSort', membersSort)
   const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
@@ -117,11 +114,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                 <div className="flex items-center justify-start gap-1 mb-6 sm:mb-4">
                                   <UserFocus size={24} />
                                   <h2 className="ml-3">
-                                    {
-                                      user
-                                        .user_discipulos
-                                        .first_name
-                                    }
+                                    {user.user_discipulos.first_name}
                                   </h2>
                                 </div>
                                 <div className="flex flex-col gap-4 mb-4 sm:mb-3 sm:flex sm:flex-row sm:justify-between sm:items-start">
@@ -129,11 +122,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                   <div className="sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between">
                                     {isSuccess && (
                                       <FormFirstDiscipuladoSupervisor
-                                        key={
-                                          user
-                                            .user_discipulos
-                                            .id
-                                        }
+                                        key={user.user_discipulos.id}
                                         discipulador_name={
                                           registerDiscipuladosSupervisor.data[0]
                                             .first_name
@@ -151,11 +140,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                                   <div className="sm:w-full sm:gap-2 sm:flex sm:flex-col sm:items-center sm:justify-between">
                                     {isSuccess && (
                                       <FormSecondDiscipuladoSupervisor
-                                        key={
-                                          user
-                                            .user_discipulos
-                                            .id
-                                        }
+                                        key={user.user_discipulos.id}
                                         discipulador_name={
                                           registerDiscipuladosSupervisor.data[0]
                                             .first_name
@@ -191,9 +176,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
             <Pagination
               currentPage={currentPage}
               totalPages={Math.ceil(
-                (data
-                  .discipulos
-                  ?.length || 0) / itemsPerPage,
+                (data.discipulos?.length || 0) / itemsPerPage,
               )}
               onPageChange={handlePageChange}
             />

@@ -75,8 +75,8 @@ export default function StatsCardRelatorios() {
     resolver: zodResolver(FormRelatorioDataSchema),
   });
 
-  const today = new Date()
-  const yearCalendar = addYears(today, 5).getFullYear()
+  const today = new Date();
+  const yearCalendar = addYears(today, 5).getFullYear();
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
   const [totalCultos, setTotalCultos] = useState<number>(0);
   const [totalCultosPrimicias, setTotalCultosPrimicias] = useState<number>(0);
@@ -143,7 +143,7 @@ export default function StatsCardRelatorios() {
         relatorioData &&
         presencaGeralCultos.length > 0
       ) {
-        let ids = new Set<string>();
+        const ids = new Set<string>();
         presencaGeralCultos.forEach((membro) => {
           const presencasOrdenadas = membro.presencasFiltradas.sort(
             (a, b) =>
@@ -271,8 +271,8 @@ export default function StatsCardRelatorios() {
   const Supervisor = ListSupervisores(corSupervisao);
 
   useEffect(() => {
-    let rowsCellName = new Set<number>();
-    let rowsNameCell: number[] =
+    const rowsCellName = new Set<number>();
+    const rowsNameCell: number[] =
       (groupedForCell &&
         idCultos &&
         Object.keys(groupedForCell)?.map((cellName, cellIndex) => {

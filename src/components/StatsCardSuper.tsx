@@ -1,50 +1,53 @@
-'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
-import { UsersFour } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import React from 'react'
-import { twMerge } from 'tailwind-merge'
+"use client";
+import { BASE_URL } from "@/functions/functions";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { UsersFour } from "@phosphor-icons/react";
+import { useQuery } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
+import React from "react";
+import { twMerge } from "tailwind-merge";
 
 export interface SupervisaoDataCard {
-  id: string
-  nome: string
-  cor: string
+  id: string;
+  nome: string;
+  cor: string;
   supervisor: {
-    id: string
-    first_name: string
-  }
+    id: string;
+    first_name: string;
+  };
 }
 
 export default function StatsCardSuper() {
-  const { token } = useUserDataStore.getState()
+  const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token)
+  const axiosAuth = useAxiosAuthToken(token);
 
-  const router = useRouter()
+  const router = useRouter();
 
-  const URL = `${BASE_URL}/supervisoes`
+  const URL = `${BASE_URL}/supervisoes`;
 
-  async function fetchWithToken(url: string, token: string) {
-    const response = await fetch(url, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    })
-    const data = await response.json()
-    return data
-  }
+  // async function fetchWithToken(url: string, token: string) {
+  //   const response = await fetch(url, {
+  //     headers: {
+  //       Authorization: `Bearer ${token}`,
+  //     },
+  //   });
+  //   const data = await response.json();
+  //   return data;
+  // }
 
-  const { data: supervisoes, isError: error, isLoading } = useQuery<SupervisaoDataCard[]>({
+  const {
+    data: supervisoes,
+    isError: error,
+    isLoading,
+  } = useQuery<SupervisaoDataCard[]>({
     queryKey: ["supervisoes"],
     queryFn: async () => {
-      const response = await axiosAuth.get(URL)
-      return await response.data
+      const response = await axiosAuth.get(URL);
+      return await response.data;
     },
-  })
+  });
 
   if (error) {
     return (
@@ -53,7 +56,7 @@ export default function StatsCardSuper() {
           <div>failed to load</div>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -63,35 +66,41 @@ export default function StatsCardSuper() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    )
+    );
   }
 
   const handleSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
-    const id = event.currentTarget.id
-    console.log('Esta aqui o ID clicado', id)
-    router.push(`/supervisoes/${id}`)
-  }
+    const id = event.currentTarget.id;
+    console.log("Esta aqui o ID clicado", id);
+    router.push(`/supervisoes/${id}`);
+  };
 
   return (
     <>
       <div className="relative z-10 w-full py-2 mx-auto">
         <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
           {supervisoes &&
-            (supervisoes?.map((supervisao) => (
+            supervisoes?.map((supervisao) => (
               <div
                 onClick={handleSupervisaoSelecionada}
                 key={supervisao.id}
                 id={supervisao.id}
-                className={twMerge(`flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md `, `bg-white hover:bg-${supervisao.cor}-95`)}
+                className={twMerge(
+                  `flex-warp relative w-full cursor-pointer flex-col rounded-lg p-4 shadow-md `,
+                  `bg-white hover:bg-${supervisao.cor}-95`,
+                )}
               >
                 <div className="flex items-center justify-between w-full">
                   <div className="text-lg font-semibold uppercase">
                     {supervisao.nome}
                   </div>
                   <div
-                    className={twMerge(`rounded-full p-2 drop-shadow-md`, `bg-${supervisao.cor}`)}
+                    className={twMerge(
+                      `rounded-full p-2 drop-shadow-md`,
+                      `bg-${supervisao.cor}`,
+                    )}
                   >
                     <UsersFour width={24} height={24} color="#fff" />
                   </div>
@@ -110,9 +119,9 @@ export default function StatsCardSuper() {
                   </span>
                 </div>
               </div>
-            )))}
+            ))}
         </div>
       </div>
     </>
-  )
+  );
 }

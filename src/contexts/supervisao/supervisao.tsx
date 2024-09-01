@@ -1,22 +1,22 @@
-'use client'
-import React, { createContext, useCallback, useContext, useState } from 'react'
+"use client";
+import React, { createContext, useCallback, useContext, useState } from "react";
 
-const SupervisaoContext = createContext({})
+const SupervisaoContext = createContext({});
 
 export const SupervisaoProvider = ({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) => {
-  const [paramsId, setParamsId] = useState('')
+  const [paramsId, setParamsId] = useState("");
   const handleParamsIdChange = useCallback((paramsId: string) => {
-    setParamsId(paramsId)
-  }, [])
+    setParamsId(paramsId);
+  }, []);
   return (
     <SupervisaoContext.Provider value={{ paramsId, handleParamsIdChange }}>
       {children}
     </SupervisaoContext.Provider>
-  )
-}
+  );
+};
 
-export const useSupervisaoContext = () => useContext(SupervisaoContext)
+export const useSupervisaoContext = () => useContext(SupervisaoContext);
