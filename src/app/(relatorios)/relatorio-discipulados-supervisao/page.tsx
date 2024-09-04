@@ -1,4 +1,5 @@
 "use client";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -205,6 +206,12 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   onSelect={field.onChange}
                                   initialFocus
                                 />
+                                <div className="p-3 border-t border-border">
+                                  <TimePicker
+                                    setDate={field.onChange}
+                                    date={field.value}
+                                  />
+                                </div>
                               </PopoverContent>
                             </Popover>
                             <FormMessage />
@@ -259,6 +266,12 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   }
                                   initialFocus
                                 />
+                                <div className="p-3 border-t border-border">
+                                  <TimePicker
+                                    setDate={field.onChange}
+                                    date={field.value}
+                                  />
+                                </div>
                               </PopoverContent>
                             </Popover>
                             <FormMessage />
@@ -453,8 +466,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                             key={member.id}
                           >
                             {member.first_name ===
-                            discipuladoForCell[cellName][0].celula.lider
-                              .first_name ? (
+                              discipuladoForCell[cellName][0].celula.lider
+                                .first_name ? (
                               <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
                                 {member.first_name}
                               </div>

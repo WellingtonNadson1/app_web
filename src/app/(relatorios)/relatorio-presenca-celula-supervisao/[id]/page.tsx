@@ -1,4 +1,5 @@
 "use client";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -155,6 +156,12 @@ export default function RelatoriosPresencaCelula() {
                                   onSelect={field.onChange}
                                   initialFocus
                                 />
+                                <div className="p-3 border-t border-border">
+                                  <TimePicker
+                                    setDate={field.onChange}
+                                    date={field.value}
+                                  />
+                                </div>
                               </PopoverContent>
                             </Popover>
                             <FormMessage />
@@ -209,6 +216,12 @@ export default function RelatoriosPresencaCelula() {
                                   }
                                   initialFocus
                                 />
+                                <div className="p-3 border-t border-border">
+                                  <TimePicker
+                                    setDate={field.onChange}
+                                    date={field.value}
+                                  />
+                                </div>
                               </PopoverContent>
                             </Popover>
                             <FormMessage />
