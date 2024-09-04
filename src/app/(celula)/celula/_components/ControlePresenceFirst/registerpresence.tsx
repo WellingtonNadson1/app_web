@@ -173,11 +173,10 @@ export function RegisterPresenceFormFirst({
         toast({
           variant: "destructive",
           title: "Ocorreu um Erro",
-          description: `${
-            axiosError.response?.status === 409
-              ? "Presença de Culto já Registrada para hoje!"
-              : axiosError.message
-          }`,
+          description: `${axiosError.response?.status === 409
+            ? "Presença de Culto já Registrada para hoje!"
+            : axiosError.message
+            }`,
         });
       } else {
         toast({
@@ -286,7 +285,7 @@ export function RegisterPresenceFormFirst({
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
                                       {member.situacao_no_reino.nome ===
-                                      "Normal" ? (
+                                        "Normal" ? (
                                         <Badge
                                           className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                         >
@@ -295,7 +294,7 @@ export function RegisterPresenceFormFirst({
                                       ) : member.situacao_no_reino.nome ===
                                         "Ativo" ? (
                                         <Badge
-                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-sky-200 bg-sky-100 ring-sky-500"}`}
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-sky-200 bg-sky-100 ring-sky-500"} hover:border-sky-300 hover:bg-sky-200 hover:ring-sky-600`}
                                         >
                                           {member.situacao_no_reino.nome}
                                         </Badge>
@@ -310,7 +309,7 @@ export function RegisterPresenceFormFirst({
 
                                     {/* Cargo */}
                                     <div className="hidden w-full text-center sm:grid col-span-1 mx-2">
-                                      <span className="w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
+                                      <span className="w-full px-2 py-1 text-center text-foreground border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline hover:border-gray-300 hover:bg-gray-200 hover:ring-gray-600">
                                         {member.cargo_de_lideranca.nome}
                                       </span>
                                     </div>

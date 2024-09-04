@@ -50,6 +50,11 @@ export const privateRoutesSupervisor: string[] = [
   "/discipuladosregistersupervisor",
 ];
 
+export const privateRoutesSupervisorLider: string[] = [
+  "/discipuladoscelularegister",
+  "/discipuladosregistersupervisor",
+];
+
 /**
  * @type {string[]}
  */
@@ -75,3 +80,4 @@ export const apiAuthPrefix: string = "/api/auth";
 export const DEFAULT_LOGIN_REDIRECT: string = "/dashboard";
 export const DEFAULT_LOGIN_REDIRECT_CELULA: string = "/celula";
 export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR: string = "/supervisao";
+export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR_LIDER: string = "/celula";

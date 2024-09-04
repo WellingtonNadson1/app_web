@@ -1,5 +1,6 @@
 "use client";
 import SpinnerButton from "@/components/spinners/SpinnerButton";
+import { Badge } from "@/components/ui/badge";
 import {
   BASE_URL,
   errorCadastro,
@@ -161,62 +162,65 @@ export default function ControlePresenceSupervisorSecond({
                                 {session?.user.first_name}
                               </h2>
                             </div>
-                            <div className="hidden sm:block">
-                              <span
-                                className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${session?.user.situacaoNoReinoId ===
-                                  "0892b1ed-3e99-4e13-acf6-99f7a0e99358"
-                                  ? "border border-green-200 bg-green-100 ring-green-500"
-                                  : session?.user.situacaoNoReinoId ===
-                                    "f4c1c9ee-5f5a-4681-af13-99c422c240e0"
-                                    ? "border border-blue-200 bg-blue-100 ring-blue-500"
-                                    : session?.user.situacaoNoReinoId ===
-                                      "fab25926-b19e-4a2b-bfad-cf33fa0ace86"
-                                      ? "border border-orange-200 bg-orange-100 ring-orange-500"
-                                      : "border border-red-200 bg-red-100 ring-red-500"
-                                  }`}
-                              >
-                                {session?.user.situacaoNoReinoId ===
-                                  "0892b1ed-3e99-4e13-acf6-99f7a0e99358" ? (
-                                  <span key={"ativo"}>Ativo</span>
-                                ) : session?.user.situacaoNoReinoId ===
-                                  "f4c1c9ee-5f5a-4681-af13-99c422c240e0" ? (
-                                  <span key={"nomral"}>Normal</span>
-                                ) : session?.user.situacaoNoReinoId ===
-                                  "fab25926-b19e-4a2b-bfad-cf33fa0ace86" ? (
-                                  <span key={"frio"}>Frio</span>
-                                ) : (
-                                  <span key={"afastado"}>Afastado</span>
-                                )}
-                              </span>
+
+                            {/* Status */}
+                            <div className="sm:grid col-span-1 hidden w-full text-center">
+                              {session?.user.situacaoNoReinoId ===
+                                "f4c1c9ee-5f5a-4681-af13-99c422c240e0" ? (
+                                <Badge
+                                  className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
+                                >
+                                  {"Normal"}
+                                </Badge>
+                              ) : session?.user.situacaoNoReinoId ===
+                                "0892b1ed-3e99-4e13-acf6-99f7a0e99358" ? (
+                                <Badge
+                                  className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-sky-200 bg-sky-100 ring-sky-500"}
+                                          hover:border-sky-300 hover:bg-sky-200 hover:ring-sky-600`}
+                                >
+                                  {"Ativo"}
+                                </Badge>
+                              ) : (
+                                <Badge
+                                  className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-red-200 bg-red-100 ring-red-500"} hover:border-red-300 hover:bg-red-200 hover:ring-red-600`}
+                                >
+                                  {"Frio"}
+                                </Badge>
+                              )}
                             </div>
-                            <div className="hidden sm:block">
-                              <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:block">
+
+                            {/* Cargo */}
+                            <div className="hidden w-full text-center sm:grid col-span-1 mx-2">
+                              <Badge className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 hover:border-gray-300 hover:bg-gray-200 hover:ring-gray-600 sm:block">
                                 {session?.user.cargoDeLiderancaId ===
                                   "c394f146-c054-4d77-97a8-d24ee4d9013c" ? (
-                                  <span key={"ativo"}>Pastor</span>
+                                  <span className="text-foreground" key={"ativo"}>Pastor</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "1777ff88-7b8a-4ac9-9926-9f6ac13872c6" ? (
-                                  <span key={"nomral"}>Sup. de Área</span>
+                                  <span className="text-foreground" key={"nomral"}>Sup. de Área</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "4508f737-cdf5-405a-951b-db91c11f2555" ? (
-                                  <span key={"frio"}>Sup. de Setor</span>
+                                  <span className="text-foreground" key={"frio"}>Sup. de Setor</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "6bc843b9-83f4-45c4-ad45-b77077c0ace2" ? (
-                                  <span key={"frio"}>Líder de Célula</span>
+                                  <span className="text-foreground" key={"frio"}>Líder de Célula</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "079e35a7-8e9c-40ef-9d5b-cb8f9c7c11a8" ? (
-                                  <span key={"frio"}>Membro</span>
+                                  <span className="text-foreground" key={"frio"}>Membro</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "ac44e636-6953-46c6-ab8e-7fcd0a36ddae" ? (
-                                  <span key={"frio"}>Sup. de Distrito</span>
+                                  <span className="text-foreground" key={"frio"}>Sup. de Distrito</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   "78e0f4ef-9578-4a17-9d34-31617ca82018" ? (
-                                  <span key={"frio"}>Líder Auxiliar</span>
+                                  <span className="text-foreground" key={"frio"}>Líder Auxiliar</span>
                                 ) : (
-                                  <span key={"frio"}>Líder de Célula Sup.</span>
+                                  <span className="text-foreground" key={"frio"}>
+                                    Líder de Célula Sup.
+                                  </span>
                                 )}
-                              </span>
+                              </Badge>
                             </div>
+
                             <input
                               {...register("status", {
                                 required: true,

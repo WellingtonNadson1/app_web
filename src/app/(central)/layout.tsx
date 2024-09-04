@@ -26,6 +26,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
+  console.log('session', session)
 
   if (!session) {
     // Signed in
@@ -56,6 +57,9 @@ export default async function RootLayout({
             refreshToken ?? { id: "", expiresIn: 0, userIdRefresh: "" }
           }
         />
+        {/* <InitializerAlmasAnoStore
+          almasGanhasNoAno={}
+        /> */}
         <NextTopLoader
           color="#fff"
           initialPosition={0.08}

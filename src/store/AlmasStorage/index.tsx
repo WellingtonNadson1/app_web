@@ -3,7 +3,7 @@ import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 
 // Define a store para almas ganhas
-type AlmasStore = {
+type AlmasStoreMes = {
   almasGanhasNoMes: number;
   setAlmasGanhasNoMes: (almasGanhasNoMes: number) => void;
 };
@@ -12,8 +12,8 @@ type AlmasStoreAno = {
   setAlmasGanhasNoAno: (almasGanhasNoAno: number) => void;
 };
 
-export const useAlmasStore = create(
-  persist<AlmasStore>(
+export const useAlmasMesStore = create(
+  persist<AlmasStoreMes>(
     (set) => ({
       almasGanhasNoMes: 0,
       setAlmasGanhasNoMes: (almasGanhasNoMes) => {

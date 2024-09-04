@@ -1,15 +1,8 @@
 "use client";
-import ThemeImage from "@/components/theme-image";
-import { TypeLogin } from "@/types";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { loginFunction } from "../../../../actions/login";
-import { useMutation } from "@tanstack/react-query";
 import { FormError } from "@/components/Info/form-error";
 import { FormSuccess } from "@/components/Info/form-sucesso";
+import ThemeImage from "@/components/theme-image";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
 import {
   Card,
   CardContent,
@@ -17,7 +10,14 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { TypeLogin } from "@/types";
 import { Spinner } from "@phosphor-icons/react/dist/ssr";
+import { useMutation } from "@tanstack/react-query";
+import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { loginFunction } from "../../../../actions/login";
 
 export default function Login() {
   const [error, setError] = useState<string | undefined>("");
@@ -41,11 +41,11 @@ export default function Login() {
     setError("");
     setSuccess("");
     try {
-      console.log("email e senha", email, password);
-
-      const login = await loginFunc({ email, password }).then((data) => {
+      const login: any = await loginFunc({ email, password }).then((data) => {
         setError(data?.error);
         setSuccess(data?.sucesso);
+        console.log('login', login)
+        return login
       });
     } catch (error) {
       console.error(error);
@@ -105,12 +105,12 @@ export default function Login() {
                           autoComplete="current-password"
                           placeholder="Digite sua senha"
                           required
-                          className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#014874] sm:text-sm sm:leading-7"
+                          className="block w-full mb-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#014874] sm:text-sm sm:leading-7"
                         />
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between">
+                    {/* <div className="flex items-center justify-between">
                       <div className="flex items-center justify-center gap-x-3">
                         <div className="relative flex">
                           <div className="flex items-center h-6">
@@ -139,14 +139,14 @@ export default function Login() {
                           Esqueceu a Senha?
                         </a>
                       </div>
-                    </div>
+                    </div> */}
 
                     <div>
                       {isPending ? (
                         <Button
                           type="submit"
                           disabled
-                          className="flex w-full items-center justify-center gap-2 bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                          className="mt-2 flex w-full items-center justify-center gap-2 bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                           <Spinner className="animate-spin" />
                           <span>Entrando...</span>
@@ -154,7 +154,7 @@ export default function Login() {
                       ) : (
                         <Button
                           type="submit"
-                          className="flex w-full justify-center rounded-md bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                          className="mt-2 flex w-full justify-center rounded-md bg-btnIbb px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                         >
                           Entrar
                         </Button>

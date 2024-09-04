@@ -18,14 +18,14 @@ export default function Sidebar() {
   const [open, setOpen] = useState(false);
   const route = useRouter();
   const pathName = usePathname().split("/")[1];
+  const pathAtual = usePathname()
   const { data: session, status } = useSession();
   const { user_roles } = useUserDataStore.getState();
   const roles = session?.user.user_roles;
-  const { actions } = useUserDataStore();
 
   const handleLogout = () => {
     // Clear the store from localStorage
-    localStorage.removeItem("data-user");
+    localStorage.clear();
 
     // Redirect the user (replace with your desired URL)
     signOut();
@@ -34,28 +34,25 @@ export default function Sidebar() {
   return (
     <div className="shadow">
       <aside
-        className={`relative h-full ${
-          open ? "w-48" : "w-[4.8rem]"
-        } bg-white px-4  py-6 duration-500`}
+        className={`relative h-full ${open ? "w-48" : "w-[4.8rem]"
+          } bg-white px-4  py-6 duration-500`}
       >
         <ThemeImage
           alt="Logo IBB"
           srcLight="images/logo-ibb-1.svg"
           srcDark="images/logo-mini-dark.svg"
-          onClick={() => route.push("/dashboard")}
+          onClick={() => route.push(pathAtual)}
           width={54}
           height={54}
         />
         <div
-          className={`absolute top-[3.8rem] z-50 flex cursor-pointer justify-end rounded-full border border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${
-            open ? "ml-[10.2rem]" : "ml-[3.04rem] rotate-45"
-          } `}
+          className={`absolute top-[3.8rem] z-50 flex cursor-pointer justify-end rounded-full border border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? "ml-[10.2rem]" : "ml-[3.04rem] rotate-45"
+            } `}
           onClick={() => setOpen(!open)}
         >
           <X
-            className={`${
-              !open ? "mx-auto" : "justify-end"
-            } transition-all duration-200`}
+            className={`${!open ? "mx-auto" : "justify-end"
+              } transition-all duration-200`}
             size={14}
           />
         </div>
@@ -80,24 +77,22 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && "translate-x-28 overflow-hidden opacity-0"
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && "translate-x-28 overflow-hidden opacity-0"
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && "hidden"
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && "hidden"
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
                 </li>
               ))
             ) : user_roles?.every(
-                (role) => role.rolenew.name === "USERLIDER",
-              ) &&
+              (role) => role.rolenew.name === "USERLIDER",
+            ) &&
               !user_roles.every(
                 (role) => role.rolenew.name === "USERSUPERVISOR",
               ) ? (
@@ -118,24 +113,22 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && "translate-x-28 overflow-hidden opacity-0"
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && "translate-x-28 overflow-hidden opacity-0"
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && "hidden"
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && "hidden"
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
                 </li>
               ))
             ) : roles?.every(
-                (role) => role.rolenew.name === "USERSUPERVISOR",
-              ) ? (
+              (role) => role.rolenew.name === "USERSUPERVISOR",
+            ) ? (
               sidebarSupervisor.map((item) => (
                 <li
                   key={item.name}
@@ -153,16 +146,14 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && "translate-x-28 overflow-hidden opacity-0"
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && "translate-x-28 overflow-hidden opacity-0"
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && "hidden"
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && "hidden"
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
@@ -186,16 +177,14 @@ export default function Sidebar() {
                     height={`${open ? 24 : 26}`}
                   />
                   <span
-                    className={`whitespace-pre duration-150 ${
-                      !open && "translate-x-28 overflow-hidden opacity-0"
-                    }`}
+                    className={`whitespace-pre duration-150 ${!open && "translate-x-28 overflow-hidden opacity-0"
+                      }`}
                   >
                     {item.name}
                   </span>
                   <span
-                    className={`${
-                      open && "hidden"
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                    className={`${open && "hidden"
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                   >
                     {item.name}
                   </span>
@@ -224,16 +213,14 @@ export default function Sidebar() {
                 size={`${open ? 24 : 26}`}
               />
               <span
-                className={`whitespace-pre duration-150 ${
-                  !open && "translate-x-28 overflow-hidden opacity-0"
-                }`}
+                className={`whitespace-pre duration-150 ${!open && "translate-x-28 overflow-hidden opacity-0"
+                  }`}
               >
                 Sair
               </span>
               <span
-                className={`${
-                  open && "hidden"
-                } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                className={`${open && "hidden"
+                  } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
               >
                 Sair
               </span>

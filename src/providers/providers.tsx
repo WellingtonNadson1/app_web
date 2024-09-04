@@ -48,7 +48,6 @@ const DataProvider = ({ children }: IProps) => {
     queryFn: fetchDataFunction,
     enabled: !!session, // Só executa a query se a sessão existir
   });
-  console.log('data', data)
   return (
     <DataContext.Provider value={{ data, error, isLoading }}>
       {children}

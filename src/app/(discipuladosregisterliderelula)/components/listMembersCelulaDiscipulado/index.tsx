@@ -54,7 +54,6 @@ export default function ListMembersCelulaDiscipulado({
     a.first_name.localeCompare(b.first_name),
   );
   const displayedMembers = membersSort?.slice(startIndex, endIndex);
-  console.log("membersSort", displayedMembers);
 
   return (
     <>

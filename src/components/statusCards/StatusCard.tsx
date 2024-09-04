@@ -1,5 +1,5 @@
 "use client";
-import { useAlmasAnoStore, useAlmasStore } from "@/store/AlmasStorage";
+import { useAlmasAnoStore, useAlmasMesStore } from "@/store/AlmasStorage";
 import { ChartLineUp, Confetti, HandsPraying } from "@phosphor-icons/react";
 import { Card } from "../ui/card";
 
@@ -38,7 +38,7 @@ export default function StatsCard() {
   const [isHydrated, setIsHydrated] = useState(false);
 
   // Acessa e atualiza o estado de almas ganhas no Zustand
-  const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasStore();
+  const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasMesStore();
   const { almasGanhasNoAno, setAlmasGanhasNoAno } = useAlmasAnoStore();
 
   // Função para buscar dados da API e atualizar o estado

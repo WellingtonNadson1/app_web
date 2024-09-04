@@ -1,7 +1,10 @@
 "use client";
 
 import MainSide from "@/components/MainSide";
+import { useAlmasAnoStore } from "@/store/AlmasStorage";
 import { useCombinedStore } from "@/store/DataCombineted";
+import { InitializerAlmasAnoStore } from "@/store/InitializerAlmasAnoStore";
+import { InitializerAlmasMesStore } from "@/store/InitializerAlmasMesStore";
 import { InitializerStore } from "@/store/InitializerStore";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
 import { useEffect } from "react";
@@ -66,6 +69,10 @@ export default function ClientDashboard({
         cargoLideranca: result[4] ?? [],
       },
     });
+    useAlmasAnoStore.setState({
+      // @ts-ignore
+      almasGanhasNoAno: result[6] ?? []
+    })
   }, [result]);
 
   return (
@@ -95,6 +102,14 @@ export default function ClientDashboard({
         // @ts-ignore
         cargoLideranca={result[4] ?? []}
       />
+
+      <InitializerAlmasMesStore
+        // @ts-ignore
+        almasGanhasNoAno={result[5] ?? []} />
+
+      <InitializerAlmasAnoStore
+        // @ts-ignore
+        almasGanhasNoAno={result[6] ?? []} />
 
       <MainSide />
     </div>
