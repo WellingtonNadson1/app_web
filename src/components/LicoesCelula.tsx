@@ -118,17 +118,17 @@ export default function LicoesCelula() {
     },
     {
       id: 3,
-      title: "PRECISA-SE DE TRABALHADORES",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Lc 10:1-2",
-    },
-    {
-      id: 4,
       title: "PESCADORES DE HOMENS",
       periodo: weeks,
       icon: FilePdf,
       versiculo: "Mc 1:17-18",
+    },
+    {
+      id: 4,
+      title: "QUAL A SUA VISÃO?",
+      periodo: weeks,
+      icon: FilePdf,
+      versiculo: "II Co 4:18",
       lancando: true,
     },
     // {
