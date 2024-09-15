@@ -50,5 +50,5 @@ export default async function DashboardPage() {
     return <div>Error fetching data: {error}</div>;
   }
   // @ts-ignore
-  return <ClientDashboard session={session} result={result} />;
+  return (<ClientDashboard session={session} result={result} />);
 }

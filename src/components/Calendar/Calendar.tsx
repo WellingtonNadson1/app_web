@@ -15,18 +15,22 @@ import {
   isEqual,
   isSameDay,
   isSameMonth,
-  isSunday,
   isToday,
   parse,
   parseISO,
-  startOfToday,
+  startOfToday
 } from "date-fns";
 import { ptBR } from "date-fns/locale/pt-BR";
 import { useEffect, useRef, useState } from "react";
 
+import FormUpdateCulto from "@/app/(central)/cultos/form-update-culto";
 import { Church } from "@phosphor-icons/react/dist/ssr";
 import dayjs from "dayjs";
+import { MoreVerticalIcon } from "lucide-react";
 import { useSession } from "next-auth/react";
+import { Button } from "../ui/button";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuLabel, DropdownMenuSeparator, DropdownMenuTrigger } from "../ui/dropdown-menu";
+import DeleteCulto from "./DeleteCulto";
 
 export type meeting = {
   id: string;
@@ -170,50 +174,49 @@ export default function MyCalendar() {
                         {format(day, "d")}
                       </time>
                     </button>
-                    {/* Pontos de Eventos */}
 
+                    {/* Pontos de Eventos */}
                     {isEqual(day, selectedDay) && isToday(day) ? (
                       <div className="flex items-center justify-center gap-1 mx-auto">
                         {meetings &&
-                          meetings?.some((meeting) =>
-                            isSameDay(parseISO(meeting.data_inicio_culto), day),
-                          ) && (
-                            <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-sky-500"></span>
-                            </span>
-                          )}
-                        {isSunday(day) ? (
-                          <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-                          </div>
-                        ) : (
-                          ""
-                        )}
+                          meetings
+                            .filter((meeting) =>
+                              isSameDay(parseISO(meeting.data_inicio_culto), day)
+                            ).map((meeting, index) => (
+                              <span className="relative flex h-2 w-2" key={index}>
+                                <span
+                                  className={`animate-ping absolute inline-flex h-full w-full rounded-full ${index === 0 ? 'bg-sky-400' : 'bg-orange-400'
+                                    } opacity-75`}
+                                ></span>
+                                <span
+                                  className={`relative inline-flex rounded-full h-2 w-2 ${index === 0 ? 'bg-sky-500' : 'bg-orange-500'
+                                    }`}
+                                ></span>
+                              </span>
+                            ))}
                       </div>
                     ) : (
                       <div className="flex items-center justify-center gap-1 mx-auto">
                         {meetings &&
-                          meetings?.some((meeting) =>
-                            isSameDay(parseISO(meeting.data_inicio_culto), day),
-                          ) && (
-                            <div className="w-1 h-1 mt-1">
-                              <div className="w-1 h-1 rounded-full bg-sky-500"></div>
-                            </div>
-                          )}
-                        {isSunday(day) ? (
-                          <div className="w-1 h-1 mt-1">
-                            <div className="w-1 h-1 bg-orange-500 rounded-full"></div>
-                          </div>
-                        ) : (
-                          ""
-                        )}
+                          meetings
+                            .filter((meeting) =>
+                              isSameDay(parseISO(meeting.data_inicio_culto), day)
+                            ).map((meeting, index) => (
+                              <div className="w-1 h-1 mt-1" key={index}>
+                                <div
+                                  className={`w-1 h-1 rounded-full ${index === 0 ? 'bg-sky-500' : 'bg-orange-500'
+                                    }`}
+                                ></div>
+                              </div>
+                            ))}
                       </div>
                     )}
+
                   </div>
                 ))}
               </div>
             </div>
+
             {/* Section for the Events Day */}
             <section className="mt-12 md:mt-0 md:pl-14">
               <h2 className="font-semibold text-gray-900">
@@ -302,12 +305,6 @@ function Meeting({ meeting }: { meeting: meeting }) {
           size={50}
           onComplete={() => playerRef.current?.playFromBeginning()}
         />
-        // <Church
-        //   width={10}
-        //   height={10}
-        //   weight="thin"
-        //   className="flex-none w-10 h-10 rounded-full"
-        // />
       )}
 
       <div className="flex-auto">
@@ -322,6 +319,26 @@ function Meeting({ meeting }: { meeting: meeting }) {
           </time>
         </p>
       </div>
+
+      {/* OPCAO PARA UPDATE E DELETE DOS CULTOS */}
+      <DropdownMenu>
+        <DropdownMenuTrigger asChild>
+          <Button size="icon" variant="outline" className="h-8 w-8">
+            <MoreVerticalIcon className="h-3.5 w-3.5" />
+            <span className="sr-only">More</span>
+          </Button>
+        </DropdownMenuTrigger>
+        <DropdownMenuContent align="end">
+          <DropdownMenuLabel>Opções</DropdownMenuLabel>
+          <FormUpdateCulto meeting={meeting} />
+
+          <DropdownMenuSeparator />
+          <DeleteCulto
+            culto={meeting.id}
+            cultoName={meeting.culto_semana.nome}
+          />
+        </DropdownMenuContent>
+      </DropdownMenu>
     </li>
   );
 }

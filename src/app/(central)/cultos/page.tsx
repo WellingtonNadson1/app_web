@@ -1,8 +1,7 @@
 "use client";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
-import { Card } from "@/components/ui/card";
+import MyCalendar from "@/components/Calendar/Calendar";
 import { Button } from "@/components/ui/button";
+import { Card } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
@@ -10,7 +9,8 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import MyCalendar from "@/components/Calendar/Calendar";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FormNewCulto from "./form-submit-new-culto";
 
 export default function Cultos() {
@@ -22,13 +22,13 @@ export default function Cultos() {
         <Card className="relative w-full mx-auto mt-3 mb-4 grid grid-cols-1 gap-3 justify-between sm:justify-center items-center">
           <MyCalendar />
           {/* FORMS DIALOG */}
-          <div className="px-2 py-3">
+          <div className="px-2 py-3 w-full">
             {/* FORMS */}
             <Dialog>
               <DialogTrigger asChild>
-                <div className="sm:flex sm:justify-end sm:items-end">
+                <div className="sm:flex w-full">
                   <Button
-                    className="sm:w-auto w-full  bg-btnIbb hover:bg-btnIbb hover:opacity-90"
+                    className="w-full  bg-btnIbb hover:bg-btnIbb hover:opacity-90"
                     variant="default"
                   >
                     Cadastrar

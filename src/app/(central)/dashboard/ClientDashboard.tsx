@@ -1,5 +1,6 @@
 "use client";
 
+import { ChartConversions } from "@/components/Graficos/chart-coversoes";
 import MainSide from "@/components/MainSide";
 import { useAlmasAnoStore } from "@/store/AlmasStorage";
 import { useCombinedStore } from "@/store/DataCombineted";
@@ -112,6 +113,7 @@ export default function ClientDashboard({
         almasGanhasNoAno={result[6] ?? []} />
 
       <MainSide />
+      <ChartConversions />
     </div>
   );
 }
