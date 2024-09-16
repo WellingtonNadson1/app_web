@@ -42,11 +42,11 @@ export default function ControleCelulaSupervision() {
   const CelulaData = async () => {
     try {
       const result = await axiosAuth.get(URLCelula);
-
+      console.log('result', result)
       const existPresenceForCulto =
         result.data.membros[0].presencas_cultos.length > 0;
       setPresenceIsRegister(existPresenceForCulto);
-
+      console.log('existPresenceForCulto', existPresenceForCulto)
       const existSecondPresenceForCulto =
         result.data.membros[0].presencas_cultos.length > 1;
       setSecondPresenceIsRegister(existSecondPresenceForCulto);
@@ -170,14 +170,13 @@ export default function ControleCelulaSupervision() {
                                     )}
                                   </span>
                                   <ChevronUpIcon
-                                    className={`${
-                                      open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                    className={`${open ? "rotate-180 transform" : ""
+                                      } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                   {selectedDayMeetings &&
-                                  !presenceIsRegister ? (
+                                    !presenceIsRegister ? (
                                     <RegisterPresenceFormFirst
                                       id={selectedDayMeetings[0].id}
                                       key={selectedDayMeetings[0].id}
@@ -213,9 +212,8 @@ export default function ControleCelulaSupervision() {
                                 <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                   <span>Frequência de Culto</span>
                                   <ChevronUpIcon
-                                    className={`${
-                                      open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                    className={`${open ? "rotate-180 transform" : ""
+                                      } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -238,8 +236,8 @@ export default function ControleCelulaSupervision() {
             selectedDayMeetings?.length > 1 && (
               <Card className="bg-white relative w-full mx-auto mb-4">
                 {selectedDayMeetings &&
-                isLoading &&
-                selectedDayMeetings?.length <= 2 ? (
+                  isLoading &&
+                  selectedDayMeetings?.length <= 2 ? (
                   <SpinnerButton message={""} />
                 ) : selectedDayMeetings &&
                   selectedDayMeetings?.length <= 2 &&
@@ -274,14 +272,13 @@ export default function ControleCelulaSupervision() {
                                         )}
                                       </span>
                                       <ChevronUpIcon
-                                        className={`${
-                                          open ? "rotate-180 transform" : ""
-                                        } h-5 w-5 text-blue-500`}
+                                        className={`${open ? "rotate-180 transform" : ""
+                                          } h-5 w-5 text-blue-500`}
                                       />
                                     </Disclosure.Button>
                                     <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                       {selectedDayMeetings &&
-                                      !secondPresenceIsRegister ? (
+                                        !secondPresenceIsRegister ? (
                                         <RegisterPresenceFormSecond
                                           id={selectedDayMeetings[1]?.id}
                                           key={selectedDayMeetings[1]?.id}
@@ -320,9 +317,8 @@ export default function ControleCelulaSupervision() {
                                   <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                     <span>Frequência de Culto</span>
                                     <ChevronUpIcon
-                                      className={`${
-                                        open ? "rotate-180 transform" : ""
-                                      } h-5 w-5 text-blue-500`}
+                                      className={`${open ? "rotate-180 transform" : ""
+                                        } h-5 w-5 text-blue-500`}
                                     />
                                   </Disclosure.Button>
                                   <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -356,9 +352,8 @@ export default function ControleCelulaSupervision() {
                                   {format(today, "P", { locale: pt })}
                                 </span>
                                 <ChevronUpIcon
-                                  className={`${
-                                    open ? "rotate-180 transform" : ""
-                                  } h-5 w-5 text-blue-500`}
+                                  className={`${open ? "rotate-180 transform" : ""
+                                    } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -387,9 +382,8 @@ export default function ControleCelulaSupervision() {
                               <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                 <span>Frequência de Célula</span>
                                 <ChevronUpIcon
-                                  className={`${
-                                    open ? "rotate-180 transform" : ""
-                                  } h-5 w-5 text-blue-500`}
+                                  className={`${open ? "rotate-180 transform" : ""
+                                    } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
