@@ -1,22 +1,32 @@
 "use client";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/components/ui/use-toast";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
 import { useUserDataStore } from "@/store/UserDataStore";
 import { Disclosure } from "@headlessui/react";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckFat, Warning } from "@phosphor-icons/react";
+import { Spinner } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { ChevronUpIcon } from "lucide-react";
-import { Fragment } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { Fragment, useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { DiscipuloOfSupervisor, dataSchemaCreateDiscipulado } from "./schema";
+import { z } from "zod";
+import { DiscipuloOfSupervisor, dataSchemaCreateDiscipulado, dataSchemaReturnCreateDiscipulado } from "./schema";
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -28,27 +38,63 @@ interface PropsForm {
 }
 export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
   const queryClient = useQueryClient();
+  const [registeredDate, setRegisteredDate] = useState<Date | null>(null);
+  const dataOcorreu = dayjs(membro?.membro?.discipulado[1]?.data_ocorreu).add(3, "hour").toISOString()
+  const form = useForm<z.infer<typeof dataSchemaCreateDiscipulado>>({
+    resolver: zodResolver(dataSchemaCreateDiscipulado),
+    defaultValues: {
+      data_ocorreu: membro?.membro?.discipulado[1]
+        ? new Date(dataOcorreu)
+        : undefined, // Se já existe uma data registrada, coloca como default
+    }
+  });
+  const isRegistered = Boolean(membro?.membro?.discipulado[1]?.data_ocorreu); // Checa se já foi registrado
+
   const { token } = useUserDataStore.getState();
   const axiosAuth = useAxiosAuthToken(token);
   const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`;
-  const discipulador = membro?.discipulador_name;
+
+  const discipulador = membro?.discipulador_name || "Sem Registro";
   const discipulador_id = membro?.supervisor_id;
-  const quantidade_discipulado = membro?.membro?._count?.discipulado;
-  const data_2discipulado_ocorreu =
-    membro?.membro?.discipulado[1]?.data_ocorreu;
+  const quantidade_discipulado = membro?.membro?._count?.discipulado || 0;
+
   const discipulo_id = membro?.membro?.user_discipulos.id;
-  const { register, handleSubmit } = useForm<dataSchemaCreateDiscipulado>();
+
+  useEffect(() => {
+    form.setValue("usuario_id", discipulo_id);
+    form.setValue("discipulador_id", discipulador_id);
+  }, [form, discipulo_id, discipulador_id]);
+
 
   // Register New Discipulado
   const CreateDiscipuladoFunction = async (
-    dataForm: dataSchemaCreateDiscipulado,
+    dataForm: z.infer<typeof dataSchemaCreateDiscipulado>,
   ) => {
+    // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
+    const data_discipulado2 = dayjs(dataForm.data_ocorreu)
+      .subtract(3, "hour")
+      .toISOString();
+
+    const data_ocorreu = new Date(data_discipulado2);
+    var data = { ...dataForm, data_ocorreu };
+
     try {
-      const { data } = await axiosAuth.post(URLCreateNewDiscipulado, dataForm);
-      success("😉 2º Discipulado Registrado!");
-      return data;
+      const response: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
+        URLCreateNewDiscipulado,
+        data
+      );
+      toast({
+        title: "Sucesso!!!",
+        description: "2º Discipulado Registrado! 🥳",
+      });
+      form.reset()
+      return response;
     } catch (error) {
-      errorCadastro("⛔ error no registro do Discipulado");
+      toast({
+        title: "Erro!!!",
+        description: "Error no registro do Discipulado! 😰",
+        variant: "destructive",
+      });
     }
   };
 
@@ -74,14 +120,17 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
     },
   });
 
-  const onSubmitSecondDiscipulado: SubmitHandler<
-    dataSchemaCreateDiscipulado
-  > = async (data) => {
-    return await createDiscipuladoFn(data);
+  const onSubmitSecondDiscipulado = async (data: z.infer<typeof dataSchemaCreateDiscipulado>) => {
+    const result = await createDiscipuladoFn(data);
+    if (result) {
+      setRegisteredDate(data.data_ocorreu); // Armazena a data registrada no estado
+    }
+    return result;
   };
 
   return (
     <Fragment>
+      <Toaster />
       <Disclosure>
         {({ open }) => (
           <Fragment>
@@ -117,79 +166,109 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                     </h2>
                   </div>
                 </div>
-                <form
-                  aria-disabled
-                  key={discipulo_id}
-                  id={discipulo_id}
-                  // onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
-                >
-                  <input
-                    key={discipulo_id}
-                    type="hidden"
-                    value={discipulo_id}
-                    {...register(`usuario_id`)}
-                  />
-                  <input
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmitSecondDiscipulado)}
+                    aria-disabled
                     key={discipulo_id + discipulador_id}
-                    type="hidden"
-                    value={discipulador_id}
-                    {...register(`discipulador_id`)}
-                  />
-                  {}
-                  <Input
-                    type="date"
-                    disabled
-                    placeholder={dayjs
-                      .utc(data_2discipulado_ocorreu)
-                      .format("YYYY-MM-DD")}
-                    value={dayjs
-                      .utc(data_2discipulado_ocorreu)
-                      .format("YYYY-MM-DD")}
-                    key={discipulo_id + 7}
-                    {...register(`data_ocorreu`, {
-                      required: true,
-                    })}
-                    id="second_discipulado"
-                    className="block w-full rounded-md border-0 py-1.5 mb-4 text-slate-400 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                  />
-                  {isPending ? (
-                    <Button
-                      type="submit"
-                      disabled={true}
-                      className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                    >
-                      <svg
-                        className="w-5 h-5 mr-3 text-white animate-spin"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      <span>Registrando...</span>
-                    </Button>
-                  ) : (
-                    <Button
+                    id={discipulo_id}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="usuario_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              key={discipulo_id + 2}
+                              type="hidden"
+                              value={discipulo_id}
+                              disabled={isRegistered} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <FormField
+                      control={form.control}
+                      name="discipulador_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input
+                              key={discipulo_id + discipulador_id}
+                              type="hidden"
+                              value={discipulador_id}
+                              disabled={isRegistered} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    { }
+
+                    <FormField
                       disabled
-                      className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] opacity-40 px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100"
+                      control={form.control}
+                      name="data_ocorreu"
+                      render={({ field }) => (
+                        <FormItem aria-disabled className="flex flex-col">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    " pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                  disabled={isRegistered}
+                                >
+                                  {field.value || registeredDate ? (
+                                    dayjs(field.value || registeredDate)
+                                      .utc()
+                                      .local()
+                                      .locale("pt-br")
+                                      .format("DD-MM-YYYY HH:mm:ss")
+                                  ) : (
+                                    <span>Selecione uma data</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent aria-disabled className="w-auto sm:flex p-0" align="start">
+                              <Calendar
+                                disabled={isSuccess}
+                                mode="single"
+                                selected={field.value || registeredDate}
+                                onSelect={field.onChange}
+                                initialFocus
+                                disableNavigation={isSuccess}
+                              />
+                              <div className="p-3 border-t border-border">
+                                <TimePicker
+                                  setDate={field.onChange}
+                                  date={field.value || registeredDate}
+                                />
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    <Button
+                      disabled={isRegistered || isPending}
+                      className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
                       type="submit"
                     >
-                      Registrar
+                      Já Registrado
                     </Button>
-                  )}
-                </form>
+                  </form>
+                </Form>
               </Disclosure.Panel>
             ) : (
               <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500 sm:flex sm:flex-col">
@@ -206,81 +285,109 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                     </h2>
                   </div>
                 </div>
-                <form
-                  key={discipulo_id}
-                  id={discipulo_id}
-                  onSubmit={handleSubmit(onSubmitSecondDiscipulado)}
-                >
-                  <input
+                <Form {...form}>
+                  <form
+                    onSubmit={form.handleSubmit(onSubmitSecondDiscipulado)}
+                    aria-disabled
                     key={discipulo_id}
-                    type="hidden"
-                    value={discipulo_id}
-                    {...register(`usuario_id`)}
-                  />
-                  <input
-                    key={discipulo_id + discipulador_id}
-                    type="hidden"
-                    value={discipulador_id}
-                    {...register(`discipulador_id`)}
-                  />
-                  <Input
-                    type="date"
-                    key={discipulo_id + 7}
-                    {...register(`data_ocorreu`, {
-                      required: true,
-                    })}
-                    id="second_discipulado"
-                    className={cn(
-                      `block w-full text-sm rounded-md border-0 py-1.5 mb-4 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6`,
-                      isSuccess ? `text-slate-400 ` : ``,
-                    )}
-                  />
-                  {isPending ? (
+                    id={discipulo_id}
+                  >
+                    <FormField
+                      control={form.control}
+                      name="usuario_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input key={discipulo_id} type="hidden" {...field} value={discipulo_id} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+                    <FormField
+                      control={form.control}
+                      name="discipulador_id"
+                      render={({ field }) => (
+                        <FormItem>
+                          <FormControl>
+                            <Input key={discipulo_id + discipulador_id} disabled={isSuccess} type="hidden" {...field} value={discipulador_id} />
+                          </FormControl>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
+                    { }
+
+                    <FormField
+                      control={form.control}
+                      name="data_ocorreu"
+                      render={({ field }) => (
+                        <FormItem className="flex flex-col">
+                          <Popover>
+                            <PopoverTrigger asChild>
+                              <FormControl>
+                                <Button
+                                  variant={"outline"}
+                                  className={cn(
+                                    " pl-3 text-left font-normal",
+                                    !field.value && "text-muted-foreground",
+                                  )}
+                                  disabled={isSuccess}
+                                >
+                                  {field.value || registeredDate ? (
+                                    dayjs(field.value || registeredDate)
+                                      .utc()
+                                      .local()
+                                      .locale("pt-br")
+                                      .format("DD-MM-YYYY HH:mm:ss")
+                                  ) : (
+                                    <span>Selecione uma data</span>
+                                  )}
+                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                              </FormControl>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto sm:flex p-0" align="start">
+                              <Calendar
+                                mode="single"
+                                selected={field.value || registeredDate}
+                                onSelect={field.onChange}
+                                initialFocus
+                                disabled={isSuccess}
+                              />
+                              <div className="p-3 border-t border-border">
+                                <TimePicker
+                                  setDate={field.onChange}
+                                  date={field.value || registeredDate}
+                                />
+                              </div>
+                            </PopoverContent>
+                          </Popover>
+                          <FormMessage />
+                        </FormItem>
+                      )}
+                    />
+
                     <Button
+                      className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
                       type="submit"
-                      disabled={isPending}
-                      className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                      disabled={isRegistered || isPending}
                     >
-                      <svg
-                        className="w-5 h-5 mr-3 text-white animate-spin"
-                        xmlns="http://www.w3.org/2000/svg"
-                        fill="none"
-                        viewBox="0 0 24 24"
-                      >
-                        <circle
-                          className="opacity-25"
-                          cx="12"
-                          cy="12"
-                          r="10"
-                          stroke="currentColor"
-                          strokeWidth="4"
-                        ></circle>
-                        <path
-                          className="opacity-75"
-                          fill="currentColor"
-                          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                        ></path>
-                      </svg>
-                      <span>Registrando...</span>
+                      {isPending ? (
+                        <div className="flex items-center justify-between gap-2">
+                          <Spinner className="animate-spin" />
+                          Registrando
+                        </div>
+                      ) : isSuccess ? (
+                        "Registrado com sucesso"
+                      ) : (
+                        "Registrar"
+                      )}
                     </Button>
-                  ) : isSuccess ? (
-                    <Button
-                      disabled
-                      className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] opacity-40 px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100"
-                      type="submit"
-                    >
-                      Registrar
-                    </Button>
-                  ) : (
-                    <Button
-                      disabled={isPending || isSuccess}
-                      className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
-                      type="submit"
-                    >
-                      Registrar
-                    </Button>
-                  )}
-                </form>
+
+                  </form>
+                </Form>
               </Disclosure.Panel>
             )}
           </Fragment>

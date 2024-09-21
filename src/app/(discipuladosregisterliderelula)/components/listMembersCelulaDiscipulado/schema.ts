@@ -1,3 +1,5 @@
+import { z } from "zod";
+
 export interface PropsForm {
   membro: MembroCell;
 }
@@ -49,11 +51,13 @@ export type dataSchemaGetDiscipuladoAllCell = {
   data_ocorreu: Date;
 };
 
-export type dataSchemaCreateDiscipulado = {
-  usuario_id: string;
-  discipulador_id: string;
-  data_ocorreu: Date;
-};
+export const dataSchemaCreateDiscipulado = z.object({
+  usuario_id: z.string(),
+  discipulador_id: z.string(),
+  data_ocorreu: z.date()
+})
+
+export type dataCreateDiscipulado = z.infer<typeof dataSchemaCreateDiscipulado>
 
 export interface MembroCell {
   id: string;
