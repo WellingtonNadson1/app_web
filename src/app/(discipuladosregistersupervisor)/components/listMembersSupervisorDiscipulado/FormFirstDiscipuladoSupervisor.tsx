@@ -131,7 +131,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                   aria-disabled
                   key={discipulo_id}
                   id={discipulo_id}
-                  // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
                 >
                   <input
                     key={discipulo_id}
@@ -145,7 +144,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  {}
+                  { }
                   <Input
                     type="date"
                     disabled

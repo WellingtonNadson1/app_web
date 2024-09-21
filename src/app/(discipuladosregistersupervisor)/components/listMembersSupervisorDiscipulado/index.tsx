@@ -6,7 +6,7 @@ import { Card } from "@/components/ui/card";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useUserDataStore } from "@/store/UserDataStore";
-import { UserFocus } from "@phosphor-icons/react";
+import { UserCircleDashed } from "@phosphor-icons/react/dist/ssr";
 import { useQuery } from "@tanstack/react-query";
 import { useState } from "react";
 import FormFirstDiscipuladoSupervisor from "./FormFirstDiscipuladoSupervisor";
@@ -112,7 +112,7 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
                             <div className="w-full px-2 py-2 ">
                               <div className="w-full px-1 py-2 rounded-md">
                                 <div className="flex items-center justify-start gap-1 mb-6 sm:mb-4">
-                                  <UserFocus size={24} />
+                                  <UserCircleDashed size={24} />
                                   <h2 className="ml-3">
                                     {user.user_discipulos.first_name}
                                   </h2>

@@ -1,4 +1,6 @@
 "use client";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { BASE_URL, errorCadastro, success } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
@@ -126,7 +128,6 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                   aria-disabled
                   key={membro.id}
                   id={membro.id}
-                  // onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
                 >
                   <input
                     key={membro.id}
@@ -140,8 +141,8 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  {}
-                  <input
+                  { }
+                  <Input
                     type="date"
                     disabled
                     placeholder={dayjs
@@ -158,7 +159,7 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                     className="block w-full rounded-md border-0 py-1.5 mb-4 text-slate-400 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                   />
                   {isPending ? (
-                    <button
+                    <Button
                       type="submit"
                       disabled={true}
                       className="flex items-center justify-center w-full px-3 py-1.5 mb-6 mx-auto text-sm font-semibold text-white bg-green-700 rounded-md leading-7 shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
@@ -184,15 +185,15 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                         ></path>
                       </svg>
                       <span>Registrando...</span>
-                    </button>
+                    </Button>
                   ) : (
-                    <button
+                    <Button
                       disabled
                       className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] opacity-40 px-3 py-1.5 mb-6 text-sm font-semibold leading-7 text-white shadow-sm duration-100"
                       type="submit"
                     >
                       Registrar
-                    </button>
+                    </Button>
                   )}
                 </form>
               </Disclosure.Panel>
