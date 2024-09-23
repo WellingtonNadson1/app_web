@@ -8,7 +8,7 @@ export type dataSchemaReturnCreateDiscipulado = {
   discipulado_id: string;
   usuario_id: string;
   discipulador_id: string;
-  data_ocorreu: string;
+  data_ocorreu: Date;
 };
 
 export type dataSchemaReturnExistDiscipuladoAllCell = {
@@ -29,7 +29,7 @@ export type dataSchemaReturnExistDiscipuladoAllCell = {
           discipulado: number;
         };
         discipulado: {
-          data_ocorreu: string;
+          data_ocorreu: Date;
         }[];
       }[];
     }[];
@@ -41,7 +41,7 @@ export type dataSchemaReturnExistDiscipulado = {
     quantidadeDiscipuladoRealizado: number;
     discipuladosRealizados: {
       discipulado_id: string;
-      data_ocorreu: string;
+      data_ocorreu: Date;
     }[];
   };
 };
@@ -54,7 +54,12 @@ export type dataSchemaGetDiscipuladoAllCell = {
 export const dataSchemaCreateDiscipulado = z.object({
   usuario_id: z.string(),
   discipulador_id: z.string(),
-  data_ocorreu: z.date()
+  data_ocorreu: z.preprocess((arg) => {
+    if (typeof arg === "string" || arg instanceof Date) return new Date(arg);
+  }, z.date({
+    required_error: "Data do discipulado é obrigatória."
+  }))
+
 })
 
 export type dataCreateDiscipulado = z.infer<typeof dataSchemaCreateDiscipulado>
@@ -75,7 +80,7 @@ export interface MembroCell {
       discipulado: number;
     };
     discipulado: {
-      data_ocorreu: string;
+      data_ocorreu: Date;
     }[];
   }[];
 }

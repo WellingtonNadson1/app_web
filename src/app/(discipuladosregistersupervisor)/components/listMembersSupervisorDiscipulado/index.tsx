@@ -52,12 +52,6 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
       }),
   });
 
-  isSuccess &&
-    console.log(
-      "registerDiscipuladosSupervisor",
-      registerDiscipuladosSupervisor,
-    );
-
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const membersSort = registerDiscipuladosSupervisor?.data[0]?.discipulos.sort(

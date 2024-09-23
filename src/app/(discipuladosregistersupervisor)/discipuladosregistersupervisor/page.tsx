@@ -1,11 +1,9 @@
 /* eslint-disable camelcase */
-// import { getServerSession } from 'next-auth'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
-import axios from "axios";
-import { axiosAuthToken } from "@/lib/axios";
-import HeaderDiscipuladosSupervisor from "./HeaderDiscipuladosSupervisor";
-import ListMembersSupervisorDiscipulado from "../components/listMembersSupervisorDiscipulado";
 import { auth } from "@/auth";
+import { axiosAuthToken } from "@/lib/axios";
+import axios from "axios";
+import ListMembersSupervisorDiscipulado from "../components/listMembersSupervisorDiscipulado";
+import HeaderDiscipuladosSupervisor from "./HeaderDiscipuladosSupervisor";
 
 export default async function DiscipuladosSupervisor() {
   const session = await auth();
@@ -19,8 +17,6 @@ export default async function DiscipuladosSupervisor() {
   };
 
   const URLUser = `https://back-ibb.vercel.app/users/cell/${id}`;
-  // const URLUser = `https://app-ibb.onrender.com/users/cell/${id}`;
-  // const URLUser = `https://backibb-production.up.railway.app/users/cell/${id}`
 
   const UserData = async () => {
     try {

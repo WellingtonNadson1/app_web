@@ -85,11 +85,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
 
     const data_ocorreu = new Date(data_discipulado1);
 
-    console.log('dataForm', dataForm)
-    console.log('data_ocorreu', data_ocorreu)
-
     var data = { ...dataForm, data_ocorreu };
-    console.log('data', data)
 
     try {
       const response: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
@@ -177,7 +173,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     <h2 className={cn(`ml-4`)}>{discipulador}</h2>
                   </div>
                 </div>
-
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmitFirstDiscipulado)}
@@ -218,8 +213,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         </FormItem>
                       )}
                     />
-                    { }
-
                     <FormField
                       disabled
                       control={form.control}
@@ -271,7 +264,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         </FormItem>
                       )}
                     />
-
                     <Button
                       disabled={isRegistered || isPending}
                       className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
@@ -297,7 +289,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                     </h2>
                   </div>
                 </div>
-
                 <Form {...form}>
                   <form
                     onSubmit={form.handleSubmit(onSubmitFirstDiscipulado)}
@@ -328,7 +319,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         <FormItem>
                           <FormControl>
                             <Input
-                              key={discipulo_id + discipulador_id} disabled={isSuccess}
+                              key={discipulo_id + discipulador_id}
+                              disabled={isSuccess}
                               type="hidden"
                               {...field}
                               value={discipulador_id} />
@@ -337,9 +329,6 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         </FormItem>
                       )}
                     />
-
-                    { }
-
                     <FormField
                       control={form.control}
                       name="data_ocorreu"
@@ -390,11 +379,10 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                         </FormItem>
                       )}
                     />
-
                     <Button
+                      disabled={isRegistered || isPending}
                       className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
                       type="submit"
-                      disabled={isRegistered || isPending}
                     >
                       {isPending ? (
                         <div className="flex items-center justify-between gap-2">

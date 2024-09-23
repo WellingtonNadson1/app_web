@@ -1,10 +1,6 @@
 "use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import { BASE_URL } from "@/functions/functions";
@@ -12,8 +8,6 @@ import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
 import { useUserDataStore } from "@/store/UserDataStore";
 import { Disclosure } from "@headlessui/react";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { CheckFat, Warning } from "@phosphor-icons/react";
 import { Spinner } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -21,15 +15,14 @@ import dayjs from "dayjs";
 import timezone from "dayjs/plugin/timezone";
 import utc from "dayjs/plugin/utc";
 import { ChevronUpIcon } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Fragment } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import { z } from "zod";
 import {
   MembroCell,
-  dataSchemaCreateDiscipulado,
-  dataSchemaReturnCreateDiscipulado,
+  dataCreateDiscipulado,
+  dataSchemaReturnCreateDiscipulado
 } from "./schema";
 
 dayjs.extend(utc);
@@ -41,58 +34,43 @@ interface PropsForm {
 
 export default function FormFirstDiscipulado({ membro }: PropsForm) {
   const queryClient = useQueryClient();
-  const [registeredDate, setRegisteredDate] = useState<Date | null>(null);
   const { token } = useUserDataStore.getState();
   const axiosAuth = useAxiosAuthToken(token);
   const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`;
   const discipulador =
-    membro?.discipulador[0]?.user_discipulador?.first_name || "Sem Registro";
-  const discipulador_id = membro?.discipulador[0]?.user_discipulador?.id;
+    membro?.discipulador?.[0]?.user_discipulador?.first_name || "Sem Registro";
+  const discipulador_id = membro?.discipulador?.[0]?.user_discipulador?.id;
   const quantidade_discipulado =
-    membro?.discipulador[0]?._count?.discipulado || 0;
+    membro?.discipulador?.[0]?._count?.discipulado || 0;
+
+  const isRegistered = Boolean(membro?.discipulador[0]?.discipulado[0]?.data_ocorreu); // Checa se já foi registrado
 
   const dataOcorreu = dayjs(membro?.discipulador[0]?.discipulado[0]?.data_ocorreu).add(3, "hour").toISOString()
 
-  const form = useForm<z.infer<typeof dataSchemaCreateDiscipulado>>({
-    resolver: zodResolver(dataSchemaCreateDiscipulado),
-    defaultValues: {
-      data_ocorreu: membro?.discipulador[0]?.discipulado[0]?.data_ocorreu
-        ? new Date(dataOcorreu)
-        : undefined, // Se já existe uma data registrada, coloca como default
-    }
-  });
-
-  const isRegistered = Boolean(membro?.discipulador[0]?.discipulado[0]?.data_ocorreu);
-
-  useEffect(() => {
-    form.setValue("usuario_id", membro.id);
-    form.setValue("discipulador_id", discipulador_id);
-  }, [form, membro.id, discipulador_id]);
+  const { register, handleSubmit, reset } =
+    useForm<dataCreateDiscipulado>({
+      defaultValues: {
+        data_ocorreu: membro?.discipulador[0]?.discipulado[0]?.data_ocorreu
+          ? new Date(dataOcorreu)
+          : undefined, // Se já existe uma data registrada, coloca como default
+      }
+    });
 
   // Register New Discipulado
   const CreateDiscipuladoFunction = async (
-    dataForm: z.infer<typeof dataSchemaCreateDiscipulado>,
+    dataForm: dataCreateDiscipulado,
   ) => {
-    // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
-    const data_discipulado1 = dayjs(dataForm.data_ocorreu)
-      .subtract(3, "hour")
-      .toISOString();
-
-    const data_ocorreu = new Date(data_discipulado1);
-
-    var data = { ...dataForm, data_ocorreu };
-
     try {
-      const response: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
+      const data: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
         URLCreateNewDiscipulado,
-        data,
+        dataForm,
       );
       toast({
         title: "Sucesso!!!",
         description: "1º Discipulado Registrado! 🥳",
       });
-      form.reset()
-      return response;
+      reset()
+      return data;
     } catch (error) {
       toast({
         title: "Erro!!!",
@@ -124,11 +102,10 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
     },
   });
 
-  const onSubmitFirstDiscipulado = async (data: z.infer<typeof dataSchemaCreateDiscipulado>) => {
+  const onSubmitFirstDiscipulado: SubmitHandler<
+    dataCreateDiscipulado
+  > = async (data) => {
     const result = await createDiscipuladoFn(data);
-    if (result) {
-      setRegisteredDate(data.data_ocorreu); // Armazena a data registrada no estado
-    }
     return result;
   };
 
@@ -165,110 +142,51 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                 <div className="flex items-center justify-between mb-3 text-slate-400">
                   <h2>Discipulador(a):</h2>
                   <div className="flex items-center justify-start">
-                    <h2 className={cn(`ml-4`)}>
-                      {discipulador}
-                    </h2>
+                    <h2 className={cn(`ml-4`)}>{discipulador}</h2>
                   </div>
                 </div>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmitFirstDiscipulado)}
-                    aria-disabled
+                <form
+                  aria-disabled
+                  key={membro.id}
+                  id={membro.id}
+                >
+                  <input
                     key={membro.id}
-                    id={membro.id}
+                    type="hidden"
+                    value={membro.id}
+                    {...register(`usuario_id`)}
+                  />
+                  <input
+                    key={membro.id + discipulador_id}
+                    type="hidden"
+                    value={discipulador_id}
+                    {...register(`discipulador_id`)}
+                  />
+                  { }
+                  <Input
+                    type="date"
+                    disabled
+                    placeholder={dayjs
+                      .utc(dataOcorreu)
+                      .format("YYYY-MM-DD")}
+                    value={dayjs
+                      .utc(dataOcorreu)
+                      .format("YYYY-MM-DD")}
+                    key={membro.id + 7}
+                    {...register(`data_ocorreu`, {
+                      required: true,
+                    })}
+                    id="first_discipulado"
+                    className="block w-full rounded-md border-0 py-1.5 px-2 mb-4 text-slate-400 text-sm shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                  />
+                  <Button
+                    disabled={isRegistered || isPending}
+                    className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
+                    type="submit"
                   >
-                    <FormField
-                      control={form.control}
-                      name="usuario_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              key={membro.id}
-                              type="hidden"
-                              value={membro.id}
-                              disabled={isRegistered} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="discipulador_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              key={membro.id + discipulador_id}
-                              type="hidden"
-                              value={discipulador_id}
-                              disabled={isRegistered} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      disabled
-                      control={form.control}
-                      name="data_ocorreu"
-                      render={({ field }) => (
-                        <FormItem aria-disabled className="flex flex-col">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    " pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                  disabled={isRegistered}
-                                >
-                                  {field.value || registeredDate ? (
-                                    dayjs(field.value || registeredDate)
-                                      .utc()
-                                      .local()
-                                      .locale("pt-br")
-                                      .format("DD-MM-YYYY HH:mm:ss")
-                                  ) : (
-                                    <span>Selecione uma data</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent aria-disabled className="w-auto sm:flex p-0" align="start">
-                              <Calendar
-                                disabled={isSuccess}
-                                mode="single"
-                                selected={field.value || registeredDate}
-                                onSelect={field.onChange}
-                                initialFocus
-                                disableNavigation={isSuccess}
-                              />
-                              <div className="p-3 border-t border-border">
-                                <TimePicker
-                                  setDate={field.onChange}
-                                  date={field.value || registeredDate}
-                                />
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      disabled={isRegistered || isPending}
-                      className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
-                      type="submit"
-                    >
-                      Já Registrado
-                    </Button>
-                  </form>
-                </Form>
+                    Já Registrado
+                  </Button>
+                </form>
               </Disclosure.Panel>
             ) : (
               <Disclosure.Panel className="w-full px-2 pt-4 pb-2 text-sm text-gray-500 sm:flex sm:flex-col">
@@ -285,115 +203,53 @@ export default function FormFirstDiscipulado({ membro }: PropsForm) {
                     </h2>
                   </div>
                 </div>
-                <Form {...form}>
-                  <form
-                    onSubmit={form.handleSubmit(onSubmitFirstDiscipulado)}
-                    aria-disabled
+                <form
+                  key={membro.id}
+                  id={membro.id}
+                  onSubmit={handleSubmit(onSubmitFirstDiscipulado)}
+                >
+                  <input
                     key={membro.id}
-                    id={membro.id}
+                    type="hidden"
+                    value={membro.id}
+                    {...register(`usuario_id`)}
+                  />
+                  <input
+                    key={membro.id + discipulador_id}
+                    type="hidden"
+                    value={discipulador_id}
+                    {...register(`discipulador_id`)}
+                  />
+                  <Input
+                    type="datetime-local"
+                    key={membro.id + 7}
+                    disabled={isSuccess}
+                    placeholder={"Selecione uma data"}
+                    {...register(`data_ocorreu`, {
+                      required: true,
+                    })}
+                    id="first_discipulado"
+                    className={cn(
+                      `block w-full text-sm rounded-md border-0 py-1.5 px-2 mb-4 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6`,
+                    )}
+                  />
+                  <Button
+                    disabled={isPending}
+                    className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
+                    type="submit"
                   >
-                    <FormField
-                      control={form.control}
-                      name="usuario_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              key={membro.id}
-                              type="hidden"
-                              {...field}
-                              value={membro.id}
-                            />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      control={form.control}
-                      name="discipulador_id"
-                      render={({ field }) => (
-                        <FormItem>
-                          <FormControl>
-                            <Input
-                              key={membro.id + discipulador_id}
-                              disabled={isSuccess}
-                              type="hidden"
-                              {...field}
-                              value={discipulador_id} />
-                          </FormControl>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <FormField
-                      disabled
-                      control={form.control}
-                      name="data_ocorreu"
-                      render={({ field }) => (
-                        <FormItem aria-disabled className="flex flex-col">
-                          <Popover>
-                            <PopoverTrigger asChild>
-                              <FormControl>
-                                <Button
-                                  variant={"outline"}
-                                  className={cn(
-                                    " pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
-                                  )}
-                                  disabled={isSuccess}
-                                >
-                                  {field.value || registeredDate ? (
-                                    dayjs(field.value || registeredDate)
-                                      .utc()
-                                      .local()
-                                      .locale("pt-br")
-                                      .format("DD-MM-YYYY HH:mm:ss")
-                                  ) : (
-                                    <span>Selecione uma data</span>
-                                  )}
-                                  <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                              </FormControl>
-                            </PopoverTrigger>
-                            <PopoverContent aria-disabled className="w-auto sm:flex p-0" align="start">
-                              <Calendar
-                                mode="single"
-                                selected={field.value || registeredDate}
-                                onSelect={field.onChange}
-                                initialFocus
-                                disabled={isSuccess}
-                              />
-                              <div className="p-3 border-t border-border">
-                                <TimePicker
-                                  setDate={field.onChange}
-                                  date={field.value || registeredDate}
-                                />
-                              </div>
-                            </PopoverContent>
-                          </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                    <Button
-                      disabled={isRegistered || isPending}
-                      className="mt-4 w-full bg-btnIbb hover:bg-btnIbb hover:opacity-95 transition ease-in"
-                      type="submit"
-                    >
-                      {isPending ? (
-                        <div className="flex items-center justify-between gap-2">
-                          <Spinner className="animate-spin" />
-                          Registrando
-                        </div>
-                      ) : isSuccess ? (
-                        "Registrado com sucesso"
-                      ) : (
-                        "Registrar"
-                      )}
-                    </Button>
-                  </form>
-                </Form>
+                    {isPending ? (
+                      <div className="flex items-center justify-between gap-2">
+                        <Spinner className="animate-spin" />
+                        Registrando
+                      </div>
+                    ) : isSuccess ? (
+                      "Registrado com sucesso"
+                    ) : (
+                      "Registrar"
+                    )}
+                  </Button>
+                </form>
               </Disclosure.Panel>
             )}
           </Fragment>
