@@ -2,7 +2,7 @@
 
 import { ChartConversions } from "@/components/Graficos/chart-coversoes";
 import MainSide from "@/components/MainSide";
-import { useAlmasAnoStore } from "@/store/AlmasStorage";
+import { useAlmasAnoStore, useAlmasMesPassadoStore, useAlmasMesStore } from "@/store/AlmasStorage";
 import { useCombinedStore } from "@/store/DataCombineted";
 import { InitializerAlmasAnoStore } from "@/store/InitializerAlmasAnoStore";
 import { InitializerAlmasMesPassadoStore } from "@/store/InitializerAlmasMesPassadoStore";
@@ -41,7 +41,7 @@ interface Result {
 
 interface ClientDashboardProps {
   session: Session | null;
-  result: Result[];
+  result: Result;
 }
 
 export default function ClientDashboard({
@@ -75,7 +75,13 @@ export default function ClientDashboard({
     });
     useAlmasAnoStore.setState({
       // @ts-ignore
-      almasGanhasNoAno: result[6] ?? []
+      almasGanhasNoAno: result?.almasGanhasNoAno ?? []
+    })
+    useAlmasMesPassadoStore.setState({
+      almasGanhasNoMesPassado: result?.almasGanhasNoMesPassado ?? []
+    })
+    useAlmasMesStore.setState({
+      almasGanhasNoMes: result?.almasGanhasNoMes ?? []
     })
   }, [result]);
 
@@ -109,15 +115,15 @@ export default function ClientDashboard({
 
       <InitializerAlmasMesStore
         // @ts-ignore
-        almasGanhasNoAno={result[5] ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoMes ?? []} />
 
       <InitializerAlmasMesPassadoStore
         // @ts-ignore
-        almasGanhasNoAno={result[5] ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoMesPassado ?? []} />
 
       <InitializerAlmasAnoStore
         // @ts-ignore
-        almasGanhasNoAno={result[6] ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoAno ?? []} />
 
       <MainSide />
       <ChartConversions />

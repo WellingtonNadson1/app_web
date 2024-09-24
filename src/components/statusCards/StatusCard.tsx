@@ -1,8 +1,9 @@
 "use client";
-import { useAlmasAnoStore, useAlmasMesStore } from "@/store/AlmasStorage";
+import { useAlmasAnoStore, useAlmasMesPassadoStore, useAlmasMesStore } from "@/store/AlmasStorage";
 import { ChartLineUp, Confetti, HandsPraying } from "@phosphor-icons/react";
 import { Card } from "../ui/card";
 
+import { cn } from "@/lib/utils";
 import axios from "axios";
 import { useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
@@ -39,6 +40,7 @@ export default function StatsCard() {
 
   // Acessa e atualiza o estado de almas ganhas no Zustand
   const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasMesStore();
+  const { almasGanhasNoMesPassado, setAlmasGanhasNoMesPassado } = useAlmasMesPassadoStore();
   const { almasGanhasNoAno, setAlmasGanhasNoAno } = useAlmasAnoStore();
 
   // Função para buscar dados da API e atualizar o estado
@@ -47,6 +49,7 @@ export default function StatsCard() {
     if (data) {
       setAlmasGanhasNoMes(data.almasGanhasNoMes);
       setAlmasGanhasNoAno(data.almasGanhasNoAno);
+      setAlmasGanhasNoMesPassado(data.almasGanhasNoMesPassado)
     }
   }
 
@@ -62,10 +65,12 @@ export default function StatsCard() {
     return <div>Carregando...</div>;
   }
 
+  const porcentagemAlmasGanhasMesPassado = (almasGanhasNoMes * 100) / almasGanhasNoMesPassado
+
   const statusIbb = [
     {
       title: "Conversões Células/Mês",
-      porcentagem: "--.--%",
+      porcentagem: `${porcentagemAlmasGanhasMesPassado.toFixed(2)}%`,
       total: almasGanhasNoMes !== undefined ? almasGanhasNoMes : "Carregando...",
       status: "up",
       icon: HandsPraying,
@@ -111,7 +116,12 @@ export default function StatsCard() {
             <span className="text-lg font-semibold">{stat.total}</span>
           </div>
           <div className="flex items-center">
-            <span className="text-sm font-bold leading-normal text-emerald-500">
+            <span
+              className={cn("text-sm font-bold leading-normal", {
+                "text-red-500": porcentagemAlmasGanhasMesPassado < 0,
+                "text-emerald-500": porcentagemAlmasGanhasMesPassado >= 0,
+              })}
+            >
               {stat.porcentagem}
             </span>
             <span className="ml-2 text-sm font-bold leading-normal text-gray-500">
