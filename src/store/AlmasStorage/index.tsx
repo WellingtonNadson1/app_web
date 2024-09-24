@@ -7,6 +7,10 @@ type AlmasStoreMes = {
   almasGanhasNoMes: number;
   setAlmasGanhasNoMes: (almasGanhasNoMes: number) => void;
 };
+type AlmasGanhasNoMesPassado = {
+  almasGanhasNoMesPassado: number;
+  setAlmasGanhasNoMesPassado: (almasGanhasNoMesPassado: number) => void;
+};
 type AlmasStoreAno = {
   almasGanhasNoAno: number;
   setAlmasGanhasNoAno: (almasGanhasNoAno: number) => void;
@@ -23,6 +27,22 @@ export const useAlmasMesStore = create(
     }),
     {
       name: "data-almas",
+      storage: createJSONStorage(() => localStorage),
+    },
+  ),
+);
+
+export const useAlmasMesPassadoStore = create(
+  persist<AlmasGanhasNoMesPassado>(
+    (set) => ({
+      almasGanhasNoMesPassado: 0,
+      setAlmasGanhasNoMesPassado: (almasGanhasNoMesPassado) => {
+        console.log("Atualizando almasGanhasNoMesPassado:", almasGanhasNoMesPassado);
+        set({ almasGanhasNoMesPassado });
+      },
+    }),
+    {
+      name: "data-almas-mes-passado",
       storage: createJSONStorage(() => localStorage),
     },
   ),

@@ -5,6 +5,7 @@ import MainSide from "@/components/MainSide";
 import { useAlmasAnoStore } from "@/store/AlmasStorage";
 import { useCombinedStore } from "@/store/DataCombineted";
 import { InitializerAlmasAnoStore } from "@/store/InitializerAlmasAnoStore";
+import { InitializerAlmasMesPassadoStore } from "@/store/InitializerAlmasMesPassadoStore";
 import { InitializerAlmasMesStore } from "@/store/InitializerAlmasMesStore";
 import { InitializerStore } from "@/store/InitializerStore";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
@@ -34,6 +35,7 @@ interface Result {
   situacoesNoReino: any[];
   cargoLideranca: any[];
   almasGanhasNoMes: number;
+  almasGanhasNoMesPassado: number;
   almasGanhasNoAno: number;
 }
 
@@ -46,6 +48,7 @@ export default function ClientDashboard({
   session,
   result,
 }: ClientDashboardProps) {
+  console.log('result', result)
   const id = session?.user.id;
   const role = session?.user.role;
   const user_roles = session?.user.user_roles;
@@ -105,6 +108,10 @@ export default function ClientDashboard({
       />
 
       <InitializerAlmasMesStore
+        // @ts-ignore
+        almasGanhasNoAno={result[5] ?? []} />
+
+      <InitializerAlmasMesPassadoStore
         // @ts-ignore
         almasGanhasNoAno={result[5] ?? []} />
 
