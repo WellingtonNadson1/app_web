@@ -1,12 +1,12 @@
 "use client";
-import { columns } from "@/app/(central)/novo-membro/table-users/columns";
-import { DataTableUsers } from "@/app/(central)/novo-membro/table-users/data-table-users";
 import { CelulaData } from "@/components/listMembersCelula";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import { useSession } from "next-auth/react";
+import { columns } from "../table-users-celula/columns";
+import { DataTableUsersCelula } from "../table-users-celula/data-table-users-celula";
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
@@ -65,22 +65,14 @@ export default function ControleCelulaSupervision({
   return (
     <div className="relative w-full px-2 py-2 mx-auto">
       <div className="relative w-full mx-auto">
-        {/* <Header titlePage={`Célula ${data?.nome}`} /> */}
       </div>
       <div className="relative w-full px-2 mx-auto mt-3 mb-4">
         {
           isSuccess && (
-            <DataTableUsers columns={columns} data={celula.membros as any} />
+            <DataTableUsersCelula columns={columns} data={celula.membros as any} nomeCelula={celula.nome} nomeSupervisao={celula.supervisao.nome} />
           )
-          // <ListMembersCelula data={celula} />
         }
       </div>
-      {/* <div className="relative w-full px-2 mx-auto mb-4">
-        <LicoesCelula />
-      </div> */}
-      {/* <div className="relative w-full px-2 mx-auto mb-4">
-        <ControlePresenca />
-      </div> */}
     </div>
   );
 }

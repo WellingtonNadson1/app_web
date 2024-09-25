@@ -29,11 +29,13 @@ interface Session {
 }
 
 interface Result {
-  supervisoes: any[];
-  escolas: any[];
-  encontros: any[];
-  situacoesNoReino: any[];
-  cargoLideranca: any[];
+  combinedData: [
+    supervisoes: any[],
+    escolas: any[],
+    encontros: any[],
+    situacoesNoReino: any[],
+    cargoLideranca: any[]
+  ]
   almasGanhasNoMes: number;
   almasGanhasNoMesPassado: number;
   almasGanhasNoAno: number;
@@ -62,15 +64,15 @@ export default function ClientDashboard({
     useCombinedStore.setState({
       state: {
         // @ts-ignore
-        supervisoes: result[0] ?? [],
+        supervisoes: result.combinedData[0] ?? [],
         // @ts-ignore
-        escolas: result[1] ?? [],
+        escolas: result.combinedData[1] ?? [],
         // @ts-ignore
-        encontros: result[2] ?? [],
+        encontros: result.combinedData[2] ?? [],
         // @ts-ignore
-        situacoesNoReino: result[3] ?? [],
+        situacoesNoReino: result.combinedData[3] ?? [],
         // @ts-ignore
-        cargoLideranca: result[4] ?? [],
+        cargoLideranca: result.combinedData[4] ?? [],
       },
     });
     useAlmasAnoStore.setState({

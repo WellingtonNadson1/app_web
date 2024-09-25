@@ -22,6 +22,7 @@ import {
   rankItem,
 } from "@tanstack/match-sorter-utils";
 
+import AddNewMember from "@/app/(central)/novo-membro/AddNewMember";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -32,12 +33,13 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { useState } from "react";
-import AddNewMember from "../AddNewMember";
 import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
+  nomeCelula: string
+  nomeSupervisao: string
 }
 
 declare module "@tanstack/react-table" {
@@ -80,9 +82,11 @@ const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
   return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
 };
 
-export function DataTableUsers<TData, TValue>({
+export function DataTableUsersCelula<TData, TValue>({
   columns,
   data,
+  nomeCelula,
+  nomeSupervisao
 }: DataTableProps<TData, TValue>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
@@ -123,9 +127,14 @@ export function DataTableUsers<TData, TValue>({
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-start w-full gap-3">
         <div className="flex flex-col sm:flex-row items-center justify-between w-full gap-3 sm:mb-4 sm:justify-start">
           <div className="flex flex-col justify-between w-full gap-3">
-            <h2 className="text-lg font-semibold text-gray-700">
-              Lista de Membros IBB
-            </h2>
+            <div className="flex flex-col justify-between w-full gap-3">
+              <h1 className="text-lg font-semibold text-gray-700 mt-2">
+                Supervisão: <span className="uppercase">{nomeSupervisao}</span>
+              </h1>
+              <h2 className="text-lg font-semibold text-gray-700 mb-2">
+                Membros da célula: <span className="uppercase">{nomeCelula}</span>
+              </h2>
+            </div>
             <div className="flex items-center justify-start gap-2">
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-zinc-50 text-zinc-700 ring-zinc-600/20 md:block">
                 <p className="flex items-center justify-between">
