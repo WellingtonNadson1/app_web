@@ -9,4 +9,4 @@ const nextConfig = {
   skipMiddlewareUrlNormalize: true,
 };
 
-export default nextConfig;
+module.exports = nextConfig;
