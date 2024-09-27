@@ -1,9 +1,9 @@
+import UpdateCelula from "@/app/(central)/celulas/UpdateCelula";
+import UpdateCelula2 from "@/app/(central)/celulas/UpdateCelula2";
 import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
 import { useRouter } from "next/navigation";
 import React, { useState } from "react";
 import Pagination from "./Pagination";
-import UpdateCelula from "@/app/(central)/celulas/UpdateCelula";
-import UpdateCelula2 from "@/app/(central)/celulas/UpdateCelula2";
 
 export interface ICelula {
   id: string;
@@ -110,7 +110,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                         </button>
                         {data && (
                           <UpdateCelula2
-                            shouldFetch={shouldFetch}
+                            // shouldFetch={shouldFetch}
                             id={celula.id}
                           />
                         )}

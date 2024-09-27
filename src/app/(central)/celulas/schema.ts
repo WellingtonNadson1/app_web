@@ -49,6 +49,7 @@ const DataCelula = z.object({
 });
 
 const schemaFormCelula = z.object({
+  id: z.string(),
   nome: z.string(),
   lider: z.object({
     id: z.string().uuid(),
@@ -111,3 +112,12 @@ const SchemaSupervisaoData = z.object({
 });
 
 export type SupervisaoData = z.infer<typeof SchemaSupervisaoData>;
+
+
+export const celulaSchemaTableDateUpdate =
+  z.object({
+    id: z.string().uuid(),
+    date_que_ocorre: z.string(),
+  });
+
+export type celulaDtaUpdate = z.infer<typeof celulaSchemaTableDateUpdate>;

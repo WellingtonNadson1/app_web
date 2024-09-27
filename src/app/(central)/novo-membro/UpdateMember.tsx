@@ -218,11 +218,11 @@ function UpdateMember({ member }: { member: TUser }) {
     queryUpDate === ""
       ? queryMembers
       : queryMembers?.filter((person) =>
-          person.first_name
-            .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(queryUpDate.toLowerCase().replace(/\s+/g, "")),
-        );
+        person.first_name
+          .toLowerCase()
+          .replace(/\s+/g, "")
+          .includes(queryUpDate.toLowerCase().replace(/\s+/g, "")),
+      );
 
   const handleSupervisaoSelecionada = (supervisao: string) => {
     setSupervisaoSelecionadaUpDate(supervisao);
@@ -348,7 +348,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             " pl-3 text-left font-normal",
                                             !field.value &&
-                                              "text-muted-foreground",
+                                            "text-muted-foreground",
                                           )}
                                         >
                                           {field.value ? (
@@ -585,7 +585,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             " pl-3 text-left font-normal",
                                             !field.value &&
-                                              "text-muted-foreground",
+                                            "text-muted-foreground",
                                           )}
                                         >
                                           {field.value ? (
@@ -667,13 +667,6 @@ function UpdateMember({ member }: { member: TUser }) {
 
                           <div className="sm:col-span-4">
                             <div className="space-y-2 flex flex-col">
-                              {/* <Label
-                                htmlFor="discipuladorId"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Discipulador
-                              </Label> */}
-
                               <FormField
                                 control={form.control}
                                 name="discipuladorId"
@@ -689,14 +682,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                             className={cn(
                                               "w-full justify-between",
                                               !field.value &&
-                                                "text-muted-foreground",
+                                              "text-muted-foreground",
                                             )}
                                           >
                                             {field.value
                                               ? filteredPeople?.find(
-                                                  (membro) =>
-                                                    membro.id === field.value,
-                                                )?.first_name
+                                                (membro) =>
+                                                  membro.id === field.value,
+                                              )?.first_name
                                               : "Selecione discipulador"}
                                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                           </Button>
@@ -749,90 +742,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                   </FormItem>
                                 )}
                               />
-
-                              {/*
-                              <Combobox
-                                value={selectedMember}
-                                onChange={setSelectedMember}
-                              >
-                                <div className="relative">
-                                  <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
-                                    <Combobox.Input
-                                      {...form.register("discipuladorId")}
-                                      id="discipuladorId"
-                                      autoComplete="off"
-                                      className="w-full py-1.5 pl-3 pr-10 text-sm leading-5 text-gray-900 border-none rounded-md ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                      displayValue={(person: Member) =>
-                                        person.first_name
-                                      }
-                                      onChange={(event) =>
-                                        setQueryUpDate(event.target.value)
-                                      }
-                                    />
-                                    <Combobox.Button className="absolute inset-y-0 right-0 flex items-center pr-2">
-                                      <ChevronUpDownIcon
-                                        className="w-5 h-5 text-gray-400"
-                                        aria-hidden="true"
-                                      />
-                                    </Combobox.Button>
-                                  </div>
-                                  <Transition
-                                    as={Fragment}
-                                    leave="transition ease-in duration-100"
-                                    leaveFrom="opacity-100"
-                                    leaveTo="opacity-0"
-                                    afterLeave={() => setQueryUpDate("")}
-                                  >
-                                    <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
-                                      {filteredPeople?.length === 0 &&
-                                        queryUpDate !== "" ? (
-                                        <div className="relative px-4 py-2 text-gray-700 cursor-default select-none">
-                                          Nothing found.
-                                        </div>
-                                      ) : (
-                                        filteredPeople?.map((person) => (
-                                          <Combobox.Option
-                                            key={person.id}
-                                            className={({ active }) =>
-                                              `relative cursor-default select-none py-2 pl-10 pr-4 ${active
-                                                ? "bg-teal-600 text-white"
-                                                : "text-gray-900"
-                                              }`
-                                            }
-                                            value={person}
-                                          >
-                                            {({ selected, active }) => (
-                                              <>
-                                                <span
-                                                  className={`block truncate ${selected
-                                                    ? "font-medium"
-                                                    : "font-normal"
-                                                    }`}
-                                                >
-                                                  {person.first_name}
-                                                </span>
-                                                {selected ? (
-                                                  <span
-                                                    className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
-                                                      ? "text-white"
-                                                      : "text-teal-600"
-                                                      }`}
-                                                  >
-                                                    <CheckIcon
-                                                      className="w-5 h-5"
-                                                      aria-hidden="true"
-                                                    />
-                                                  </span>
-                                                ) : null}
-                                              </>
-                                            )}
-                                          </Combobox.Option>
-                                        ))
-                                      )}
-                                    </Combobox.Options>
-                                  </Transition>
-                                </div>
-                              </Combobox> */}
                             </div>
                           </div>
 
@@ -941,95 +850,58 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormLabel>
                                   </div>
                                   {//@ts-ignore
-                                  escolas?.map((escola) => (
-                                    <FormField
-                                      key={escola.id}
-                                      control={form.control}
-                                      name="escolas"
-                                      render={({ field }) => {
-                                        const isChecked = field.value?.some(
-                                          (value) => value.id === escola.id,
-                                        );
-                                        return (
-                                          <div
-                                            key={escola.id + 1}
-                                            className="flex"
-                                          >
-                                            <FormItem
-                                              key={escola.id}
-                                              className="flex flex-row items-start space-x-3 space-y-0"
+                                    escolas?.map((escola) => (
+                                      <FormField
+                                        key={escola.id}
+                                        control={form.control}
+                                        name="escolas"
+                                        render={({ field }) => {
+                                          const isChecked = field.value?.some(
+                                            (value) => value.id === escola.id,
+                                          );
+                                          return (
+                                            <div
+                                              key={escola.id + 1}
+                                              className="flex"
                                             >
-                                              <FormControl>
-                                                <Checkbox
-                                                  checked={isChecked}
-                                                  onCheckedChange={(
-                                                    checked,
-                                                  ) => {
-                                                    return checked
-                                                      ? field.onChange([
+                                              <FormItem
+                                                key={escola.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                              >
+                                                <FormControl>
+                                                  <Checkbox
+                                                    checked={isChecked}
+                                                    onCheckedChange={(
+                                                      checked,
+                                                    ) => {
+                                                      return checked
+                                                        ? field.onChange([
                                                           ...field.value,
                                                           escola,
                                                         ])
-                                                      : field.onChange(
+                                                        : field.onChange(
                                                           field.value?.filter(
                                                             (value) =>
                                                               value.id !==
                                                               escola.id,
                                                           ),
                                                         );
-                                                  }}
-                                                />
-                                              </FormControl>
-                                              <FormLabel className="text-sm font-normal">
-                                                {escola.nome}
-                                              </FormLabel>
-                                            </FormItem>
-                                          </div>
-                                        );
-                                      }}
-                                    />
-                                  ))}
+                                                    }}
+                                                  />
+                                                </FormControl>
+                                                <FormLabel className="text-sm font-normal">
+                                                  {escola.nome}
+                                                </FormLabel>
+                                              </FormItem>
+                                            </div>
+                                          );
+                                        }}
+                                      />
+                                    ))}
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
-
-                            {/* <fieldset>
-                              <legend className="block text-sm font-medium leading-6 text-slate-700">
-                                Escolas Feitas
-                              </legend>
-                              <div className="flex flex-wrap items-center justify-between w-full mt-4 gap-x-8">
-                                {supervisoes ? (
-                                  // @ts-ignore
-                                  escolas?.map((escola) => (
-                                    <div
-                                      key={escola.id}
-                                      className="relative flex gap-x-3"
-                                    >
-                                      <div className="flex items-center h-6">
-                                        <input
-                                          {...form.register("escolas")}
-                                          id={escola.id}
-                                          value={escola.id}
-                                          type="checkbox"
-                                          className="w-4 h-4 text-blue-600 border-gray-300 rounded shadow-sm focus:ring-blue-600"
-                                        />
-                                      </div>
-                                      <div className="text-sm leading-6">
-                                        <label
-                                          htmlFor={escola.id}
-                                          className="font-medium text-slate-700"
-                                        >
-                                          {escola.nome}
-                                        </label>
-                                      </div>
-                                    </div>
-                                  ))
-                                ) : (
-                                  <p>Carregando...</p>
-                                )}
-                              </div>
-                            </fieldset> */}
                           </div>
                         </div>
 
@@ -1093,47 +965,20 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                      situacoesNoReino?.map((situacao) => (
-                                        <SelectItem
-                                          key={situacao.id}
-                                          value={situacao.id}
-                                        >
-                                          {situacao.nome}
-                                        </SelectItem>
-                                      ))}
+                                        situacoesNoReino?.map((situacao) => (
+                                          <SelectItem
+                                            key={situacao.id}
+                                            value={situacao.id}
+                                          >
+                                            {situacao.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="situacao_no_reino"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Situação no Reino
-                            </label>
-                            <div className="mt-3">
-                              <select
-                                {...form.register("situacao_no_reino")}
-                                id="situacao_no_reino"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              >
-                                {supervisoes ? (
-                                  // @ts-ignore
-                                  situacoesNoReino?.map((situacao) => (
-                                    <option
-                                      key={situacao.id}
-                                      value={situacao.id}
-                                    >
-                                      {situacao.nome}
-                                    </option>
-                                  ))
-                                ) : (
-                                  <option value={""}>Carregando...</option>
-                                )}
-                              </select>
-                            </div> */}
                           </div>
                         </div>
                         <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
@@ -1155,44 +1000,20 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                      cargoLideranca?.map((cargo) => (
-                                        <SelectItem
-                                          key={cargo.id}
-                                          value={cargo.id}
-                                        >
-                                          {cargo.nome}
-                                        </SelectItem>
-                                      ))}
+                                        cargoLideranca?.map((cargo) => (
+                                          <SelectItem
+                                            key={cargo.id}
+                                            value={cargo.id}
+                                          >
+                                            {cargo.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="cargo_de_lideranca"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Cargo de Liderança
-                            </label>
-                            <div className="mt-4">
-                              <select
-                                {...form.register("cargo_de_lideranca")}
-                                id="cargo_de_lideranca"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              >
-                                {supervisoes ? (
-                                  // @ts-ignore
-                                  cargoLideranca?.map((cargo) => (
-                                    <option key={cargo.id} value={cargo.id}>
-                                      {cargo.nome}
-                                    </option>
-                                  ))
-                                ) : (
-                                  <option value={""}>Carregando...</option>
-                                )}
-                              </select>
-                            </div> */}
                           </div>
                         </div>
 
@@ -1236,29 +1057,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="estadoCivil"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Estado Civil
-                            </label>
-                            <div className="mt-3">
-                              <select
-                                {...form.register("estado_civil")}
-                                id="estadoCivil"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              >
-                                <option value={"Casado"}>Casado(a)</option>
-                                <option value={"Solteiro"}>Solteiro(a)</option>
-                                <option value={"Viuvo"}>Viúvo(a)</option>
-                                <option value={"Divorciado"}>
-                                  Divorciado(a)
-                                </option>
-                                <option value={"Uniao_Estável"}>
-                                  União Estável
-                                </option>
-                              </select>
-                            </div> */}
                           </div>
 
                           <div className="sm:col-span-4">
@@ -1275,21 +1073,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="nome_conjuge"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Nome Conjuge
-                            </label>
-                            <div className="mt-3">
-                              <input
-                                {...form.register("nome_conjuge")}
-                                type="text"
-                                name="nome_conjuge"
-                                id="nome_conjuge"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              />
-                            </div> */}
                           </div>
 
                           <div className="sm:col-span-2">
@@ -1307,7 +1090,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             " pl-3 text-left font-normal",
                                             !field.value &&
-                                              "text-muted-foreground",
+                                            "text-muted-foreground",
                                           )}
                                         >
                                           {field.value ? (
@@ -1351,23 +1134,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="date_casamento"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Data/Casamento
-                            </label>
-                            <div className="mt-3">
-                              <input
-                                {...form.register("date_casamento", {
-                                  setValueAs: (value) =>
-                                    value ? Date.parse(value) : null,
-                                })}
-                                type="datetime-local"
-                                id="date_casamento"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              />
-                            </div> */}
                           </div>
 
                           <div className="sm:col-span-2">
@@ -1401,23 +1167,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="has_filho"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Tem Filho?
-                            </label>
-                            <div className="mt-3">
-                              <select
-                                {...form.register("has_filho")}
-                                onChange={handleCahngeHasFilho}
-                                id="has_filho"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              >
-                                <option value={"true"}>Sim</option>
-                                <option value={"false"}>Não</option>
-                              </select>
-                            </div> */}
                           </div>
 
                           <div className="sm:col-span-2">
@@ -1438,23 +1187,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                 </FormItem>
                               )}
                             />
-                            {/* <label
-                              htmlFor="quantidade_de_filho"
-                              className="block text-sm font-medium leading-6 text-slate-700"
-                            >
-                              Qntd. Filho(s)
-                            </label>
-                            <div className="mt-3">
-                              <input
-                                {...form.register("quantidade_de_filho", {
-                                  setValueAs: (value) =>
-                                    value ? parseInt(value) : 0,
-                                })}
-                                type="number"
-                                id="quantidade_de_filho"
-                                className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                              />
-                            </div> */}
                           </div>
                         </div>
 

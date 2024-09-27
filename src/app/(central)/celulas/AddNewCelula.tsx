@@ -1,18 +1,18 @@
 "use client";
 import ListCelulas, { ICelula } from "@/components/ListCelulas";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import React, { useCallback, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import "react-toastify/dist/ReactToastify.css";
 import Modal from "@/components/modal";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { handleZipCode } from "@/functions/zipCodeUtils";
+import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { useUserDataStore } from "@/store/UserDataStore";
 import { UserPlusIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import React, { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
 import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import LoadingListCelula from "./LoadingListCelula";
-import { handleZipCode } from "@/functions/zipCodeUtils";
 import { FormCelula, SupervisaoData, User } from "./schema";
-import { useUserDataStore } from "@/store/UserDataStore";
 
 export default function AddNewCelula() {
   const URLSupervisoes = `${BASE_URL}/supervisoes`;
@@ -153,7 +153,7 @@ export default function AddNewCelula() {
       }
     }
   }, [supervisaoSelecionada, supervisoes]);
-
+  console.log('dataCelulas', dataCelulas)
   return (
     <>
       <ToastContainer />
