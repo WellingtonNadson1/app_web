@@ -1,562 +1,588 @@
 "use client";
-import ListCelulas, { ICelula } from "@/components/ListCelulas";
-import Modal from "@/components/modal";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import { handleZipCode } from "@/functions/zipCodeUtils";
+import { ComboboxDemo } from "@/components/MultiUserSelect/multi-membros-select";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
+import { Toaster } from "@/components/ui/toaster";
+import { useToast } from "@/components/ui/use-toast";
+import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useCombinedStore } from "@/store/DataCombineted";
 import { useUserDataStore } from "@/store/UserDataStore";
-import { UserPlusIcon } from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
+import { CalendarIcon } from "@heroicons/react/24/outline";
+import { PlusCircle, Spinner } from "@phosphor-icons/react/dist/ssr";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import React, { useEffect, useState } from "react";
+import { SubmitHandler, useForm, UseFormSetValue } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
-import LoadingListCelula from "./LoadingListCelula";
-import { FormCelula, SupervisaoData, User } from "./schema";
+import { z } from "zod";
+import { FormCelula, schemaFormCelula, SupervisaoData, UserCombobox } from "./schema";
+
+dayjs.extend(utc);
+dayjs.extend(timezone);
+
+const handleZipCode = async (
+  e: React.FormEvent<HTMLInputElement>,
+  setValue: UseFormSetValue<FormCelula> // Atualize o valor do form
+) => {
+  const zipCode = e.currentTarget.value.replace(/\D/g, '');
+
+  if (zipCode.length === 8) {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        // Defina os valores usando setValue
+        setValue('cidade', data.localidade);
+        setValue('endereco', data.logradouro);
+        setValue('estado', data.uf);
+        setValue('bairro', data.bairro);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar o CEP', error);
+    }
+  }
+};
 
 export default function AddNewCelula() {
-  const URLSupervisoes = `${BASE_URL}/supervisoes`;
-  const URLCelulas = `${BASE_URL}/celulas`;
-  const router = useRouter();
-
   const { token } = useUserDataStore.getState();
-
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
   const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
   const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>();
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
-    User[]
+    UserCombobox[]
   >([]);
-  const [dataCelulas, setDataCelulas] = useState<ICelula[]>();
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>();
   const axiosAuth = useAxiosAuthToken(token);
 
-  const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, setValue);
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
+
+  const daysWeek = [
+    { label: "Domingo", value: "0" },
+    { label: "Segunda-feira", value: "1" },
+    { label: "Terça-feira", value: "2" },
+    { label: "Quarta-feira", value: "3" },
+    { label: "Quinta-feira", value: "4" },
+    { label: "Sexta-feira", value: "5" },
+    { label: "Sábado", value: "6" },
+  ]
+
+  const { state } = useCombinedStore()
+  const supervisoesAll = state.supervisoes
+
+  const form = useForm<FormCelula>({
+    defaultValues: {
+      nome: '',
+      date_que_ocorre: '',
+      date_inicio: undefined,
+      date_multipicar: undefined,
+      supervisao: {},
+      lider: {},
+      membros: [],
+      cep: '',
+      cidade: '',
+      estado: '',
+      bairro: '',
+      endereco: '',
+      numero_casa: ''
+    }
+  });
+
+  const CreateNewCelulaFunction = async (
+    data
+      : z.infer<typeof schemaFormCelula>) => {
+
+    const date_inicio = new Date(dayjs(data.date_inicio).toISOString())
+    const date_multipicar = new Date(dayjs(data.date_multipicar).toISOString());
+
+    const response = await axiosAuth.post(URLCelulas, {
+      ...data,
+      date_inicio,
+      date_multipicar,
+      membros: data.membros.map((membro) => membro.id)
+    });
+    form.reset();
+    return response.data;
   };
 
-  const onSubmit: SubmitHandler<FormCelula> = async ({
-    nome,
-    lider,
-    supervisao,
-    cep,
-    cidade,
-    estado,
-    bairro,
-    endereco,
-    numero_casa,
-    date_inicio,
-    date_multipicar,
-    date_que_ocorre,
-    membros,
-  }) => {
-    try {
-      setIsLoadingSubmitForm(true);
+  const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
+    mutationFn: CreateNewCelulaFunction,
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ["allCelulasIbb"] });
+    },
+  });
 
-      const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString);
-        return dataObj.toISOString();
-      };
-
-      date_inicio = formatDatatoISO8601(date_inicio);
-      date_multipicar = formatDatatoISO8601(date_multipicar);
-
-      const response = await axiosAuth.post(URLCelulas, {
-        nome,
-        lider,
-        supervisao,
-        cep,
-        cidade,
-        estado,
-        bairro,
-        endereco,
-        numero_casa,
-        date_inicio,
-        date_multipicar,
-        date_que_ocorre,
-        membros,
+  const onSubmit: SubmitHandler<z.infer<typeof schemaFormCelula>> = async (data) => {
+    const response = await createNewCelulaFn(data)
+    if (response) {
+      toast({
+        variant: "default",
+        title: "Successo",
+        description: "Célula Cadastrada com sucesso.",
       });
-      const celulaRegister = response.data;
+      form.reset();
+    } else {
+      toast({
+        title: "Erro!!!",
+        description: "Erro no Cadastro da Célula. 😰",
+        variant: "destructive",
+      });
+    };
+  }
 
-      if (celulaRegister) {
-        setIsLoadingSubmitForm(false);
-        setFormSuccess(true);
-        success("Célula Cadastrada");
-      } else {
-        errorCadastro("Erro ao Cadastrar Célula");
-      }
-    } catch (error) {
-      console.log(error);
-      setIsLoadingSubmitForm(false);
-      errorCadastro("Erro ao Cadastrar Célula");
-    }
-    reset();
+  const handleSupervisaoSelecionada = (
+    value: string,
+  ) => {
+    setSupervisaoSelecionada(value);
   };
 
   useEffect(() => {
-    setIsLoading(true);
     axiosAuth
       .get(URLSupervisoes)
       .then((response) => {
         setSupervisoes(response.data);
-        setIsLoading(false);
       })
       .catch((error) => {
         console.error("Erro na requisição:", error);
-        setIsLoading(false);
       });
   }, []);
 
-  const fetchCelulas = useCallback(async () => {
-    try {
-      const response = await axiosAuth.get(URLCelulas);
-      const getCelulaRegister = response.data;
-      if (!getCelulaRegister) {
-        console.log("Failed to fetch get Celulas.");
-      }
-      setDataCelulas(getCelulaRegister);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [token]);
-
-  // UseEffect para buscar as células quando a página é carregada
-  useEffect(() => {
-    fetchCelulas();
-  }, [fetchCelulas]);
-
-  // UseEffect para buscar as células após o envio do formulário
-  useEffect(() => {
-    if (formSuccess) {
-      fetchCelulas();
-    }
-  }, [formSuccess, fetchCelulas]);
-
-  const handleSupervisaoSelecionada = (
-    event: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    setSupervisaoSelecionada(event.target.value);
-  };
-
   useEffect(() => {
     if (supervisaoSelecionada) {
+      console.log('supervisaoSelecionada', supervisaoSelecionada)
       // Use the selected supervision ID to filter the list of users
+      console.log('supervisoes', supervisoes)
       const selectedSupervisao = supervisoes?.find(
         (supervisao) => supervisao.id === supervisaoSelecionada,
       );
+      console.log('selectedSupervisao', selectedSupervisao)
       if (selectedSupervisao) {
-        setUsersSupervisaoSelecionada(selectedSupervisao.membros);
-      } else {
-        setUsersSupervisaoSelecionada([]);
+        const lideresOrdenados = selectedSupervisao.membros.sort((a, b) => (a.first_name ?? '').localeCompare(b.first_name ?? '')
+        )
+        setUsersSupervisaoSelecionada(lideresOrdenados);
       }
     }
   }, [supervisaoSelecionada, supervisoes]);
-  console.log('dataCelulas', dataCelulas)
+
   return (
     <>
-      <ToastContainer />
-      <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
-        <div className="w-full px-2 py-2 bg-white shadow-lg rounded-xl ">
-          <div className="flex justify-between w-full gap-3 px-1 py-2 rounded-md items center sm:justify-start">
-            <Modal
-              icon={UserPlusIcon}
-              titleModal="Cadastro de Céula"
-              titleButton="+ Add Nova Célula"
-              buttonProps={{
-                className:
-                  "z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]",
-              }}
-            >
-              <div className="relative w-full px-2 py-2 mx-auto">
-                <div className="flex justify-between">
-                  <div className="relative px-2 mx-auto py-7">
-                    <div className="p-6 mx-auto bg-white rounded-lg">
-                      {/* Incio do Forms */}
-                      <form onSubmit={handleSubmit(onSubmit)}>
-                        <div className="pb-3">
-                          <h2 className="text-sm leading-normal text-gray-400 uppercase">
-                            Cadastro de Célula
-                          </h2>
+      <Toaster />
+      <Dialog open={open} onOpenChange={setOpen}>
+        <DialogTrigger className="w-full">
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
+                Add Nova Célula
+                <PlusCircle size={18} />
+              </Button>
+            </DropdownMenuTrigger>
+          </DropdownMenu>
+        </DialogTrigger>
+        <DialogContent className="lg:max-w-screen-md overflow-y-scroll max-h-screen">
+          <DialogHeader>
+            <DialogTitle>Cadastrando nova Célula</DialogTitle>
+            <DialogDescription>
+              Edite os dados preenchendo o formulário
+            </DialogDescription>
+          </DialogHeader>
 
-                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-9">
-                            <div className="sm:col-span-3">
-                              <label
-                                htmlFor="nome"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Nome da Célula
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("nome")}
-                                  type="text"
-                                  name="nome"
-                                  id="nome"
-                                  autoComplete="given-name"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="date_que_ocorre"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Dia que Ocorre
-                              </label>
-                              <div className="mt-3">
-                                <select
-                                  {...register("date_que_ocorre")}
-                                  name="date_que_ocorre"
-                                  id="date_que_ocorre"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                >
-                                  <option value="">Selecione</option>
-                                  <option value="0">Domingo</option>
-                                  <option value="1">Segunda</option>
-                                  <option value="2">Terça</option>
-                                  <option value="3">Quarta</option>
-                                  <option value="4">Quinta</option>
-                                  <option value="5">Sexta</option>
-                                  <option value="6">Sábado</option>
-                                </select>
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="date_inicio"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Dt. Início
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("date_inicio")}
-                                  type="datetime-local"
-                                  name="date_inicio"
-                                  id="date_inicio"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="date_multipicar"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Dt. Multipli.
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("date_multipicar")}
-                                  type="datetime-local"
-                                  name="date_multipicar"
-                                  id="date_multipicar"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
+          {/* Incio do Forms */}
+          <div className="relative w-full mx-auto ">
+            <div className="flex justify-between">
+              <div className="relative mx-auto py-4">
+                <div className="p-2 mx-auto bg-white rounded-lg">
+                  <Form {...form}>
+                    <form onSubmit={form.handleSubmit(onSubmit)}>
+                      <div className="pb-3">
+                        {/* Nome da Celula */}
+                        <div className="grid grid-cols-1 mt-4 gap-x-4 gap-y-6 sm:grid-cols-8">
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="nome"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Nome da Célula</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Nome da Célula" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
-
-                          {/* INFORMAÇÕES DO REINO */}
-                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
-                            <div className="sm:col-span-3">
-                              <label
-                                htmlFor="supervisao"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Supervisão
-                              </label>
-                              <div className="mt-3">
-                                <select
-                                  {...register("supervisao")}
-                                  id="supervisao"
-                                  name="supervisao"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                  onChange={handleSupervisaoSelecionada}
-                                >
-                                  {!supervisoes ? (
-                                    <option value="">
-                                      Carregando supervisões...
-                                    </option>
-                                  ) : (
-                                    <option value="">Selecione</option>
-                                  )}
-                                  {supervisoes &&
-                                    supervisoes?.map((supervisao) => (
-                                      <option
-                                        key={supervisao.id}
-                                        value={supervisao.id}
-                                      >
-                                        {supervisao.nome}
-                                      </option>
-                                    ))}
-                                </select>
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-3">
-                              <label
-                                htmlFor="lider"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Líder
-                              </label>
-                              <div className="mt-3">
-                                <select
-                                  {...register("lider")}
-                                  id="lider"
-                                  name="lider"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                >
-                                  <option value="">Selecione</option>
-                                  {supervisaoSelecionada &&
-                                    usersSupervisaoSelecionada?.map((lider) => (
-                                      <option key={lider.id} value={lider.id}>
-                                        {lider.first_name}
-                                      </option>
-                                    ))}
-                                </select>
-                              </div>
-                            </div>
-                          </div>
-
-                          {/* Escolha dos Membros da Celula */}
-                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-8">
-                            <div className="sm:col-span-4">
-                              <div className="sm:col-span-3">
-                                <label
-                                  htmlFor="membros"
-                                  className="block text-sm font-medium leading-6 text-slate-700"
-                                >
-                                  Membros
-                                </label>
-                                <div className="mt-3">
-                                  <select
-                                    {...register("membros")}
-                                    multiple={true}
-                                    id="membros"
-                                    name="membros"
-                                    className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
+                          {/* Dia que a Celula Ocorre */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="date_que_ocorre"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Dia que Ocorre</FormLabel>
+                                  <Select
+                                    onValueChange={field.onChange}
+                                    defaultValue={field.value}
                                   >
-                                    <option value="">Selecione</option>
-                                    {supervisaoSelecionada &&
-                                      usersSupervisaoSelecionada?.map(
-                                        (membro) => (
-                                          <option
-                                            key={membro.id}
-                                            value={membro.id}
-                                          >
-                                            {membro.first_name}
-                                          </option>
-                                        ),
-                                      )}
-                                  </select>
-                                </div>
-                              </div>
-                            </div>
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue className="text-muted-foreground" placeholder="Selecione uma data" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {daysWeek?.map((day) => (
+                                        <SelectItem key={day.value} value={day.value}>
+                                          {day.label}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
-
-                          {/* Informações para Localização */}
-                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
-                            <div className="sm:col-span-6">
-                              <hr className="h-px mx-0 my-4 bg-transparent border-0 bg-gradient-to-r from-transparent via-black/50 to-transparent opacity-30" />
-                              <h2 className="mt-8 text-sm leading-normal text-gray-400 uppercase">
-                                Endereço da Célula
-                              </h2>
-                            </div>
+                          {/* Data de Início da Célula */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="date_inicio"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>Data de Início</FormLabel>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            " pl-3 text-left font-normal",
+                                            !field.value &&
+                                            "text-muted-foreground",
+                                          )}
+                                        >
+                                          {field.value ? (
+                                            dayjs(field.value)
+                                              .subtract(3, "hours")
+                                              .utc()
+                                              .local()
+                                              .locale("pt-br")
+                                              .format("DD-MM-YYYY HH:mm:ss")
+                                          ) : (
+                                            <span className="text-muted-foreground">Selecione uma data</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto flex p-0"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) => {
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
+                                        }}
+                                        initialFocus
+                                      />
+                                      <div className="p-3 border-t border-border">
+                                        <TimePicker
+                                          setDate={field.onChange}
+                                          date={field.value}
+                                        />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
-
-                          <div className="grid grid-cols-1 mt-10 gap-x-4 gap-y-6 sm:grid-cols-6">
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="cep"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Cep
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("cep")}
-                                  maxLength={9}
-                                  onKeyUp={handleZipCodeChange}
-                                  type="text"
-                                  name="cep"
-                                  id="cep"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="cidade"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Cidade
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("cidade")}
-                                  type="text"
-                                  name="cidade"
-                                  id="cidade"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="estado"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Estado
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("estado")}
-                                  type="text"
-                                  name="estado"
-                                  id="estado"
-                                  autoComplete="address-level1"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
+                          {/* Data para multiplicação da Célula */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="date_multipicar"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>Data para Multiplicação</FormLabel>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            " pl-3 text-left font-normal",
+                                            !field.value &&
+                                            "text-muted-foreground",
+                                          )}
+                                        >
+                                          {field.value ? (
+                                            dayjs(field.value)
+                                              .subtract(3, "hours")
+                                              .utc()
+                                              .local()
+                                              .locale("pt-br")
+                                              .format("DD-MM-YYYY HH:mm:ss")
+                                          ) : (
+                                            <span>Selecione uma data</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto flex p-0"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        mode="single"
+                                        selected={field.value}
+                                        onSelect={field.onChange}
+                                        disabled={(date) => {
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date < today;
+                                        }}
+                                        initialFocus
+                                      />
+                                      <div className="p-3 border-t border-border">
+                                        <TimePicker
+                                          setDate={field.onChange}
+                                          date={field.value}
+                                        />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
-
-                          <div className="grid grid-cols-1 mt-3 gap-x-4 gap-y-6 sm:grid-cols-6">
-                            <div className="sm:col-span-2">
-                              <label
-                                htmlFor="bairro"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                bairro
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("bairro")}
-                                  type="text"
-                                  name="bairro"
-                                  id="bairro"
-                                  autoComplete="address-level1"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-span-3">
-                              <label
-                                htmlFor="endereco"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Endereço
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("endereco")}
-                                  type="text"
-                                  name="endereco"
-                                  id="endereco"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
-                            <div className="col-span-1">
-                              <label
-                                htmlFor="numero_casa"
-                                className="block text-sm font-medium leading-6 text-slate-700"
-                              >
-                                Nº
-                              </label>
-                              <div className="mt-3">
-                                <input
-                                  {...register("numero_casa")}
-                                  type="text"
-                                  name="numero_casa"
-                                  id="numero_casa"
-                                  className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                                />
-                              </div>
-                            </div>
+                          {/* Supervisao */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="supervisao"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Supervisão</FormLabel>
+                                  <Select
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                      handleSupervisaoSelecionada(value)
+                                    }}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue className="text-muted-foreground" placeholder="Selecione uma supervisão" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {supervisoesAll?.map((supervisao) => (
+                                        <SelectItem key={supervisao.id} value={supervisao.id}>
+                                          {supervisao.nome}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
-
-                          {/* Botões para submeter Forms */}
-                          <div className="flex items-center justify-end mt-6 gap-x-6">
-                            <button
-                              type="button"
-                              className="px-3 py-2 text-sm font-semibold text-slate-700 hover:rounded-md hover:bg-red-500 hover:px-3 hover:py-2 hover:text-white"
-                            >
-                              Cancelar
-                            </button>
-                            {isLoadingSubmitForm ? (
-                              <button
-                                type="submit"
-                                disabled={isLoadingSubmitForm}
-                                className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                              >
-                                <svg
-                                  className="w-5 h-5 mr-3 text-gray-400 animate-spin"
-                                  xmlns="http://www.w3.org/2000/svg"
-                                  fill="none"
-                                  viewBox="0 0 24 24"
-                                >
-                                  <circle
-                                    className="opacity-25"
-                                    cx="12"
-                                    cy="12"
-                                    r="10"
-                                    stroke="currentColor"
-                                    strokeWidth="4"
-                                  ></circle>
-                                  <path
-                                    className="opacity-75"
-                                    fill="currentColor"
-                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                                  ></path>
-                                </svg>
-                                <span>Cadastrando...</span>
-                              </button>
-                            ) : (
-                              <button
-                                type="submit"
-                                className="px-3 py-2 text-sm font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
-                              >
-                                <span>Cadastrar</span>
-                              </button>
-                            )}
+                          {/* Lider */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="lider"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Líder</FormLabel>
+                                  <Select
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                    }}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Selecione um Líder" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {supervisaoSelecionada && usersSupervisaoSelecionada?.map((lider) => (
+                                        <SelectItem key={lider.id} value={lider.id}>
+                                          {lider.first_name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {/* Selecao de Membros */}
+                          <div className="sm:col-span-8">
+                            <FormField
+                              control={form.control}
+                              name="membros"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col space-y-2">
+                                  <FormLabel>Membros</FormLabel>
+                                  <ComboboxDemo
+                                    items={usersSupervisaoSelecionada}
+                                    selectedItems={field.value || []}
+                                    setSelectedItems={(val) => field.onChange(val)} // Atualiza o valor selecionado
+                                  />
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-8 my-3">
+                            <Separator />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="cep"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Cep</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Digite o Cep"
+                                      maxLength={9}
+                                      onKeyUp={(e) => handleZipCode(e, form.setValue)}
+                                      {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="cidade"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Cidade</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="estado"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Estado</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="bairro"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Bairro</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-6">
+                            <FormField
+                              control={form.control}
+                              name="endereco"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Endereço</FormLabel>
+                                  <FormControl>
+                                    <Input id="endereco" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-2">
+                            <FormField
+                              control={form.control}
+                              name="numero_casa"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Nº</FormLabel>
+                                  <FormControl>
+                                    <Input id="numero_casa" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
                         </div>
-                      </form>
-                    </div>
-                  </div>
+                        {/* Botões para submeter Forms */}
+                        <div className="flex items-center w-full sm:justify-end mt-6 gap-x-6">
+                          <Button
+                            type="submit"
+                            className="px-3 py-2 text-sm w-full font-semibold text-white bg-green-700 rounded-md shadow-sm hover:bg-green-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-green-700"
+                          >
+                            {isPending ?
+                              (
+                                <div className="flex justify-between items-center gap-2">
+                                  Salvando
+                                  <Spinner />
+                                </div>
+                              )
+                              :
+                              (<span>Salvar</span>)
+                            }
+                          </Button>
+                        </div>
+                      </div>
+                    </form>
+                  </Form>
                 </div>
               </div>
-            </Modal>
-            <button
-              onClick={() => router.push("/celulas/licoes-celula")}
-              className="z-10 rounded-md bg-sky-700 px-4 py-2 text-sm font-medium text-white hover:bg-sky-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
-            >
-              Lições de Célula
-            </button>
+            </div>
           </div>
-        </div>
-      </div>
-
-      {/* Cadastrar Nova Célula */}
-
-      <div className="relative z-10 w-full px-2 py-2 mx-auto">
-        {isLoading ? (
-          <LoadingListCelula />
-        ) : (
-          dataCelulas && <ListCelulas data={dataCelulas} />
-        )}
-      </div>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

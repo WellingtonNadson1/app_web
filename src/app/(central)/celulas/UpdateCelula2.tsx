@@ -1,39 +1,81 @@
 "use client";
+import { ComboboxDemo } from "@/components/MultiUserSelect/multi-membros-select";
+import { TimePicker } from "@/components/timer-picker-input/time-picker";
 import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Separator } from "@/components/ui/separator";
 import { Toaster } from "@/components/ui/toaster";
-import { toast } from "@/components/ui/use-toast";
+import { useToast } from "@/components/ui/use-toast";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
+import { cn } from "@/lib/utils";
+import { useCombinedStore } from "@/store/DataCombineted";
 import { useUserDataStore } from "@/store/UserDataStore";
+import { CalendarIcon } from "@heroicons/react/24/outline";
 import { PencilSimple, Spinner } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+import dayjs from "dayjs";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import React, { useEffect, useState } from "react";
+import { SubmitHandler, useForm, UseFormSetValue } from "react-hook-form";
 import "react-toastify/dist/ReactToastify.css";
 import { z } from "zod";
-import { celulaDtaUpdate, celulaSchemaTableDateUpdate } from "./schema";
-import { celulaSchemaTable } from "./table-celulas/schema";
+import { FormCelula, schemaFormCelula, SupervisaoData, UserCombobox } from "./schema";
 
-export default function UpdateCelula2(
-  {
-    date_que_ocorre,
-    id,
-    nome,
-  }: z.infer<typeof celulaSchemaTable>
-) {
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
-  const queryClient = useQueryClient();
-  const celulaId = id
-  const URLCelulas = `${BASE_URL}/celulas`;
+const handleZipCode = async (
+  e: React.FormEvent<HTMLInputElement>,
+  setValue: UseFormSetValue<FormCelula> // Atualize o valor do form
+) => {
+  const zipCode = e.currentTarget.value.replace(/\D/g, '');
+
+  if (zipCode.length === 8) {
+    try {
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+      const data = await response.json();
+
+      if (!data.erro) {
+        // Defina os valores usando setValue
+        setValue('cidade', data.localidade);
+        setValue('endereco', data.logradouro);
+        setValue('estado', data.uf);
+        setValue('bairro', data.bairro);
+      }
+    } catch (error) {
+      console.error('Erro ao buscar o CEP', error);
+    }
+  }
+};
+
+export default function UpdateCelula2({
+  celulaId,
+}: {
+  celulaId: string;
+}) {
   const { token } = useUserDataStore.getState();
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
   const [open, setOpen] = useState(false);
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>();
+  const [celula, setCelula] = useState<FormCelula>();
+  const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
+    UserCombobox[]
+  >([]);
   const axiosAuth = useAxiosAuthToken(token);
+
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
 
   const daysWeek = [
     { label: "Domingo", value: "0" },
@@ -45,67 +87,153 @@ export default function UpdateCelula2(
     { label: "Sábado", value: "6" },
   ]
 
-  const form = useForm<celulaDtaUpdate>({
-    defaultValues: {
-      id,
-      date_que_ocorre
-    },
+  const { state } = useCombinedStore()
+  const supervisoesAll = state.supervisoes
+
+  const form = useForm<FormCelula>({
+    defaultValues: async () => {
+      try {
+        const response = await axiosAuth.get(URLCelula);
+        console.log('response', response.data);
+        // Retorne os dados esperados para os defaultValues
+        return {
+          ...response.data,
+          date_multipicar: response.data.date_multipicar
+            ? new Date(response.data.date_multipicar)
+            : null, // Define como null se não houver data
+          date_inicio: response.data.date_inicio
+            ? new Date(response.data.date_inicio)
+            : null, // Define como null se não houver data
+        };
+      } catch (error) {
+        console.error("Erro na requisição:", error);
+        // Retorne um objeto vazio ou com valores default caso ocorra erro
+        return {
+          id: '',
+          nome: '',
+          lider: { id: '', first_name: '' },
+          supervisao: { id: '', nome: '' },
+          cep: '',
+          cidade: '',
+          estado: '',
+          bairro: '',
+          endereco: '',
+          numero_casa: '',
+          date_inicio: new Date(),
+          date_multipicar: new Date(),
+          date_que_ocorre: '',
+          membros: [],
+        };
+      }
+    }
   });
 
 
-  const updateDataQueOcorreCelulaFunction = async ({ date_que_ocorre }: z.infer<typeof celulaSchemaTableDateUpdate>) => {
-    const response = await axiosAuth.put(URLCelulas, {
-      id,
-      date_que_ocorre,
+  const CreateNewCelulaFunction = async (
+    data
+      : z.infer<typeof schemaFormCelula>) => {
+
+    const date_inicio = new Date(dayjs(data.date_inicio).toISOString())
+    const date_multipicar = new Date(dayjs(data.date_multipicar).toISOString());
+
+    const response = await axiosAuth.put(URLCelula, {
+      ...data,
+      date_inicio,
+      date_multipicar,
+      membros: data.membros.map((membro) => membro.id)
     });
     form.reset();
     return response.data;
   };
 
-  const { mutateAsync: updateDataQueOcorreCelulaFn, isPending } = useMutation({
-    mutationFn: updateDataQueOcorreCelulaFunction,
+  const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
+    mutationFn: CreateNewCelulaFunction,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["allCelulasIbb"] });
     },
   });
 
-  const onSubmit: SubmitHandler<z.infer<typeof celulaSchemaTableDateUpdate>> = async ({ date_que_ocorre }) => {
-    const id = celulaId
-    try {
-      await updateDataQueOcorreCelulaFn({ id, date_que_ocorre });
+  const onSubmit: SubmitHandler<z.infer<typeof schemaFormCelula>> = async (data) => {
+    const response = await createNewCelulaFn(data)
+    if (response) {
       toast({
-        title: "Sucesso!!!",
-        description: "Data Atualizada!!! 🥳",
+        variant: "default",
+        title: "Successo",
+        description: "Célula ATUALIZADA com sucesso.",
       });
       form.reset();
-    } catch (error) {
+    } else {
       toast({
         title: "Erro!!!",
-        description: "Erro na Atualização da Data. 😰",
+        description: "Erro na ATUALIZAÇÃO da Célula. 😰",
         variant: "destructive",
       });
-      console.error(error);
-    }
+    };
+  }
+
+  const handleSupervisaoSelecionada = (
+    value: string,
+  ) => {
+    setSupervisaoSelecionada(value);
   };
+
+  useEffect(() => {
+    axiosAuth
+      .get(URLCelula)
+      .then((response) => {
+        console.log('response', response)
+        setCelula(response.data);
+      })
+      .catch((error) => {
+        console.error("Erro na requisição:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    axiosAuth
+      .get(URLSupervisoes)
+      .then((response) => {
+        setSupervisoes(response.data);
+      })
+      .catch((error) => {
+        console.error("Erro na requisição:", error);
+      });
+  }, []);
+
+  useEffect(() => {
+    if (supervisaoSelecionada) {
+      console.log('supervisaoSelecionada', supervisaoSelecionada)
+      // Use the selected supervision ID to filter the list of users
+      console.log('supervisoes', supervisoes)
+      const selectedSupervisao = supervisoes?.find(
+        (supervisao) => supervisao.id === supervisaoSelecionada,
+      );
+      console.log('selectedSupervisao', selectedSupervisao)
+      if (selectedSupervisao) {
+        const lideresOrdenados = selectedSupervisao.membros.sort((a, b) => (a.first_name ?? '').localeCompare(b.first_name ?? '')
+        )
+        setUsersSupervisaoSelecionada(lideresOrdenados);
+      }
+    }
+  }, [supervisaoSelecionada, supervisoes]);
 
   return (
     <>
       <Toaster />
-      {/* Vou preciar add scroll y para conseguir exibir todo o forms */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
-              <Button className="w-full flex items-center justify-between px-2 hover:bg-transparent hover:text-foreground">
-                Data
+              <DropdownMenuItem className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
+                Editar Célula
                 <PencilSimple size={18} />
-              </Button>
+              </DropdownMenuItem>
             </DropdownMenuTrigger>
           </DropdownMenu>
         </DialogTrigger>
         <DialogContent className="lg:max-w-screen-md overflow-y-scroll max-h-screen">
           <DialogHeader>
-            <DialogTitle>Editar Data que Ocorre a Célula</DialogTitle>
+            <DialogTitle>Atualizar Célula</DialogTitle>
             <DialogDescription>
               Edite os dados preenchendo o formulário
             </DialogDescription>
@@ -120,10 +248,21 @@ export default function UpdateCelula2(
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                       <div className="pb-3">
                         {/* Nome da Celula */}
-                        <div className="grid grid-cols-1 mt-6 gap-x-4 gap-y-6 sm:grid-cols-8">
-                          <div className="space-y-2 sm:col-span-4">
-                            <Label>Nome da Célula</Label>
-                            <Input disabled value={nome} />
+                        <div className="grid grid-cols-1 mt-4 gap-x-4 gap-y-6 sm:grid-cols-8">
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="nome"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Nome da Célula</FormLabel>
+                                  <FormControl>
+                                    <Input placeholder="Nome da Célula" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
                           </div>
                           {/* Dia que a Celula Ocorre */}
                           <div className="sm:col-span-4">
@@ -132,14 +271,14 @@ export default function UpdateCelula2(
                               name="date_que_ocorre"
                               render={({ field }) => (
                                 <FormItem>
-                                  <FormLabel>Data que Ocorre</FormLabel>
+                                  <FormLabel>Dia que Ocorre</FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
                                     defaultValue={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
-                                        <SelectValue placeholder="Selecione uma data" />
+                                        <SelectValue className="text-muted-foreground" placeholder="Selecione uma data" />
                                       </SelectTrigger>
                                     </FormControl>
                                     <SelectContent>
@@ -155,6 +294,306 @@ export default function UpdateCelula2(
                               )}
                             />
                           </div>
+                          {/* Data de Início da Célula */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="date_inicio"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>Data de Início</FormLabel>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            " pl-3 text-left font-normal",
+                                            !field.value &&
+                                            "text-muted-foreground",
+                                          )}
+                                        >
+                                          {field.value ? (
+                                            dayjs(field.value)
+                                              .subtract(3, "hours")
+                                              .utc()
+                                              .local()
+                                              .locale("pt-br")
+                                              .format("DD-MM-YYYY HH:mm:ss")
+                                          ) : (
+                                            <span className="text-muted-foreground">Selecione uma data</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto flex p-0"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        mode="single"
+                                        selected={field.value ? new Date(field.value) : undefined}
+                                        onSelect={field.onChange}
+                                        disabled={(date) => {
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
+                                        }}
+                                        initialFocus
+                                      />
+                                      <div className="p-3 border-t border-border">
+                                        <TimePicker
+                                          setDate={field.onChange}
+                                          date={field.value ? new Date(field.value) : new Date()}
+                                        />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {/* Data para multiplicação da Célula */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="date_multipicar"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col">
+                                  <FormLabel>Data para Multiplicação</FormLabel>
+                                  <Popover>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant={"outline"}
+                                          className={cn(
+                                            " pl-3 text-left font-normal",
+                                            !field.value &&
+                                            "text-muted-foreground",
+                                          )}
+                                        >
+                                          {field.value ? (
+                                            dayjs(field.value)
+                                              .subtract(3, "hours")
+                                              .utc()
+                                              .local()
+                                              .locale("pt-br")
+                                              .format("DD-MM-YYYY HH:mm:ss")
+                                          ) : (
+                                            <span>Selecione uma data</span>
+                                          )}
+                                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent
+                                      className="w-auto flex p-0"
+                                      align="start"
+                                    >
+                                      <Calendar
+                                        mode="single"
+                                        selected={field.value ? new Date(field.value) : undefined}
+                                        onSelect={field.onChange}
+                                        disabled={(date) => {
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date < today;
+                                        }}
+                                        initialFocus
+                                      />
+                                      <div className="p-3 border-t border-border">
+                                        <TimePicker
+                                          setDate={field.onChange}
+                                          date={field.value ? new Date(field.value) : new Date()}
+                                        />
+                                      </div>
+                                    </PopoverContent>
+                                  </Popover>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {/* Supervisao */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="supervisao"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Supervisão</FormLabel>
+                                  <Select
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                      handleSupervisaoSelecionada(value)
+                                    }}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue className="text-muted-foreground" placeholder="Selecione uma supervisão" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {supervisoesAll?.map((supervisao) => (
+                                        <SelectItem key={supervisao.id} value={supervisao.id}>
+                                          {supervisao.nome}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {/* Lider */}
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="lider"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Líder</FormLabel>
+                                  <Select
+                                    onValueChange={(value) => {
+                                      field.onChange(value);
+                                    }}
+                                  >
+                                    <FormControl>
+                                      <SelectTrigger>
+                                        <SelectValue placeholder="Selecione um Líder" />
+                                      </SelectTrigger>
+                                    </FormControl>
+                                    <SelectContent>
+                                      {supervisaoSelecionada && usersSupervisaoSelecionada?.map((lider) => (
+                                        <SelectItem key={lider.id} value={lider.id}>
+                                          {lider.first_name}
+                                        </SelectItem>
+                                      ))}
+                                    </SelectContent>
+                                  </Select>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          {/* Selecao de Membros */}
+                          <div className="sm:col-span-8">
+                            <FormField
+                              control={form.control}
+                              name="membros"
+                              render={({ field }) => (
+                                <FormItem className="flex flex-col space-y-2">
+                                  <FormLabel>Membros</FormLabel>
+                                  <ComboboxDemo
+                                    items={usersSupervisaoSelecionada}
+                                    selectedItems={field.value || []}
+                                    setSelectedItems={(val) => field.onChange(val)} // Atualiza o valor selecionado
+                                  />
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-8 my-3">
+                            <Separator />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="cep"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Cep</FormLabel>
+                                  <FormControl>
+                                    <Input
+                                      placeholder="Digite o Cep"
+                                      maxLength={9}
+                                      onKeyUp={(e) => handleZipCode(e, form.setValue)}
+                                      {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="cidade"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Cidade</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="estado"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Estado</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-4">
+                            <FormField
+                              control={form.control}
+                              name="bairro"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Bairro</FormLabel>
+                                  <FormControl>
+                                    <Input {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-6">
+                            <FormField
+                              control={form.control}
+                              name="endereco"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Endereço</FormLabel>
+                                  <FormControl>
+                                    <Input id="endereco" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
+                          <div className="sm:col-span-2">
+                            <FormField
+                              control={form.control}
+                              name="numero_casa"
+                              render={({ field }) => (
+                                <FormItem>
+                                  <FormLabel>Nº</FormLabel>
+                                  <FormControl>
+                                    <Input id="numero_casa" {...field} />
+                                  </FormControl>
+                                  <FormMessage />
+                                </FormItem>
+                              )}
+                            />
+                          </div>
                         </div>
                         {/* Botões para submeter Forms */}
                         <div className="flex items-center w-full sm:justify-end mt-6 gap-x-6">
@@ -165,12 +604,12 @@ export default function UpdateCelula2(
                             {isPending ?
                               (
                                 <div className="flex justify-between items-center gap-2">
-                                  Atualizando
+                                  Salvando
                                   <Spinner />
                                 </div>
                               )
                               :
-                              (<span>Atualizar</span>)
+                              (<span>Salvar</span>)
                             }
                           </Button>
                         </div>
@@ -183,7 +622,6 @@ export default function UpdateCelula2(
           </div>
         </DialogContent>
       </Dialog>
-
     </>
   );
 }

@@ -48,7 +48,7 @@ const DataCelula = z.object({
   reunioes_celula: z.array(schemaReuniaoCelula),
 });
 
-const schemaFormCelula = z.object({
+export const schemaFormCelula = z.object({
   id: z.string(),
   nome: z.string(),
   lider: z.object({
@@ -65,14 +65,13 @@ const schemaFormCelula = z.object({
   bairro: z.string(),
   endereco: z.string(),
   numero_casa: z.string(),
-  date_inicio: z.string().datetime(),
-  date_multipicar: z.string().datetime(),
+  date_inicio: z.date(),
+  date_multipicar: z.date(),
   date_que_ocorre: z.string().datetime(),
-  membros: z
-    .object({
-      id: z.string().uuid(),
-      first_name: z.string(),
-    })
+  membros: z.object({
+    id: z.string(),
+    first_name: z.string()
+  })
     .array(),
 });
 
@@ -103,6 +102,13 @@ const schemaUser = z.object({
 });
 
 export type User = z.infer<typeof schemaUser>;
+
+const schemaUserCombobox = z.object({
+  id: z.string(),
+  first_name: z.string().optional(),
+});
+
+export type UserCombobox = z.infer<typeof schemaUserCombobox>;
 
 const SchemaSupervisaoData = z.object({
   id: z.string(),

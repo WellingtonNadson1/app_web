@@ -1,18 +1,18 @@
 "use client";
 import { ICelula } from "@/components/ListCelulas";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import React, { useCallback, useEffect, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
 import Modal from "@/components/modal";
-import { UserPlusIcon } from "@heroicons/react/24/outline";
+import { BASE_URL, errorCadastro, success } from "@/functions/functions";
+import { handleZipCode } from "@/functions/zipCodeUtils";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import "react-toastify/dist/ReactToastify.css";
-import { ToastContainer } from "react-toastify";
+import { useUserDataStore } from "@/store/UserDataStore";
+import { UserPlusIcon } from "@heroicons/react/24/outline";
 import { useQuery } from "@tanstack/react-query";
 import dayjs from "dayjs";
-import { handleZipCode } from "@/functions/zipCodeUtils";
+import React, { useCallback, useEffect, useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import { FormCelula, Member, SupervisaoData, User } from "./schema";
-import { useUserDataStore } from "@/store/UserDataStore";
 
 export default function UpdateCelula({
   celulaId,
@@ -81,8 +81,8 @@ export default function UpdateCelula({
       console.log(dayjs(date_inicio).toISOString());
       console.log(dayjs(date_multipicar).toISOString());
 
-      date_inicio = dayjs(date_inicio).toISOString();
-      date_multipicar = dayjs(date_multipicar).toISOString();
+      date_inicio = new Date(dayjs(date_inicio).toISOString());
+      date_multipicar = new Date(dayjs(date_multipicar).toISOString());
 
       const response = await axiosAuth.put(URLCelulaId, {
         nome,

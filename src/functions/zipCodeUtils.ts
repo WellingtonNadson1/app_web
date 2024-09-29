@@ -8,15 +8,16 @@ export const handleZipCode = async (
   setValue: FlexibleSetValue,
 ) => {
   const handleSetDataAddress = (data: AddressProps) => {
-    setValue("cidade", data.localidade);
-    setValue("endereco", data.logradouro);
-    setValue("estado", data.uf);
-    setValue("bairro", data.bairro);
+    if (data.localidade) setValue("cidade", data.localidade);
+    if (data.logradouro) setValue("endereco", data.logradouro);
+    if (data.uf) setValue("estado", data.uf);
+    if (data.bairro) setValue("bairro", data.bairro);
   };
 
   const handleFetchCep = async (zipCode: string) => {
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+      const cleanZipCode = zipCode.replace("-", "");
+      const response = await fetch(`https://viacep.com.br/ws/${cleanZipCode}/json/`);
       const result = await response.json();
       handleSetDataAddress(result);
     } catch (error) {

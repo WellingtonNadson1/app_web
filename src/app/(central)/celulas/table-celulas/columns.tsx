@@ -10,6 +10,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Toaster } from "@/components/ui/toaster";
 import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
 import { cn } from "@/lib/utils";
 import { HouseLine, MagnifyingGlass } from "@phosphor-icons/react/dist/ssr";
@@ -17,7 +18,9 @@ import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import DeleteCelula from "../DeleteCelula";
 import UpdateCelula2 from "../UpdateCelula2";
+import UpdateDataOcorreCelula from "../UpdateDataOcorreCelula";
 import { celulaSchemaTable } from "./schema";
 
 export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
@@ -134,33 +137,49 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
       };
 
       return (
-        <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <Button variant="ghost" className="h-8 w-8 p-0">
-              <span className="sr-only">Abrir menu</span>
-              <MoreHorizontal className="h-4 w-4" />
-            </Button>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end">
-            <DropdownMenuLabel>Opções</DropdownMenuLabel>
-            <UpdateCelula2 id={celula.id} date_que_ocorre={celula.date_que_ocorre} lider={celula.lider} membros={celula.membros} nome={celula.nome} supervisao={celula.supervisao} key={celula.id}
-            />
+        <>
+          <Toaster />
 
-            <DropdownMenuSeparator />
-
-            <DropdownMenuItem asChild>
-              <Button
-                onClick={handleClickCelula}
-                id={celula?.id}
-                className="flex items-center justify-between w-full cursor-pointer"
-                variant={"ghost"}
-              >
-                Acessar
-                <MagnifyingGlass key={celula?.id} size={18} />
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button variant="ghost" className="h-8 w-8 p-0">
+                <span className="sr-only">Abrir menu</span>
+                <MoreHorizontal className="h-4 w-4" />
               </Button>
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>Opções</DropdownMenuLabel>
+
+              <UpdateDataOcorreCelula id={celula.id} date_que_ocorre={celula.date_que_ocorre} lider={celula.lider} membros={celula.membros} nome={celula.nome} supervisao={celula.supervisao} key={celula.id}
+              />
+
+              <DropdownMenuSeparator />
+              {/* ACESSAR DADOS DA CELULA */}
+              <DropdownMenuItem asChild>
+                <DropdownMenuItem asChild className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
+                  <button
+                    onClick={handleClickCelula}
+                    id={celula?.id}
+                    className="flex items-center justify-between w-full cursor-pointer"
+                  >
+                    Acessar
+                    <MagnifyingGlass key={celula?.id} size={18} />
+                  </button>
+                </DropdownMenuItem>
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {/* UPDATE CELULA */}
+              <DropdownMenuItem asChild>
+                <UpdateCelula2 celulaId={celula.id} />
+              </DropdownMenuItem>
+              <DropdownMenuSeparator />
+              {/* DELETAR CELULA */}
+              <DropdownMenuItem asChild>
+                <DeleteCelula celulaId={celula.id} celulaName={celula.nome} />
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </>
       );
     },
   },

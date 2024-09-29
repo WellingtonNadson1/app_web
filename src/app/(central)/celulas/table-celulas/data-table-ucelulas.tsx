@@ -13,7 +13,6 @@ import {
   useReactTable
 } from "@tanstack/react-table";
 
-// A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import {
   RankingInfo,
   rankItem
@@ -31,6 +30,7 @@ import {
 } from "@/components/ui/table";
 import { useState } from "react";
 import { TagQuantidadeCelulas } from "../_components/TagQuantidadeCelulas";
+import AddNewCelula from "../AddNewCelula";
 import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
@@ -116,7 +116,7 @@ export function DataTableCelulas<TData, TValue>({
               <Badge className="items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset md:block">
                 <p className="flex items-center justify-between">
                   Total{" "}
-                  <span className="px-1 py-1 ml-2 text-white rounded-md bg-zinc-500">
+                  <span className="px-1 py-1 ml-2 text-black rounded-md bg-white">
                     {data?.length}
                   </span>
                 </p>
@@ -131,7 +131,7 @@ export function DataTableCelulas<TData, TValue>({
         </div>
       </div>
       {/* FILTRO */}
-      <div className="flex items-center py-4">
+      <div className="flex items-center  justify-between py-4">
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
           value={globalFilter ?? ""}
@@ -140,6 +140,9 @@ export function DataTableCelulas<TData, TValue>({
           }}
           className="sm:max-w-sm"
         />
+        <div>
+          <AddNewCelula />
+        </div>
       </div>
       {/* TABELA */}
       <div className="rounded-md border">

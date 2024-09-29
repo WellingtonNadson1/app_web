@@ -10,7 +10,7 @@ export const TagQuantidadeCelulas: React.FC<TagQuantidadeCelulasProps> = ({ cor 
   return (
     <div className={cn(
       cor && `items-center justify-center px-2 py-1 text-xs font-medium text-center bg-yellow-100 text-yellow-600 ring-yellow-500 rounded-md ring-1 ring-inset md:block`,
-      `bg-${cor}-100 text-${cor}-700 ring-${cor}-600/20`,
+      `bg-${cor}-100 text-${cor}-700 ring-${cor}-500`,
     )}>
       <p className="flex items-center justify-between">
         {nomeSupervisao}{" "}
