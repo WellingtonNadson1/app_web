@@ -109,10 +109,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                           Acessar
                         </button>
                         {data && (
-                          <UpdateCelula2
-                            // shouldFetch={shouldFetch}
-                            id={celula.id}
-                          />
+                          <UpdateCelula2 celulaId={celula.id} />
                         )}
                         {data && (
                           <UpdateCelula
