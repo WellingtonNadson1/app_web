@@ -132,7 +132,7 @@ export default function LicoesCelula() {
     },
     {
       id: 5,
-      title: "“POR ELE FOMOS CURADOS",
+      title: "POR ELE FOMOS CURADOS",
       periodo: weeks,
       icon: FilePdf,
       versiculo: "Is 53:4-5",
