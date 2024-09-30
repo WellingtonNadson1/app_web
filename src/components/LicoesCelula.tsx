@@ -97,47 +97,47 @@ export default function LicoesCelula() {
     startDate = weekEnd.add(1, "day");
   }
 
-  const temaMesCelula = "Visão";
+  const temaMesCelula = "Tome a sua Cruz e Siga-Me";
   const subTemaMesCelula =
-    "Ganhar - Consolidar - Discipular - Enviar";
+    "Se alguém quer ser um dos meus seguidores, negue-se a si mesmo, tome a sua cruz e siga-me (Mt 16:24)";
 
   const statusLicoes = [
     {
       id: 1,
-      title: "CHAMADOS PARA CUIDAR",
+      title: "O PREÇO DA CRUCIFICAÇÃO",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "I Co 12:25",
+      versiculo: "Gl 3:13",
     },
     {
       id: 2,
-      title: "A IMPORTÂNCIA DO TREINAMENTO",
+      title: "MANTENDO OS OLHOS EM JESUS",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "At 18:18",
+      versiculo: "Hb 12:2",
     },
     {
       id: 3,
-      title: "PESCADORES DE HOMENS",
+      title: "TOMAR A CRUZ",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "Mc 1:17-18",
+      versiculo: "Mc 16:24-25",
     },
     {
       id: 4,
-      title: "QUAL A SUA VISÃO?",
+      title: "CRUCIFICAR A CARNE",
       periodo: weeks,
       icon: FilePdf,
-      versiculo: "II Co 4:18",
+      versiculo: "Gn 4:7",
+    },
+    {
+      id: 5,
+      title: "“POR ELE FOMOS CURADOS",
+      periodo: weeks,
+      icon: FilePdf,
+      versiculo: "Is 53:4-5",
       lancando: true,
     },
-    // {
-    //   id: 5,
-    //   title: "Jesus serviu a humanidade com sua vida",
-    //   periodo: weeks,
-    //   icon: FilePdf,
-    //   versiculo: "Mc 10:45",
-    // },
   ];
 
   return (
