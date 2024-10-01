@@ -19,7 +19,6 @@ import {
 } from "@tanstack/match-sorter-utils";
 
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -31,8 +30,7 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { TagQuantidadeCelulas } from "../_components/TagQuantidadeCelulas";
-import AddNewCelula from "../AddNewCelula";
+import { TagQuantidadeCelulas } from "../../_components/TagQuantidadeCelulas";
 import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
@@ -64,7 +62,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-export function DataTableCelulas<TData, TValue>({
+export function DataTableLicoesCelulas<TData, TValue>({
   columns,
   data
 }: DataTableProps<TData, TValue>) {
@@ -95,15 +93,15 @@ export function DataTableCelulas<TData, TValue>({
   });
 
   //@ts-ignore
-  const qntCelulasSupVermelha = String(data.filter((celula) => celula?.supervisao?.nome === "vermelha").length).padStart(2, '0')
+  const qntCelulasSupVermelha = String(data?.filter((celula) => celula?.supervisao?.nome === "vermelha").length).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupAzul = String(data.filter((celula) => celula?.supervisao?.nome === "azul").length).padStart(2, '0')
+  const qntCelulasSupAzul = String(data?.filter((celula) => celula?.supervisao?.nome === "azul").length).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupLaranja = String(data.filter((celula) => celula?.supervisao?.nome === "laranja").length).padStart(2, '0')
+  const qntCelulasSupLaranja = String(data?.filter((celula) => celula?.supervisao?.nome === "laranja").length).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupVerde = String(data.filter((celula) => celula?.supervisao?.nome === "verde").length).padStart(2, '0')
+  const qntCelulasSupVerde = String(data?.filter((celula) => celula?.supervisao?.nome === "verde").length).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupAmarela = String(data.filter((celula) => celula?.supervisao?.nome === "amarela").length).padStart(2, '0')
+  const qntCelulasSupAmarela = String(data?.filter((celula) => celula?.supervisao?.nome === "amarela").length).padStart(2, '0')
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -143,10 +141,6 @@ export function DataTableCelulas<TData, TValue>({
           }}
           className="sm:max-w-sm"
         />
-        <div className="flex items-center justify-end  gap-2">
-          <AddNewCelula />
-          <Button type="button" onClick={() => router.push('/celulas/licoes-celula')}>Lições de Célula</Button>
-        </div>
       </div>
       {/* TABELA */}
       <div className="rounded-md border">
