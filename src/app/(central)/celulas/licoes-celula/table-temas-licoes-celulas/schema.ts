@@ -1,22 +1,22 @@
 import { z } from "zod";
 
-export const celulaSchemaTable =
+export const temaSchemaTable =
   z.object({
-    id: z.string().uuid(),
-    nome: z.string(),
-    date_que_ocorre: z.string(),
-    lider: z.object({
-      first_name: z.string(),
-      id: z.string().uuid(),
+    tema: z.string().uuid(),
+    date: z.object({
+      from: z.string(),
+      to: z.string(),
     }),
-    membros: z.object({
-      first_name: z.string(),
-      id: z.string().uuid(),
-    }).array(),
-    supervisao: z.object({
-      nome: z.string(),
-      id: z.string().uuid(),
-    })
   });
 
-export type TUser = z.infer<typeof celulaSchemaTable>;
+export type TUser = z.infer<typeof temaSchemaTable>;
+
+export const allTemaReturnSchemaTable =
+  z.object({
+    id: z.string().uuid(),
+    tema: z.string(),
+    data_inicio: z.string(),
+    data_termino: z.string()
+  });
+
+export type AllTemaReturn = z.infer<typeof allTemaReturnSchemaTable>;

@@ -35,14 +35,17 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 type Theme = {
-  folderName: string
+  tema: string;
+  id: string;
+  data_inicio: string;
+  data_termino: string;
 }
 
-type ThemeRegistrationFormProps = {
-  onSubmitForm: (folderName: Theme) => void
+type ThemeUpdateFormProps = {
+  temaData: Theme
 }
 
-export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormProps) {
+export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
   const queryClient = useQueryClient()
   const URLApi = "/api/licoes-celula/create-tema-folder"
   const { toast } = useToast()
@@ -50,11 +53,11 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
     defaultValues: {
-      tema: "",
-      folderName: "",
+      tema: temaData.tema,
+      folderName: temaData.tema,
       date: {
-        from: undefined,
-        to: undefined,
+        from: new Date(temaData.data_inicio),
+        to: new Date(temaData.data_termino),
       },
       comment: ""
     },
@@ -65,7 +68,8 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
       : z.infer<typeof formSchema>) => {
 
     console.log('values', values)
-    const response = await axios.post(URLApi, {
+    const response = await axios.put(URLApi, {
+      id: temaData.id,
       folderName: values.folderName,
       tema: values.tema,
       date: {
@@ -113,13 +117,13 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
       toast({
         variant: "default",
         title: "Successo",
-        description: "TEMA Registrado com Sucesso. 😇",
+        description: "TEMA Atualizado com Sucesso. 😇",
       });
       form.reset();
     } else {
       toast({
         title: "Erro!!!",
-        description: "Erro no Cadastro do TEMA. 😰",
+        description: "Erro na Atualização do TEMA. 😰",
         variant: "destructive",
       });
     };
@@ -204,10 +208,10 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Cadastrando...
+                Atualizando...
               </>
             ) : (
-              'Cadastrar Tema'
+              'Atualizar Tema'
             )}
           </Button>
         </form>

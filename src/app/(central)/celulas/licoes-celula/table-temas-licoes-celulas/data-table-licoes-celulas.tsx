@@ -18,7 +18,6 @@ import {
   rankItem
 } from "@tanstack/match-sorter-utils";
 
-import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -31,6 +30,7 @@ import {
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TagQuantidadeCelulas } from "../../_components/TagQuantidadeCelulas";
+import AddNewTemaLicoesCelula from "../AddNewTemaLicoesCelula";
 import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
@@ -92,16 +92,9 @@ export function DataTableLicoesCelulas<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
   });
 
+  console.log('data Front', data)
   //@ts-ignore
-  const qntCelulasSupVermelha = String(data?.filter((celula) => celula?.supervisao?.nome === "vermelha").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupAzul = String(data?.filter((celula) => celula?.supervisao?.nome === "azul").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupLaranja = String(data?.filter((celula) => celula?.supervisao?.nome === "laranja").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupVerde = String(data?.filter((celula) => celula?.supervisao?.nome === "verde").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupAmarela = String(data?.filter((celula) => celula?.supervisao?.nome === "amarela").length).padStart(2, '0')
+  const qntCelulasSupVerde = String(data?.length).padStart(2, '0')
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -110,23 +103,11 @@ export function DataTableLicoesCelulas<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="text-lg font-semibold text-gray-700 mt-2">
-                Lista de Todas as Células da IBB
+                Lista de Tema de Células
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">
-              <Badge className="items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset md:block">
-                <p className="flex items-center justify-between">
-                  Total{" "}
-                  <span className="px-1 py-1 ml-2 text-black rounded-md bg-white">
-                    {data?.length}
-                  </span>
-                </p>
-              </Badge>
-              <TagQuantidadeCelulas key={Math.random()} cor="red" nomeSupervisao="Vermelha" data={qntCelulasSupVermelha} />
-              <TagQuantidadeCelulas key={Math.random()} cor="blue" nomeSupervisao="Azul" data={qntCelulasSupAzul} />
-              <TagQuantidadeCelulas key={Math.random()} cor="orange" nomeSupervisao="Laranja" data={qntCelulasSupLaranja} />
-              <TagQuantidadeCelulas key={Math.random()} cor="green" nomeSupervisao="Verde" data={qntCelulasSupVerde} />
-              <TagQuantidadeCelulas key={Math.random()} nomeSupervisao="Amarela" data={qntCelulasSupAmarela} />
+              <TagQuantidadeCelulas key={Math.random()} cor="sky" nomeSupervisao="Total" data={qntCelulasSupVerde} />
             </div>
           </div>
         </div>
@@ -134,13 +115,16 @@ export function DataTableLicoesCelulas<TData, TValue>({
       {/* FILTRO */}
       <div className="flex items-center  justify-between py-4">
         <Input
-          placeholder="🔍 Filtrar por qualquer dado..."
+          placeholder="🔍 Filtrar pelo tema..."
           value={globalFilter ?? ""}
           onChange={(event) => {
             setGlobalFilter(String(event.target.value));
           }}
           className="sm:max-w-sm"
         />
+        <div className="flex items-center justify-end  gap-2">
+          <AddNewTemaLicoesCelula />
+        </div>
       </div>
       {/* TABELA */}
       <div className="rounded-md border">
@@ -164,7 +148,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
