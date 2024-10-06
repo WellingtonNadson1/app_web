@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { Command, CommandGroup, CommandItem, CommandList } from "@/components/ui/command";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,19 +10,160 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { Toaster } from "@/components/ui/toaster";
+import { toast } from "@/components/ui/use-toast";
 import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
+import { cn } from "@/lib/utils";
 import { MagnifyingGlass, Notepad } from "@phosphor-icons/react/dist/ssr";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ColumnDef } from "@tanstack/react-table";
+import axios from "axios";
 import dayjs from "dayjs";
-import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import { ArrowUpDown, Check, ChevronDown, MoreHorizontal } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { z } from "zod";
 import DeleteTemaLIcaoCelula from "../DeleteTemaLicaoCelula";
 import UpdateTemaLicoesCelula from "../UpdateTemaLicoesCelula";
 import { allTemaReturnSchemaTable } from "./schema";
 
 export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
+  // NOME TEMA
+  {
+    accessorKey: "status",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          Status
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const queryClient = useQueryClient()
+      const URLApi = "/api/licoes-celula/create-tema-folder"
+
+      const data = row.original;
+      const [open, setOpen] = useState(false)
+      const [value, setValue] = useState(data.status)
+      const statuses = [
+        {
+          value: true,
+          label: "Ativo",
+        },
+        {
+          value: false,
+          label: "Pausado",
+        },
+      ]
+
+      interface updateStatusProps {
+        status: boolean,
+        idTema: string
+      }
+
+      const updateStatusTemaLicaoCelulaFunction = async (
+        values: updateStatusProps) => {
+
+        console.log('values', values)
+        const response = await axios.patch(URLApi, {
+          id: values.idTema,
+          status: values.status
+        },
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            }
+          }
+          ,
+        )
+        return response.data;
+      };
+
+      const { mutateAsync: updateStatusTemaLIcaoCelulaFn, isPending } = useMutation({
+        mutationFn: updateStatusTemaLicaoCelulaFunction,
+        onSettled: () => {
+          queryClient.invalidateQueries({ queryKey: ["temasCelulasIbb"] });
+        },
+      });
+
+      const handleSelectedStatus = async ({ status, idTema }: updateStatusProps) => {
+        console.log('status click: ', status)
+        console.log('idTema click: ', idTema)
+
+        const response = await updateStatusTemaLIcaoCelulaFn({ status, idTema })
+        console.log('responseFolder: ', response)
+        if (response) {
+          toast({
+            variant: "default",
+            title: "Successo",
+            description: "Status do TEMA Atualizado com Sucesso. 😇",
+          });
+        } else {
+          toast({
+            title: "Erro!!!",
+            description: "Erro na Atualização do Status do TEMA. 😰",
+            variant: "destructive",
+          });
+        };
+      };
+
+      return (
+        <Popover open={open} onOpenChange={setOpen}>
+          <PopoverTrigger asChild>
+            <Button
+              variant="outline"
+              role="combobox"
+              aria-expanded={open}
+              className={cn(
+                "w-[120px] justify-between font-normal leading-5 rounded-xl",
+                value ? "bg-green-500 text-white hover:bg-green-600" : "bg-orange-500 text-white hover:bg-orange-600"
+              )}
+            >
+              {value ? "Ativo" : "Pausado"}
+              <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+            </Button>
+          </PopoverTrigger>
+          {open && (
+            <PopoverContent className="w-[120px] p-0">
+              <Command>
+                <CommandGroup>
+                  {/* quando quero apresentar uma lista se faz necessario add CommandList */}
+                  <CommandList>
+                    {statuses.map((status) => {
+                      return (
+                        <CommandItem
+                          key={status.label}
+                          onSelect={() => {
+                            setValue(status.value);
+                            handleSelectedStatus({ status: status.value, idTema: data.id });
+                            setOpen(false);
+                          }}
+                        >
+                          <Check
+                            className={cn(
+                              "mr-2 h-4 w-4",
+                              value === status.value ? "opacity-100" : "opacity-0"
+                            )}
+                          />
+                          {status.label}
+                        </CommandItem>
+                      );
+                    })}
+                  </CommandList>
+                </CommandGroup>
+              </Command>
+            </PopoverContent>
+          )}
+        </Popover>
+      );
+    },
+    filterFn: 'includesString'
+  },
   // NOME TEMA
   {
     accessorKey: "tema",

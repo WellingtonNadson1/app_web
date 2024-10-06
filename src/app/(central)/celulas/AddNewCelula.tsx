@@ -186,8 +186,8 @@ export default function AddNewCelula() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
-                Add Nova Célula
                 <PlusCircle size={18} />
+                Add Nova Célula
               </Button>
             </DropdownMenuTrigger>
           </DropdownMenu>

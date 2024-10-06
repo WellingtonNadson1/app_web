@@ -29,6 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import { BookOpenText } from "@phosphor-icons/react/dist/ssr";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { TagQuantidadeCelulas } from "../_components/TagQuantidadeCelulas";
@@ -145,7 +146,7 @@ export function DataTableCelulas<TData, TValue>({
         />
         <div className="flex items-center justify-end  gap-2">
           <AddNewCelula />
-          <Button type="button" onClick={() => router.push('/celulas/licoes-celula')}>Lições de Célula</Button>
+          <Button className="flex items-center justify-between gap-2" type="button" onClick={() => router.push('/celulas/licoes-celula')}><BookOpenText /> Lições de Célula</Button>
         </div>
       </div>
       {/* TABELA */}

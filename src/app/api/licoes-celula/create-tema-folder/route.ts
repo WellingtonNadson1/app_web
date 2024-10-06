@@ -82,13 +82,19 @@ export async function GET(request: Request) {
       throw new Error("Prisma instance is null");
     }
 
+    // Obtenção dos parâmetros da URL
+    const url = new URL(request.url);
+    const take = parseInt(url.searchParams.get("take") || "10", 10);  // Limitar para 10 resultados por padrão
+    const skip = parseInt(url.searchParams.get("skip") || "0", 10);   // Ignorar 0 registros por padrão
+
     const allTema = await prisma?.temaLicaoCelula.findMany({
       select: {
+        status: true,
         id: true,
         tema: true,
         data_inicio: true,
         data_termino: true,
-      }
+      },
     })
     await disconnectPrisma();
 
@@ -223,6 +229,66 @@ export async function PUT(request: Request) {
   } catch (error) {
     await disconnectPrisma();
     return NextResponse.json({ message: 'Error in Update Tema' }, { status: 500 });
+  }
+}
+
+export async function PATCH(request: Request) {
+  const formData = await request.formData();
+  const statusDataForm = formData.get("status") === 'true'
+  const id = formData.get("id") as string
+  console.log('status FormData: ', statusDataForm)
+  console.log('id FormData: ', id)
+
+  if (!statusDataForm && !id) {
+    return NextResponse.json({ message: "STATUS and ID is required" }, { status: 400 });
+  }
+
+  const prisma = createPrismaInstance();
+
+  if (!prisma) {
+    throw new Error("Prisma instance is null");
+  }
+
+  try {
+    const temaRegister = await prisma?.temaLicaoCelula.findUnique({
+      where: {
+        id: id
+      },
+      select: {
+        id: true,
+        status: true,
+        tema: true,
+        folderName: true,
+        data_inicio: true,
+        data_termino: true,
+        link_folder_aws: true
+      }
+    })
+
+    if (!temaRegister) {
+      throw new Error("TEMA not found.");
+    }
+
+    console.log('temaRegister: ', temaRegister)
+
+    const result = await prisma?.temaLicaoCelula.update({
+      where: {
+        id: id,
+      },
+      data: {
+        status: statusDataForm
+      }
+    });
+
+    console.log('result Update Status: ', result)
+
+    await disconnectPrisma();
+    return NextResponse.json({ message: "Status do Tema de Licão ATUALIZADO" }, { status: 200 });
+  }
+  catch (error) {
+    await disconnectPrisma();
+    console.log('Error in Update Status Tema: ', error)
+    return NextResponse.json({ message: 'Error in Update Status Tema' }, { status: 500 });
   }
 }
 

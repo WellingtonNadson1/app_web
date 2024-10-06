@@ -30,7 +30,7 @@ export default function Celulas() {
   return (
     <>
       {/* <AddNewCelula /> */}
-      {isSuccess &&
+      {isSuccess && celulas &&
         <div className="relative z-10 px-2">
           <DataTableCelulas columns={columns} data={celulas as any} />
         </div>

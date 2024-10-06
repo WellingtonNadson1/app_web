@@ -5,18 +5,6 @@ import axios from "axios";
 import { columns } from "./table-temas-licoes-celulas/columns";
 import { DataTableLicoesCelulas } from "./table-temas-licoes-celulas/data-table-licoes-celulas";
 
-type Theme = {
-  folderName: string
-}
-
-type Lesson = {
-  id: string
-  themeId: string
-  title: string
-  keyVerse: string
-  date: Date
-}
-
 export default function LicoesCelula() {
   const URLTemasLicoesCelula = `/api/licoes-celula/create-tema-folder`;
 
@@ -44,7 +32,7 @@ export default function LicoesCelula() {
           <Spinner className="animate-spin" /> :
           temasLicoesCelula?.length === 0 ?
             <DataTableLicoesCelulas columns={columns} data={temasLicoesCelulaNotReturn as any} /> :
-            <DataTableLicoesCelulas columns={columns} data={temasLicoesCelula as any} />
+            temasLicoesCelula && <DataTableLicoesCelulas columns={columns} data={temasLicoesCelula as any} />
         }
       </div>
     </>
