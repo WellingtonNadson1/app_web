@@ -1,7 +1,6 @@
 "use client";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/toaster";
 import { PencilSimple } from "@phosphor-icons/react/dist/ssr";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
@@ -9,6 +8,7 @@ import { ThemeUpdateForm } from "./theme-update-form";
 
 type dataTemaTYpe = {
   tema: string;
+  versiculo_chave: string;
   id: string;
   data_inicio: string;
   data_termino: string;
@@ -23,7 +23,6 @@ export default function UpdateTemaLicoesCelula({
 
   return (
     <>
-      <Toaster />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
           <DropdownMenu>

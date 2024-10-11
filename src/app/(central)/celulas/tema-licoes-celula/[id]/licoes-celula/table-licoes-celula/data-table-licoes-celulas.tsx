@@ -18,6 +18,7 @@ import {
   rankItem
 } from "@tanstack/match-sorter-utils";
 
+import { TagQuantidadeCelulas } from "@/app/(central)/celulas/_components/TagQuantidadeCelulas";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -29,9 +30,8 @@ import {
 } from "@/components/ui/table";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { TagQuantidadeCelulas } from "../../_components/TagQuantidadeCelulas";
-import AddNewTemaLicoesCelula from "../AddNewTemaLicoesCelula";
-import { DataTablePagination } from "./table-pagination";
+import AddNewLicaoCelula from "../../AddNewLicaoCelula";
+import { DataTablePaginationLicoes } from "./table-licoes-pagination";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -103,7 +103,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="text-lg font-semibold text-gray-700 mt-2">
-                Lista de Tema de Células
+                Licões de Célula
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">
@@ -115,7 +115,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
       {/* FILTRO */}
       <div className="flex items-center  justify-between py-4">
         <Input
-          placeholder="🔍 Filtrar pelo tema..."
+          placeholder="🔍 Filtrar pelo título..."
           value={globalFilter ?? ""}
           onChange={(event) => {
             setGlobalFilter(String(event.target.value));
@@ -123,7 +123,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
           className="sm:max-w-sm"
         />
         <div className="flex items-center justify-end  gap-2">
-          <AddNewTemaLicoesCelula />
+          <AddNewLicaoCelula />
         </div>
       </div>
       {/* TABELA */}
@@ -178,7 +178,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
         </Table>
       </div>
       <div className="space-x-2 py-4">
-        <DataTablePagination table={table} />
+        <DataTablePaginationLicoes table={table} />
       </div>
     </div>
   );

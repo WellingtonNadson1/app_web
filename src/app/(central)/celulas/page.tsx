@@ -1,4 +1,5 @@
 "use client"
+import { Toaster } from "@/components/ui/toaster";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
 import { useQuery } from "@tanstack/react-query";
@@ -29,6 +30,7 @@ export default function Celulas() {
 
   return (
     <>
+      <Toaster />
       {/* <AddNewCelula /> */}
       {isSuccess && celulas &&
         <div className="relative z-10 px-2">

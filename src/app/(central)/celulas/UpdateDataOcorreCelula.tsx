@@ -6,7 +6,6 @@ import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import { BASE_URL } from "@/functions/functions";
 import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
@@ -90,7 +89,6 @@ export default function UpdateDataOcorreCelula(
 
   return (
     <>
-      <Toaster />
       {/* Vou preciar add scroll y para conseguir exibir todo o forms */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">

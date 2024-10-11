@@ -5,7 +5,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Toaster } from "@/components/ui/toaster"
+import { Textarea } from "@/components/ui/textarea"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
@@ -20,6 +20,7 @@ const DATE_REQUIRED_ERROR = "Date is required.";
 
 const formSchema = z.object({
   tema: z.string(),
+  versiculo_chave: z.string(),
   folderName: z.string().min(2, {
     message: "Theme must be at least 2 characters.",
   }),
@@ -36,6 +37,7 @@ type FormData = z.infer<typeof formSchema>
 
 type Theme = {
   tema: string;
+  versiculo_chave: string;
   id: string;
   data_inicio: string;
   data_termino: string;
@@ -54,6 +56,7 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
     // resolver: zodResolver(formSchema),
     defaultValues: {
       tema: temaData.tema,
+      versiculo_chave: temaData.versiculo_chave,
       folderName: temaData.tema,
       date: {
         from: new Date(temaData.data_inicio),
@@ -70,8 +73,9 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
     console.log('values', values)
     const response = await axios.put(URLApi, {
       id: temaData.id,
-      folderName: values.folderName,
       tema: values.tema,
+      versiculo_chave: values.versiculo_chave,
+      folderName: values.folderName,
       date: {
         from: values.date.from,
         to: values.date.to
@@ -79,13 +83,11 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
     },
       {
         headers: {
-          // 'Content-Type': 'application/json',
           'Content-Type': 'multipart/form-data',
         }
       }
       ,
     )
-
     form.reset();
     return response.data;
   };
@@ -131,7 +133,6 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
 
   return (
     <>
-      <Toaster />
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
@@ -199,6 +200,22 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
                 </Popover>
                 <FormDescription>
                   Período em que as licões serão mministradas nas células.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="versiculo_chave"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Base Bíblica</FormLabel>
+                <FormControl>
+                  <Textarea className="h-24 overflow-y-auto flex-wrap" placeholder="Digite a base bíblica" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Digite a base bíblica para o tema proposto do mês.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
 import { Spinner, Trash } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -32,7 +31,7 @@ export default function DeleteTemaLIcaoCelula({
       const response = await axios.delete(URLTemasLicoesCelula);
       toast({
         title: "Sucesso!!!",
-        description: "Tema de Lição DELETADA com Sucesso!!! 🥳",
+        description: "Tema de Lição DELETADO com Sucesso!!! 🧨",
       });
       return response.data;
     } catch (error) {
@@ -49,13 +48,13 @@ export default function DeleteTemaLIcaoCelula({
 
   const handleDeleteCelula = async (temaLicaoCelulaId: string) => {
     await deleteCelulaFn(temaLicaoCelulaId);
+    setOpen(false)
   };
 
   const [open, setOpen] = useState(false);
 
   return (
     <>
-      <Toaster />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
           <DropdownMenuItem

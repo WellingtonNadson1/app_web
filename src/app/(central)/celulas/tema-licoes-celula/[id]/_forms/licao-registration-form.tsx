@@ -5,6 +5,7 @@ import { Calendar } from "@/components/ui/calendar"
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
 import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import { Textarea } from "@/components/ui/textarea"
 import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
@@ -12,14 +13,17 @@ import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { format } from "date-fns"
 import dayjs from "dayjs"
-import { CalendarIcon, Loader2 } from "lucide-react"
+import { CalendarIcon, Loader2, Upload } from "lucide-react"
+import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
 
 const DATE_REQUIRED_ERROR = "Date is required.";
 
 const formSchema = z.object({
-  tema: z.string(),
+  titulo: z.string(),
+  pdfFile: z.instanceof(FileList),
+  versiculo_chave: z.string(),
   folderName: z.string().min(2, {
     message: "Theme must be at least 2 characters.",
   }),
@@ -34,23 +38,20 @@ const formSchema = z.object({
 
 type FormData = z.infer<typeof formSchema>
 
-type Theme = {
-  folderName: string
+type LicaoRegistrationFormProps = {
+  folderNameId: string
 }
 
-type ThemeRegistrationFormProps = {
-  onSubmitForm: (folderName: Theme) => void
-}
-
-export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormProps) {
+export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormProps) {
+  const [pdfName, setPdfName] = useState<string | null>(null)
   const queryClient = useQueryClient()
-  const URLApi = "/api/licoes-celula/create-tema-folder"
+  const URLApi = "/api/licoes-celula/create-lesson-celula"
   const { toast } = useToast()
 
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
     defaultValues: {
-      tema: "",
+      titulo: "",
       folderName: "",
       date: {
         from: undefined,
@@ -60,14 +61,19 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
     },
   })
 
-  const CreateNewCelulaFunction = async (
+  const CreateNewLessonCelulaFunction = async (
     values
       : z.infer<typeof formSchema>) => {
 
-    console.log('values', values)
+
+    if (values) {
+      console.log('values', values)
+    }
     const response = await axios.post(URLApi, {
-      folderName: values.folderName,
-      tema: values.tema,
+      folderName: folderNameId,
+      pdfFile: values.pdfFile,
+      versiculo_chave: values.versiculo_chave,
+      titulo: values.titulo,
       date: {
         from: values.date.from,
         to: values.date.to
@@ -81,45 +87,46 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
       }
       ,
     )
-
     form.reset();
     return response.data;
   };
 
-  const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
-    mutationFn: CreateNewCelulaFunction,
+  const { mutateAsync: createNewLessonCelulaFn, isPending } = useMutation({
+    mutationFn: CreateNewLessonCelulaFunction,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["temasCelulasIbb"] });
     },
   });
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (values) => {
-    const { folderName } = values
+    const { titulo } = values
     const { date } = values
     const startDate = dayjs(date.from).format('DD-MMM-YY')
     const endDate = dayjs(date.to).format('DD-MMM-YY')
 
-    const formattedFolderName = `${folderName.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
+    const formattedTituloName = `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
+
+    const folderNameId = ''
 
     const valuesFormated = {
       ...values,
-      tema: folderName,
-      folderName: formattedFolderName
+      titulo: formattedTituloName,
+      folderName: folderNameId
     }
 
-    const response = await createNewCelulaFn(valuesFormated)
+    const response = await createNewLessonCelulaFn(valuesFormated)
     console.log('responseFolder: ', response)
     if (response) {
       toast({
         variant: "default",
         title: "Successo",
-        description: "TEMA Registrado com Sucesso. 😇",
+        description: "LIÇÃO Registrada com Sucesso. 😇",
       });
       form.reset();
     } else {
       toast({
         title: "Erro!!!",
-        description: "Erro no Cadastro do TEMA. 😰",
+        description: "Erro no Cadastro do LIÇÃO. 😰",
         variant: "destructive",
       });
     };
@@ -132,16 +139,13 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
         <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
           <FormField
             control={form.control}
-            name="folderName"
+            name="titulo"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Tema</FormLabel>
+                <FormLabel>Título</FormLabel>
                 <FormControl>
-                  <Input placeholder="Digite o tema" {...field} />
+                  <Input required placeholder="Digite o Título da Lição" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Aqui você digita o tema proposto para o mês.
-                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -151,7 +155,7 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Período das licões</FormLabel>
+                <FormLabel>Período da lição</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -194,20 +198,80 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  Período em que as licões serão mministradas nas células.
+                  Período de ministração da Lição na célula.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-          <Button type="submit" disabled={isPending}>
+          <FormField
+            control={form.control}
+            name="versiculo_chave"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Base Bíblica</FormLabel>
+                <FormControl>
+                  <Textarea className="h-24 overflow-y-auto flex-wrap" placeholder="Digite a base bíblica" {...field} />
+                </FormControl>
+                <FormDescription>
+                  Digite a base bíblica para a Lição da semana.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <FormField
+            control={form.control}
+            name="pdfFile"
+            render={({ field: { onChange, value, ...field } }) => (
+              <FormItem>
+                <FormLabel>Upload Lição | PDF</FormLabel>
+                <FormControl>
+                  <div className="flex items-center space-x-2">
+                    <Input
+                      type="file"
+                      accept=".pdf"
+                      onChange={(e) => {
+                        const files = e.target.files
+                        if (files && files.length > 0) {
+                          onChange(files)
+                          setPdfName(files[0].name)
+                        }
+                      }}
+                      {...field}
+                      className="hidden"
+                      id="pdf-upload"
+                    />
+                    <label
+                      htmlFor="pdf-upload"
+                      className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                    >
+                      <Upload className="mr-2 h-4 w-4" />
+                      Upload PDF
+                    </label>
+                    {pdfName && (
+                      <span className="text-sm text-muted-foreground">
+                        {pdfName}
+                      </span>
+                    )}
+                  </div>
+                </FormControl>
+                <FormDescription>
+                  Faça o upload do PDF da Lição.
+                </FormDescription>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <Button className="w-full bg-btnIbb hover:bg-btnIbb/90" type="submit" disabled={isPending}>
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                 Cadastrando...
               </>
             ) : (
-              'Cadastrar Tema'
+              'Cadastrar Lição'
             )}
           </Button>
         </form>

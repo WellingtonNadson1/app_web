@@ -18,8 +18,6 @@ import {
   rankItem
 } from "@tanstack/match-sorter-utils";
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
   Table,
@@ -29,11 +27,10 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { BookOpenText } from "@phosphor-icons/react/dist/ssr";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { TagQuantidadeCelulas } from "../_components/TagQuantidadeCelulas";
-import AddNewCelula from "../AddNewCelula";
+import { TagQuantidadeCelulas } from "../../_components/TagQuantidadeCelulas";
+import AddNewTemaLicoesCelula from "../AddNewTemaLicoesCelula";
 import { DataTablePagination } from "./table-pagination";
 
 interface DataTableProps<TData, TValue> {
@@ -65,7 +62,7 @@ const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   return itemRank.passed;
 };
 
-export function DataTableCelulas<TData, TValue>({
+export function DataTableTemasLicoesCelula<TData, TValue>({
   columns,
   data
 }: DataTableProps<TData, TValue>) {
@@ -95,16 +92,9 @@ export function DataTableCelulas<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
   });
 
+  console.log('data Front', data)
   //@ts-ignore
-  const qntCelulasSupVermelha = String(data.filter((celula) => celula?.supervisao?.nome === "vermelha").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupAzul = String(data.filter((celula) => celula?.supervisao?.nome === "azul").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupLaranja = String(data.filter((celula) => celula?.supervisao?.nome === "laranja").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupVerde = String(data.filter((celula) => celula?.supervisao?.nome === "verde").length).padStart(2, '0')
-  //@ts-ignore
-  const qntCelulasSupAmarela = String(data.filter((celula) => celula?.supervisao?.nome === "amarela").length).padStart(2, '0')
+  const qntCelulasSupVerde = String(data?.length).padStart(2, '0')
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -113,23 +103,11 @@ export function DataTableCelulas<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="text-lg font-semibold text-gray-700 mt-2">
-                Lista de Todas as Células da IBB
+                Tema de Licões de Célula
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">
-              <Badge className="items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset md:block">
-                <p className="flex items-center justify-between">
-                  Total{" "}
-                  <span className="px-1 py-1 ml-2 text-black rounded-md bg-white">
-                    {data?.length}
-                  </span>
-                </p>
-              </Badge>
-              <TagQuantidadeCelulas key={Math.random()} cor="red" nomeSupervisao="Vermelha" data={qntCelulasSupVermelha} />
-              <TagQuantidadeCelulas key={Math.random()} cor="blue" nomeSupervisao="Azul" data={qntCelulasSupAzul} />
-              <TagQuantidadeCelulas key={Math.random()} cor="orange" nomeSupervisao="Laranja" data={qntCelulasSupLaranja} />
-              <TagQuantidadeCelulas key={Math.random()} cor="green" nomeSupervisao="Verde" data={qntCelulasSupVerde} />
-              <TagQuantidadeCelulas key={Math.random()} nomeSupervisao="Amarela" data={qntCelulasSupAmarela} />
+              <TagQuantidadeCelulas key={Math.random()} cor="sky" nomeSupervisao="Total" data={qntCelulasSupVerde} />
             </div>
           </div>
         </div>
@@ -137,7 +115,7 @@ export function DataTableCelulas<TData, TValue>({
       {/* FILTRO */}
       <div className="flex items-center  justify-between py-4">
         <Input
-          placeholder="🔍 Filtrar por qualquer dado..."
+          placeholder="🔍 Filtrar pelo tema..."
           value={globalFilter ?? ""}
           onChange={(event) => {
             setGlobalFilter(String(event.target.value));
@@ -145,8 +123,7 @@ export function DataTableCelulas<TData, TValue>({
           className="sm:max-w-sm"
         />
         <div className="flex items-center justify-end  gap-2">
-          <AddNewCelula />
-          <Button className="flex items-center justify-between gap-2" type="button" onClick={() => router.push('/celulas/tema-licoes-celula')}><BookOpenText /> Lições de Célula</Button>
+          <AddNewTemaLicoesCelula />
         </div>
       </div>
       {/* TABELA */}
@@ -171,7 +148,7 @@ export function DataTableCelulas<TData, TValue>({
             ))}
           </TableHeader>
           <TableBody>
-            {table.getRowModel().rows?.length ? (
+            {table.getRowModel().rows.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}

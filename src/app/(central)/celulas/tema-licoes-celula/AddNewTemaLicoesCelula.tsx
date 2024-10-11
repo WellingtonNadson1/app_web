@@ -2,7 +2,6 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/toaster";
 import { PlusCircle } from "lucide-react";
 import { useState } from "react";
 import "react-toastify/dist/ReactToastify.css";
@@ -50,7 +49,6 @@ export default function AddNewTemaLicoesCelula() {
   }
   return (
     <>
-      <Toaster />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
           <DropdownMenu>

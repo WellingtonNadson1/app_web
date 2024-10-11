@@ -1,11 +1,13 @@
 // app/api/licoes-celula/create-tema-folder/route.ts
 import { deepEqual } from "@/functions/compareObjects";
+import { normalizeFolderName } from "@/functions/normalize";
 import { createPrismaInstance, disconnectPrisma } from "@/services/database/db/prisma";
 import { CopyObjectCommand, DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextResponse } from 'next/server';
 
 interface FolderData {
   tema: string;
+  versiculo_chave: string,
   folderName: string;
   link_folder_aws: string;
   data_inicio: Date;
@@ -25,6 +27,7 @@ export async function POST(request: Request) {
     const formData = await request.formData();
     const folderName = formData.get("folderName") as string
     const tema = formData.get("tema") as string
+    const versiculo_chave = formData.get("versiculo_chave") as string
     const bucketName = "licoes-celula-ibb-23"
     const bucketRegion = "sa-east-1"
 
@@ -33,7 +36,9 @@ export async function POST(request: Request) {
       return NextResponse.json({ message: "Folder name is required" }, { status: 400 });
     }
 
-    const folderKey = folderName.endsWith('/') ? folderName : `${folderName}/`;
+    const folderKeyNormalize = normalizeFolderName(folderName)
+
+    const folderKey = folderKeyNormalize.endsWith('/') ? folderKeyNormalize : `${folderKeyNormalize}/`;
 
     const params = {
       Bucket: process.env.AWS_S3_BUCKET_NAME || bucketName,
@@ -45,7 +50,7 @@ export async function POST(request: Request) {
     const result = await s3.send(command);
 
     // Gera o link do folder pa poder salvar no DB
-    const linkFolderAWS = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${folderName}/`;
+    const linkFolderAWS = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${folderKey}`;
     console.log('linkFolderAWS: ', linkFolderAWS)
 
     //Salvar o link do folder no DB
@@ -58,7 +63,8 @@ export async function POST(request: Request) {
     const resultCreateTema = await prisma?.temaLicaoCelula.create({
       data: {
         tema: tema,
-        folderName: folderName,
+        versiculo_chave: versiculo_chave,
+        folderName: folderKeyNormalize,
         link_folder_aws: linkFolderAWS,
         data_inicio: new Date(formData.get('date[from]') as string),
         data_termino: new Date(formData.get('date[to]') as string)
@@ -92,6 +98,7 @@ export async function GET(request: Request) {
         status: true,
         id: true,
         tema: true,
+        versiculo_chave: true,
         data_inicio: true,
         data_termino: true,
       },
@@ -111,6 +118,7 @@ export async function PUT(request: Request) {
   const bucketRegion = "sa-east-1"
 
   const formData = await request.formData();
+  console.log('formData', formData)
   const id = formData.get("id") as string
 
   if (!id) {
@@ -132,6 +140,7 @@ export async function PUT(request: Request) {
         select: {
           folderName: true,
           tema: true,
+          versiculo_chave: true,
           data_inicio: true,
           data_termino: true,
           link_folder_aws: true
@@ -142,10 +151,13 @@ export async function PUT(request: Request) {
         throw new Error("Folder name not found.");
       }
 
+      console.log('getFolderNameTema', getFolderNameTema)
+
       // Validação de valores nulos
       if (
         !getFolderNameTema.folderName ||
         !getFolderNameTema.tema ||
+        !getFolderNameTema.versiculo_chave ||
         !getFolderNameTema.link_folder_aws
       ) {
         throw new Error("Some required fields are null");
@@ -156,6 +168,7 @@ export async function PUT(request: Request) {
 
       const currentDataObject: FolderData = {
         tema: getFolderNameTema.tema,
+        versiculo_chave: getFolderNameTema.versiculo_chave,
         folderName: getFolderNameTema.folderName,
         link_folder_aws: getFolderNameTema.link_folder_aws,
         data_inicio: getFolderNameTema.data_inicio,
@@ -164,28 +177,35 @@ export async function PUT(request: Request) {
 
       const isObjectUpdateEqual = deepEqual(currentDataObject, formData)
 
+      console.log('isObjectUpdateEqual: ', isObjectUpdateEqual)
+
       if (isObjectUpdateEqual) {
         return NextResponse.json({ message: "Tema de Licão ATUALIZADO" }, { status: 200 });
       }
 
       // Verifica se o folderName termina com "/"
-      const folderNameFormated = folderName.endsWith("/")
-        ? folderName
-        : `${folderName}/`;
+      const folderKeyNormalize = normalizeFolderName(folderName)
+
+      const folderKey = folderKeyNormalize.endsWith('/') ? folderKeyNormalize : `${folderKeyNormalize}/`;
 
       // Verifica se o folderName old termina com "/"
       const folderNameOld = currentDataObject.folderName.endsWith("/")
         ? currentDataObject.folderName
         : `${currentDataObject.folderName}/`;
 
+      console.log('folderNameFormated', folderKey)
+      console.log('folderNameOld', folderNameOld)
+
       const copyParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         CopySource: `${process.env.AWS_S3_BUCKET_NAME}/${folderNameOld}`,
-        Key: folderNameFormated
+        Key: folderKey
       }
 
       const copyCommand = new CopyObjectCommand(copyParams)
-      await s3.send(copyCommand)
+      const resultCopy = await s3.send(copyCommand)
+
+      console.log('resultCopy', resultCopy)
 
       const params = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
@@ -193,7 +213,9 @@ export async function PUT(request: Request) {
       }
 
       const deleteCommand = new DeleteObjectCommand(params)
-      await s3.send(deleteCommand)
+      const resulDelete = await s3.send(deleteCommand)
+
+      console.log('resulDelete', resulDelete)
 
       console.log(`Folder ${folderName} update successfully.`);
     } catch (error) {
@@ -203,12 +225,19 @@ export async function PUT(request: Request) {
 
     // Extrair os dados do formData para comparação
     const formTema = formData.get('tema') as string;
+    const formVersiculoChave = formData.get('versiculo_chave') as string;
     const formFolderName = formData.get('folderName') as string;
     const formDataInicio = new Date(formData.get('date[from]') as string);
     const formDataTermino = new Date(formData.get('date[to]') as string);
 
+    console.log('formVersiculoChave', formVersiculoChave)
+
     // Gera o link do folder pa poder salvar no DB
-    const linkFolderAWS = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${formFolderName}/`;
+    const folderKeyNormalize = normalizeFolderName(formFolderName)
+
+    const folderKey = folderKeyNormalize.endsWith('/') ? folderKeyNormalize : `${folderKeyNormalize}/`;
+
+    const linkFolderAWS = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${folderKey}`;
 
     const result = await prisma?.temaLicaoCelula.update({
       where: {
@@ -216,13 +245,15 @@ export async function PUT(request: Request) {
       },
       data: {
         tema: formTema,
-        folderName: formFolderName,
+        versiculo_chave: formVersiculoChave,
+        folderName: folderKeyNormalize,
         link_folder_aws: linkFolderAWS,
         data_inicio: formDataInicio,
         data_termino: formDataTermino,
       }
     });
 
+    console.log('result', result)
     await disconnectPrisma();
     return NextResponse.json({ message: "Tema de Licão ATUALIZADO" }, { status: 200 });
 
@@ -258,6 +289,7 @@ export async function PATCH(request: Request) {
         id: true,
         status: true,
         tema: true,
+        versiculo_chave: true,
         folderName: true,
         data_inicio: true,
         data_termino: true,

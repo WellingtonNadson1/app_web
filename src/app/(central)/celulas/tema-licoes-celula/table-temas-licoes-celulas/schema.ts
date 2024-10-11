@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const temaSchemaTable =
   z.object({
-    tema: z.string().uuid(),
+    tema: z.string(),
+    versiculo_chave: z.string(),
     date: z.object({
       from: z.string(),
       to: z.string(),
@@ -16,6 +17,7 @@ export const allTemaReturnSchemaTable =
     id: z.string().uuid(),
     status: z.boolean(),
     tema: z.string(),
+    versiculo_chave: z.string(),
     data_inicio: z.string(),
     data_termino: z.string()
   });

@@ -11,9 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Toaster } from "@/components/ui/toaster";
 import { toast } from "@/components/ui/use-toast";
-import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
 import { cn } from "@/lib/utils";
 import { MagnifyingGlass, Notepad } from "@phosphor-icons/react/dist/ssr";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
@@ -29,7 +27,7 @@ import UpdateTemaLicoesCelula from "../UpdateTemaLicoesCelula";
 import { allTemaReturnSchemaTable } from "./schema";
 
 export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
-  // NOME TEMA
+  // Status
   {
     accessorKey: "status",
     header: ({ column }) => {
@@ -75,9 +73,7 @@ export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
           status: values.status
         },
           {
-            headers: {
-              'Content-Type': 'multipart/form-data',
-            }
+            headers: { 'Content-Type': 'multipart/form-data', }
           }
           ,
         )
@@ -120,7 +116,7 @@ export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
               role="combobox"
               aria-expanded={open}
               className={cn(
-                "w-[120px] justify-between font-normal leading-5 rounded-xl",
+                "justify-between font-normal h-7 rounded-xl",
                 value ? "bg-green-500 text-white hover:bg-green-600" : "bg-orange-500 text-white hover:bg-orange-600"
               )}
             >
@@ -253,18 +249,15 @@ export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
     cell: ({ row }) => {
       const celula = row.original;
       const router = useRouter();
-      const contextParamsSupervisaoId = useSupervisaoContext();
       const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-        const idCelula = event.currentTarget.id;
+        const idTemaLicaoCelula = event.currentTarget.id;
         router.push(
-          `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
+          `/celulas/tema-licoes-celula/${idTemaLicaoCelula}/?id=${idTemaLicaoCelula}`,
         );
       };
 
       return (
         <>
-          <Toaster />
-
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="h-8 w-8 p-0">
@@ -280,7 +273,7 @@ export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
                 <DropdownMenuItem asChild className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
                   <button
                     onClick={handleClickCelula}
-                    // id={celula?.id}
+                    id={celula?.id}
                     className="flex items-center justify-between w-full cursor-pointer"
                   >
                     Acessar
