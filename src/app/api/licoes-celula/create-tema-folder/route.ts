@@ -180,7 +180,7 @@ export async function PUT(request: Request) {
       console.log('isObjectUpdateEqual: ', isObjectUpdateEqual)
 
       if (isObjectUpdateEqual) {
-        return NextResponse.json({ message: "Tema de Licão ATUALIZADO" }, { status: 200 });
+        return NextResponse.json({ message: "Tema de Lição ATUALIZADO" }, { status: 200 });
       }
 
       // Verifica se o folderName termina com "/"
@@ -255,7 +255,7 @@ export async function PUT(request: Request) {
 
     console.log('result', result)
     await disconnectPrisma();
-    return NextResponse.json({ message: "Tema de Licão ATUALIZADO" }, { status: 200 });
+    return NextResponse.json({ message: "Tema de Lição ATUALIZADO" }, { status: 200 });
 
   } catch (error) {
     await disconnectPrisma();
@@ -315,7 +315,7 @@ export async function PATCH(request: Request) {
     console.log('result Update Status: ', result)
 
     await disconnectPrisma();
-    return NextResponse.json({ message: "Status do Tema de Licão ATUALIZADO" }, { status: 200 });
+    return NextResponse.json({ message: "Status do Tema de Lição ATUALIZADO" }, { status: 200 });
   }
   catch (error) {
     await disconnectPrisma();
@@ -384,7 +384,7 @@ export async function DELETE(request: Request) {
     });
     await disconnectPrisma();
 
-    return NextResponse.json({ message: "Tema de Licão DELETADO" }, { status: 200 });
+    return NextResponse.json({ message: "Tema de Lição DELETADO" }, { status: 200 });
   } catch (error) {
     await disconnectPrisma();
     return NextResponse.json({ message: 'Error get theme lesson' }, { status: 500 });

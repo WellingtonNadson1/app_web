@@ -52,7 +52,7 @@ export default function AddNewLicaoCelula() {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
-                Cadastrar Nova Licão
+                Cadastrar Nova Lição
                 <PlusCircle size={18} />
               </Button>
             </DropdownMenuTrigger>
@@ -60,7 +60,7 @@ export default function AddNewLicaoCelula() {
         </DialogTrigger>
         <DialogContent className="lg:max-w-screen-md overflow-y-scroll max-h-screen">
           <DialogHeader>
-            <DialogTitle>Cadastrando Nova Licão de Célula</DialogTitle>
+            <DialogTitle>Cadastrar Nova Lição de Célula</DialogTitle>
             <DialogDescription>
               Edite os dados preenchendo o formulário
             </DialogDescription>

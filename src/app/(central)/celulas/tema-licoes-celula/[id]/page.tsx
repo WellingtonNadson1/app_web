@@ -10,12 +10,11 @@ import { DataTableLicoesCelulas } from "./licoes-celula/table-licoes-celula/data
 
 export default function Licao({ idTemaLicaoCelula }: { idTemaLicaoCelula: string }) {
   const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`;
+  const URLTemaMonth = `/api/licoes-celula/tema-of-month`;
 
   const searchParams = useSearchParams()
 
   const id = searchParams.get('id')
-
-  console.log('idTemaLicaoCelula', id)
 
   const getLicoesCelula = async () => {
     const { data } = await axios.get(URLLicoesCelula, {
@@ -40,7 +39,6 @@ export default function Licao({ idTemaLicaoCelula }: { idTemaLicaoCelula: string
   return (
     <>
       <Toaster />
-
       <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
         {isLoading ?
           <Spinner className="animate-spin" /> :

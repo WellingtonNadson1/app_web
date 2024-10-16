@@ -28,7 +28,6 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
 import AddNewLicaoCelula from "../../AddNewLicaoCelula";
 import { DataTablePaginationLicoes } from "./table-licoes-pagination";
@@ -69,7 +68,6 @@ export function DataTableLicoesCelulas<TData, TValue>({
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [globalFilter, setGlobalFilter] = useState("");
-  const router = useRouter()
 
   const table = useReactTable({
     data,
@@ -103,7 +101,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="text-lg font-semibold text-gray-700 mt-2">
-                Licões de Célula
+                Lições de Célula
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">

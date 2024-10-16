@@ -67,7 +67,7 @@ export default function DeleteTemaLIcaoCelula({
         </DialogTrigger>
         <DialogContent className="sm:max-w-[580px]">
           <DialogHeader>
-            <DialogTitle>Deletar Tema de Licão</DialogTitle>
+            <DialogTitle>Deletar Tema de Lição</DialogTitle>
             <DialogDescription>
               Você tem certeza que deseja deletar este TEMA?
             </DialogDescription>

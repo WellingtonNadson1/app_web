@@ -1,13 +1,12 @@
 "use client";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
 import { cn } from "@/lib/utils";
 import { useUserDataStore } from "@/store/UserDataStore";
 import { FilePdf } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 import dayjs from "dayjs";
+import { useEffect, useState } from "react";
 import { z } from "zod";
-import SpinnerButton from "./spinners/SpinnerButton";
 import { Card } from "./ui/card";
 dayjs().locale();
 
@@ -15,23 +14,70 @@ const ResponseSchema = z.string().array();
 
 type ApiResponse = z.infer<typeof ResponseSchema>;
 
+interface TemaData {
+  id: string;
+  status: boolean;
+  tema: string,
+  versiculo_chave: string;
+  data_inicio: string | Date;
+  data_termino: string | Date;
+}
+
+interface LessonData {
+  id: string;
+  status: boolean;
+  titulo: string,
+  versiculo_chave: string;
+  licao_lancando_redes: boolean;
+  data_inicio: string | Date;
+  data_termino: string | Date;
+  link_objeto_aws?: string;
+}
+
 export default function LicoesCelula() {
-  const URLLicoesCelula = `${BASE_URL}/licoescelulas`;
+  const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`;
+  const URLTemaMonth = `/api/licoes-celula/tema-of-month`;
+  const [id, setIdTema] = useState<string | null>(null); // Use null as initial value
+
   const { token } = useUserDataStore.getState();
 
-  const axiosAuth = useAxiosAuthToken(token);
-
-  const LicoesCelulaData = async () => {
-    const { data } = await axiosAuth.get(URLLicoesCelula);
+  const GetIdTema = async () => {
+    const { data } = await axios.get(URLTemaMonth);
     return data;
   };
-  const { data, isLoading, isError } = useQuery<ApiResponse>({
-    queryKey: ["licoesCelula"],
-    queryFn: LicoesCelulaData,
+
+  const getLicoesCelula = async () => {
+    const { data } = await axios.get(URLLicoesCelula, {
+      params: { id },
+    });
+    console.log('data lesson get: ', data)
+    return data;
+  };
+
+  const { data: dataTema } = useQuery<TemaData[]>({
+    queryKey: ["idTemaMonth"],
+    queryFn: GetIdTema,
   });
-  if (isLoading) return <SpinnerButton message={""} />;
-  if (isError) {
-    return <div>Atualize a página para carregar os dados.</div>;
+
+  // useEffect to update idTema when query is successful
+  useEffect(() => {
+    if (dataTema && !id) {
+      setIdTema(dataTema[0]?.id || ""); // Ensure there's a valid id
+      console.log("Updated idTema: ", dataTema[0]?.id);
+    }
+  }, [dataTema, id]);
+
+  const {
+    data: licoesCelula,
+    error,
+  } = useQuery<LessonData[]>({
+    queryKey: ["licoesCelulasIbb", id],
+    queryFn: getLicoesCelula,
+    enabled: !!id
+  });
+
+  if (licoesCelula) {
+    console.log('licoesCelula test', licoesCelula)
   }
 
   // Pegamos o mês e ano atual
@@ -149,33 +195,33 @@ export default function LicoesCelula() {
             <div className="flex flex-col items-start justify-start px-3 py-2 mb-3 rounded-md bg-gray-50">
               <span className="mb-1 text-base">
                 <span className="font-semibold">Tema: </span>
-                {temaMesCelula}
+                {dataTema && dataTema[0]?.tema}
               </span>
-              <span className="mb-3 text-base italic">{subTemaMesCelula}</span>
+              <span className="mb-3 text-base italic">{dataTema && dataTema[0]?.versiculo_chave}</span>
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
-            {statusLicoes.map((stat, index) =>
-              data ? (
+            {licoesCelula?.map((stat, index) =>
+              dataTema ? (
                 <a
-                  href={`${data?.[index]}`}
+                  href={`${stat.link_objeto_aws}`}
                   target="_blank"
                   key={stat.id}
                   className={cn(
                     "rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80",
-                    stat.lancando && "bg-blue-50 hover:bg-blue-100/75",
+                    stat.licao_lancando_redes && "bg-blue-50 hover:bg-blue-100/75",
                   )} rel="noreferrer"
                 >
                   <div className="p-2 sm:col-span-1">
                     <div className="flex items-center justify-between w-full gap-4">
                       <div>
                         <div className="mb-0 font-sans text-base font-semibold leading-normal text-gray-900 uppercase">
-                          {stat.id}ª - {stat.title}
+                          {stat.titulo}
                         </div>
                         <div>
                           <div className="flex items-center gap-3">
                             <span className="text-sm font-normal leading-6 text-gray-700">
-                              {stat.versiculo}
+                              {stat.versiculo_chave}
                             </span>
                           </div>
                           <div className="mt-2 text-sm">
@@ -190,7 +236,7 @@ export default function LicoesCelula() {
                             </span>
                           </div>
                           <div className="flex items-center mt-3">
-                            {stat.periodo[index]?.end.isAfter(toDay) ? (
+                            {new Date(stat.data_inicio) ? (
                               <span className="text-sm font-normal leading-6 text-red-500">
                                 pendente
                               </span>
@@ -207,7 +253,7 @@ export default function LicoesCelula() {
                       <div
                         className={`h-[4.5rem] rounded-md bg-gray-900 p-2 drop-shadow-md`}
                       >
-                        <stat.icon width={24} height={24} color="#fff" />
+                        <FilePdf width={24} height={24} color="#fff" />
                       </div>
                     </div>
                   </div>

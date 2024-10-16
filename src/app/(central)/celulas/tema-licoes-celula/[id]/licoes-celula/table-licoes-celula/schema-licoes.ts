@@ -16,7 +16,7 @@ export type TLicoesForm = z.infer<typeof licaoSchemaTable>;
 export const allLicaoReturnSchemaTable =
   z.object({
     id: z.string().uuid(),
-    // status: z.boolean(),
+    licao_lancando_redes: z.boolean(),
     titulo: z.string(),
     versiculo_chave: z.string(),
     link_objeto_aws: z.string(),

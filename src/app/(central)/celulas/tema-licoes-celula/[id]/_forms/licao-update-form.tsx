@@ -7,9 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 import { Switch } from "@/components/ui/switch"
 import { Textarea } from "@/components/ui/textarea"
-import { Toaster } from "@/components/ui/toaster"
 import { useToast } from "@/components/ui/use-toast"
 import { cn } from "@/lib/utils"
+import { zodResolver } from "@hookform/resolvers/zod"
 import { useMutation, useQueryClient } from "@tanstack/react-query"
 import axios from "axios"
 import { format } from "date-fns"
@@ -19,60 +19,66 @@ import { useState } from "react"
 import { SubmitHandler, useForm } from "react-hook-form"
 import * as z from "zod"
 
-const DATE_REQUIRED_ERROR = "Date is required.";
-
 const formSchema = z.object({
   titulo: z.string(),
-  pdfFile: z.instanceof(FileList),
+  pdfFile: z.instanceof(FileList).refine((files) => files.length > 0 && files !== undefined, {
+    message: "O arquivo PDF é obrigatório.",
+  }),
   licao_lancando_redes: z.boolean().default(false).optional(),
   versiculo_chave: z.string(),
-  temaLicaoCelulaId: z.string(),
   folderName: z.string().min(2, {
-    message: "Theme must be at least 2 characters.",
+    message: "O tema deve ter pelo menos 2 caracteres.",
   }),
   date: z.object({
     from: z.date().optional(),
     to: z.date().optional(),
-  }, { required_error: DATE_REQUIRED_ERROR }).refine((date) => {
+  }, { required_error: "A data é obrigatória." }).refine((date) => {
     return !!date.from;
-  }, DATE_REQUIRED_ERROR),
-})
+  }, "A data inicial é obrigatória."),
+});
 
 type FormData = z.infer<typeof formSchema>
 
-type LicaoRegistrationFormProps = {
-  folderNameId: string
+type Licao = {
+  licao_lancando_redes: boolean | undefined
+  id: string;
+  titulo: string;
+  versiculo_chave: string;
+  data_inicio: string;
+  data_termino: string;
+  link_objeto_aws: string;
 }
 
-export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormProps) {
+type LicaoUpdateFormProps = {
+  licaoData: Licao
+}
+
+export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
   const [pdfName, setPdfName] = useState<string | null>(null)
   const queryClient = useQueryClient()
   const URLApi = "/api/licoes-celula/create-lesson-celula"
   const { toast } = useToast()
-  console.log('folderNameId', folderNameId)
 
   const form = useForm<FormData>({
-    // resolver: zodResolver(formSchema),
+    resolver: zodResolver(formSchema),
     defaultValues: {
-      titulo: "",
-      folderName: "",
-      licao_lancando_redes: false,
+      titulo: licaoData.titulo,
+      licao_lancando_redes: licaoData.licao_lancando_redes,
+      versiculo_chave: licaoData.versiculo_chave,
+      folderName: licaoData.titulo,
       date: {
-        from: undefined,
-        to: undefined,
+        from: new Date(licaoData.data_inicio),
+        to: new Date(licaoData.data_termino),
       },
     },
   })
 
-  const CreateNewLessonCelulaFunction = async (
+  const CreateNewCelulaFunction = async (
     values
       : z.infer<typeof formSchema>) => {
 
-
-    if (values) {
-      console.log('values', values)
-    }
-    const response = await axios.post(URLApi, {
+    console.log('values', values)
+    const response = await axios.put(URLApi, {
       ...values
     },
       {
@@ -87,8 +93,8 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
     return response.data;
   };
 
-  const { mutateAsync: createNewLessonCelulaFn, isPending } = useMutation({
-    mutationFn: CreateNewLessonCelulaFunction,
+  const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
+    mutationFn: CreateNewCelulaFunction,
     onSettled: () => {
       queryClient.invalidateQueries({ queryKey: ["licoesCelulasIbb"] });
     },
@@ -102,26 +108,31 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
 
     const formattedTituloName = `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
 
+    console.log('formattedTituloName', formattedTituloName)
+    console.log('values', values)
+
     const valuesFormated = {
       ...values,
       titulo: titulo,
-      temaLicaoCelulaId: folderNameId,
+      id: licaoData.id,
+      temaLicaoCelulaId: licaoData.id,
       folderName: formattedTituloName
     }
 
-    const response = await createNewLessonCelulaFn(valuesFormated)
+
+    const response = await createNewCelulaFn(valuesFormated)
     console.log('responseFolder: ', response)
     if (response) {
       toast({
         variant: "default",
         title: "Successo",
-        description: "LIÇÃO Registrada com Sucesso. 😇",
+        description: "LIÇÀO Atualizado com Sucesso. 😇",
       });
       form.reset();
     } else {
       toast({
         title: "Erro!!!",
-        description: "Erro no Cadastro do LIÇÃO. 😰",
+        description: "Erro na Atualização do LIÇÀO. 😰",
         variant: "destructive",
       });
     };
@@ -129,9 +140,10 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
 
   return (
     <>
-      <Toaster />
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+        <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
+          console.log('Validation errors:', errors);
+        })} className="space-y-8">
           <FormField
             control={form.control}
             name="titulo"
@@ -139,8 +151,11 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
               <FormItem>
                 <FormLabel>Título</FormLabel>
                 <FormControl>
-                  <Input required placeholder="Digite o Título da Lição" {...field} />
+                  <Input placeholder="Digite o título" {...field} />
                 </FormControl>
+                <FormDescription>
+                  Digite o título da lição.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -193,7 +208,7 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  Período de ministração da Lição na célula.
+                  Período em que a lição será mministrada nas células.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
@@ -209,21 +224,20 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                   <Textarea className="h-24 overflow-y-auto flex-wrap" placeholder="Digite a base bíblica" {...field} />
                 </FormControl>
                 <FormDescription>
-                  Digite a base bíblica para a Lição da semana.
+                  Digite a base bíblica para a lição da semana.
                 </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
-
           <FormField
             control={form.control}
             name="pdfFile"
-            render={({ field: { onChange, value, ...field } }) => (
+            render={({ field: { onChange, value, ...field }, fieldState }) => (
               <FormItem>
                 <FormLabel>Upload Lição | PDF</FormLabel>
                 <FormControl>
-                  <div className="flex items-center space-x-2">
+                  <div className="flex items-center space-x-2 w-full">
                     <Input
                       type="file"
                       accept=".pdf"
@@ -240,7 +254,7 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                     />
                     <label
                       htmlFor="pdf-upload"
-                      className="cursor-pointer inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
+                      className="cursor-pointer w-full inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2"
                     >
                       <Upload className="mr-2 h-4 w-4" />
                       Upload PDF
@@ -255,7 +269,8 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                 <FormDescription>
                   Faça o upload do PDF da Lição.
                 </FormDescription>
-                <FormMessage />
+                {/* Exibe a mensagem de erro se houver */}
+                <FormMessage>{fieldState.error?.message}</FormMessage>
               </FormItem>
             )}
           />
@@ -281,14 +296,15 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
               </FormItem>
             )}
           />
-          <Button className="w-full bg-btnIbb hover:bg-btnIbb/90" type="submit" disabled={isPending}>
+
+          <Button type="submit" disabled={isPending}>
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
-                Cadastrando...
+                Atualizando...
               </>
             ) : (
-              'Cadastrar Lição'
+              'Atualizar Tema'
             )}
           </Button>
         </form>

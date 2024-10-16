@@ -118,8 +118,8 @@ export default function StatsCard() {
           <div className="flex items-center">
             <span
               className={cn("text-sm font-bold leading-normal", {
-                "text-red-500": porcentagemAlmasGanhasMesPassado < 0,
-                "text-emerald-500": porcentagemAlmasGanhasMesPassado >= 0,
+                "text-red-500": almasGanhasNoMes < porcentagemAlmasGanhasMesPassado,
+                "text-emerald-500": almasGanhasNoMes >= porcentagemAlmasGanhasMesPassado,
               })}
             >
               {stat.porcentagem}

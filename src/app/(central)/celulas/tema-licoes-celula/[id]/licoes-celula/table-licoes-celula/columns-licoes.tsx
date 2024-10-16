@@ -1,5 +1,6 @@
 "use client";
 
+import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -11,15 +12,44 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Toaster } from "@/components/ui/toaster";
 import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
-import { MagnifyingGlass, Notepad } from "@phosphor-icons/react/dist/ssr";
+import { Notepad } from "@phosphor-icons/react/dist/ssr";
 import { ColumnDef } from "@tanstack/react-table";
 import dayjs from "dayjs";
 import { ArrowUpDown, MoreHorizontal } from "lucide-react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import UpdateLicoesCelula from "../../UpdateLicoesCelula";
 import { allLicaoReturnSchemaTable } from "./schema-licoes";
 
 export const columnsLicoes: ColumnDef<z.infer<typeof allLicaoReturnSchemaTable>>[] = [
+  // LANCANDO AS REDES
+  {
+    accessorKey: "licao_lancando_redes",
+    header: ({ column }) => {
+      return (
+        <Button
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === "asc")}
+        >
+          L. Redes
+          <ArrowUpDown className="ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      const data = row.original;
+      return (
+        <div className="flex w-full items-center justify-start mx-auto">
+          {data.licao_lancando_redes ?
+            <Badge className={`bg-green-400 hover:bg-green-300`}> lançando </Badge> :
+            <Badge className={`bg-sky-400 hover:bg-sky-300`}> normal </Badge>}
+
+        </div>
+      );
+    },
+    filterFn: 'includesString'
+  },
   // Titulo
   {
     accessorKey: "titulo",
@@ -41,12 +71,19 @@ export const columnsLicoes: ColumnDef<z.infer<typeof allLicaoReturnSchemaTable>>
           <div>
             <Notepad weight="light" color="#555353" size={23} />
           </div>
-          <p className="ml-3">{data.titulo}</p>
+          {data.link_objeto_aws ? (
+            <Link href={data.link_objeto_aws} target="_blank">
+              <p className="ml-3">{data.titulo}</p>
+            </Link>
+          ) : (
+            <p className="ml-3">{data.titulo}</p> // Renderiza o título mesmo sem o link
+          )}
         </div>
       );
     },
     filterFn: 'includesString'
   },
+
   // Data Inicial
   {
     accessorKey: "data_inicio",
@@ -129,27 +166,12 @@ export const columnsLicoes: ColumnDef<z.infer<typeof allLicaoReturnSchemaTable>>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
               <DropdownMenuLabel>Opções</DropdownMenuLabel>
-              <DropdownMenuSeparator />
-              {/* ACESSAR DADOS DA CELULA */}
+              {/* UPDATE LICAO */}
               <DropdownMenuItem asChild>
-                <DropdownMenuItem asChild className="w-full flex items-center justify-between gap-2 px-2 hover:bg-transparent hover:text-foreground">
-                  <button
-                    onClick={handleClickLicaoCelula}
-                    // id={celula?.id}
-                    className="flex items-center justify-between w-full cursor-pointer"
-                  >
-                    Acessar
-                    <MagnifyingGlass key={1221} size={18} />
-                  </button>
-                </DropdownMenuItem>
+                <UpdateLicoesCelula temaData={celula} />
               </DropdownMenuItem>
               <DropdownMenuSeparator />
-              {/* UPDATE CELULA */}
-              <DropdownMenuItem asChild>
-                {/* <UpdateTemaLicoesCelula temaData={celula} /> */}
-              </DropdownMenuItem>
-              <DropdownMenuSeparator />
-              {/* DELETAR CELULA */}
+              {/* DELETAR LICAO */}
               <DropdownMenuItem asChild>
                 {/* <DeleteTemaLIcaoCelula temaLicaoCelulaId={celula.id} TemaLicaoName={celula.titulo} /> */}
               </DropdownMenuItem>

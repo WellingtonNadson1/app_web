@@ -156,7 +156,7 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Período das licões</FormLabel>
+                <FormLabel>Período das lições</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>
@@ -199,7 +199,7 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
                   </PopoverContent>
                 </Popover>
                 <FormDescription>
-                  Período em que as licões serão mministradas nas células.
+                  Período em que as lições serão mministradas nas células.
                 </FormDescription>
                 <FormMessage />
               </FormItem>

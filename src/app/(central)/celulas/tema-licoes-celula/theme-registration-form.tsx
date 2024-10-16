@@ -152,7 +152,7 @@ export function ThemeRegistrationForm({ onSubmitForm }: ThemeRegistrationFormPro
             name="date"
             render={({ field }) => (
               <FormItem className="flex flex-col">
-                <FormLabel>Período das licões</FormLabel>
+                <FormLabel>Período das lições</FormLabel>
                 <Popover>
                   <PopoverTrigger asChild>
                     <FormControl>

@@ -103,7 +103,7 @@ export function DataTableTemasLicoesCelula<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="text-lg font-semibold text-gray-700 mt-2">
-                Tema de Licões de Célula
+                Tema de Lições de Célula
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">
