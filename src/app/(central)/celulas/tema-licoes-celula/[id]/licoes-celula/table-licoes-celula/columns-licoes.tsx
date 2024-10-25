@@ -19,6 +19,7 @@ import { ArrowUpDown, MoreHorizontal } from "lucide-react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { z } from "zod";
+import DeleteLIcaoCelula from "../../DeleteLicaoCelula";
 import UpdateLicoesCelula from "../../UpdateLicoesCelula";
 import { allLicaoReturnSchemaTable } from "./schema-licoes";
 
@@ -173,7 +174,7 @@ export const columnsLicoes: ColumnDef<z.infer<typeof allLicaoReturnSchemaTable>>
               <DropdownMenuSeparator />
               {/* DELETAR LICAO */}
               <DropdownMenuItem asChild>
-                {/* <DeleteTemaLIcaoCelula temaLicaoCelulaId={celula.id} TemaLicaoName={celula.titulo} /> */}
+                <DeleteLIcaoCelula licaoCelulaId={celula.id} licaoName={celula.titulo} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

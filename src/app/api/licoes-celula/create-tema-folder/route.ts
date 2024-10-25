@@ -2,7 +2,7 @@
 import { deepEqual } from "@/functions/compareObjects";
 import { normalizeFolderName } from "@/functions/normalize";
 import { createPrismaInstance, disconnectPrisma } from "@/services/database/db/prisma";
-import { CopyObjectCommand, DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { CopyObjectCommand, DeleteObjectCommand, DeleteObjectsCommand, ListObjectsV2Command, ObjectIdentifier, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextResponse } from 'next/server';
 
 interface FolderData {
@@ -353,40 +353,58 @@ export async function DELETE(request: Request) {
         throw new Error("Folder name not found.");
       }
 
-      console.log('getFolderNameTema', getFolderNameTema.folderName)
-
       // Verifica se o folderName termina com "/"
       const folderName = getFolderNameTema.folderName.endsWith("/")
         ? getFolderNameTema.folderName
         : `${getFolderNameTema.folderName}/`;
 
-      const params = {
+      const listParams = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
-        Key: folderName
-      }
+        Prefix: folderName
+      };
 
-      console.log('folderName', folderName)
-      console.log('params', params)
+      const listCommand = new ListObjectsV2Command(listParams);
+      const listedObjects = await s3.send(listCommand);
 
-      const command = new DeleteObjectCommand(params)
-      await s3.send(command)
+      const deleteParams: { Bucket: string, Delete: { Objects: ObjectIdentifier[] } } = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Delete: { Objects: [] }
+      };
 
-      console.log(`Folder ${folderName} deleted successfully.`);
+      listedObjects.Contents?.forEach((content) => {
+        if (content.Key) {
+          deleteParams.Delete.Objects.push({ Key: content.Key });
+        }
+      });
+
+      await prisma.$transaction(async (prismaTransaction) => {
+        // Delecao na S3
+        if (deleteParams.Delete.Objects.length > 0) {
+          const deleteCommand = new DeleteObjectsCommand(deleteParams);
+          await s3.send(deleteCommand);
+          console.log(`Deleted ${deleteParams.Delete.Objects.length} objects from S3`);
+        } else {
+          console.log('No objects to delete');
+        }
+
+        console.log(`Folder ${folderName} deleted successfully.`);
+
+        await prismaTransaction.temaLicaoCelula.delete({
+          where: { id: id },
+        });
+      });
+
+      await disconnectPrisma();
+
+      return NextResponse.json({ message: "Tema de Lição DELETADO" }, { status: 200 });
+
     } catch (error) {
       console.error("Error deleting folder:", error);
       throw new Error(`Could not delete folder ${id}`);
     }
-
-    const result = await prisma?.temaLicaoCelula.delete({
-      where: {
-        id: id,
-      },
-    });
-    await disconnectPrisma();
-
-    return NextResponse.json({ message: "Tema de Lição DELETADO" }, { status: 200 });
   } catch (error) {
     await disconnectPrisma();
-    return NextResponse.json({ message: 'Error get theme lesson' }, { status: 500 });
+    console.error("Erro ao deletar tema:", error);
+    return NextResponse.json({ message: 'Erro ao deletar tema: ' + error }, { status: 500 });
   }
 }

@@ -1,18 +1,18 @@
 "use client";
 import { cn } from "@/lib/utils";
-import { useUserDataStore } from "@/store/UserDataStore";
 import { FilePdf } from "@phosphor-icons/react";
 import { useQuery } from "@tanstack/react-query";
 import axios from "axios";
 import dayjs from "dayjs";
+import ptBr from "dayjs/locale/pt-br";
+import timezone from "dayjs/plugin/timezone";
+import utc from "dayjs/plugin/utc";
+import Link from "next/link";
 import { useEffect, useState } from "react";
-import { z } from "zod";
 import { Card } from "./ui/card";
-dayjs().locale();
-
-const ResponseSchema = z.string().array();
-
-type ApiResponse = z.infer<typeof ResponseSchema>;
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(ptBr);
 
 interface TemaData {
   id: string;
@@ -39,8 +39,6 @@ export default function LicoesCelula() {
   const URLTemaMonth = `/api/licoes-celula/tema-of-month`;
   const [id, setIdTema] = useState<string | null>(null); // Use null as initial value
 
-  const { token } = useUserDataStore.getState();
-
   const GetIdTema = async () => {
     const { data } = await axios.get(URLTemaMonth);
     return data;
@@ -55,7 +53,7 @@ export default function LicoesCelula() {
   };
 
   const { data: dataTema } = useQuery<TemaData[]>({
-    queryKey: ["idTemaMonth"],
+    queryKey: ["idTemaMonth", "licoesCelulasIbb"],
     queryFn: GetIdTema,
   });
 
@@ -64,6 +62,7 @@ export default function LicoesCelula() {
     if (dataTema && !id) {
       setIdTema(dataTema[0]?.id || ""); // Ensure there's a valid id
       console.log("Updated idTema: ", dataTema[0]?.id);
+      console.log('dataTema: ', dataTema)
     }
   }, [dataTema, id]);
 
@@ -80,111 +79,10 @@ export default function LicoesCelula() {
     console.log('licoesCelula test', licoesCelula)
   }
 
-  // Pegamos o mês e ano atual
-  const month = dayjs().month();
-  // const year = dayjs().year();
-  const toDay = dayjs();
+  const licoesCelulaOrdenadas = licoesCelula?.sort((a, b) => {
+    return dayjs(a.data_inicio).valueOf() - dayjs(b.data_inicio).valueOf();
+  });
 
-  // Definimos a primeira data do mês
-  let startDate = dayjs().set("month", month).set("date", 1);
-
-  // Criamos um array para armazenar as semanas
-  const weeks: { start: dayjs.Dayjs; end: dayjs.Dayjs }[] = [];
-  const weeksDate: { start: string; end: string }[] = [];
-
-  // Loop para iterar pelas semanas do mês
-  while (startDate.month() === month) {
-    // Pegamos o dia da semana da data atual (0 = domingo, 6 = sábado)
-    // const dayOfWeek = startDate.day();
-
-    // Ajustamos a data para o início da semana (domingo)
-    const weekStart = startDate.startOf("week");
-
-    // Ajustamos a data para o fim da semana (sábado)
-    const weekEnd = weekStart.add(6, "day");
-
-    // Ajustamos a data de início e fim da semana para garantir que estejam dentro do mês atual
-    const validWeekStart = weekStart.month() === month ? weekStart : startDate;
-    const validWeekEnd =
-      weekEnd.month() === month ? weekEnd : startDate.endOf("month");
-
-    // Ajustamos a data para o início da semana (domingo) caso o mes inicie no domingo
-    // const weekStart = startDate.subtract(dayOfWeek, "day");
-
-    // Ajustamos a data para o início da semana (segunda-feira, no caso de 1 de julho de 2024)
-    // const weekStart = startDate.subtract(
-    //   dayOfWeek === 0 ? 6 : dayOfWeek - 1,
-    //   "day",
-    // );
-
-    // Adicionamos a semana ao array
-    // weeks.push({
-    //   start: weekStart,
-    //   end: weekEnd,
-    // });
-
-    // Adicionamos a semana ao array
-    weeks.push({
-      start: validWeekStart,
-      end: validWeekEnd,
-    });
-
-    // weeksDate.push({
-    //   start: weekStart.format("DD/MM"),
-    //   end: weekEnd.format("DD/MM"),
-    // });
-    //
-    weeksDate.push({
-      start: validWeekStart.format("DD/MM"),
-      end: validWeekEnd.format("DD/MM"),
-    });
-
-    // Incrementamos a data para o início da próxima semana
-    startDate = weekEnd.add(1, "day");
-  }
-
-  const temaMesCelula = "Tome a sua Cruz e Siga-Me";
-  const subTemaMesCelula =
-    "Se alguém quer ser um dos meus seguidores, negue-se a si mesmo, tome a sua cruz e siga-me (Mt 16:24)";
-
-  const statusLicoes = [
-    {
-      id: 1,
-      title: "O PREÇO DA CRUCIFICAÇÃO",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Gl 3:13",
-    },
-    {
-      id: 2,
-      title: "MANTENDO OS OLHOS EM JESUS",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Hb 12:2",
-    },
-    {
-      id: 3,
-      title: "TOMAR A CRUZ",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Mc 16:24-25",
-    },
-    {
-      id: 4,
-      title: "CRUCIFICAR A CARNE",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Gn 4:7",
-    },
-    {
-      id: 5,
-      title: "POR ELE FOMOS CURADOS",
-      periodo: weeks,
-      icon: FilePdf,
-      versiculo: "Is 53:4-5",
-      lancando: true,
-    },
-  ];
 
   return (
     <Card className="bg-white relative w-full px-2 mx-auto mb-4">
@@ -201,9 +99,12 @@ export default function LicoesCelula() {
             </div>
           </div>
           <div className="grid grid-cols-1 gap-4 px-2 py-1 mb-3 sm:grid-cols-2">
-            {licoesCelula?.map((stat, index) =>
-              dataTema ? (
-                <a
+            {licoesCelulaOrdenadas?.map((stat, index) => {
+              const toDay = dayjs().tz("America/Sao_Paulo");
+              const licaoMinistrada = dayjs(stat.data_termino).isAfter(toDay);
+
+              return (
+                <Link
                   href={`${stat.link_objeto_aws}`}
                   target="_blank"
                   key={stat.id}
@@ -216,7 +117,7 @@ export default function LicoesCelula() {
                     <div className="flex items-center justify-between w-full gap-4">
                       <div>
                         <div className="mb-0 font-sans text-base font-semibold leading-normal text-gray-900 uppercase">
-                          {stat.titulo}
+                          {index + 1}ª - {stat.titulo}
                         </div>
                         <div>
                           <div className="flex items-center gap-3">
@@ -227,16 +128,14 @@ export default function LicoesCelula() {
                           <div className="mt-2 text-sm">
                             Período:
                             <span className="ml-2 text-sm leading-6 text-gray-500">
-                              {/*adiciono ou subtraio um dia para regular os dias */}
-                              {/* {weeksDate[index + 1]?.start} à */}
-                              {weeksDate[index]?.start} à
+                              {dayjs(stat.data_inicio).format('DD/MM')} à
                             </span>
                             <span className="ml-1 text-sm leading-6 text-gray-500">
-                              {weeksDate[index]?.end}
+                              {dayjs(stat.data_termino).format('DD/MM')}
                             </span>
                           </div>
                           <div className="flex items-center mt-3">
-                            {new Date(stat.data_inicio) ? (
+                            {licaoMinistrada ? (
                               <span className="text-sm font-normal leading-6 text-red-500">
                                 pendente
                               </span>
@@ -257,11 +156,9 @@ export default function LicoesCelula() {
                       </div>
                     </div>
                   </div>
-                </a>
-              ) : (
-                // Handle the case where data or data[index] is not valid
-                <div key={stat.id}>Invalid Data</div>
-              ),
+                </Link>
+              )
+            }
             )}
           </div>
         </div>

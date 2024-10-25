@@ -2,7 +2,7 @@
 import { deepEqualLesson } from "@/functions/compareObjects";
 import { normalizeFolderName } from "@/functions/normalize";
 import { createPrismaInstance, disconnectPrisma } from "@/services/database/db/prisma";
-import { CopyObjectCommand, DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
+import { DeleteObjectCommand, PutObjectCommand, S3Client } from "@aws-sdk/client-s3";
 import { NextResponse } from 'next/server';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -73,7 +73,7 @@ export async function POST(request: Request) {
     console.log('folderKey', folderKey)
 
     if (pdfFile) {
-      // para que seja possivel o envio do pdfFile preciso primeiro converte-lo por formato aproprioado
+      // para que seja possivel o envio do pdfFile preciso primeiro converte-lo pro formato apropriado
       const arrayBuffer = await pdfFile.arrayBuffer();
       const buffer = Buffer.from(arrayBuffer);
 
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
         ContentType: pdfFile.type, // Define o tipo de conteúdo como PDF
       };
       const command = new PutObjectCommand(pdfParams);
-      const result = await s3.send(command);
+      await s3.send(command);
     }
 
     // Gera o link do folder pa poder salvar no DB
@@ -165,7 +165,6 @@ export async function PUT(request: Request) {
   const id = formData.get('id') as string;
   const pdfFile = formData.get('pdfFile[]') as File;
 
-
   if (!id) {
     return NextResponse.json({ message: "ID is required" }, { status: 400 });
   }
@@ -201,14 +200,13 @@ export async function PUT(request: Request) {
         }
       })
 
-      if (!getFolderNameLicao || !getFolderNameLicao.titulo) {
-        throw new Error("Licao name not found.");
+      if (!getFolderNameLicao) {
+        throw new Error("Licao not found.");
       }
       // Validação de valores nulos
       if (
         !getFolderNameLicao.titulo ||
         !getFolderNameLicao.versiculo_chave ||
-        !getFolderNameLicao.licao_lancando_redes ||
         !getFolderNameLicao.TemaLicaoCelula?.folderName ||
         !getFolderNameLicao.TemaLicaoCelula ||
         !getFolderNameLicao.link_objeto_aws
@@ -239,22 +237,30 @@ export async function PUT(request: Request) {
       const folderKeyNormalize = normalizeFolderName(currentDataObject?.folderName)
 
       const pdfFileNameNormalize = normalizeFolderName(pdfFile.name)
+
       const folderKey = `${folderKeyNormalize}${uuidv4()}_${pdfFileNameNormalize.replace(/\/$/, '')}`;
 
       const lastPart = getFolderNameLicao.link_objeto_aws.split('/').pop();
 
       const folderKeyOld = `${folderKeyNormalize}${lastPart}`
 
-      // COPIAR OBJETO
-      const copyParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        CopySource: `${process.env.AWS_S3_BUCKET_NAME}/${folderKeyNormalize}${lastPart}`,
-        Key: folderKey
-      }
-      const copyCommand = new CopyObjectCommand(copyParams)
-      await s3.send(copyCommand)
 
-      // DELETAR PDF ANTEIOR
+      if (pdfFile) {
+        // para que seja possivel o envio do pdfFile preciso primeiro converte-lo pro formato apropriado
+        const arrayBuffer = await pdfFile.arrayBuffer();
+        const buffer = Buffer.from(arrayBuffer);
+
+        const pdfParams = {
+          Bucket: process.env.AWS_S3_BUCKET_NAME || bucketName,
+          Key: folderKey, // Nome único para o PDF
+          Body: buffer, // Converte o arquivo para ArrayBuffer
+          ContentType: pdfFile.type, // Define o tipo de conteúdo como PDF
+        };
+        const command = new PutObjectCommand(pdfParams);
+        await s3.send(command);
+      }
+
+      // DELETAR OBJETO ANTEIOR
       const params = {
         Bucket: process.env.AWS_S3_BUCKET_NAME,
         Key: folderKeyOld
@@ -262,16 +268,14 @@ export async function PUT(request: Request) {
       const deleteCommand = new DeleteObjectCommand(params)
       await s3.send(deleteCommand)
 
-      console.log(`Folder update successfully.`);
-
-      // Extrair os dados do formData para comparação
-      console.log('formData', formData)
+      // Extrair os dados do formData para fazer update no DB
       const formTitulo = formData.get('titulo') as string;
       const formVersiculoChave = formData.get('versiculo_chave') as string;
       const formDataInicio = new Date(formData.get('date[from]') as string);
       const formDataTermino = new Date(formData.get('date[to]') as string);
       const licao_lancando_redes = formData.get("licao_lancando_redes") === "true"
 
+      // Gera o link do folder pa poder salvar no DB
       const linkObjetoAWS = `https://${bucketName}.s3.${bucketRegion}.amazonaws.com/${folderKey}`;
 
       await prisma?.licaoCelula.update({
@@ -290,12 +294,13 @@ export async function PUT(request: Request) {
       await disconnectPrisma();
       return NextResponse.json({ message: "Lição ATUALIZADA" }, { status: 200 });
     } catch (error) {
-      console.error("Error deleting folder:", error);
+      console.error("Error updating licao: ", error);
       throw new Error(`Could not update folder ${id}`);
     }
   } catch (error) {
     await disconnectPrisma();
-    return NextResponse.json({ message: 'Error in Update Licao' }, { status: 500 });
+    console.error("Error updating licao: ", error);
+    return NextResponse.json({ message: 'Error in Update Licao', error }, { status: 500 });
   }
 }
 
@@ -426,3 +431,99 @@ export async function PUT(request: Request) {
 //     return NextResponse.json({ message: 'Error get theme lesson' }, { status: 500 });
 //   }
 // }
+
+export async function DELETE(request: Request) {
+  const { searchParams } = new URL(request.url)
+  const id = searchParams.get("licaoCelulaId")
+
+  if (!id) {
+    return NextResponse.json({ message: "ID is required" }, { status: 400 });
+  }
+
+  try {
+    const prisma = createPrismaInstance();
+
+    if (!prisma) {
+      throw new Error("Prisma instance is null");
+    }
+
+    try {
+      const getFolderNameLicao = await prisma?.licaoCelula.findUnique({
+        where: {
+          id: id
+        },
+        select: {
+          titulo: true,
+          TemaLicaoCelula: {
+            select: {
+              folderName: true
+            }
+          },
+          licao_lancando_redes: true,
+          link_objeto_aws: true,
+          versiculo_chave: true,
+          data_inicio: true,
+          data_termino: true,
+        }
+      })
+
+      if (!getFolderNameLicao) {
+        throw new Error("Licao not found.");
+      }
+      // Validação de valores nulos
+      if (
+        !getFolderNameLicao.titulo ||
+        !getFolderNameLicao.versiculo_chave ||
+        !getFolderNameLicao.TemaLicaoCelula?.folderName ||
+        !getFolderNameLicao.TemaLicaoCelula ||
+        !getFolderNameLicao.link_objeto_aws
+      ) {
+        throw new Error("Some required fields are null");
+      }
+
+      const currentDataObject: FolderLessonData = {
+        titulo: getFolderNameLicao.titulo,
+        folderName: getFolderNameLicao.TemaLicaoCelula.folderName ?? "", // Substituir null por string vazia
+        TemaLicaoCelula: {
+          folderName: getFolderNameLicao.TemaLicaoCelula.folderName ?? "" // Garante que nunca seja null
+        },
+        versiculo_chave: getFolderNameLicao.versiculo_chave,
+        licao_lancando_redes: getFolderNameLicao.licao_lancando_redes,
+        link_objeto_aws: getFolderNameLicao.link_objeto_aws!,
+        data_inicio: getFolderNameLicao.data_inicio,
+        data_termino: getFolderNameLicao.data_termino,
+      };
+
+      const folderKeyNormalize = normalizeFolderName(currentDataObject?.folderName)
+
+      const lastPart = getFolderNameLicao.link_objeto_aws.split('/').pop();
+
+      const folderKeyOld = `${folderKeyNormalize}${lastPart}`
+
+      const params = {
+        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Key: folderKeyOld
+      }
+
+      const command = new DeleteObjectCommand(params)
+      await s3.send(command)
+
+      console.log(`Folder ${folderKeyOld} deleted successfully.`);
+    } catch (error) {
+      console.error("Error deleting folder:", error);
+      throw new Error(`Could not delete folder ${id}`);
+    }
+
+    await prisma?.licaoCelula.delete({
+      where: {
+        id: id,
+      },
+    });
+    await disconnectPrisma();
+
+    return NextResponse.json({ message: "Lição DELETADA" }, { status: 200 });
+  } catch (error) {
+    await disconnectPrisma();
+    return NextResponse.json({ message: 'Error delete lesson' }, { status: 500 });
+  }
+}
