@@ -2,7 +2,8 @@
 // import { authOptions } from '../api/auth/[...nextauth]/auth'
 import "@/./app/globals.css";
 import { auth } from "@/auth";
-import Sidebar from "@/components/sidebar/Sidebar";
+import MySidebar from "@/components/sidebar/MySidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Providers } from "@/providers/providers";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
 import { RedirectType } from "next/dist/client/components/redirect";
@@ -68,12 +69,14 @@ export default async function RootLayout({
           shadow="0 0 10px #fff,0 0 5px #fff"
         />
         <div className="overflow-x-auto overflow-y-auto">
-          <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
+          <div className="absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
-            <Providers>
-              <Sidebar />
-              <div className="w-full px-2 py-2 mx-auto">{children}</div>
-            </Providers>
+            <SidebarProvider>
+              <Providers>
+                <MySidebar />
+                <div className="w-full px-2 mx-auto">{children}</div>
+              </Providers>
+            </SidebarProvider>
           </div>
         </div>
       </body>

@@ -43,7 +43,7 @@ export default async function RootLayout({
     <html lang="pt">
       <body>
         <div className="overflow-x-auto overflow-y-auto">
-          {/* <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div> */}
+          {/* <div className="absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div> */}
           <div className="flex min-h-screen">
             <InitializerUserStore
               id={id ?? ""}
@@ -70,7 +70,7 @@ export default async function RootLayout({
                 speed={200}
                 shadow="0 0 10px #FFFF00,0 0 5px #FFFF00"
               />
-              <div className="w-full px-2 py-2 mx-auto">{children}</div>
+              <div className="w-full px-2 mx-auto">{children}</div>
             </Providers>
           </div>
         </div>

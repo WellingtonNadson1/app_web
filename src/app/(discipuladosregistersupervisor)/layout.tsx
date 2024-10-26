@@ -2,7 +2,8 @@
 // import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import "@/./app/globals.css";
 import { auth } from "@/auth";
-import Sidebar from "@/components/sidebar/Sidebar";
+import MySidebar from "@/components/sidebar/MySidebar";
+import { SidebarProvider } from "@/components/ui/sidebar";
 import { Providers } from "@/providers/providers";
 import { InitializerUserStore } from "@/store/InitializerUserStore";
 import { RedirectType } from "next/dist/client/components/redirect";
@@ -44,7 +45,7 @@ export default async function RootLayout({
     <html lang="pt">
       <body>
         <div className="overflow-x-auto overflow-y-auto">
-          <div className="absolute top-0 min-h-[18.75rem] w-screen bg-[#1D70B6]/90"></div>
+          <div className="absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
             <InitializerUserStore
               id={id ?? ""}
@@ -58,21 +59,23 @@ export default async function RootLayout({
                 refreshToken ?? { id: "", expiresIn: 0, userIdRefresh: "" }
               }
             />
-            <Providers>
-              <Sidebar />
-              <NextTopLoader
-                color="#FFFF00"
-                initialPosition={0.08}
-                crawlSpeed={200}
-                height={3}
-                crawl={true}
-                showSpinner={false}
-                easing="ease"
-                speed={200}
-                shadow="0 0 10px #FFFF00,0 0 5px #FFFF00"
-              />
-              <div className="w-full px-2 py-2 mx-auto">{children}</div>
-            </Providers>
+            <SidebarProvider>
+              <Providers>
+                <MySidebar />
+                <NextTopLoader
+                  color="#FFFF00"
+                  initialPosition={0.08}
+                  crawlSpeed={200}
+                  height={3}
+                  crawl={true}
+                  showSpinner={false}
+                  easing="ease"
+                  speed={200}
+                  shadow="0 0 10px #FFFF00,0 0 5px #FFFF00"
+                />
+                <div className="w-full px-2 mx-auto">{children}</div>
+              </Providers>
+            </SidebarProvider>
           </div>
         </div>
       </body>
