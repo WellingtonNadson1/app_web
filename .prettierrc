@@ -4,5 +4,6 @@
   "endOfLine": "crlf",
   "trimTrailingWhitespace": true,
   "insertFinalNewline": true,
-  "semi": true
+  "singleQuote": true,
+  "semi": false
 }
