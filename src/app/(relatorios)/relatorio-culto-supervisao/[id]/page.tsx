@@ -1,7 +1,7 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Form,
   FormControl,
@@ -9,89 +9,89 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { addYears } from "date-fns";
-import dayjs from "dayjs";
-import ptBr from "dayjs/locale/pt-br";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { Fragment, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+} from '@/components/ui/select'
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
+import { useData } from '@/providers/providers'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { addYears } from 'date-fns'
+import dayjs from 'dayjs'
+import ptBr from 'dayjs/locale/pt-br'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Fragment, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 import {
   FormRelatorioDataSchema,
   GroupedForCulto,
   Pessoa,
   PresencaForDate,
-} from "./schema";
-dayjs.extend(localizedFormat);
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.locale(ptBr);
-dayjs.tz.setDefault("America/Sao_Paulo");
+} from './schema'
+dayjs.extend(localizedFormat)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.locale(ptBr)
+dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function StatsCardRelatorios() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
 
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 
   const [groupedForCell, setGroupedForCell] = useState<
     Record<string, Pessoa[]> | undefined
-  >();
+  >()
   const [dateCultoData, setDateCultoData] = useState<GroupedForCulto | null>(
     null,
-  );
-  const [corSupervisao, setCorSupervisao] = useState<string>("");
-  const [idCultos, setIdCultos] = useState<string[] | undefined>();
-  const [datasUnic, setDatasUnic] = useState<string[] | undefined>();
+  )
+  const [corSupervisao, setCorSupervisao] = useState<string>('')
+  const [idCultos, setIdCultos] = useState<string[] | undefined>()
+  const [datasUnic, setDatasUnic] = useState<string[] | undefined>()
   const [numberOfRowsCell, setNumberOfRowsCell] = useState<
     number[] | undefined
-  >();
+  >()
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
     resolver: zodResolver(FormRelatorioDataSchema),
-  });
+  })
 
-  const today = new Date();
-  const yearCalendar = addYears(today, 5).getFullYear();
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
-  const [totalCultos, setTotalCultos] = useState<number>(0);
-  const [totalCultosPrimicias, setTotalCultosPrimicias] = useState<number>(0);
-  const [totalCultosSacrificio, setTotalCultosSacrificio] = useState<number>(0);
-  const [totalCultosQuarta, setTotalCultosQuarta] = useState<number>(0);
-  const [totalCultosSabado, setTotalCultosSabado] = useState<number>(0);
+  const today = new Date()
+  const yearCalendar = addYears(today, 5).getFullYear()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [totalCultos, setTotalCultos] = useState<number>(0)
+  const [totalCultosPrimicias, setTotalCultosPrimicias] = useState<number>(0)
+  const [totalCultosSacrificio, setTotalCultosSacrificio] = useState<number>(0)
+  const [totalCultosQuarta, setTotalCultosQuarta] = useState<number>(0)
+  const [totalCultosSabado, setTotalCultosSabado] = useState<number>(0)
   const [totalCultosDomingoManha, setTotalCultosDomingoManha] =
-    useState<number>(0);
+    useState<number>(0)
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
-    useState<number>(0);
+    useState<number>(0)
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
 
   const handleRelatorio = async ({
     startDate,
@@ -99,10 +99,10 @@ export default function StatsCardRelatorios() {
     superVisionId,
   }: z.infer<typeof FormRelatorioDataSchema>) => {
     try {
-      setIsLoadingSubmitForm(true);
+      setIsLoadingSubmitForm(true)
 
       // Adicionando um dia ao endDate
-      const adjustedEndDate = dayjs(endDate).add(1, "day").toISOString();
+      const adjustedEndDate = dayjs(endDate).add(1, 'day').toISOString()
 
       // Executando as chamadas de API em paralelo com Promise.all
       const [presencaGeralResponse, relatorioResponse] = await Promise.all([
@@ -116,27 +116,27 @@ export default function StatsCardRelatorios() {
           startDate,
           endDate: adjustedEndDate,
         }),
-      ]);
+      ])
 
-      const presencaGeralCultos = presencaGeralResponse.data as Pessoa[];
-      const relatorioData = relatorioResponse.data;
+      const presencaGeralCultos = presencaGeralResponse.data as Pessoa[]
+      const relatorioData = relatorioResponse.data
 
       if (presencaGeralCultos) {
         // Pegando as datas unicas para o THeader
-        const datasUnicas = new Set<string>();
+        const datasUnicas = new Set<string>()
 
         presencaGeralCultos.forEach((membro) => {
           membro.presencasFiltradas.forEach((presenca) => {
-            datasUnicas.add(presenca.presenca_culto.data_inicio_culto);
-          });
-        });
+            datasUnicas.add(presenca.presenca_culto.data_inicio_culto)
+          })
+        })
 
-        const datasArray: string[] = Array.from(datasUnicas).sort();
-        setDatasUnic(datasArray);
+        const datasArray: string[] = Array.from(datasUnicas).sort()
+        setDatasUnic(datasArray)
         // Fim do get for datas unicas para o THeader
 
-        const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
-        setGroupedForCell(dataGroupedForCell);
+        const dataGroupedForCell = groupDataByCell(presencaGeralCultos)
+        setGroupedForCell(dataGroupedForCell)
       }
 
       if (
@@ -144,147 +144,147 @@ export default function StatsCardRelatorios() {
         relatorioData &&
         presencaGeralCultos.length > 0
       ) {
-        const ids = new Set<string>();
+        const ids = new Set<string>()
         presencaGeralCultos.forEach((membro) => {
           const presencasOrdenadas = membro.presencasFiltradas.sort(
             (a, b) =>
               new Date(a.presenca_culto.data_inicio_culto).getTime() -
               new Date(b.presenca_culto.data_inicio_culto).getTime(),
-          );
+          )
           presencasOrdenadas.forEach((t) => {
-            ids.add(t.cultoIndividualId);
-          });
-        });
+            ids.add(t.cultoIndividualId)
+          })
+        })
 
         const sortedIds = Array.from(ids).sort((a, b) => {
           const cultoA = presencaGeralCultos.find((membro) =>
             membro.presencasFiltradas.some(
               (presenca) => presenca.cultoIndividualId === a,
             ),
-          );
+          )
           const cultoB = presencaGeralCultos.find((membro) =>
             membro.presencasFiltradas.some(
               (presenca) => presenca.cultoIndividualId === b,
             ),
-          );
+          )
 
           const dataInicioA = cultoA?.presencasFiltradas.find(
             (presenca) => presenca.cultoIndividualId === a,
-          )?.presenca_culto.data_inicio_culto;
+          )?.presenca_culto.data_inicio_culto
           const dataInicioB = cultoB?.presencasFiltradas.find(
             (presenca) => presenca.cultoIndividualId === b,
-          )?.presenca_culto.data_inicio_culto;
+          )?.presenca_culto.data_inicio_culto
 
           if (dataInicioA && dataInicioB) {
             return (
               new Date(dataInicioA).getTime() - new Date(dataInicioB).getTime()
-            );
+            )
           } else {
-            return 0;
+            return 0
           }
-        });
-        setIdCultos(sortedIds);
-        idCultos && console.log("IDS: ", idCultos);
+        })
+        setIdCultos(sortedIds)
+        idCultos && console.log('IDS: ', idCultos)
       }
 
-      const relatorio: PresencaForDate[] = Object.values(relatorioData);
+      const relatorio: PresencaForDate[] = Object.values(relatorioData)
 
       if (!relatorio) {
-        console.log("Erro na resposta da API:", relatorioData.statusText);
-        return;
+        console.log('Erro na resposta da API:', relatorioData.statusText)
+        return
       }
 
       const dataGroupedForDateCulto: GroupedForCulto =
-        groupDataByDateCulto(relatorio);
+        groupDataByDateCulto(relatorio)
 
       setCorSupervisao(
         relatorio[0].presencas_culto[0].membro.supervisao_pertence.nome,
-      );
-      console.log("relatorio", relatorio);
+      )
+      console.log('relatorio', relatorio)
 
-      const Cultos = relatorio.pop();
-      setTotalCultos(Cultos as unknown as number);
+      const Cultos = relatorio.pop()
+      setTotalCultos(Cultos as unknown as number)
 
-      const CultoDomingoTarde = relatorio.pop();
-      setTotalCultosDomingoTarde(CultoDomingoTarde as unknown as number);
+      const CultoDomingoTarde = relatorio.pop()
+      setTotalCultosDomingoTarde(CultoDomingoTarde as unknown as number)
 
-      const CultoDomingoManha = relatorio.pop();
-      setTotalCultosDomingoManha(CultoDomingoManha as unknown as number);
+      const CultoDomingoManha = relatorio.pop()
+      setTotalCultosDomingoManha(CultoDomingoManha as unknown as number)
 
-      const CultoSabado = relatorio.pop();
-      setTotalCultosSabado(CultoSabado as unknown as number);
+      const CultoSabado = relatorio.pop()
+      setTotalCultosSabado(CultoSabado as unknown as number)
 
-      const cultoDomingoSacrificio = relatorio.pop();
-      setTotalCultosSacrificio(cultoDomingoSacrificio as unknown as number);
+      const cultoDomingoSacrificio = relatorio.pop()
+      setTotalCultosSacrificio(cultoDomingoSacrificio as unknown as number)
 
-      const cultoPrimicia = relatorio.pop();
-      setTotalCultosPrimicias(cultoPrimicia as unknown as number);
+      const cultoPrimicia = relatorio.pop()
+      setTotalCultosPrimicias(cultoPrimicia as unknown as number)
 
-      const CultoQuarta = relatorio.pop();
-      setTotalCultosQuarta(CultoQuarta as unknown as number);
+      const CultoQuarta = relatorio.pop()
+      setTotalCultosQuarta(CultoQuarta as unknown as number)
 
-      setDateCultoData(dataGroupedForDateCulto);
+      setDateCultoData(dataGroupedForDateCulto)
 
-      setIsLoadingSubmitForm(false);
+      setIsLoadingSubmitForm(false)
     } catch (error) {
-      setIsLoadingSubmitForm(false);
-      console.log("Erro ao buscar o relatório:", error);
+      setIsLoadingSubmitForm(false)
+      console.log('Erro ao buscar o relatório:', error)
     }
-  };
+  }
 
   const handleFunctions = (data: z.infer<typeof FormRelatorioDataSchema>) => {
-    handleRelatorio(data);
-  };
+    handleRelatorio(data)
+  }
 
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
-    const groupedDataForDateCulto: GroupedForCulto = {};
+    const groupedDataForDateCulto: GroupedForCulto = {}
 
     relatorio.forEach((entry) => {
-      const dateCultoId = entry.data_inicio_culto;
+      const dateCultoId = entry.data_inicio_culto
       if (dateCultoId) {
         if (!groupedDataForDateCulto[dateCultoId]) {
-          groupedDataForDateCulto[dateCultoId] = [];
+          groupedDataForDateCulto[dateCultoId] = []
         }
-        groupedDataForDateCulto[dateCultoId].push(entry);
+        groupedDataForDateCulto[dateCultoId].push(entry)
       }
-    });
-    return groupedDataForDateCulto;
-  };
+    })
+    return groupedDataForDateCulto
+  }
 
   const groupDataByCell = (relatorio: Pessoa[]): Record<string, Pessoa[]> => {
-    const grupos: Record<string, Pessoa[]> = {};
+    const grupos: Record<string, Pessoa[]> = {}
 
     relatorio.forEach((person) => {
-      const cellName = person.celula?.nome;
+      const cellName = person.celula?.nome
 
       if (cellName) {
         if (!grupos[cellName]) {
-          grupos[cellName] = [];
+          grupos[cellName] = []
         }
-        grupos[cellName].push(person);
+        grupos[cellName].push(person)
       }
-    });
-    return grupos;
-  };
+    })
+    return grupos
+  }
 
-  const newCorSupervisao = CorSupervision(corSupervisao);
-  console.log("newCorSupervisao", newCorSupervisao);
-  const Supervisor = ListSupervisores(corSupervisao);
+  const newCorSupervisao = CorSupervision(corSupervisao)
+  console.log('newCorSupervisao', newCorSupervisao)
+  const Supervisor = ListSupervisores(corSupervisao)
 
   useEffect(() => {
-    const rowsCellName = new Set<number>();
+    const rowsCellName = new Set<number>()
     const rowsNameCell: number[] =
       (groupedForCell &&
         idCultos &&
         Object.keys(groupedForCell)?.map((cellName, cellIndex) => {
-          const length = groupedForCell[cellName].length;
-          rowsCellName.add(length);
-          return length; // Return the length to populate the array
+          const length = groupedForCell[cellName].length
+          rowsCellName.add(length)
+          return length // Return the length to populate the array
         })) ||
-      [];
+      []
 
-    setNumberOfRowsCell(rowsNameCell);
-  }, [groupedForCell, idCultos]); // Add dependencies to useEffect
+    setNumberOfRowsCell(rowsNameCell)
+  }, [groupedForCell, idCultos]) // Add dependencies to useEffect
 
   return (
     <Fragment>
@@ -294,7 +294,7 @@ export default function StatsCardRelatorios() {
             <div className="p-3">
               {/* HEADER */}
               <div className="flex items-center justify-start gap-4">
-                <Link href={"/dashboard"}>
+                <Link href={'/dashboard'}>
                   <Image
                     className="cursor-pointer"
                     src="/images/logo-ibb-1.svg"
@@ -328,10 +328,10 @@ export default function StatsCardRelatorios() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -339,8 +339,8 @@ export default function StatsCardRelatorios() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -392,10 +392,10 @@ export default function StatsCardRelatorios() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -403,8 +403,8 @@ export default function StatsCardRelatorios() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -425,7 +425,7 @@ export default function StatsCardRelatorios() {
                                   toYear={yearCalendar}
                                   disabled={(date) =>
                                     date > new Date() ||
-                                    date < new Date("1900-01-01")
+                                    date < new Date('1900-01-01')
                                   }
                                   initialFocus
                                 />
@@ -612,7 +612,7 @@ export default function StatsCardRelatorios() {
           {totalCultos ? (
             <div className="pb-2 pl-2">
               <p className="p-2 text-base font-medium uppercase text-start">
-                SUPERVISOR(ES):{" "}
+                SUPERVISOR(ES):{' '}
                 <span className="font-normal">{Supervisor}</span>
               </p>
             </div>
@@ -627,14 +627,14 @@ export default function StatsCardRelatorios() {
             {totalCultos ? (
               <div>
                 <p className="p-2 text-base font-medium uppercase text-start">
-                  TOTAL DE CULTOS:{" "}
+                  TOTAL DE CULTOS:{' '}
                   <span className="font-normal ">{totalCultos}</span>
                 </p>
               </div>
             ) : (
               <div>
                 <p className="p-2 text-base font-medium uppercase text-start">
-                  TOTAL DE CULTOS:{" "}
+                  TOTAL DE CULTOS:{' '}
                   <span className="font-normal ">Sem Registro</span>
                 </p>
               </div>
@@ -642,7 +642,7 @@ export default function StatsCardRelatorios() {
             {totalCultosPrimicias ? (
               <div>
                 <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE PRIMÍCIAS:{" "}
+                  CULTOS DE PRIMÍCIAS:{' '}
                   <span className="font-normal">{totalCultosPrimicias}</span>
                 </p>
               </div>
@@ -652,7 +652,7 @@ export default function StatsCardRelatorios() {
             {totalCultosSacrificio ? (
               <div>
                 <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO DE SACRIFÍCIO:{" "}
+                  DOMINGO DE SACRIFÍCIO:{' '}
                   <span className="font-normal">{totalCultosSacrificio}</span>
                 </p>
               </div>
@@ -666,12 +666,12 @@ export default function StatsCardRelatorios() {
             <div>
               {totalCultosDomingoManha ? (
                 <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO MANHÃ:{" "}
+                  DOMINGO MANHÃ:{' '}
                   <span className="font-normal">{totalCultosDomingoManha}</span>
                 </p>
               ) : (
                 <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO MANHÃ:{" "}
+                  DOMINGO MANHÃ:{' '}
                   <span className="font-normal">Sem Registro</span>
                 </p>
               )}
@@ -679,12 +679,12 @@ export default function StatsCardRelatorios() {
             <div>
               {totalCultosDomingoTarde ? (
                 <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO TARDE:{" "}
+                  DOMINGO TARDE:{' '}
                   <span className="font-normal">{totalCultosDomingoTarde}</span>
                 </p>
               ) : (
                 <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO TARDE:{" "}
+                  DOMINGO TARDE:{' '}
                   <span className="font-normal">Sem Registro</span>
                 </p>
               )}
@@ -692,12 +692,12 @@ export default function StatsCardRelatorios() {
             <div>
               {totalCultosSabado ? (
                 <p className="p-2 font-medium uppercase text-start">
-                  SÁBADO (CPD):{" "}
+                  SÁBADO (CPD):{' '}
                   <span className="font-normal">{totalCultosSabado}</span>
                 </p>
               ) : (
                 <p className="p-2 font-medium uppercase text-start">
-                  SÁBADO (CPD):{" "}
+                  SÁBADO (CPD):{' '}
                   <span className="font-normal">Sem Registro</span>
                 </p>
               )}
@@ -705,12 +705,12 @@ export default function StatsCardRelatorios() {
             <div>
               {totalCultosQuarta ? (
                 <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE QUARTA:{" "}
+                  CULTOS DE QUARTA:{' '}
                   <span className="font-normal">{totalCultosQuarta}</span>
                 </p>
               ) : (
                 <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE QUARTA:{" "}
+                  CULTOS DE QUARTA:{' '}
                   <span className="font-normal">Sem Registro</span>
                 </p>
               )}
@@ -796,9 +796,9 @@ export default function StatsCardRelatorios() {
                     >
                       <div className="">
                         <p>{`${dayjs(dataCulto)
-                          .format("ddd")
+                          .format('ddd')
                           .toUpperCase()}`}</p>
-                        <p>{`${dayjs(dataCulto).format("DD/MM")}`}</p>
+                        <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
                       </div>
                     </th>
                   ))}
@@ -819,7 +819,7 @@ export default function StatsCardRelatorios() {
                       {cellName}
                     </p>
                     <p className="text-sm font-medium text-slate-600">
-                      Líder:{" "}
+                      Líder:{' '}
                       <span className="font-normal">
                         {groupedForCell[cellName][0].celula.lider.first_name}
                       </span>
@@ -865,7 +865,7 @@ export default function StatsCardRelatorios() {
                       {groupedForCell[cellName].map((member) => (
                         <tr className="" key={member.id}>
                           <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                            {member.cultos.porcentagemPresencaDomingoSacrificio}{" "}
+                            {member.cultos.porcentagemPresencaDomingoSacrificio}{' '}
                             %
                           </div>
                         </tr>
@@ -919,7 +919,7 @@ export default function StatsCardRelatorios() {
                       {groupedForCell[cellName].map((member, indexMember) => {
                         const presenceCulto = member.presencas_cultos.find(
                           (p) => p.cultoIndividualId === cultoId,
-                        );
+                        )
                         return (
                           <div
                             className="flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200"
@@ -940,7 +940,7 @@ export default function StatsCardRelatorios() {
                               </p>
                             )}
                           </div>
-                        );
+                        )
                       })}
                     </td>
                   ))}
@@ -950,5 +950,5 @@ export default function StatsCardRelatorios() {
         </table>
       </div>
     </Fragment>
-  );
+  )
 }

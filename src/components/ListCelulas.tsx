@@ -1,51 +1,49 @@
-import UpdateCelula from "@/app/(central)/celulas/UpdateCelula";
-import UpdateCelula2 from "@/app/(central)/celulas/UpdateCelula2";
-import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
-import { useRouter } from "next/navigation";
-import React, { useState } from "react";
-import Pagination from "./Pagination";
+import UpdateCelula from '@/app/(central)/celulas/UpdateCelula'
+import UpdateCelula2 from '@/app/(central)/celulas/UpdateCelula2'
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
+import { useRouter } from 'next/navigation'
+import React, { useState } from 'react'
+import Pagination from './Pagination'
 
 export interface ICelula {
-  id: string;
-  nome: string;
+  id: string
+  nome: string
   lider: {
-    id: string;
-    first_name: string;
-  };
+    id: string
+    first_name: string
+  }
 }
 
 interface ListCelulasProps {
-  data: ICelula[];
+  data: ICelula[]
 }
 
 export default function ListCelulas({ data }: ListCelulasProps) {
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
-  const router = useRouter();
-  const contextParamsSupervisaoId = useSupervisaoContext();
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
+  const router = useRouter()
+  const contextParamsSupervisaoId = useSupervisaoContext()
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-    const idCelula = event.currentTarget.id;
-    router.push(
-      `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
-    );
-  };
+    const idCelula = event.currentTarget.id
+    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
+  }
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
+    setCurrentPage(newPage)
+  }
 
   // Pagination
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const membersSort = data.sort((a, b) => a.nome.localeCompare(b.nome));
-  const displayedCelulas = membersSort?.slice(startIndex, endIndex);
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
+  const membersSort = data.sort((a, b) => a.nome.localeCompare(b.nome))
+  const displayedCelulas = membersSort?.slice(startIndex, endIndex)
 
   const calculateCellNumber = (pageIndex: number, index: number) => {
-    return (pageIndex - 1) * itemsPerPage + index + 1;
-  };
+    return (pageIndex - 1) * itemsPerPage + index + 1
+  }
 
   return (
     <div className="relative w-full p-2 mx-auto">
@@ -57,7 +55,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
             </h2>
             <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
               <p className="flex items-center justify-between">
-                Total{" "}
+                Total{' '}
                 <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                   {data?.length}
                 </span>
@@ -108,9 +106,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
                         >
                           Acessar
                         </button>
-                        {data && (
-                          <UpdateCelula2 celulaId={celula.id} />
-                        )}
+                        {data && <UpdateCelula2 celulaId={celula.id} />}
                         {data && (
                           <UpdateCelula
                             shouldFetch={shouldFetch}
@@ -133,5 +129,5 @@ export default function ListCelulas({ data }: ListCelulasProps) {
         </div>
       </div>
     </div>
-  );
+  )
 }

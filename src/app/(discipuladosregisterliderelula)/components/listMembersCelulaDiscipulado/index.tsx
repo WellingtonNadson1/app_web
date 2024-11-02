@@ -1,61 +1,61 @@
-"use client";
-import Pagination from "@/components/Pagination";
-import { Badge } from "@/components/ui/badge";
-import { Card } from "@/components/ui/card";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { UserCircleDashed } from "@phosphor-icons/react/dist/ssr";
-import { useQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import FormFirstDiscipulado from "./FormFirstDiscipulado";
-import FormSecondDiscipulado from "./FormSecondDiscipulado";
-import Scheleton from "./scheleton";
+'use client'
+import Pagination from '@/components/Pagination'
+import { Badge } from '@/components/ui/badge'
+import { Card } from '@/components/ui/card'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
+import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr'
+import { useQuery } from '@tanstack/react-query'
+import { useState } from 'react'
+import FormFirstDiscipulado from './FormFirstDiscipulado'
+import FormSecondDiscipulado from './FormSecondDiscipulado'
+import Scheleton from './scheleton'
 import {
   ListMembersCelulaProps,
   dataSchemaGetDiscipuladoAllCell,
   dataSchemaReturnExistDiscipuladoAllCell,
-} from "./schema";
+} from './schema'
 
 export default function ListMembersCelulaDiscipulado({
   data,
 }: ListMembersCelulaProps) {
   // console.log('data', data)
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
+    setCurrentPage(newPage)
+  }
   // Pagination
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
-  const { token } = useUserDataStore.getState();
-  const axiosAuth = useAxiosAuthToken(token);
-  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberscell/existing-register`;
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
+  const { token } = useUserDataStore.getState()
+  const axiosAuth = useAxiosAuthToken(token)
+  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberscell/existing-register`
 
   const GetAllRegisterDiscipuladoCell = async (
     dataForm: dataSchemaGetDiscipuladoAllCell,
   ) => {
     const result: dataSchemaReturnExistDiscipuladoAllCell =
-      await axiosAuth.post(URLDiscipuladosExist, dataForm);
-    return result;
-  };
-  const cell_id = data.id;
-  const data_ocorreu = new Date();
+      await axiosAuth.post(URLDiscipuladosExist, dataForm)
+    return result
+  }
+  const cell_id = data.id
+  const data_ocorreu = new Date()
 
   const { data: registerDiscipuladosCell, isLoading } = useQuery({
-    queryKey: ["dataRegisterAllDiscipuladoCell", cell_id],
+    queryKey: ['dataRegisterAllDiscipuladoCell', cell_id],
     queryFn: async () =>
       GetAllRegisterDiscipuladoCell({
         cell_id,
         data_ocorreu,
       }),
-  });
+  })
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
   const membersSort = registerDiscipuladosCell?.data[0]?.membros.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  );
-  const displayedMembers = membersSort?.slice(startIndex, endIndex);
+  )
+  const displayedMembers = membersSort?.slice(startIndex, endIndex)
 
   return (
     <>
@@ -78,7 +78,7 @@ export default function ListMembersCelulaDiscipulado({
                         <h2 className="py-2">Discípulos</h2>
                         <Badge className="items-center justify-center px-2 py-1 text-xs hover:bg-blue-100 font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 sm:block">
                           <p className="flex items-center justify-between">
-                            Total{" "}
+                            Total{' '}
                             <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                               {membersSort?.length}
                             </span>
@@ -102,7 +102,8 @@ export default function ListMembersCelulaDiscipulado({
                       key={user.id}
                       className="my-2 flex items-start content-start"
                     >
-                      <tr className="w-full flex items-start justify-between"
+                      <tr
+                        className="w-full flex items-start justify-between"
                         key={user.id}
                       >
                         <td className="py-3 w-full sm:py-3">
@@ -150,5 +151,5 @@ export default function ListMembersCelulaDiscipulado({
         </div>
       </div>
     </>
-  );
+  )
 }

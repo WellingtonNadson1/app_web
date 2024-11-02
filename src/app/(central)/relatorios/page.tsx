@@ -1,4 +1,4 @@
-import StatsCardRelatorios from "@/components/StatsCardRelatorios";
+import StatsCardRelatorios from '@/components/StatsCardRelatorios'
 
 export default function Relatorios() {
   return (
@@ -6,5 +6,5 @@ export default function Relatorios() {
       <div className="w-full mx-auto"></div>
       <StatsCardRelatorios />
     </div>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -13,18 +13,18 @@ import {
   getSortedRowModel,
   sortingFns,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import {
   RankingInfo,
   compareItems,
   rankItem,
-} from "@tanstack/match-sorter-utils";
+} from '@tanstack/match-sorter-utils'
 
-import AddNewMember from "@/app/(central)/novo-membro/AddNewMember";
-import { Badge } from "@/components/ui/badge";
-import { Input } from "@/components/ui/input";
+import AddNewMember from '@/app/(central)/novo-membro/AddNewMember'
+import { Badge } from '@/components/ui/badge'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -32,67 +32,67 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { cn } from "@/lib/utils";
-import { useState } from "react";
-import { DataTablePagination } from "./table-pagination";
+} from '@/components/ui/table'
+import { cn } from '@/lib/utils'
+import { useState } from 'react'
+import { DataTablePagination } from './table-pagination'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
   nomeCelula: string
   nomeSupervisao: string
 }
 
-declare module "@tanstack/react-table" {
+declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>;
+    fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo;
+    itemRank: RankingInfo
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  });
+  })
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+  return itemRank.passed
+}
 
 // Define a custom fuzzy sort function that will sort by rank if the row has ranking information
 const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
+  let dir = 0
 
   // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank!,
       rowB.columnFiltersMeta[columnId]?.itemRank!,
-    );
+    )
   }
 
   // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
+}
 
 export function DataTableUsersCelula<TData, TValue>({
   columns,
   data,
   nomeCelula,
-  nomeSupervisao
+  nomeSupervisao,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const table = useReactTable({
     data,
@@ -107,33 +107,40 @@ export function DataTableUsersCelula<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: 'fuzzy',
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   const situationNormal = data?.filter(
     // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Normal",
-  );
+    (situatio) => situatio?.situacao_no_reino?.nome === 'Normal',
+  )
   const situationAtivo = data?.filter(
     // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Ativo",
-  );
+    (situatio) => situatio?.situacao_no_reino?.nome === 'Ativo',
+  )
 
-  const supervisaoNome = nomeSupervisao as 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde';
+  const supervisaoNome = nomeSupervisao as
+    | 'vermelha'
+    | 'azul'
+    | 'laranja'
+    | 'amarela'
+    | 'verde'
 
   // Mapeamento das cores com base no nome da supervisão
-  const corBadge: { [key in 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde']: string } = {
-    vermelha: "uppercase bg-red-100 text-red-700 hover:bg-red-200",
-    azul: "uppercase bg-blue-100 text-blue-700 hover:bg-blue-200",
-    laranja: "uppercase bg-orange-100 text-orange-700 hover:bg-orange-200",
-    amarela: "uppercase bg-yellow-100 text-yellow-700 hover:bg-yellow-200",
-    verde: "uppercase bg-green-100 text-green-700 hover:bg-green-200",
-  };
+  const corBadge: {
+    [key in 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde']: string
+  } = {
+    vermelha: 'uppercase bg-red-100 text-red-700 hover:bg-red-200',
+    azul: 'uppercase bg-blue-100 text-blue-700 hover:bg-blue-200',
+    laranja: 'uppercase bg-orange-100 text-orange-700 hover:bg-orange-200',
+    amarela: 'uppercase bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+    verde: 'uppercase bg-green-100 text-green-700 hover:bg-green-200',
+  }
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -142,18 +149,25 @@ export function DataTableUsersCelula<TData, TValue>({
           <div className="flex flex-col justify-between w-full gap-3">
             <div className="flex flex-col justify-between w-full gap-3">
               <h1 className="flex items-center justify-start gap-2 text-lg font-semibold text-gray-700 mt-2">
-                Supervisão: <Badge className={cn(corBadge[supervisaoNome] || "bg-gray-100 text-gray-700 hover:bg-gray-200")}>
+                Supervisão:{' '}
+                <Badge
+                  className={cn(
+                    corBadge[supervisaoNome] ||
+                      'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                  )}
+                >
                   {supervisaoNome}
                 </Badge>
               </h1>
               <h2 className="text-lg font-semibold text-gray-700 mb-2">
-                Membros da célula: <span className="uppercase">{nomeCelula}</span>
+                Membros da célula:{' '}
+                <span className="uppercase">{nomeCelula}</span>
               </h2>
             </div>
             <div className="flex items-center justify-start gap-2">
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-zinc-50 text-zinc-700 ring-zinc-600/20 md:block">
                 <p className="flex items-center justify-between">
-                  Total{" "}
+                  Total{' '}
                   <span className="px-1 py-1 ml-2 text-white rounded-md bg-gray-700">
                     {data?.length}
                   </span>
@@ -161,7 +175,7 @@ export function DataTableUsersCelula<TData, TValue>({
               </div>
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
                 <p className="flex items-center justify-between">
-                  Ativos{" "}
+                  Ativos{' '}
                   <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                     {situationAtivo?.length}
                   </span>
@@ -169,7 +183,7 @@ export function DataTableUsersCelula<TData, TValue>({
               </div>
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block">
                 <p className="flex items-center justify-between">
-                  Normal{" "}
+                  Normal{' '}
                   <span className="px-1 py-1 ml-2 text-white bg-green-700 rounded-md">
                     {situationNormal?.length}
                   </span>
@@ -187,10 +201,10 @@ export function DataTableUsersCelula<TData, TValue>({
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
           // value={(table.getColumn("cnpj")?.getFilterValue() as string) ?? ""}
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ''}
           onChange={(event) => {
             // table.getColumn("empresa_vistoriada.cnpj")?.setFilterValue(event.target.value)
-            setGlobalFilter(String(event.target.value));
+            setGlobalFilter(String(event.target.value))
           }}
           className="sm:max-w-sm"
         />
@@ -207,11 +221,11 @@ export function DataTableUsersCelula<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -221,7 +235,7 @@ export function DataTableUsersCelula<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -269,5 +283,5 @@ export function DataTableUsersCelula<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }

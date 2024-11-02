@@ -1,44 +1,44 @@
-"use client";
-import { cn } from "@/lib/utils";
+'use client'
+import { cn } from '@/lib/utils'
 import {
   GraduationCap,
   HandHeart,
   Users,
   UsersFour,
-} from "@phosphor-icons/react";
-import Link from "next/link";
+} from '@phosphor-icons/react'
+import Link from 'next/link'
 
 export default function StatsCardRelatorios() {
   const escolasIbb = [
     {
-      title: "Presença nos Cultos",
-      supervisor: "Supervisões",
+      title: 'Presença nos Cultos',
+      supervisor: 'Supervisões',
       icon: UsersFour,
-      color: "bg-sky-800",
-      href: "/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd",
+      color: 'bg-sky-800',
+      href: '/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd',
     },
     {
-      title: "Presença nas Reuniões",
-      supervisor: "Células",
+      title: 'Presença nas Reuniões',
+      supervisor: 'Células',
       icon: Users,
-      color: "bg-sky-800",
-      href: "/relatorio-presenca-celula-supervisao/presenca-celulas",
+      color: 'bg-sky-800',
+      href: '/relatorio-presenca-celula-supervisao/presenca-celulas',
     },
     {
-      title: "Presença nos Cultos",
-      supervisor: "Supervisores",
+      title: 'Presença nos Cultos',
+      supervisor: 'Supervisores',
       icon: GraduationCap,
-      color: "bg-sky-800",
-      href: "/relatorio-culto-supervisor/2a9cbf21-4def-4ba7-9909-104b874ed896",
+      color: 'bg-sky-800',
+      href: '/relatorio-culto-supervisor/2a9cbf21-4def-4ba7-9909-104b874ed896',
     },
     {
-      title: "Registro",
-      supervisor: "Discipulados Realizados",
+      title: 'Registro',
+      supervisor: 'Discipulados Realizados',
       icon: HandHeart,
-      color: "bg-sky-800",
-      href: "/relatorios/register",
+      color: 'bg-sky-800',
+      href: '/relatorios/register',
     },
-  ];
+  ]
   return (
     <div className="relative z-10 w-full py-2 mx-auto">
       <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
@@ -68,5 +68,5 @@ export default function StatsCardRelatorios() {
         ))}
       </div>
     </div>
-  );
+  )
 }

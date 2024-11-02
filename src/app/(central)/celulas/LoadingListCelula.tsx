@@ -1,4 +1,4 @@
-import React, { Fragment } from "react";
+import React, { Fragment } from 'react'
 
 function LoadingListCelula() {
   return (
@@ -15,7 +15,7 @@ function LoadingListCelula() {
                   </h2>
                   <div className="items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md felx ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
                     <p className="flex items-center justify-center animate-pulse">
-                      Total{" "}
+                      Total{' '}
                       <span className="items-center inline-block w-6 h-4 ml-2 text-white rounded-md bg-sky-700"></span>
                     </p>
                   </div>
@@ -81,7 +81,7 @@ function LoadingListCelula() {
         </div>
       </div>
     </Fragment>
-  );
+  )
 }
 
-export default LoadingListCelula;
+export default LoadingListCelula

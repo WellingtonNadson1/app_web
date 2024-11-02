@@ -1,14 +1,14 @@
-import { UsersFour } from "@phosphor-icons/react";
-import { twMerge } from "tailwind-merge";
+import { UsersFour } from '@phosphor-icons/react'
+import { twMerge } from 'tailwind-merge'
 
 type SupervisaoDataType = {
-  nome: string;
-  cor: string;
+  nome: string
+  cor: string
   supervisor: {
-    id: string;
-    first_name: string;
-  };
-};
+    id: string
+    first_name: string
+  }
+}
 
 export default function StatsCardSupervision({
   cor,
@@ -52,5 +52,5 @@ export default function StatsCardSupervision({
         </div>
       </div>
     </>
-  );
+  )
 }

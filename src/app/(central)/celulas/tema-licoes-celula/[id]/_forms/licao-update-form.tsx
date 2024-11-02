@@ -1,52 +1,71 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { useToast } from "@/components/ui/use-toast"
-import { cn } from "@/lib/utils"
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
-import { format } from "date-fns"
-import dayjs from "dayjs"
-import { CalendarIcon, Loader2, Upload } from "lucide-react"
-import { useState } from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
-import * as z from "zod"
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
+import { format } from 'date-fns'
+import dayjs from 'dayjs'
+import { CalendarIcon, Loader2, Upload } from 'lucide-react'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import * as z from 'zod'
 
 const formSchema = z.object({
   titulo: z.string(),
-  pdfFile: z.instanceof(FileList).refine((files) => files.length > 0 && files !== undefined, {
-    message: "O arquivo PDF é obrigatório.",
-  }),
+  pdfFile: z
+    .instanceof(FileList)
+    .refine((files) => files.length > 0 && files !== undefined, {
+      message: 'O arquivo PDF é obrigatório.',
+    }),
   licao_lancando_redes: z.boolean().default(false).optional(),
   versiculo_chave: z.string(),
   folderName: z.string().min(2, {
-    message: "O tema deve ter pelo menos 2 caracteres.",
+    message: 'O tema deve ter pelo menos 2 caracteres.',
   }),
-  date: z.object({
-    from: z.date().optional(),
-    to: z.date().optional(),
-  }, { required_error: "A data é obrigatória." }).refine((date) => {
-    return !!date.from;
-  }, "A data inicial é obrigatória."),
-});
+  date: z
+    .object(
+      {
+        from: z.date().optional(),
+        to: z.date().optional(),
+      },
+      { required_error: 'A data é obrigatória.' },
+    )
+    .refine((date) => {
+      return !!date.from
+    }, 'A data inicial é obrigatória.'),
+})
 
 type FormData = z.infer<typeof formSchema>
 
 type Licao = {
   licao_lancando_redes: boolean | undefined
-  id: string;
-  titulo: string;
-  versiculo_chave: string;
-  data_inicio: string;
-  data_termino: string;
-  link_objeto_aws: string;
+  id: string
+  titulo: string
+  versiculo_chave: string
+  data_inicio: string
+  data_termino: string
+  link_objeto_aws: string
 }
 
 type LicaoUpdateFormProps = {
@@ -56,7 +75,7 @@ type LicaoUpdateFormProps = {
 export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
   const [pdfName, setPdfName] = useState<string | null>(null)
   const queryClient = useQueryClient()
-  const URLApi = "/api/licoes-celula/create-lesson-celula"
+  const URLApi = '/api/licoes-celula/create-lesson-celula'
   const { toast } = useToast()
 
   const form = useForm<FormData>({
@@ -74,39 +93,42 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
   })
 
   const CreateNewCelulaFunction = async (
-    values
-      : z.infer<typeof formSchema>) => {
-
+    values: z.infer<typeof formSchema>,
+  ) => {
     console.log('values', values)
-    const response = await axios.put(URLApi, {
-      ...values
-    },
+    const response = await axios.put(
+      URLApi,
+      {
+        ...values,
+      },
       {
         responseType: 'stream',
         headers: {
           'Content-Type': 'multipart/form-data',
-        }
-      }
-      ,
+        },
+      },
     )
-    form.reset();
-    return response.data;
-  };
+    form.reset()
+    return response.data
+  }
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["licoesCelulasIbb"] });
+      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
     },
-  });
+  })
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (values) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
+    values,
+  ) => {
     const { titulo } = values
     const { date } = values
     const startDate = dayjs(date.from).format('DD-MMM-YY')
     const endDate = dayjs(date.to).format('DD-MMM-YY')
 
-    const formattedTituloName = `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
+    const formattedTituloName =
+      `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase()
 
     console.log('formattedTituloName', formattedTituloName)
     console.log('values', values)
@@ -116,34 +138,36 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
       titulo: titulo,
       id: licaoData.id,
       temaLicaoCelulaId: licaoData.id,
-      folderName: formattedTituloName
+      folderName: formattedTituloName,
     }
-
 
     const response = await createNewCelulaFn(valuesFormated)
     console.log('responseFolder: ', response)
     if (response) {
       toast({
-        variant: "default",
-        title: "Successo",
-        description: "LIÇÀO Atualizado com Sucesso. 😇",
-      });
-      form.reset();
+        variant: 'default',
+        title: 'Successo',
+        description: 'LIÇÀO Atualizado com Sucesso. 😇',
+      })
+      form.reset()
     } else {
       toast({
-        title: "Erro!!!",
-        description: "Erro na Atualização do LIÇÀO. 😰",
-        variant: "destructive",
-      });
-    };
+        title: 'Erro!!!',
+        description: 'Erro na Atualização do LIÇÀO. 😰',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
     <>
       <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit, (errors) => {
-          console.log('Validation errors:', errors);
-        })} className="space-y-8">
+        <form
+          onSubmit={form.handleSubmit(onSubmit, (errors) => {
+            console.log('Validation errors:', errors)
+          })}
+          className="space-y-8"
+        >
           <FormField
             control={form.control}
             name="titulo"
@@ -153,9 +177,7 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
                 <FormControl>
                   <Input placeholder="Digite o título" {...field} />
                 </FormControl>
-                <FormDescription>
-                  Digite o título da lição.
-                </FormDescription>
+                <FormDescription>Digite o título da lição.</FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -171,21 +193,21 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
                     <FormControl>
                       <Button
                         id="date"
-                        variant={"outline"}
+                        variant={'outline'}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.value?.from && "text-muted-foreground"
+                          'w-full justify-start text-left font-normal',
+                          !field.value?.from && 'text-muted-foreground',
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {field.value?.from ? (
                           field.value?.to ? (
                             <>
-                              {format(field.value?.from, "LLL dd, y")} -{" "}
-                              {format(field.value?.to, "LLL dd, y")}
+                              {format(field.value?.from, 'LLL dd, y')} -{' '}
+                              {format(field.value?.to, 'LLL dd, y')}
                             </>
                           ) : (
-                            format(field.value?.from, "LLL dd, y")
+                            format(field.value?.from, 'LLL dd, y')
                           )
                         ) : (
                           <span>Defina o príodo</span>
@@ -199,8 +221,12 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
                       mode="range"
                       // defaultMonth={field.value?.from ? new Date(field.value?.from) : new Date()}
                       selected={{
-                        from: field.value?.from ? new Date(field.value?.from) : undefined,
-                        to: field.value?.to ? new Date(field.value?.to) : undefined,
+                        from: field.value?.from
+                          ? new Date(field.value?.from)
+                          : undefined,
+                        to: field.value?.to
+                          ? new Date(field.value?.to)
+                          : undefined,
                       }}
                       onSelect={field.onChange}
                       numberOfMonths={1}
@@ -221,7 +247,11 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
               <FormItem>
                 <FormLabel>Base Bíblica</FormLabel>
                 <FormControl>
-                  <Textarea className="h-24 overflow-y-auto flex-wrap" placeholder="Digite a base bíblica" {...field} />
+                  <Textarea
+                    className="h-24 overflow-y-auto flex-wrap"
+                    placeholder="Digite a base bíblica"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   Digite a base bíblica para a lição da semana.

@@ -1,22 +1,22 @@
-"use client";
-import React from "react";
-import { UsersFour } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
-import { twMerge } from "tailwind-merge";
-import { useData } from "@/providers/providers";
+'use client'
+import React from 'react'
+import { UsersFour } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
+import { useData } from '@/providers/providers'
 
 export default function StatsCardSupervisions() {
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
-  const router = useRouter();
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
+  const router = useRouter()
 
   const handleSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
-    const id = event.currentTarget.id;
-    router.push(`/supervisoes/${id}`);
-  };
+    const id = event.currentTarget.id
+    router.push(`/supervisoes/${id}`)
+  }
 
   return (
     <>
@@ -65,5 +65,5 @@ export default function StatsCardSupervisions() {
         </div>
       </div>
     </>
-  );
+  )
 }

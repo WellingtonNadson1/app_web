@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client'
+import React from 'react'
 
 function HeaderLoad() {
   return (
@@ -29,7 +29,7 @@ function HeaderLoad() {
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default HeaderLoad;
+export default HeaderLoad

@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client'
+import React from 'react'
 
 function HeaderCelulaDiscipuladosLoad() {
   return (
@@ -29,7 +29,7 @@ function HeaderCelulaDiscipuladosLoad() {
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default HeaderCelulaDiscipuladosLoad;
+export default HeaderCelulaDiscipuladosLoad

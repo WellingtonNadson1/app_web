@@ -1,47 +1,47 @@
-"use client";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { Card } from "@/components/ui/card";
-import { Menu, Transition } from "@headlessui/react";
-import { BellIcon } from "@heroicons/react/24/outline";
-import { UserCircle } from "@phosphor-icons/react";
-import { format } from "date-fns";
-import { pt } from "date-fns/locale";
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { Fragment } from "react";
+'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { Card } from '@/components/ui/card'
+import { Menu, Transition } from '@headlessui/react'
+import { BellIcon } from '@heroicons/react/24/outline'
+import { UserCircle } from '@phosphor-icons/react'
+import { format } from 'date-fns'
+import { pt } from 'date-fns/locale'
+import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
+import { Fragment } from 'react'
 
 const userNavigation = [
-  { name: "Meu Perfil", href: "#" },
-  { name: "Configurações", href: "#" },
-];
+  { name: 'Meu Perfil', href: '#' },
+  { name: 'Configurações', href: '#' },
+]
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ')
 }
 
 interface HeaderSupervisaoProps {
-  headerSupervisao: string | undefined;
+  headerSupervisao: string | undefined
 }
 
 export default function HeaderSupervisao({
   headerSupervisao,
 }: HeaderSupervisaoProps) {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
-  const toDay = format(new Date(), "PP", { locale: pt });
+  const toDay = format(new Date(), 'PP', { locale: pt })
 
-  if (status === "loading") {
-    return <SpinnerButton message={""} />;
+  if (status === 'loading') {
+    return <SpinnerButton message={''} />
   }
 
-  const isAuthenticated = status === "authenticated";
+  const isAuthenticated = status === 'authenticated'
 
   if (!isAuthenticated) {
     return (
       <Card className="relative flex items-center justify-between p-1 mx-1  mt-1 mb-6 bg-white rounded-full shadow-none">
         <h2>Não autenticado!</h2>
       </Card>
-    );
+    )
   }
 
   return (
@@ -51,7 +51,7 @@ export default function HeaderSupervisao({
           {/* Titile Page */}
           {session ? (
             <h1 className="px-3 text-xl font-semibold leading-relaxed text-gray-800">
-              Superv.{" "}
+              Superv.{' '}
               <span className="truncate capitalize">{headerSupervisao}</span>
             </h1>
           ) : (
@@ -85,7 +85,7 @@ export default function HeaderSupervisao({
           <>
             <div>
               <h2 className="hidden text-xs text-gray-700 truncate sm:block">
-                Shalom,{" "}
+                Shalom,{' '}
                 <span className="font-bold">{session?.user?.first_name}</span>
               </h2>
               <p className="hidden text-xs text-gray-700 sm:block">{toDay}</p>
@@ -142,8 +142,8 @@ export default function HeaderSupervisao({
                             <a
                               href={item.href}
                               className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700',
                               )}
                             >
                               {item.name}
@@ -168,5 +168,5 @@ export default function HeaderSupervisao({
         </div>
       </Card>
     </>
-  );
+  )
 }

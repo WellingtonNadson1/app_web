@@ -1,23 +1,19 @@
-"use client"
+'use client'
 
-import { Check, ChevronDown } from "lucide-react"
-import * as React from "react"
+import { Check, ChevronDown } from 'lucide-react'
+import * as React from 'react'
 
-import { Button } from "@/components/ui/button"
-import {
-  Command,
-  CommandGroup,
-  CommandItem
-} from "@/components/ui/command"
+import { Button } from '@/components/ui/button'
+import { Command, CommandGroup, CommandItem } from '@/components/ui/command'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 
 interface statusProps {
-  status: boolean | (() => boolean);
+  status: boolean | (() => boolean)
 }
 
 export default function SelectBadgeButton({ status }: statusProps) {
@@ -26,11 +22,11 @@ export default function SelectBadgeButton({ status }: statusProps) {
   const statuses = [
     {
       value: true,
-      label: "Active",
+      label: 'Active',
     },
     {
       value: false,
-      label: "Paused",
+      label: 'Paused',
     },
   ]
 
@@ -42,11 +38,13 @@ export default function SelectBadgeButton({ status }: statusProps) {
           role="combobox"
           aria-expanded={open}
           className={cn(
-            "w-[120px] justify-between font-normal",
-            value ? "bg-green-500 text-white hover:bg-green-600" : "bg-orange-500 text-white hover:bg-orange-600"
+            'w-[120px] justify-between font-normal',
+            value
+              ? 'bg-green-500 text-white hover:bg-green-600'
+              : 'bg-orange-500 text-white hover:bg-orange-600',
           )}
         >
-          {value ? "Active" : "Paused"}
+          {value ? 'Active' : 'Paused'}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -63,8 +61,8 @@ export default function SelectBadgeButton({ status }: statusProps) {
               >
                 <Check
                   className={cn(
-                    "mr-2 h-4 w-4",
-                    value === status.value ? "opacity-100" : "opacity-0"
+                    'mr-2 h-4 w-4',
+                    value === status.value ? 'opacity-100' : 'opacity-0',
                   )}
                 />
                 {status.label}

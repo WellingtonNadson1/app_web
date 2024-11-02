@@ -1,51 +1,63 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
-import { Toaster } from "@/components/ui/toaster";
-import { toast } from "@/components/ui/use-toast";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { cn } from "@/lib/utils";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { Disclosure } from "@headlessui/react";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { CheckFat, Warning } from "@phosphor-icons/react";
-import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { ChevronUpIcon } from "lucide-react";
-import { Fragment, useEffect, useState } from "react";
-import { useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { z } from "zod";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Toaster } from '@/components/ui/toaster'
+import { toast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
+import { useUserDataStore } from '@/store/UserDataStore'
+import { Disclosure } from '@headlessui/react'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { CheckFat, Warning } from '@phosphor-icons/react'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { ChevronUpIcon } from 'lucide-react'
+import { Fragment, useEffect, useState } from 'react'
+import { useForm } from 'react-hook-form'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { z } from 'zod'
 import {
   DiscipuloOfSupervisor,
   dataSchemaCreateDiscipulado,
   dataSchemaReturnCreateDiscipulado,
-} from "./schema";
+} from './schema'
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 interface PropsForm {
-  supervisor_id: string;
-  discipulador_name: string;
-  membro: DiscipuloOfSupervisor;
+  supervisor_id: string
+  discipulador_name: string
+  membro: DiscipuloOfSupervisor
 }
 
 export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
-  const queryClient = useQueryClient();
-  const [registeredDate, setRegisteredDate] = useState<Date | null>(null);
+  const queryClient = useQueryClient()
+  const [registeredDate, setRegisteredDate] = useState<Date | null>(null)
 
-  const dataOcorreu = dayjs(membro?.membro?.discipulado[0]?.data_ocorreu).add(3, "hour").toISOString()
+  const dataOcorreu = dayjs(membro?.membro?.discipulado[0]?.data_ocorreu)
+    .add(3, 'hour')
+    .toISOString()
 
   const form = useForm<z.infer<typeof dataSchemaCreateDiscipulado>>({
     resolver: zodResolver(dataSchemaCreateDiscipulado),
@@ -53,26 +65,25 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
       data_ocorreu: membro?.membro?.discipulado[0]
         ? new Date(dataOcorreu)
         : undefined, // Se já existe uma data registrada, coloca como default
-    }
-  });
+    },
+  })
 
-  const isRegistered = Boolean(membro?.membro?.discipulado[0]?.data_ocorreu); // Checa se já foi registrado
+  const isRegistered = Boolean(membro?.membro?.discipulado[0]?.data_ocorreu) // Checa se já foi registrado
 
-  const { token } = useUserDataStore.getState();
-  const axiosAuth = useAxiosAuthToken(token);
-  const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`;
+  const { token } = useUserDataStore.getState()
+  const axiosAuth = useAxiosAuthToken(token)
+  const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
 
-  const discipulador = membro?.discipulador_name || "Sem Registro";
-  const discipulador_id = membro?.supervisor_id;
-  const quantidade_discipulado = membro?.membro?._count?.discipulado || 0;
+  const discipulador = membro?.discipulador_name || 'Sem Registro'
+  const discipulador_id = membro?.supervisor_id
+  const quantidade_discipulado = membro?.membro?._count?.discipulado || 0
 
-  const discipulo_id = membro?.membro?.user_discipulos.id;
+  const discipulo_id = membro?.membro?.user_discipulos.id
 
   useEffect(() => {
-    form.setValue("usuario_id", discipulo_id);
-    form.setValue("discipulador_id", discipulador_id);
-  }, [form, discipulo_id, discipulador_id]);
-
+    form.setValue('usuario_id', discipulo_id)
+    form.setValue('discipulador_id', discipulador_id)
+  }, [form, discipulo_id, discipulador_id])
 
   // Register New Discipulado
   const CreateDiscipuladoFunction = async (
@@ -80,32 +91,32 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
   ) => {
     // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
     const data_discipulado1 = dayjs(dataForm.data_ocorreu)
-      .subtract(3, "hour")
-      .toISOString();
+      .subtract(3, 'hour')
+      .toISOString()
 
-    const data_ocorreu = new Date(data_discipulado1);
+    const data_ocorreu = new Date(data_discipulado1)
 
-    var data = { ...dataForm, data_ocorreu };
+    var data = { ...dataForm, data_ocorreu }
 
     try {
       const response: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
         URLCreateNewDiscipulado,
         data,
-      );
+      )
       toast({
-        title: "Sucesso!!!",
-        description: "1º Discipulado Registrado! 🥳",
-      });
+        title: 'Sucesso!!!',
+        description: '1º Discipulado Registrado! 🥳',
+      })
       form.reset()
-      return response;
+      return response
     } catch (error) {
       toast({
-        title: "Erro!!!",
-        description: "Error no registro do Discipulado! 😰",
-        variant: "destructive",
-      });
+        title: 'Erro!!!',
+        description: 'Error no registro do Discipulado! 😰',
+        variant: 'destructive',
+      })
     }
-  };
+  }
 
   const {
     mutateAsync: createDiscipuladoFn,
@@ -118,24 +129,26 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
     onError: (err, newMember, context) => {
       // errorCadastro('⛔ error no registro do Discipulado')
       queryClient.invalidateQueries({
-        queryKey: ["dataRegisterAllDiscipuladoCell"],
-      });
+        queryKey: ['dataRegisterAllDiscipuladoCell'],
+      })
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["dataRegisterAllDiscipuladoCell"],
-      });
+        queryKey: ['dataRegisterAllDiscipuladoCell'],
+      })
     },
-  });
+  })
 
-  const onSubmitFirstDiscipulado = async (data: z.infer<typeof dataSchemaCreateDiscipulado>) => {
-    const result = await createDiscipuladoFn(data);
+  const onSubmitFirstDiscipulado = async (
+    data: z.infer<typeof dataSchemaCreateDiscipulado>,
+  ) => {
+    const result = await createDiscipuladoFn(data)
     if (result) {
-      setRegisteredDate(data.data_ocorreu); // Armazena a data registrada no estado
+      setRegisteredDate(data.data_ocorreu) // Armazena a data registrada no estado
     }
-    return result;
-  };
+    return result
+  }
 
   return (
     <Fragment>
@@ -146,12 +159,12 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
             <ToastContainer />
             <Disclosure.Button
               className={cn(
-                "flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg bg-red-50 ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75",
-                `${quantidade_discipulado >= 1 ? "bg-green-50 ring-1 ring-green-100" : "bg-red-50 ring-1 ring-blue-100"}`,
+                'flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg bg-red-50 ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75',
+                `${quantidade_discipulado >= 1 ? 'bg-green-50 ring-1 ring-green-100' : 'bg-red-50 ring-1 ring-blue-100'}`,
               )}
             >
               <span className="flex items-center justify-start gap-2 truncate sm:gap-4">
-                1º Discipulado do Mês{" "}
+                1º Discipulado do Mês{' '}
                 {quantidade_discipulado >= 1 ? (
                   <CheckFat size={16} color="#15803d" />
                 ) : (
@@ -159,7 +172,7 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                 )}
               </span>
               <ChevronUpIcon
-                className={`${open ? "rotate-180 transform" : ""} h-5 w-5 text-blue-500`}
+                className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
               />
             </Disclosure.Button>
             {quantidade_discipulado >= 1 ? (
@@ -190,7 +203,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                               key={discipulo_id}
                               type="hidden"
                               value={discipulo_id}
-                              disabled={isRegistered} />
+                              disabled={isRegistered}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -207,7 +221,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                               key={discipulo_id + discipulador_id}
                               type="hidden"
                               value={discipulador_id}
-                              disabled={isRegistered} />
+                              disabled={isRegistered}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -223,10 +238,10 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
-                                  variant={"outline"}
+                                  variant={'outline'}
                                   className={cn(
-                                    " pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
+                                    ' pl-3 text-left font-normal',
+                                    !field.value && 'text-muted-foreground',
                                   )}
                                   disabled={isRegistered}
                                 >
@@ -234,8 +249,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                                     dayjs(field.value || registeredDate)
                                       .utc()
                                       .local()
-                                      .locale("pt-br")
-                                      .format("DD-MM-YYYY HH:mm:ss")
+                                      .locale('pt-br')
+                                      .format('DD-MM-YYYY HH:mm:ss')
                                   ) : (
                                     <span>Selecione uma data</span>
                                   )}
@@ -243,7 +258,11 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                                 </Button>
                               </FormControl>
                             </PopoverTrigger>
-                            <PopoverContent aria-disabled className="w-auto sm:flex p-0" align="start">
+                            <PopoverContent
+                              aria-disabled
+                              className="w-auto sm:flex p-0"
+                              align="start"
+                            >
                               <Calendar
                                 disabled={isSuccess}
                                 mode="single"
@@ -306,7 +325,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                               key={discipulo_id}
                               type="hidden"
                               {...field}
-                              value={discipulo_id} />
+                              value={discipulo_id}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -323,7 +343,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                               disabled={isSuccess}
                               type="hidden"
                               {...field}
-                              value={discipulador_id} />
+                              value={discipulador_id}
+                            />
                           </FormControl>
                           <FormMessage />
                         </FormItem>
@@ -338,10 +359,10 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                             <PopoverTrigger asChild>
                               <FormControl>
                                 <Button
-                                  variant={"outline"}
+                                  variant={'outline'}
                                   className={cn(
-                                    " pl-3 text-left font-normal",
-                                    !field.value && "text-muted-foreground",
+                                    ' pl-3 text-left font-normal',
+                                    !field.value && 'text-muted-foreground',
                                   )}
                                   disabled={isSuccess}
                                 >
@@ -349,8 +370,8 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                                     dayjs(field.value || registeredDate)
                                       .utc()
                                       .local()
-                                      .locale("pt-br")
-                                      .format("DD-MM-YYYY HH:mm:ss")
+                                      .locale('pt-br')
+                                      .format('DD-MM-YYYY HH:mm:ss')
                                   ) : (
                                     <span>Selecione uma data</span>
                                   )}
@@ -359,7 +380,9 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                               </FormControl>
                             </PopoverTrigger>
                             <PopoverContent
-                              className="w-auto sm:flex p-0" align="start">
+                              className="w-auto sm:flex p-0"
+                              align="start"
+                            >
                               <Calendar
                                 mode="single"
                                 selected={field.value || registeredDate}
@@ -390,9 +413,9 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
                           Registrando
                         </div>
                       ) : isSuccess ? (
-                        "Registrado com sucesso"
+                        'Registrado com sucesso'
                       ) : (
-                        "Registrar"
+                        'Registrar'
                       )}
                     </Button>
                   </form>
@@ -403,5 +426,5 @@ export default function FormFirstDiscipuladoSupervisor(membro: PropsForm) {
         )}
       </Disclosure>
     </Fragment>
-  );
+  )
 }

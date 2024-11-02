@@ -1,31 +1,31 @@
-"use client";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { UsersFour } from "@phosphor-icons/react";
-import { useQuery } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { twMerge } from "tailwind-merge";
+'use client'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
+import { UsersFour } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
+import { useRouter } from 'next/navigation'
+import React from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export interface SupervisaoDataCard {
-  id: string;
-  nome: string;
-  cor: string;
+  id: string
+  nome: string
+  cor: string
   supervisor: {
-    id: string;
-    first_name: string;
-  };
+    id: string
+    first_name: string
+  }
 }
 
 export default function StatsCardSuper() {
-  const { token } = useUserDataStore.getState();
+  const { token } = useUserDataStore.getState()
 
-  const axiosAuth = useAxiosAuthToken(token);
+  const axiosAuth = useAxiosAuthToken(token)
 
-  const router = useRouter();
+  const router = useRouter()
 
-  const URL = `${BASE_URL}/supervisoes`;
+  const URL = `${BASE_URL}/supervisoes`
 
   // async function fetchWithToken(url: string, token: string) {
   //   const response = await fetch(url, {
@@ -42,12 +42,12 @@ export default function StatsCardSuper() {
     isError: error,
     isLoading,
   } = useQuery<SupervisaoDataCard[]>({
-    queryKey: ["supervisoes"],
+    queryKey: ['supervisoes'],
     queryFn: async () => {
-      const response = await axiosAuth.get(URL);
-      return await response.data;
+      const response = await axiosAuth.get(URL)
+      return await response.data
     },
-  });
+  })
 
   if (error) {
     return (
@@ -56,7 +56,7 @@ export default function StatsCardSuper() {
           <div>failed to load</div>
         </div>
       </div>
-    );
+    )
   }
 
   if (isLoading) {
@@ -66,16 +66,16 @@ export default function StatsCardSuper() {
           <div className="text-white">carregando...</div>
         </div>
       </div>
-    );
+    )
   }
 
   const handleSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
-    const id = event.currentTarget.id;
-    console.log("Esta aqui o ID clicado", id);
-    router.push(`/supervisoes/${id}`);
-  };
+    const id = event.currentTarget.id
+    console.log('Esta aqui o ID clicado', id)
+    router.push(`/supervisoes/${id}`)
+  }
 
   return (
     <>
@@ -123,5 +123,5 @@ export default function StatsCardSuper() {
         </div>
       </div>
     </>
-  );
+  )
 }

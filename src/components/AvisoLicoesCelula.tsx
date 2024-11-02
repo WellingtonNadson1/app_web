@@ -1,62 +1,62 @@
-"use client";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useQuery } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { z } from "zod";
-import SpinnerButton from "./spinners/SpinnerButton";
+'use client'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { z } from 'zod'
+import SpinnerButton from './spinners/SpinnerButton'
 
 const ResponseSchema = z.object({
   data: z.string().array(),
-});
+})
 
-type ApiResponse = z.infer<typeof ResponseSchema>;
+type ApiResponse = z.infer<typeof ResponseSchema>
 
 export default function AvisoLicoesCelula() {
-  const URLLicoesCelula = `${BASE_URL}/licoescelulas`;
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
+  const URLLicoesCelula = `${BASE_URL}/licoescelulas`
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   const { data, isLoading, isError } = useQuery<ApiResponse>({
-    queryKey: ["licoesCelula"],
+    queryKey: ['licoesCelula'],
     queryFn: () => axiosAuth.get(URLLicoesCelula),
-  });
-  if (isLoading) return <SpinnerButton message={""} />;
+  })
+  if (isLoading) return <SpinnerButton message={''} />
   if (isError) {
-    return <div>Erro ao carregar os dados.</div>;
+    return <div>Erro ao carregar os dados.</div>
   }
 
-  const temaMesCelula = "Neste mês Não Haverá Lições de Célula";
-  const subTemaMesCelula = `As células serão focadas em buscar as ovelhas pedidas. Seguem as Programações Semanais`;
+  const temaMesCelula = 'Neste mês Não Haverá Lições de Célula'
+  const subTemaMesCelula = `As células serão focadas em buscar as ovelhas pedidas. Seguem as Programações Semanais`
   const statusLicoes = [
     {
       id: 1,
-      title: "Célula (Levar Afastados)",
-      periodo: "01 a 06 de Abr/2024",
-      status: "pendente",
+      title: 'Célula (Levar Afastados)',
+      periodo: '01 a 06 de Abr/2024',
+      status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Sl 90:12',
     },
     {
       id: 2,
-      title: "Célula (Levar Afastados)",
-      periodo: "08 a 13 de Abr/2024",
-      status: "pendente",
+      title: 'Célula (Levar Afastados)',
+      periodo: '08 a 13 de Abr/2024',
+      status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Is 64:04',
     },
     {
       id: 3,
-      title: "Setor ou Área (Levar Afastados)",
-      periodo: "15 a 20 de Abr/2024",
-      status: "pendente",
+      title: 'Setor ou Área (Levar Afastados)',
+      periodo: '15 a 20 de Abr/2024',
+      status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Fp 3:13-14',
     },
     {
       id: 4,
-      title: "Toda Supervisão (Levar Afastados)",
-      periodo: "22 a 27 de Abr/2024",
-      status: "pendente",
+      title: 'Toda Supervisão (Levar Afastados)',
+      periodo: '22 a 27 de Abr/2024',
+      status: 'pendente',
       // icon: FilePdf,
       // versiculo: 'Hb 9:27',
     },
@@ -68,7 +68,7 @@ export default function AvisoLicoesCelula() {
     //   icon: FilePdf,
     //   versiculo: 'Ez 34:11-12',
     // },
-  ];
+  ]
 
   return (
     <div className="relative z-10 flex flex-wrap items-center justify-between w-full mx-auto md:flex-nowrap">
@@ -105,7 +105,7 @@ export default function AvisoLicoesCelula() {
                         </span>
                       </div> */}
                       <div className="flex items-center mt-3">
-                        {stat.status === "pendente" ? (
+                        {stat.status === 'pendente' ? (
                           <span className="text-sm font-normal leading-6 text-red-500">
                             {stat.status}
                           </span>
@@ -138,5 +138,5 @@ export default function AvisoLicoesCelula() {
         </div>
       </div>
     </div>
-  );
+  )
 }

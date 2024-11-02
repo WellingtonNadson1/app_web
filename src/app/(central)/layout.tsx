@@ -1,61 +1,61 @@
-import "@/app/globals.css";
-import { auth } from "@/auth";
-import Header from "@/components/Header";
-import MySidebar from "@/components/sidebar/MySidebar";
-import { SidebarProvider } from "@/components/ui/sidebar";
-import { Providers } from "@/providers/providers";
-import { InitializerUserStore } from "@/store/InitializerUserStore";
-import { RedirectType } from "next/dist/client/components/redirect";
-import { redirect } from "next/navigation";
-import NextTopLoader from "nextjs-toploader";
-import React, { Suspense } from "react";
-import { LoaderHeader } from "./loading";
+import '@/app/globals.css'
+import { auth } from '@/auth'
+import Header from '@/components/Header'
+import MySidebar from '@/components/sidebar/MySidebar'
+import { SidebarProvider } from '@/components/ui/sidebar'
+import { Providers } from '@/providers/providers'
+import { InitializerUserStore } from '@/store/InitializerUserStore'
+import { RedirectType } from 'next/dist/client/components/redirect'
+import { redirect } from 'next/navigation'
+import NextTopLoader from 'nextjs-toploader'
+import React, { Suspense } from 'react'
+import { LoaderHeader } from './loading'
 
 export const metadata = {
-  title: "App IBB",
-  description: "Criado para auxiliar no controle e desenvolvimento da IBB",
+  title: 'App IBB',
+  description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
   icons: {
-    icon: ["/favicon.ico"],
-    apple: ["/apple-touch-icon.png?v=4"],
-    shortcut: ["/apple-touch-icon.png"],
+    icon: ['/favicon.ico'],
+    apple: ['/apple-touch-icon.png?v=4'],
+    shortcut: ['/apple-touch-icon.png'],
   },
-};
+}
 
 export default async function RootLayout({
   children,
 }: {
-  children: React.ReactNode;
+  children: React.ReactNode
 }) {
-  const session = await auth();
+  const session = await auth()
   console.log('session', session)
 
   if (!session) {
     // Signed in
-    return redirect("/login", RedirectType.replace);
+    return redirect('/login', RedirectType.replace)
   }
 
-  const id = session?.user.id;
-  const role = session?.user.role;
-  const user_roles = session?.user.user_roles;
-  const email = session?.user.token;
-  const image_url = session?.user.image_url;
-  const first_name = session?.user.first_name;
-  const token = session?.user.token;
-  const refreshToken = session?.user.refreshToken;
+  const id = session?.user.id
+  const role = session?.user.role
+  const user_roles = session?.user.user_roles
+  const email = session?.user.token
+  const image_url = session?.user.image_url
+  const first_name = session?.user.first_name
+  const token = session?.user.token
+  const refreshToken = session?.user.refreshToken
 
   return (
     <html lang="pt">
       <body>
         <InitializerUserStore
-          id={id ?? ""}
-          role={role ?? ""}
+          id={id ?? ''}
+          role={role ?? ''}
           user_roles={user_roles ?? []}
-          email={email ?? ""}
-          image_url={image_url ?? ""}
-          first_name={first_name ?? ""}
-          token={token ?? ""}
+          email={email ?? ''}
+          image_url={image_url ?? ''}
+          first_name={first_name ?? ''}
+          token={token ?? ''}
           refreshToken={
-            refreshToken ?? { id: "", expiresIn: 0, userIdRefresh: "" }
+            refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }
           }
         />
         {/* <InitializerAlmasAnoStore
@@ -90,5 +90,5 @@ export default async function RootLayout({
         </div>
       </body>
     </html>
-  );
+  )
 }

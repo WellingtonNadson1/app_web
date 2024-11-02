@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client'
+import React from 'react'
 
 function HeaderSupervisorLoad() {
   return (
@@ -29,7 +29,7 @@ function HeaderSupervisorLoad() {
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default HeaderSupervisorLoad;
+export default HeaderSupervisorLoad

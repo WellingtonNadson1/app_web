@@ -1,87 +1,85 @@
-"use client";
-import Modal from "@/components/modal";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import { handleZipCode } from "@/functions/zipCodeUtils";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { useData } from "@/providers/providers";
-import { Combobox, Transition } from "@headlessui/react";
-import { CheckIcon, ChevronUpDownIcon } from "@heroicons/react/20/solid";
-import { UserPlusIcon } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { Fragment, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { Member } from "./schema";
-import { handleCPFNumber, handlePhoneNumber } from "./utils";
+'use client'
+import Modal from '@/components/modal'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { handleZipCode } from '@/functions/zipCodeUtils'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { useData } from '@/providers/providers'
+import { Combobox, Transition } from '@headlessui/react'
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
+import { UserPlusIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import React, { Fragment, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { Member } from './schema'
+import { handleCPFNumber, handlePhoneNumber } from './utils'
 
 function AddNewMember() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
-  const token = session?.user.token;
-  const URLUsers = `${BASE_URL}/users`;
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const token = session?.user.token
+  const URLUsers = `${BASE_URL}/users`
   // Zustand Store
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
-  const escolas = dataAllCtx?.combinedData[1];
-  const encontros = dataAllCtx?.combinedData[2];
-  const situacoesNoReino = dataAllCtx?.combinedData[3];
-  const cargoLideranca = dataAllCtx?.combinedData[4];
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
+  const escolas = dataAllCtx?.combinedData[1]
+  const encontros = dataAllCtx?.combinedData[2]
+  const situacoesNoReino = dataAllCtx?.combinedData[3]
+  const cargoLideranca = dataAllCtx?.combinedData[4]
 
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
-  const { register, handleSubmit, setValue, reset } = useForm<Member>();
-  const router = useRouter();
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const { register, handleSubmit, setValue, reset } = useForm<Member>()
+  const router = useRouter()
 
   // Combobox Autocomplete
-  const [selected, setSelected] = useState<Member>();
-  const [query, setQuery] = useState("");
+  const [selected, setSelected] = useState<Member>()
+  const [query, setQuery] = useState('')
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === "true";
-    setValue(`batizado`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`batizado`, value)
+  }
 
   const handleCahngeIsDiscipulado = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    const value = e.target.value === "true";
-    setValue(`is_discipulado`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`is_discipulado`, value)
+  }
 
   const handleCahngeHasFilho = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === "true";
-    setValue(`has_filho`, value);
-  };
+    const value = e.target.value === 'true'
+    setValue(`has_filho`, value)
+  }
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, setValue);
-  };
+    handleZipCode(e, setValue)
+  }
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
-      const selectedIsDiscipulado = Boolean(data.is_discipulado);
-      const selectedHasFilho = Boolean(data.has_filho);
-      const selectedBatizado = Boolean(data.batizado);
-      const passwordDefault = "JesusCristoReina";
-      const selectedEncontros = data?.encontros?.filter((id) => id !== "");
-      const selectedEscolas = data?.escolas?.filter((id) => id !== "");
+      const selectedIsDiscipulado = Boolean(data.is_discipulado)
+      const selectedHasFilho = Boolean(data.has_filho)
+      const selectedBatizado = Boolean(data.batizado)
+      const passwordDefault = 'JesusCristoReina'
+      const selectedEncontros = data?.encontros?.filter((id) => id !== '')
+      const selectedEscolas = data?.escolas?.filter((id) => id !== '')
 
       // Verifica se não há encontros selecionados e define o valor como nulo
       const encontrosToSend =
         selectedEncontros && selectedEncontros.length === 0
           ? null
-          : selectedEncontros;
+          : selectedEncontros
 
       const escolasToSend =
-        selectedEscolas && selectedEscolas.length === 0
-          ? null
-          : selectedEscolas;
+        selectedEscolas && selectedEscolas.length === 0 ? null : selectedEscolas
 
       const dataToSend = {
         ...data,
@@ -92,74 +90,74 @@ function AddNewMember() {
         has_filho: selectedHasFilho,
         batizado: selectedBatizado,
         password: passwordDefault,
-      };
+      }
 
-      setIsLoadingSubmitForm(true);
+      setIsLoadingSubmitForm(true)
 
-      console.log("Data Form2: ", dataToSend);
+      console.log('Data Form2: ', dataToSend)
 
       const response = await fetch(URLUsers, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dataToSend),
-      });
+      })
       if (response.ok) {
-        setIsLoadingSubmitForm(false);
-        success("👍🏻 Membro Cadastrado!");
-        reset();
-        router.refresh();
+        setIsLoadingSubmitForm(false)
+        success('👍🏻 Membro Cadastrado!')
+        reset()
+        router.refresh()
       } else {
-        errorCadastro("👎🏻 Erro no Cadastro!");
-        setIsLoadingSubmitForm(false);
+        errorCadastro('👎🏻 Erro no Cadastro!')
+        setIsLoadingSubmitForm(false)
       }
     } catch (error) {
-      errorCadastro("👎🏻 Erro no Cadastro!");
-      setIsLoadingSubmitForm(false);
+      errorCadastro('👎🏻 Erro no Cadastro!')
+      setIsLoadingSubmitForm(false)
     }
-  };
+  }
 
   const AllUsers = async () => {
     try {
-      const response = await axiosAuth.get(URLUsers);
-      return await response.data;
+      const response = await axiosAuth.get(URLUsers)
+      return await response.data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   const { data: queryMembers } = useQuery<Member[]>({
-    queryKey: ["members"],
+    queryKey: ['members'],
     queryFn: AllUsers,
-  });
+  })
 
   const filteredPeople =
-    query === ""
+    query === ''
       ? queryMembers
       : queryMembers?.filter((person) =>
           person.first_name
             .toLowerCase()
-            .replace(/\s+/g, "")
-            .includes(query.toLowerCase().replace(/\s+/g, "")),
-        );
+            .replace(/\s+/g, '')
+            .includes(query.toLowerCase().replace(/\s+/g, '')),
+        )
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value);
-  };
+    setSupervisaoSelecionada(event.target.value)
+  }
 
   // @ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     // @ts-ignore
     (supervisao) => supervisao.id === supervisaoSelecionada,
-  )?.celulas;
+  )?.celulas
   return (
     <>
       <ToastContainer />
@@ -169,7 +167,7 @@ function AddNewMember() {
         titleButton="+ Add Membro"
         buttonProps={{
           className:
-            "z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] w-full",
+            'z-10 rounded-md bg-slate-950 text-white px-4 py-2 text-sm font-medium text-white hover:bg-slate-800 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874] w-full',
         }}
       >
         {/* Incio do Forms */}
@@ -193,7 +191,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("first_name")}
+                            {...register('first_name')}
                             type="text"
                             name="first_name"
                             id="first_name"
@@ -212,7 +210,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("last_name")}
+                            {...register('last_name')}
                             type="text"
                             name="last_name"
                             id="last_name"
@@ -231,7 +229,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("cpf")}
+                            {...register('cpf')}
                             type="text"
                             onKeyUp={handleCPFNumber}
                             maxLength={14}
@@ -252,7 +250,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("date_nascimento")}
+                            {...register('date_nascimento')}
                             type="datetime-local"
                             id="date_nascimento"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -269,14 +267,14 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("sexo")}
+                            {...register('sexo')}
                             id="sexo"
                             name="sexo"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
-                            <option value={"M"}>M</option>
-                            <option value={"F"}>F</option>
+                            <option value={''}>Selecione</option>
+                            <option value={'M'}>M</option>
+                            <option value={'F'}>F</option>
                           </select>
                         </div>
                       </div>
@@ -290,7 +288,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("email")}
+                            {...register('email')}
                             id="email"
                             name="email"
                             type="email"
@@ -309,7 +307,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("telefone")}
+                            {...register('telefone')}
                             id="telefone"
                             onKeyUp={handlePhoneNumber}
                             maxLength={14}
@@ -329,34 +327,34 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("escolaridade")}
+                            {...register('escolaridade')}
                             id="escolaridade"
                             name="escolaridade"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
-                            <option value={"Sem Escolaridade"}>
+                            <option value={''}>Selecione</option>
+                            <option value={'Sem Escolaridade'}>
                               Sem Escolaridade
                             </option>
-                            <option value={"Fundamental Incompleto"}>
+                            <option value={'Fundamental Incompleto'}>
                               Fundamental Incompleto
                             </option>
-                            <option value={"Fundamental Completo"}>
+                            <option value={'Fundamental Completo'}>
                               Fundamental Completo
                             </option>
-                            <option value={"Médio Incompleto"}>
+                            <option value={'Médio Incompleto'}>
                               Médio Incompleto
                             </option>
-                            <option value={"Médio Completo"}>
+                            <option value={'Médio Completo'}>
                               Médio Completo
                             </option>
-                            <option value={"Superior Incompleto"}>
+                            <option value={'Superior Incompleto'}>
                               Superior Incompleto
                             </option>
-                            <option value={"Superior Completo"}>
+                            <option value={'Superior Completo'}>
                               Superior Completo
                             </option>
-                            <option value={"Pós Graduado"}>Pós Graduado</option>
+                            <option value={'Pós Graduado'}>Pós Graduado</option>
                           </select>
                         </div>
                       </div>
@@ -370,7 +368,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("profissao")}
+                            {...register('profissao')}
                             id="profissao"
                             name="profissao"
                             type="text"
@@ -398,14 +396,14 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("batizado")}
+                            {...register('batizado')}
                             onChange={handleCahngeIsBatizado}
                             id="batizado"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
-                            <option value={"true"}>Sim</option>
-                            <option value={"false"}>Não</option>
+                            <option value={''}>Selecione</option>
+                            <option value={'true'}>Sim</option>
+                            <option value={'false'}>Não</option>
                           </select>
                         </div>
                       </div>
@@ -419,7 +417,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("date_batizado")}
+                            {...register('date_batizado')}
                             id="date_batizado"
                             type="datetime-local"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -436,12 +434,12 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("is_discipulado")}
+                            {...register('is_discipulado')}
                             onChange={handleCahngeIsDiscipulado}
                             id="is_discipulado"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
+                            <option value={''}>Selecione</option>
                             <option value="true">Sim</option>
                             <option value="false">Não</option>
                           </select>
@@ -463,7 +461,7 @@ function AddNewMember() {
                             <div className="relative">
                               <div className="relative w-full overflow-hidden text-left bg-white rounded-md shadow-sm cursor-default focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                                 <Combobox.Input
-                                  {...register("discipuladorId")}
+                                  {...register('discipuladorId')}
                                   id="discipuladorId"
                                   autoComplete="off"
                                   className="w-full rounded-md border-none py-1.5 pl-3 pr-10 text-sm leading-5 text-gray-900 ring-1 ring-inset ring-gray-300  focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -486,11 +484,11 @@ function AddNewMember() {
                                 leave="transition ease-in duration-100"
                                 leaveFrom="opacity-100"
                                 leaveTo="opacity-0"
-                                afterLeave={() => setQuery("")}
+                                afterLeave={() => setQuery('')}
                               >
                                 <Combobox.Options className="absolute w-full py-1.5 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
-                                  query !== "" ? (
+                                  query !== '' ? (
                                     <div className="relative px-4 py-1.5 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
@@ -501,8 +499,8 @@ function AddNewMember() {
                                         className={({ active }) =>
                                           `relative cursor-default select-none py-1.5 pl-10 pr-4 ${
                                             active
-                                              ? "bg-[#E5F3FF] text-black"
-                                              : "text-gray-900"
+                                              ? 'bg-[#E5F3FF] text-black'
+                                              : 'text-gray-900'
                                           }`
                                         }
                                         value={person}
@@ -512,8 +510,8 @@ function AddNewMember() {
                                             <span
                                               className={`block truncate ${
                                                 selected
-                                                  ? "font-medium"
-                                                  : "font-normal"
+                                                  ? 'font-medium'
+                                                  : 'font-normal'
                                               }`}
                                             >
                                               {person.first_name}
@@ -522,8 +520,8 @@ function AddNewMember() {
                                               <span
                                                 className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
                                                   active
-                                                    ? "text-white"
-                                                    : "text-teal-600"
+                                                    ? 'text-white'
+                                                    : 'text-teal-600'
                                                 }`}
                                               >
                                                 <CheckIcon
@@ -553,12 +551,12 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("supervisao_pertence")}
+                            {...register('supervisao_pertence')}
                             id="supervisao_pertence"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                             onChange={handleSupervisaoSelecionada}
                           >
-                            <option value={""}>Selecione</option>
+                            <option value={''}>Selecione</option>
                             {supervisoes ? (
                               // @ts-ignore
                               supervisoes?.map((supervisao) => (
@@ -570,7 +568,7 @@ function AddNewMember() {
                                 </option>
                               ))
                             ) : (
-                              <option value={""}>Carregando...</option>
+                              <option value={''}>Carregando...</option>
                             )}
                           </select>
                         </div>
@@ -585,11 +583,11 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("celula")}
+                            {...register('celula')}
                             id="celula"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
+                            <option value={''}>Selecione</option>
                             {supervisoes ? (
                               // @ts-ignore
                               celulasFiltradas?.map((celula) => (
@@ -598,7 +596,7 @@ function AddNewMember() {
                                 </option>
                               ))
                             ) : (
-                              <option value={""}>Carregando...</option>
+                              <option value={''}>Carregando...</option>
                             )}
                           </select>
                         </div>
@@ -622,7 +620,7 @@ function AddNewMember() {
                                 >
                                   <div className="flex items-center h-6">
                                     <input
-                                      {...register("escolas")}
+                                      {...register('escolas')}
                                       id={escola.id}
                                       value={escola.id}
                                       type="checkbox"
@@ -664,7 +662,7 @@ function AddNewMember() {
                                 >
                                   <div className="flex items-center h-6">
                                     <input
-                                      {...register("encontros")}
+                                      {...register('encontros')}
                                       value={encontro.id}
                                       id={encontro.id}
                                       type="checkbox"
@@ -697,11 +695,11 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("situacao_no_reino")}
+                            {...register('situacao_no_reino')}
                             id="situacao_no_reino"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
+                            <option value={''}>Selecione</option>
                             {supervisoes ? (
                               // @ts-ignore
                               situacoesNoReino?.map((situacao) => (
@@ -710,7 +708,7 @@ function AddNewMember() {
                                 </option>
                               ))
                             ) : (
-                              <option value={""}>Carregando...</option>
+                              <option value={''}>Carregando...</option>
                             )}
                           </select>
                         </div>
@@ -726,11 +724,11 @@ function AddNewMember() {
                         </label>
                         <div className="mt-4">
                           <select
-                            {...register("cargo_de_lideranca")}
+                            {...register('cargo_de_lideranca')}
                             id="cargo_de_lideranca"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
+                            <option value={''}>Selecione</option>
                             {supervisoes ? (
                               // @ts-ignore
                               cargoLideranca?.map((cargo) => (
@@ -739,7 +737,7 @@ function AddNewMember() {
                                 </option>
                               ))
                             ) : (
-                              <option value={""}>Carregando...</option>
+                              <option value={''}>Carregando...</option>
                             )}
                           </select>
                         </div>
@@ -764,16 +762,16 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("estado_civil")}
+                            {...register('estado_civil')}
                             id="estadoCivil"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
-                            <option value={"Casado"}>Casado(a)</option>
-                            <option value={"Solteiro"}>Solteiro(a)</option>
-                            <option value={"Viuvo"}>Viúvo(a)</option>
-                            <option value={"Divorciado"}>Divorciado(a)</option>
-                            <option value={"Uniao_Estável"}>
+                            <option value={''}>Selecione</option>
+                            <option value={'Casado'}>Casado(a)</option>
+                            <option value={'Solteiro'}>Solteiro(a)</option>
+                            <option value={'Viuvo'}>Viúvo(a)</option>
+                            <option value={'Divorciado'}>Divorciado(a)</option>
+                            <option value={'Uniao_Estável'}>
                               União Estável
                             </option>
                           </select>
@@ -789,7 +787,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("nome_conjuge")}
+                            {...register('nome_conjuge')}
                             type="text"
                             name="nome_conjuge"
                             id="nome_conjuge"
@@ -807,7 +805,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("date_casamento", {
+                            {...register('date_casamento', {
                               setValueAs: (value) =>
                                 value ? Date.parse(value) : null,
                             })}
@@ -827,14 +825,14 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("has_filho")}
+                            {...register('has_filho')}
                             onChange={handleCahngeHasFilho}
                             id="has_filho"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                           >
-                            <option value={""}>Selecione</option>
-                            <option value={"true"}>Sim</option>
-                            <option value={"false"}>Não</option>
+                            <option value={''}>Selecione</option>
+                            <option value={'true'}>Sim</option>
+                            <option value={'false'}>Não</option>
                           </select>
                         </div>
                       </div>
@@ -848,7 +846,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("quantidade_de_filho", {
+                            {...register('quantidade_de_filho', {
                               setValueAs: (value) =>
                                 value ? parseInt(value) : 0,
                             })}
@@ -880,7 +878,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("cep")}
+                            {...register('cep')}
                             type="text"
                             id="cep"
                             onKeyUp={handleZipCodeChange}
@@ -899,7 +897,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("cidade")}
+                            {...register('cidade')}
                             type="text"
                             id="cidade"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -916,7 +914,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("estado")}
+                            {...register('estado')}
                             type="text"
                             id="estado"
                             autoComplete="address-level1"
@@ -936,7 +934,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("bairro")}
+                            {...register('bairro')}
                             type="text"
                             id="bairro"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -952,7 +950,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("endereco")}
+                            {...register('endereco')}
                             type="text"
                             id="endereco"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -968,7 +966,7 @@ function AddNewMember() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("numero_casa")}
+                            {...register('numero_casa')}
                             type="text"
                             id="numero_casa"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -1031,7 +1029,7 @@ function AddNewMember() {
         </div>
       </Modal>
     </>
-  );
+  )
 }
 
-export default AddNewMember;
+export default AddNewMember

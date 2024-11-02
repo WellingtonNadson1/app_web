@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -13,16 +13,16 @@ import {
   getSortedRowModel,
   sortingFns,
   useReactTable,
-} from "@tanstack/react-table";
+} from '@tanstack/react-table'
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import {
   RankingInfo,
   compareItems,
   rankItem,
-} from "@tanstack/match-sorter-utils";
+} from '@tanstack/match-sorter-utils'
 
-import { Input } from "@/components/ui/input";
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -30,63 +30,63 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useState } from "react";
-import AddNewMember from "../AddNewMember";
-import { DataTablePagination } from "./table-pagination";
+} from '@/components/ui/table'
+import { useState } from 'react'
+import AddNewMember from '../AddNewMember'
+import { DataTablePagination } from './table-pagination'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
-declare module "@tanstack/react-table" {
+declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>;
+    fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo;
+    itemRank: RankingInfo
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  });
+  })
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+  return itemRank.passed
+}
 
 // Define a custom fuzzy sort function that will sort by rank if the row has ranking information
 const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0;
+  let dir = 0
 
   // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank!,
       rowB.columnFiltersMeta[columnId]?.itemRank!,
-    );
+    )
   }
 
   // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
-};
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
+}
 
 export function DataTableUsers<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const table = useReactTable({
     data,
@@ -101,22 +101,22 @@ export function DataTableUsers<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: 'fuzzy',
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   const situationNormal = data?.filter(
     // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Normal",
-  );
+    (situatio) => situatio?.situacao_no_reino?.nome === 'Normal',
+  )
   const situationAtivo = data?.filter(
     // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Ativo",
-  );
+    (situatio) => situatio?.situacao_no_reino?.nome === 'Ativo',
+  )
 
   return (
     <div className="px-4 py-4 rounded-xl bg-white">
@@ -129,7 +129,7 @@ export function DataTableUsers<TData, TValue>({
             <div className="flex items-center justify-start gap-2">
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-zinc-50 text-zinc-700 ring-zinc-600/20 md:block">
                 <p className="flex items-center justify-between">
-                  Total{" "}
+                  Total{' '}
                   <span className="px-1 py-1 ml-2 text-white rounded-md bg-gray-700">
                     {data?.length}
                   </span>
@@ -137,7 +137,7 @@ export function DataTableUsers<TData, TValue>({
               </div>
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
                 <p className="flex items-center justify-between">
-                  Ativos{" "}
+                  Ativos{' '}
                   <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                     {situationAtivo?.length}
                   </span>
@@ -145,7 +145,7 @@ export function DataTableUsers<TData, TValue>({
               </div>
               <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block">
                 <p className="flex items-center justify-between">
-                  Normal{" "}
+                  Normal{' '}
                   <span className="px-1 py-1 ml-2 text-white bg-green-700 rounded-md">
                     {situationNormal?.length}
                   </span>
@@ -163,10 +163,10 @@ export function DataTableUsers<TData, TValue>({
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
           // value={(table.getColumn("cnpj")?.getFilterValue() as string) ?? ""}
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ''}
           onChange={(event) => {
             // table.getColumn("empresa_vistoriada.cnpj")?.setFilterValue(event.target.value)
-            setGlobalFilter(String(event.target.value));
+            setGlobalFilter(String(event.target.value))
           }}
           className="sm:max-w-sm"
         />
@@ -183,11 +183,11 @@ export function DataTableUsers<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -197,7 +197,7 @@ export function DataTableUsers<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -245,5 +245,5 @@ export function DataTableUsers<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }

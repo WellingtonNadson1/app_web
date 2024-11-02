@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 const MembroSchema = z.object({
   id: z.string(),
@@ -19,14 +19,14 @@ const MembroSchema = z.object({
     id: z.string(),
     nome: z.string(),
   }),
-});
+})
 
 const PresencaCultoSchema = z.object({
   id: z.string(),
   status: z.boolean(),
   date_create: z.string(),
   membro: MembroSchema,
-});
+})
 
 export const PresencaForDateSchema = z.object({
   id: z.string(),
@@ -43,14 +43,14 @@ export const PresencaForDateSchema = z.object({
     totalCultosDomingoTarde: z.number(),
     totalCultosPeriodo: z.number(),
   }),
-});
+})
 
 export const FormRelatorioDataSchema = z.object({
   superVisionId: z.string(),
   cargoLideranca: z.string().array(),
   startDate: z.string(),
   endDate: z.string(),
-});
+})
 
 const MemberDataSchema = z.object({
   id: z.string(),
@@ -71,93 +71,93 @@ const MemberDataSchema = z.object({
     id: z.string(),
     nome: z.string(),
   }),
-});
+})
 
 export interface CultoSemana {
-  id: string;
+  id: string
 }
 
 export interface PresencaCulto {
-  data_inicio_culto: string;
-  culto_semana: CultoSemana;
+  data_inicio_culto: string
+  culto_semana: CultoSemana
 }
 
 export interface Relatorio {
-  status: boolean;
-  cultoIndividualId: string;
-  date_create: string;
-  presenca_culto: PresencaCulto;
+  status: boolean
+  cultoIndividualId: string
+  date_create: string
+  presenca_culto: PresencaCulto
 }
 
 export interface Pessoa {
-  id: string;
-  first_name: string;
-  last_name: string;
+  id: string
+  first_name: string
+  last_name: string
   presencas_cultos: {
-    status: boolean;
-    cultoIndividualId: string;
-    date_create: string;
+    status: boolean
+    cultoIndividualId: string
+    date_create: string
     presenca_culto: {
-      data_inicio_culto: string;
+      data_inicio_culto: string
       culto_semana: {
-        id: string;
-      };
-    };
-  }[];
+        id: string
+      }
+    }
+  }[]
   cargo_de_lideranca: {
-    nome: string;
-  };
+    nome: string
+  }
   presencasFiltradas: {
-    status: boolean;
-    cultoIndividualId: string;
-    date_create: string;
+    status: boolean
+    cultoIndividualId: string
+    date_create: string
     presenca_culto: {
-      data_inicio_culto: string;
+      data_inicio_culto: string
       culto_semana: {
-        id: string;
-      };
-    };
-  }[];
+        id: string
+      }
+    }
+  }[]
   cultos: {
-    porcentagemPresencaDomingoSacrificio: number;
-    porcentagemPresencaPrimicia: number;
-    porcentagemPresencaQuarta: number;
-    porcentagemPresencaSabado: number;
-    porcentagemPresencaTotal: number;
-    porcentagemPresencaTotalDomingoManha: number;
-    porcentagemPresencaTotalDomingoTarde: number;
-  };
+    porcentagemPresencaDomingoSacrificio: number
+    porcentagemPresencaPrimicia: number
+    porcentagemPresencaQuarta: number
+    porcentagemPresencaSabado: number
+    porcentagemPresencaTotal: number
+    porcentagemPresencaTotalDomingoManha: number
+    porcentagemPresencaTotalDomingoTarde: number
+  }
 }
 
 export interface ISupervisoes {
-  id: string;
-  nome: string;
+  id: string
+  nome: string
   membros: {
-    id: string;
-    first_name: string;
-  }[];
-  cor: string;
+    id: string
+    first_name: string
+  }[]
+  cor: string
   celulas: {
-    id: string;
-    nome: string;
-  }[];
+    id: string
+    nome: string
+  }[]
   supervisor: {
-    id: string;
-    first_name: string;
-  } | null;
+    id: string
+    first_name: string
+  } | null
 }
 
 export interface CelulaProps {
-  celula: string;
-  membros: Pessoa[];
+  celula: string
+  membros: Pessoa[]
 }
 
 export interface MembroPresencaProps {
-  membro: Pessoa;
+  membro: Pessoa
 }
 
-export type MemberData = z.infer<typeof MemberDataSchema>;
-export type GroupedData = Record<string, MemberData[]>;
-export type PresencaForDate = z.infer<typeof PresencaForDateSchema>;
-export type FormRelatorioSchema = z.infer<typeof FormRelatorioDataSchema>;
-export type GroupedForCulto = Record<string, PresencaForDate[]>;
+export type MemberData = z.infer<typeof MemberDataSchema>
+export type GroupedData = Record<string, MemberData[]>
+export type PresencaForDate = z.infer<typeof PresencaForDateSchema>
+export type FormRelatorioSchema = z.infer<typeof FormRelatorioDataSchema>
+export type GroupedForCulto = Record<string, PresencaForDate[]>

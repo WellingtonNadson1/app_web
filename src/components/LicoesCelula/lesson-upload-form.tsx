@@ -1,12 +1,12 @@
-"use client"
+'use client'
 
-import { format } from "date-fns"
-import { CalendarIcon, Upload } from "lucide-react"
-import { useState } from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
+import { format } from 'date-fns'
+import { CalendarIcon, Upload } from 'lucide-react'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Form,
   FormControl,
@@ -15,14 +15,14 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
 
 type FormData = {
   lessonTitle: string
@@ -37,8 +37,8 @@ export default function LessonUploadForm() {
 
   const form = useForm<FormData>({
     defaultValues: {
-      lessonTitle: "",
-      keyVerse: "",
+      lessonTitle: '',
+      keyVerse: '',
       startDate: new Date(),
       endDate: new Date(),
       pdfFile: null,
@@ -92,14 +92,14 @@ export default function LessonUploadForm() {
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, 'PPP')
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -113,7 +113,7 @@ export default function LessonUploadForm() {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date < new Date() || date > new Date("2100-01-01")
+                      date < new Date() || date > new Date('2100-01-01')
                     }
                     initialFocus
                   />
@@ -134,14 +134,14 @@ export default function LessonUploadForm() {
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, 'PPP')
                       ) : (
                         <span>Pick a date</span>
                       )}
@@ -155,7 +155,7 @@ export default function LessonUploadForm() {
                     selected={field.value}
                     onSelect={field.onChange}
                     disabled={(date) =>
-                      date < new Date() || date > new Date("2100-01-01")
+                      date < new Date() || date > new Date('2100-01-01')
                     }
                     initialFocus
                   />

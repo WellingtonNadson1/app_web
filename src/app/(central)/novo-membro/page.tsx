@@ -1,35 +1,35 @@
-"use client";
-import { BASE_URL } from "@/functions/functions";
-import { UserFocus } from "@phosphor-icons/react";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { useQuery } from "@tanstack/react-query";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { Suspense } from "react";
-import { columns } from "./table-users/columns";
-import { z } from "zod";
-import { userSchemaTable } from "./table-users/schema";
-import { DataTableUsers } from "./table-users/data-table-users";
+'use client'
+import { BASE_URL } from '@/functions/functions'
+import { UserFocus } from '@phosphor-icons/react'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { useQuery } from '@tanstack/react-query'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { Suspense } from 'react'
+import { columns } from './table-users/columns'
+import { z } from 'zod'
+import { userSchemaTable } from './table-users/schema'
+import { DataTableUsers } from './table-users/data-table-users'
 
 export default function NovoMembro() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string);
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
-  const URL = `${BASE_URL}/users`;
+  const URL = `${BASE_URL}/users`
 
   const Members = async () => {
     try {
-      const { data } = await axiosAuth.get(URL);
-      return data;
+      const { data } = await axiosAuth.get(URL)
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   const {
     data: members,
@@ -37,9 +37,9 @@ export default function NovoMembro() {
     isLoading,
     isSuccess,
   } = useQuery<z.infer<typeof userSchemaTable>>({
-    queryKey: ["members"],
+    queryKey: ['members'],
     queryFn: Members,
-  });
+  })
 
   if (error) {
     return (
@@ -50,7 +50,7 @@ export default function NovoMembro() {
           </div>
         </div>
       </div>
-    );
+    )
   }
 
   if (isLoading) {
@@ -67,19 +67,19 @@ export default function NovoMembro() {
                   </h2>
                   <div className="items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
                     <p className="h-4 w-200 animate-pulse">
-                      Total{" "}
+                      Total{' '}
                       <span className="px-2 py-1 ml-2 text-white rounded-md bg-sky-700"></span>
                     </p>
                   </div>
                   <div className="items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block">
                     <p className="h-4 w-200 animate-pulse">
-                      Ativos{" "}
+                      Ativos{' '}
                       <span className="px-2 py-1 ml-2 text-white bg-green-700 rounded-md"></span>
                     </p>
                   </div>
                   <div className="items-center justify-center hidden px-3 py-2 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-sky-50 text-sky-700 ring-blue-600/20 md:block">
                     <p className="h-4 w-200 animate-pulse">
-                      Normal{" "}
+                      Normal{' '}
                       <span className="px-2 py-1 ml-2 text-white rounded-md bg-sky-700"></span>
                     </p>
                   </div>
@@ -132,14 +132,14 @@ export default function NovoMembro() {
                   )
                 ) : (
                   // Renderizar a lista de membros
-                  <SpinnerButton message={"Carregando"} />
+                  <SpinnerButton message={'Carregando'} />
                 )}
               </tbody>
             </table>
           </div>
         </div>
       </>
-    );
+    )
   }
 
   return (
@@ -152,5 +152,5 @@ export default function NovoMembro() {
         )}
       </Suspense>
     </>
-  );
+  )
 }

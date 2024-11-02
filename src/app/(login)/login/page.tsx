@@ -1,56 +1,56 @@
-"use client";
-import { FormError } from "@/components/Info/form-error";
-import { FormSuccess } from "@/components/Info/form-sucesso";
-import ThemeImage from "@/components/theme-image";
-import { Button } from "@/components/ui/button";
+'use client'
+import { FormError } from '@/components/Info/form-error'
+import { FormSuccess } from '@/components/Info/form-sucesso'
+import ThemeImage from '@/components/theme-image'
+import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { TypeLogin } from "@/types";
-import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import { useMutation } from "@tanstack/react-query";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { loginFunction } from "../../../../actions/login";
+} from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { TypeLogin } from '@/types'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
+import { useMutation } from '@tanstack/react-query'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { loginFunction } from '../../../../actions/login'
 
 export default function Login() {
-  const [error, setError] = useState<string | undefined>("");
-  const [success, setSuccess] = useState<string | undefined>("");
-  const { handleSubmit, register } = useForm<TypeLogin>();
+  const [error, setError] = useState<string | undefined>('')
+  const [success, setSuccess] = useState<string | undefined>('')
+  const { handleSubmit, register } = useForm<TypeLogin>()
 
   const loginFn = async ({ email, password }: TypeLogin) => {
     const registered = await loginFunction({
       email,
       password,
-    });
-    return registered;
-  };
+    })
+    return registered
+  }
 
   const { mutateAsync: loginFunc, isPending } = useMutation({
-    mutationKey: ["registeruser"],
+    mutationKey: ['registeruser'],
     mutationFn: loginFn,
-  });
+  })
 
   const onSubmit: SubmitHandler<TypeLogin> = async ({ email, password }) => {
-    setError("");
-    setSuccess("");
+    setError('')
+    setSuccess('')
     try {
       const login: any = await loginFunc({ email, password }).then((data) => {
-        setError(data?.error);
-        setSuccess(data?.sucesso);
+        setError(data?.error)
+        setSuccess(data?.sucesso)
         console.log('login', login)
         return login
-      });
+      })
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <>
@@ -82,7 +82,7 @@ export default function Login() {
                       <Label htmlFor="email">Email</Label>
                       <div className="mt-2">
                         <Input
-                          {...register("email")}
+                          {...register('email')}
                           id="email"
                           type="email"
                           autoComplete="email"
@@ -99,7 +99,7 @@ export default function Login() {
                       </div>
                       <div className="mt-2">
                         <Input
-                          {...register("password")}
+                          {...register('password')}
                           id="password"
                           type="password"
                           autoComplete="current-password"
@@ -205,5 +205,5 @@ export default function Login() {
         </Card>
       </section>
     </>
-  );
+  )
 }

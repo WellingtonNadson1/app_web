@@ -1,23 +1,23 @@
 // prisma.ts
-import { PrismaClient } from "@prisma/client";
+import { PrismaClient } from '@prisma/client'
 
 declare global {
-  var prisma: PrismaClient | undefined;
+  var prisma: PrismaClient | undefined
 }
 
 const createPrismaInstance = () => {
   if (!global.prisma) {
     global.prisma = new PrismaClient({
       log: ['info'],
-    });
+    })
   }
-  return global.prisma;
-};
+  return global.prisma
+}
 
 const disconnectPrisma = async () => {
   if (global.prisma) {
-    await global.prisma.$disconnect();
+    await global.prisma.$disconnect()
   }
-};
+}
 
-export { createPrismaInstance, disconnectPrisma };
+export { createPrismaInstance, disconnectPrisma }

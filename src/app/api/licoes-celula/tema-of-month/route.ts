@@ -1,12 +1,15 @@
-import { createPrismaInstance, disconnectPrisma } from "@/services/database/db/prisma";
-import { NextResponse } from "next/server";
+import {
+  createPrismaInstance,
+  disconnectPrisma,
+} from '@/services/database/db/prisma'
+import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {
   try {
-    const prisma = createPrismaInstance();
+    const prisma = createPrismaInstance()
 
     if (!prisma) {
-      throw new Error("Prisma instance is null");
+      throw new Error('Prisma instance is null')
     }
 
     const temaMonth = await prisma?.temaLicaoCelula.findMany({
@@ -23,12 +26,15 @@ export async function GET(request: Request) {
       },
     })
     console.log('temaMonth', temaMonth)
-    await disconnectPrisma();
+    await disconnectPrisma()
 
-    return NextResponse.json(temaMonth, { status: 200 });
+    return NextResponse.json(temaMonth, { status: 200 })
   } catch (error) {
-    await disconnectPrisma();
+    await disconnectPrisma()
 
-    return NextResponse.json({ message: 'Error get theme lesson' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'Error get theme lesson' },
+      { status: 500 },
+    )
   }
 }

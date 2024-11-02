@@ -1,35 +1,35 @@
-"use client";
+'use client'
 
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from "@/components/ui/form";
-import { Progress } from "@/components/ui/progress";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Separator } from "@/components/ui/separator";
-import { Toaster } from "@/components/ui/toaster";
-import { useToast } from "@/components/ui/use-toast";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Spinner, User } from "@phosphor-icons/react/dist/ssr";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import { useSession } from "next-auth/react";
-import { useEffect, useRef, useState } from "react";
-import { ControlePresencaCelulaProps } from "../../schema";
-import { FormSchema, dataForms } from "./shcema-controle-first-presence";
+} from '@/components/ui/form'
+import { Progress } from '@/components/ui/progress'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
+import { Separator } from '@/components/ui/separator'
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { Spinner, User } from '@phosphor-icons/react/dist/ssr'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import { useSession } from 'next-auth/react'
+import { useEffect, useRef, useState } from 'react'
+import { ControlePresencaCelulaProps } from '../../schema'
+import { FormSchema, dataForms } from './shcema-controle-first-presence'
 
 function isError(error: unknown): error is Error {
-  return error instanceof Error;
+  return error instanceof Error
 }
 
 export function RegisterPresenceFormFirst({
@@ -37,34 +37,34 @@ export function RegisterPresenceFormFirst({
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
-  const URLControlePresenca = `${BASE_URL}/presencacultos/speed`;
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`;
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
-  const queryClient = useQueryClient();
-  const [progress, setProgress] = useState<number>(0);
-  const [isCompleted, setIsCompleted] = useState(false);
-  const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { toast } = useToast();
+  const URLControlePresenca = `${BASE_URL}/presencacultos/speed`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const queryClient = useQueryClient()
+  const [progress, setProgress] = useState<number>(0)
+  const [isCompleted, setIsCompleted] = useState(false)
+  const timerRef = useRef<NodeJS.Timeout | null>(null)
+  const { toast } = useToast()
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId);
-    return data;
-  };
+    const { data } = await axiosAuth.get(URLPresencaCultoId)
+    return data
+  }
 
   const {
     data: PresenceExistRegistered,
     isLoading,
     error,
   } = useQuery({
-    queryKey: ["presenceExistRegistered"],
+    queryKey: ['presenceExistRegistered'],
     queryFn: getPresenceRegistered,
     refetchOnMount: true,
-  });
+  })
 
   const celulaSort = celula?.membros.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  );
+  )
 
   const createPresencaCultoFunction = async ({
     presence_culto,
@@ -73,8 +73,8 @@ export function RegisterPresenceFormFirst({
     // trnasformando o status de string para boolean
     const MembrosComStatus = membro.map((member) => ({
       ...member,
-      status: member.status === "true",
-    }));
+      status: member.status === 'true',
+    }))
 
     const response = await axiosAuth.post(
       URLControlePresenca,
@@ -86,29 +86,29 @@ export function RegisterPresenceFormFirst({
         onUploadProgress: (progressEvent) => {
           // Introduz um atraso antes de atualizar o estado de progresso
           setTimeout(() => {
-            setProgress(10);
-          }, 600);
+            setProgress(10)
+          }, 600)
 
           setTimeout(() => {
-            setProgress(30);
-          }, 1200); // 150 + 150
+            setProgress(30)
+          }, 1200) // 150 + 150
 
           setTimeout(() => {
-            setProgress(50);
-          }, 1800); // 300 + 100
+            setProgress(50)
+          }, 1800) // 300 + 100
 
           setTimeout(() => {
-            setProgress(70);
-          }, 2400); // 400 + 100
+            setProgress(70)
+          }, 2400) // 400 + 100
 
           setTimeout(() => {
-            setProgress(90);
-          }, 3000); // 500 + 50
+            setProgress(90)
+          }, 3000) // 500 + 50
         },
       },
-    );
-    return response;
-  };
+    )
+    return response
+  }
 
   const {
     mutateAsync: createPresencaCultoFn,
@@ -117,73 +117,74 @@ export function RegisterPresenceFormFirst({
     data: createdPresence,
   } = useMutation({
     mutationFn: createPresencaCultoFunction,
-    mutationKey: ["NewPresenceRegistered"],
+    mutationKey: ['NewPresenceRegistered'],
     onError: () => {
-      queryClient.invalidateQueries({ queryKey: ["NewPresenceRegistered"] });
+      queryClient.invalidateQueries({ queryKey: ['NewPresenceRegistered'] })
     },
     onSuccess: () => {
       // Invalidando queries para refetch
 
-      queryClient.invalidateQueries({ queryKey: ["NewPresenceRegistered"] });
+      queryClient.invalidateQueries({ queryKey: ['NewPresenceRegistered'] })
       toast({
-        variant: "default",
-        title: "Successo",
-        description: "Presença registrada com sucesso.",
-      });
-      setIsCompleted(true);
+        variant: 'default',
+        title: 'Successo',
+        description: 'Presença registrada com sucesso.',
+      })
+      setIsCompleted(true)
     },
-  });
+  })
 
   useEffect(() => {
     if (!isPending && createdPresence) {
-      setProgress(100);
+      setProgress(100)
     }
     return () => {
       if (timerRef.current) {
-        clearTimeout(timerRef.current);
+        clearTimeout(timerRef.current)
       }
-    };
-  }, [progress]);
+    }
+  }, [progress])
 
   const form = useForm<dataForms>({
     resolver: zodResolver(FormSchema),
-  });
+  })
 
   useEffect(() => {
-    form.setValue("presence_culto", culto);
+    form.setValue('presence_culto', culto)
     celulaSort?.forEach((member, index) => {
-      form.setValue(`membro.${index}.id`, member.id);
-    });
-  }, [celulaSort, culto, form]);
+      form.setValue(`membro.${index}.id`, member.id)
+    })
+  }, [celulaSort, culto, form])
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setIsCompleted(false);
+    setIsCompleted(false)
     try {
-      await createPresencaCultoFn(data);
+      await createPresencaCultoFn(data)
       toast({
-        variant: "default",
-        title: "Successo",
-        description: "Presença registrada com sucesso.",
-      });
+        variant: 'default',
+        title: 'Successo',
+        description: 'Presença registrada com sucesso.',
+      })
     } catch (error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError
 
       if (isError(axiosError)) {
-        console.log(axiosError);
+        console.log(axiosError)
         toast({
-          variant: "destructive",
-          title: "Ocorreu um Erro",
-          description: `${axiosError.response?.status === 409
-            ? "Presença de Culto já Registrada para hoje!"
-            : axiosError.message
-            }`,
-        });
+          variant: 'destructive',
+          title: 'Ocorreu um Erro',
+          description: `${
+            axiosError.response?.status === 409
+              ? 'Presença de Culto já Registrada para hoje!'
+              : axiosError.message
+          }`,
+        })
       } else {
         toast({
-          variant: "destructive",
-          title: "Ocorreu um Erro",
+          variant: 'destructive',
+          title: 'Ocorreu um Erro',
           description: `Um erro desconhecido ocorreu.`,
-        });
+        })
       }
     }
   }
@@ -285,22 +286,22 @@ export function RegisterPresenceFormFirst({
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
                                       {member?.situacao_no_reino?.nome ===
-                                        "Normal" ? (
+                                      'Normal' ? (
                                         <Badge
-                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-green-200 bg-green-100 ring-green-500'} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                         >
                                           {member?.situacao_no_reino?.nome}
                                         </Badge>
                                       ) : member?.situacao_no_reino?.nome ===
-                                        "Ativo" ? (
+                                        'Ativo' ? (
                                         <Badge
-                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-sky-200 bg-sky-100 ring-sky-500"} hover:border-sky-300 hover:bg-sky-200 hover:ring-sky-600`}
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-sky-200 bg-sky-100 ring-sky-500'} hover:border-sky-300 hover:bg-sky-200 hover:ring-sky-600`}
                                         >
                                           {member?.situacao_no_reino?.nome}
                                         </Badge>
                                       ) : (
                                         <Badge
-                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${"border border-green-200 bg-green-100 ring-green-500"}`}
+                                          className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-green-200 bg-green-100 ring-green-500'}`}
                                         >
                                           {member?.situacao_no_reino?.nome}
                                         </Badge>
@@ -359,9 +360,9 @@ export function RegisterPresenceFormFirst({
                                 {isPending ? (
                                   <Spinner size={20} className="animate-spin" />
                                 ) : (
-                                  ""
+                                  ''
                                 )}
-                                {isPending ? "Registrando" : "Registrar"}
+                                {isPending ? 'Registrando' : 'Registrar'}
                               </Button>
                             </div>
                           </form>
@@ -376,5 +377,5 @@ export function RegisterPresenceFormFirst({
         </>
       )}
     </>
-  );
+  )
 }

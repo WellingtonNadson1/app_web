@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -10,17 +10,14 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-} from "@tanstack/react-table";
+  useReactTable,
+} from '@tanstack/react-table'
 
-import {
-  RankingInfo,
-  rankItem
-} from "@tanstack/match-sorter-utils";
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
 
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -28,50 +25,50 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { BookOpenText } from "@phosphor-icons/react/dist/ssr";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-import { TagQuantidadeCelulas } from "../_components/TagQuantidadeCelulas";
-import AddNewCelula from "../AddNewCelula";
-import { DataTablePagination } from "./table-pagination";
+} from '@/components/ui/table'
+import { BookOpenText } from '@phosphor-icons/react/dist/ssr'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
+import { TagQuantidadeCelulas } from '../_components/TagQuantidadeCelulas'
+import AddNewCelula from '../AddNewCelula'
+import { DataTablePagination } from './table-pagination'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-declare module "@tanstack/react-table" {
+declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>;
+    fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo;
+    itemRank: RankingInfo
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  });
+  })
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+  return itemRank.passed
+}
 
 export function DataTableCelulas<TData, TValue>({
   columns,
-  data
+  data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
   const router = useRouter()
 
   const table = useReactTable({
@@ -87,24 +84,34 @@ export function DataTableCelulas<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: 'fuzzy',
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   //@ts-ignore
-  const qntCelulasSupVermelha = String(data.filter((celula) => celula?.supervisao?.nome === "vermelha").length).padStart(2, '0')
+  const qntCelulasSupVermelha = String(
+    data.filter((celula) => celula?.supervisao?.nome === 'vermelha').length,
+  ).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupAzul = String(data.filter((celula) => celula?.supervisao?.nome === "azul").length).padStart(2, '0')
+  const qntCelulasSupAzul = String(
+    data.filter((celula) => celula?.supervisao?.nome === 'azul').length,
+  ).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupLaranja = String(data.filter((celula) => celula?.supervisao?.nome === "laranja").length).padStart(2, '0')
+  const qntCelulasSupLaranja = String(
+    data.filter((celula) => celula?.supervisao?.nome === 'laranja').length,
+  ).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupVerde = String(data.filter((celula) => celula?.supervisao?.nome === "verde").length).padStart(2, '0')
+  const qntCelulasSupVerde = String(
+    data.filter((celula) => celula?.supervisao?.nome === 'verde').length,
+  ).padStart(2, '0')
   //@ts-ignore
-  const qntCelulasSupAmarela = String(data.filter((celula) => celula?.supervisao?.nome === "amarela").length).padStart(2, '0')
+  const qntCelulasSupAmarela = String(
+    data.filter((celula) => celula?.supervisao?.nome === 'amarela').length,
+  ).padStart(2, '0')
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -119,17 +126,41 @@ export function DataTableCelulas<TData, TValue>({
             <div className="flex items-center justify-start flex-wrap gap-3">
               <Badge className="items-center justify-center px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset md:block">
                 <p className="flex items-center justify-between">
-                  Total{" "}
+                  Total{' '}
                   <span className="px-1 py-1 ml-2 text-black rounded-md bg-white">
                     {data?.length}
                   </span>
                 </p>
               </Badge>
-              <TagQuantidadeCelulas key={Math.random()} cor="red" nomeSupervisao="Vermelha" data={qntCelulasSupVermelha} />
-              <TagQuantidadeCelulas key={Math.random()} cor="blue" nomeSupervisao="Azul" data={qntCelulasSupAzul} />
-              <TagQuantidadeCelulas key={Math.random()} cor="orange" nomeSupervisao="Laranja" data={qntCelulasSupLaranja} />
-              <TagQuantidadeCelulas key={Math.random()} cor="green" nomeSupervisao="Verde" data={qntCelulasSupVerde} />
-              <TagQuantidadeCelulas key={Math.random()} nomeSupervisao="Amarela" data={qntCelulasSupAmarela} />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                cor="red"
+                nomeSupervisao="Vermelha"
+                data={qntCelulasSupVermelha}
+              />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                cor="blue"
+                nomeSupervisao="Azul"
+                data={qntCelulasSupAzul}
+              />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                cor="orange"
+                nomeSupervisao="Laranja"
+                data={qntCelulasSupLaranja}
+              />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                cor="green"
+                nomeSupervisao="Verde"
+                data={qntCelulasSupVerde}
+              />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                nomeSupervisao="Amarela"
+                data={qntCelulasSupAmarela}
+              />
             </div>
           </div>
         </div>
@@ -138,15 +169,21 @@ export function DataTableCelulas<TData, TValue>({
       <div className="flex items-center  justify-between py-4">
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ''}
           onChange={(event) => {
-            setGlobalFilter(String(event.target.value));
+            setGlobalFilter(String(event.target.value))
           }}
           className="sm:max-w-sm"
         />
         <div className="flex items-center justify-end  gap-2">
           <AddNewCelula />
-          <Button className="flex items-center justify-between gap-2" type="button" onClick={() => router.push('/celulas/tema-licoes-celula')}><BookOpenText /> Lições de Célula</Button>
+          <Button
+            className="flex items-center justify-between gap-2"
+            type="button"
+            onClick={() => router.push('/celulas/tema-licoes-celula')}
+          >
+            <BookOpenText /> Lições de Célula
+          </Button>
         </div>
       </div>
       {/* TABELA */}
@@ -161,11 +198,11 @@ export function DataTableCelulas<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -175,7 +212,7 @@ export function DataTableCelulas<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -204,5 +241,5 @@ export function DataTableCelulas<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }

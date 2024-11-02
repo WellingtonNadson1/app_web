@@ -1,57 +1,57 @@
-"use client";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import ptBr from "dayjs/locale/pt-br";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import React, { Fragment, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
+'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
+import { useData } from '@/providers/providers'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import ptBr from 'dayjs/locale/pt-br'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import React, { Fragment, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
 import {
   FormRelatorioSchema,
   MemberDataDiscipulado,
   MembersDataDiscipulado,
-} from "./schema";
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.locale(ptBr);
-dayjs.tz.setDefault("America/Sao_Paulo");
+} from './schema'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.locale(ptBr)
+dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function DiscipuladosRelatoriosSupervisor() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`;
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
-    useState<Record<string, MemberDataDiscipulado[]>>();
-  const [corSupervisao, setCorSupervisao] = useState("");
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+    useState<Record<string, MemberDataDiscipulado[]>>()
+  const [corSupervisao, setCorSupervisao] = useState('')
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
 
-  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
-  const queryClient = useQueryClient();
+  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
+  const queryClient = useQueryClient()
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
-  const cargoLideranca = dataAllCtx?.combinedData[4];
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
+  const cargoLideranca = dataAllCtx?.combinedData[4]
   //@ts-ignore
   const cargoLiderancaFilter = cargoLideranca?.filter(
     // @ts-ignore
     (cargo) =>
-      cargo.nome !== "Pastor" &&
-      cargo.nome !== "Líder de Célula" &&
-      cargo.nome !== "Membro" &&
-      cargo.nome !== "Líder Auxiliar",
-  );
+      cargo.nome !== 'Pastor' &&
+      cargo.nome !== 'Líder de Célula' &&
+      cargo.nome !== 'Membro' &&
+      cargo.nome !== 'Líder Auxiliar',
+  )
 
   const DiscipuladosSupervisor = async ({
     startDate,
@@ -59,24 +59,24 @@ export default function DiscipuladosRelatoriosSupervisor() {
     superVisionId,
     cargoLiderancaId,
   }: {
-    startDate: string;
-    endDate: string;
-    superVisionId: string;
-    cargoLiderancaId: string[];
+    startDate: string
+    endDate: string
+    superVisionId: string
+    cargoLiderancaId: string[]
   }): Promise<MembersDataDiscipulado[]> => {
-    setIsLoadingSubmitForm(true);
+    setIsLoadingSubmitForm(true)
 
     const { data } = await axiosAuth.post(URLDiscipuladosSupervisor, {
       startDate,
       endDate,
       superVisionId,
       cargoLiderancaId,
-    });
+    })
 
-    data && setIsLoadingSubmitForm(false);
-    console.log("data", data);
-    return data as MembersDataDiscipulado[];
-  };
+    data && setIsLoadingSubmitForm(false)
+    console.log('data', data)
+    return data as MembersDataDiscipulado[]
+  }
 
   const {
     data: DiscipuladosSupervisorData,
@@ -84,32 +84,32 @@ export default function DiscipuladosRelatoriosSupervisor() {
     isPending,
     isSuccess,
   } = useMutation({
-    mutationKey: ["getDiscipuladosSupervisor"],
+    mutationKey: ['getDiscipuladosSupervisor'],
     mutationFn: DiscipuladosSupervisor,
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["getDiscipuladosSupervisor"],
-      });
+        queryKey: ['getDiscipuladosSupervisor'],
+      })
     },
-  });
+  })
 
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(
     relatorio: MembersDataDiscipulado,
   ): Promise<Record<string, MemberDataDiscipulado[]>> {
-    const celula: Record<string, MemberDataDiscipulado[]> = {};
+    const celula: Record<string, MemberDataDiscipulado[]> = {}
 
     relatorio.membros.forEach((membro) => {
-      const cellName = membro?.first_name;
+      const cellName = membro?.first_name
 
       if (cellName) {
         if (!celula[cellName]) {
-          celula[cellName] = [];
+          celula[cellName] = []
         }
-        celula[cellName].push(membro);
+        celula[cellName].push(membro)
       }
-    });
-    return Promise.resolve(celula);
+    })
+    return Promise.resolve(celula)
   }
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
@@ -118,43 +118,43 @@ export default function DiscipuladosRelatoriosSupervisor() {
     superVisionId,
     cargoLiderancaId,
   }) => {
-    setIsLoadingSubmitForm(true);
+    setIsLoadingSubmitForm(true)
 
     DiscipuladosSupervisoesFn({
       startDate,
       endDate,
       superVisionId,
       cargoLiderancaId,
-    });
+    })
 
     if (!isPending && DiscipuladosSupervisorData) {
       const dataGroupedForCell = await groupDiscipuladoByCell(
         DiscipuladosSupervisorData[0],
-      );
-      console.log("dataGroupedForCell", dataGroupedForCell);
-      setDiscipuladoForCellForCell(dataGroupedForCell);
+      )
+      console.log('dataGroupedForCell', dataGroupedForCell)
+      setDiscipuladoForCellForCell(dataGroupedForCell)
       setCorSupervisao(
         DiscipuladosSupervisorData[0]?.membros[0]?.supervisao_pertence?.nome,
-      );
+      )
     }
-  };
+  }
 
-  const newCorSupervisao = CorSupervision(corSupervisao);
-  const Supervisor = ListSupervisores(corSupervisao);
+  const newCorSupervisao = CorSupervision(corSupervisao)
+  const Supervisor = ListSupervisores(corSupervisao)
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value);
-  };
+    setSupervisaoSelecionada(event.target.value)
+  }
 
   if (discipuladoForCell) {
     const view = Object.keys(discipuladoForCell).map((cellName, cellIndex) =>
       discipuladoForCell[cellName].map((member) =>
-        console.log("member", member),
+        console.log('member', member),
       ),
-    );
-    view;
+    )
+    view
   }
 
   return (
@@ -165,7 +165,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
             <form onSubmit={handleSubmit(handleRelatorio)}>
               <div className="flex flex-col gap-4 p-3">
                 <div className="flex items-center justify-start gap-4">
-                  <Link href={"/dashboard"}>
+                  <Link href={'/dashboard'}>
                     <Image
                       className="cursor-pointer"
                       src="/images/logo-ibb-1.svg"
@@ -196,7 +196,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("startDate", { required: true })}
+                            {...register('startDate', { required: true })}
                             type="datetime-local"
                             name="startDate"
                             id="startDate"
@@ -214,7 +214,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("endDate", { required: true })}
+                            {...register('endDate', { required: true })}
                             type="datetime-local"
                             name="endDate"
                             id="endDate"
@@ -233,7 +233,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         </label>
                         <div className="mt-3">
                           <select
-                            {...register("superVisionId", { required: true })}
+                            {...register('superVisionId', { required: true })}
                             id="superVisionId"
                             name="superVisionId"
                             className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -270,7 +270,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           <div key={cargo.id} className="flex gap-x-3">
                             <div className="flex items-center h-6">
                               <input
-                                {...register("cargoLiderancaId", {
+                                {...register('cargoLiderancaId', {
                                   required: true,
                                 })}
                                 id={cargo.id}
@@ -344,7 +344,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
         {/* TABELA DE REGISTRO DE DISCIPULADOS DA SUPERVISÃO */}
         {isPending ? (
           <p className="flex items-center justify-center gap-2 text-center">
-            {" "}
+            {' '}
             <SpinnerButton message="" /> Carregando dados...
           </p>
         ) : DiscipuladosSupervisorData ? (
@@ -370,14 +370,14 @@ export default function DiscipuladosRelatoriosSupervisor() {
               {isSuccess ? (
                 <div className="pb-2 pl-2">
                   <p className="p-2 text-base font-medium uppercase text-start">
-                    SUPERVISOR(ES):{" "}
+                    SUPERVISOR(ES):{' '}
                     <span className="font-normal ">{Supervisor}</span>
                   </p>
                 </div>
               ) : (
                 <div className="pb-2 pl-2">
                   <p className="p-2 text-base font-medium uppercase text-start">
-                    SUPERVISOR(ES):{" "}
+                    SUPERVISOR(ES):{' '}
                     <span className="font-normal ">Sem Dados</span>
                   </p>
                 </div>
@@ -440,7 +440,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           {cellName}
                         </p>
                         <p className="text-sm text-slate-600">
-                          Tipo:{" "}
+                          Tipo:{' '}
                           <span className="capitalize">
                             {
                               discipuladoForCell[cellName][0].cargo_de_lideranca
@@ -449,7 +449,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           </span>
                         </p>
                         <p className="text-sm text-slate-600">
-                          Qnt Discip.:{" "}
+                          Qnt Discip.:{' '}
                           <span>
                             {discipuladoForCell[cellName][0].discipulos.length}
                           </span>
@@ -493,7 +493,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexMember) => {
                               const totalDiscipulado =
-                                discipulado?.discipulado.length;
+                                discipulado?.discipulado.length
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -510,11 +510,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                       <Fragment>
                                         {totalDiscipulado === 1 ? (
                                           <p className="text-sky-600">
-                                            {"50%"}
+                                            {'50%'}
                                           </p>
                                         ) : (
                                           <p className="text-green-600">
-                                            {"100%"}
+                                            {'100%'}
                                           </p>
                                         )}
                                       </Fragment>
@@ -523,12 +523,12 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                         className="text-red-600"
                                         key={indexMember}
                                       >
-                                        {"00%"}
+                                        {'00%'}
                                       </p>
                                     )}
                                   </div>
                                 </tr>
-                              );
+                              )
                             },
                           )
                         ) : (
@@ -540,7 +540,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                               className="flex flex-col justify-center h-24 font-bold text-red-600 w-36"
                               key={cellName + cellIndex}
                             >
-                              {"00%"}
+                              {'00%'}
                             </p>
                           </tr>
                         )}
@@ -552,7 +552,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
-                                discipulado?.discipulado[0]?.data_ocorreu;
+                                discipulado?.discipulado[0]?.data_ocorreu
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -568,7 +568,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     {discipulado1 ? (
                                       <Fragment>
                                         {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
                                       </Fragment>
                                     ) : (
                                       <p key={indexDiscipulado}>
@@ -579,7 +579,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     )}
                                   </div>
                                 </tr>
-                              );
+                              )
                             },
                           )
                         ) : (
@@ -609,7 +609,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
-                                discipulado?.discipulado[1]?.data_ocorreu;
+                                discipulado?.discipulado[1]?.data_ocorreu
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -625,7 +625,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     {discipulado1 ? (
                                       <Fragment>
                                         {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                        <p className="text-green-600">{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
                                       </Fragment>
                                     ) : (
                                       <p key={indexDiscipulado}>
@@ -636,7 +636,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     )}
                                   </div>
                                 </tr>
-                              );
+                              )
                             },
                           )
                         ) : (
@@ -669,5 +669,5 @@ export default function DiscipuladosRelatoriosSupervisor() {
         )}
       </div>
     </Fragment>
-  );
+  )
 }

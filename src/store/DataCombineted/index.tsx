@@ -4,28 +4,28 @@ import {
   Escolas,
   SituacoesNoReino,
   SupervisaoData,
-} from "@/app/(central)/novo-membro/schema";
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+} from '@/app/(central)/novo-membro/schema'
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 type ActionsProps = {
-  setSupervisao: (supervisao: SupervisaoData) => void;
-  setEscola: (escola: Escolas) => void;
-  setEncontro: (encontro: Encontros) => void;
-  setSituacoesNoReino: (situacaoreino: SituacoesNoReino) => void;
-  setCargoLideranca: (cargolideranca: CargoLidereanca) => void;
-};
+  setSupervisao: (supervisao: SupervisaoData) => void
+  setEscola: (escola: Escolas) => void
+  setEncontro: (encontro: Encontros) => void
+  setSituacoesNoReino: (situacaoreino: SituacoesNoReino) => void
+  setCargoLideranca: (cargolideranca: CargoLidereanca) => void
+}
 
 type CombinedDataStore = {
   state: {
-    supervisoes: SupervisaoData[];
-    escolas: Escolas[];
-    encontros: Encontros[];
-    situacoesNoReino: SituacoesNoReino[];
-    cargoLideranca: CargoLidereanca[];
-  };
-  actions: ActionsProps;
-};
+    supervisoes: SupervisaoData[]
+    escolas: Escolas[]
+    encontros: Encontros[]
+    situacoesNoReino: SituacoesNoReino[]
+    cargoLideranca: CargoLidereanca[]
+  }
+  actions: ActionsProps
+}
 
 export const useCombinedStore = create(
   persist<CombinedDataStore>(
@@ -87,8 +87,8 @@ export const useCombinedStore = create(
       },
     }),
     {
-      name: "data-combined",
+      name: 'data-combined',
       storage: createJSONStorage(() => localStorage),
     },
   ),
-);
+)

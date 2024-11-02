@@ -1,54 +1,59 @@
-"use client";
-import { useAlmasAnoStore, useAlmasMesPassadoStore, useAlmasMesStore } from "@/store/AlmasStorage";
-import { ChartLineUp, Confetti, HandsPraying } from "@phosphor-icons/react";
-import { Card } from "../ui/card";
+'use client'
+import {
+  useAlmasAnoStore,
+  useAlmasMesPassadoStore,
+  useAlmasMesStore,
+} from '@/store/AlmasStorage'
+import { ChartLineUp, Confetti, HandsPraying } from '@phosphor-icons/react'
+import { Card } from '../ui/card'
 
-import { cn } from "@/lib/utils";
-import axios from "axios";
-import { useSession } from "next-auth/react";
-import { useEffect, useState } from "react";
+import { cn } from '@/lib/utils'
+import axios from 'axios'
+import { useSession } from 'next-auth/react'
+import { useEffect, useState } from 'react'
 
 export default function StatsCard() {
-  const { data } = useSession();
-  const token = data?.user.token;
+  const { data } = useSession()
+  const token = data?.user.token
   const DataCombineteded = async () => {
     const axiosAuth = axios.create({
-      baseURL: "https://back-ibb.vercel.app",
+      baseURL: 'https://back-ibb.vercel.app',
       // baseURL: "http://0.0.0.0:8080",
       headers: {
         Authorization: `Bearer ${token}`,
-        "Content-Type": "application/json",
-        Accept: "application/json",
+        'Content-Type': 'application/json',
+        Accept: 'application/json',
       },
-    });
+    })
 
     try {
-      const { data } = await axiosAuth.get("/users/all");
-      return data;
+      const { data } = await axiosAuth.get('/users/all')
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
-      return null;
+      return null
     }
-  };
+  }
 
   // Estado local para controlar a hidratação da store
-  const [isHydrated, setIsHydrated] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false)
 
   // Acessa e atualiza o estado de almas ganhas no Zustand
-  const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasMesStore();
-  const { almasGanhasNoMesPassado, setAlmasGanhasNoMesPassado } = useAlmasMesPassadoStore();
-  const { almasGanhasNoAno, setAlmasGanhasNoAno } = useAlmasAnoStore();
+  const { almasGanhasNoMes, setAlmasGanhasNoMes } = useAlmasMesStore()
+  const { almasGanhasNoMesPassado, setAlmasGanhasNoMesPassado } =
+    useAlmasMesPassadoStore()
+  const { almasGanhasNoAno, setAlmasGanhasNoAno } = useAlmasAnoStore()
 
   // Função para buscar dados da API e atualizar o estado
   async function fetchAndUpdateAlmasGanhas() {
-    const data = await DataCombineteded();
+    const data = await DataCombineteded()
     if (data) {
-      setAlmasGanhasNoMes(data.almasGanhasNoMes);
-      setAlmasGanhasNoAno(data.almasGanhasNoAno);
+      setAlmasGanhasNoMes(data.almasGanhasNoMes)
+      setAlmasGanhasNoAno(data.almasGanhasNoAno)
       setAlmasGanhasNoMesPassado(data.almasGanhasNoMesPassado)
     }
   }
@@ -56,46 +61,48 @@ export default function StatsCard() {
   // useEffect para carregar os dados ao montar o componente
   useEffect(() => {
     fetchAndUpdateAlmasGanhas().then(() => {
-      setIsHydrated(true); // Apenas define como true após carregar os dados
-    });
-  }, []);
-
+      setIsHydrated(true) // Apenas define como true após carregar os dados
+    })
+  }, [])
 
   if (!isHydrated) {
-    return <div>Carregando...</div>;
+    return <div>Carregando...</div>
   }
 
-  const porcentagemAlmasGanhasMesPassado = (almasGanhasNoMes * 100) / almasGanhasNoMesPassado
+  const porcentagemAlmasGanhasMesPassado =
+    (almasGanhasNoMes * 100) / almasGanhasNoMesPassado
 
   const statusIbb = [
     {
-      title: "Conversões Células/Mês",
+      title: 'Conversões Células/Mês',
       porcentagem: `${porcentagemAlmasGanhasMesPassado.toFixed(2)}%`,
-      total: almasGanhasNoMes !== undefined ? almasGanhasNoMes : "Carregando...",
-      status: "up",
+      total:
+        almasGanhasNoMes !== undefined ? almasGanhasNoMes : 'Carregando...',
+      status: 'up',
       icon: HandsPraying,
-      color: "bg-[#6074E1]",
-      destaq: " o último mês",
+      color: 'bg-[#6074E1]',
+      destaq: ' o último mês',
     },
     {
-      title: "Conversões/Ano",
-      porcentagem: "--.--%",
-      total: almasGanhasNoAno !== undefined ? almasGanhasNoAno : "Carregando...",
-      status: "up",
+      title: 'Conversões/Ano',
+      porcentagem: '--.--%',
+      total:
+        almasGanhasNoAno !== undefined ? almasGanhasNoAno : 'Carregando...',
+      status: 'up',
       icon: Confetti,
-      color: "bg-[#F55343]",
-      destaq: " o último ano",
+      color: 'bg-[#F55343]',
+      destaq: ' o último ano',
     },
     {
-      title: "Frequência",
-      porcentagem: "--.--%",
-      total: "---",
-      status: "up",
+      title: 'Frequência',
+      porcentagem: '--.--%',
+      total: '---',
+      status: 'up',
       icon: ChartLineUp,
-      color: "bg-[#5fe2c2]",
-      destaq: " o último culto",
+      color: 'bg-[#5fe2c2]',
+      destaq: ' o último culto',
     },
-  ];
+  ]
 
   return (
     <div className="relative z-10 mx-auto mt-3 flex w-full flex-wrap items-center justify-between gap-4 p-2 md:flex-nowrap">
@@ -117,9 +124,11 @@ export default function StatsCard() {
           </div>
           <div className="flex items-center">
             <span
-              className={cn("text-sm font-bold leading-normal", {
-                "text-red-500": almasGanhasNoMes < porcentagemAlmasGanhasMesPassado,
-                "text-emerald-500": almasGanhasNoMes >= porcentagemAlmasGanhasMesPassado,
+              className={cn('text-sm font-bold leading-normal', {
+                'text-red-500':
+                  almasGanhasNoMes < porcentagemAlmasGanhasMesPassado,
+                'text-emerald-500':
+                  almasGanhasNoMes >= porcentagemAlmasGanhasMesPassado,
               })}
             >
               {stat.porcentagem}
@@ -131,5 +140,5 @@ export default function StatsCard() {
         </Card>
       ))}
     </div>
-  );
+  )
 }

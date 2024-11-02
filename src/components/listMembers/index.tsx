@@ -1,47 +1,47 @@
-"use client";
-import AddNewMember from "@/app/(central)/novo-membro/AddNewMember";
-import DeleteMember from "@/app/(central)/novo-membro/DeleteMember";
-import UpdateMember from "@/app/(central)/novo-membro/UpdateMember";
-import { ReturnMembers } from "@/app/(central)/novo-membro/schema";
-import { UserFocus } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
-import Pagination from "../Pagination";
-import { Badge } from "../ui/badge";
+'use client'
+import AddNewMember from '@/app/(central)/novo-membro/AddNewMember'
+import DeleteMember from '@/app/(central)/novo-membro/DeleteMember'
+import UpdateMember from '@/app/(central)/novo-membro/UpdateMember'
+import { ReturnMembers } from '@/app/(central)/novo-membro/schema'
+import { UserFocus } from '@phosphor-icons/react'
+import { useEffect, useState } from 'react'
+import Pagination from '../Pagination'
+import { Badge } from '../ui/badge'
 
 interface ListMembersProps {
-  members: ReturnMembers[];
+  members: ReturnMembers[]
 }
 
 export default function ListMembers({ members }: ListMembersProps) {
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage);
-  };
+    setCurrentPage(newPage)
+  }
 
-  const [memberAtivo, setMemberAtivo] = useState<ReturnMembers[]>();
-  const [memberNormal, setMemberNormal] = useState<ReturnMembers[]>();
+  const [memberAtivo, setMemberAtivo] = useState<ReturnMembers[]>()
+  const [memberNormal, setMemberNormal] = useState<ReturnMembers[]>()
 
   useEffect(() => {
     setMemberAtivo(
-      members.filter((user) => user?.situacao_no_reino?.nome === "Ativo"),
-    );
-  }, [members]);
+      members.filter((user) => user?.situacao_no_reino?.nome === 'Ativo'),
+    )
+  }, [members])
 
   useEffect(() => {
     setMemberNormal(
-      members.filter((user) => user?.situacao_no_reino?.nome === "Normal"),
-    );
-  }, [members]);
+      members.filter((user) => user?.situacao_no_reino?.nome === 'Normal'),
+    )
+  }, [members])
 
   // Pagination
-  const itemsPerPage = 10;
-  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10
+  const [currentPage, setCurrentPage] = useState(1)
 
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
+  const startIndex = (currentPage - 1) * itemsPerPage
+  const endIndex = startIndex + itemsPerPage
   const membersSort = members?.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  );
-  const displayedMembers = membersSort?.slice(startIndex, endIndex);
+  )
+  const displayedMembers = membersSort?.slice(startIndex, endIndex)
 
   return (
     <>
@@ -55,7 +55,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                 </h2>
                 <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-blue-50 text-sky-700 ring-blue-600/20 sm:block">
                   <p className="flex items-center justify-between">
-                    Total{" "}
+                    Total{' '}
                     <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                       {members?.length}
                     </span>
@@ -63,7 +63,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                 </div>
                 <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-green-50 text-sky-700 ring-blue-600/20 sm:block">
                   <p className="flex items-center justify-between">
-                    Ativos{" "}
+                    Ativos{' '}
                     <span className="px-1 py-1 ml-2 text-white bg-green-700 rounded-md">
                       {memberAtivo?.length}
                     </span>
@@ -71,7 +71,7 @@ export default function ListMembers({ members }: ListMembersProps) {
                 </div>
                 <div className="items-center justify-center hidden px-2 py-1 text-xs font-medium text-center rounded-md ring-1 ring-inset bg-sky-50 text-sky-700 ring-blue-600/20 md:block">
                   <p className="flex items-center justify-between">
-                    Normal{" "}
+                    Normal{' '}
                     <span className="px-1 py-1 ml-2 text-white rounded-md bg-sky-700">
                       {memberNormal?.length}
                     </span>
@@ -121,13 +121,13 @@ export default function ListMembers({ members }: ListMembersProps) {
                       <td className="hidden px-2 py-1 text-center border-b border-gray-200 sm:table-cell">
                         <Badge
                           className={`hidden w-full items-center justify-center text-center text-xs font-medium sm:table-cell ${
-                            user.situacao_no_reino?.nome === "Ativo"
-                              ? "bg-green-100 text-green-700 hover:bg-green-200 hover:text-green-800"
-                              : user.situacao_no_reino?.nome === "Normal"
-                                ? "bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800"
-                                : user.situacao_no_reino?.nome === "Frio"
-                                  ? "bg-orange-100 text-orange-700 hover:bg-orange-200 hover:text-orange-800"
-                                  : "bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800"
+                            user.situacao_no_reino?.nome === 'Ativo'
+                              ? 'bg-green-100 text-green-700 hover:bg-green-200 hover:text-green-800'
+                              : user.situacao_no_reino?.nome === 'Normal'
+                                ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800'
+                                : user.situacao_no_reino?.nome === 'Frio'
+                                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200 hover:text-orange-800'
+                                  : 'bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800'
                           }`}
                         >
                           {user.situacao_no_reino?.nome}
@@ -177,5 +177,5 @@ export default function ListMembers({ members }: ListMembersProps) {
         </div>
       </div>
     </>
-  );
+  )
 }

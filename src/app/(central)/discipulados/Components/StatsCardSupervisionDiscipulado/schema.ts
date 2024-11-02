@@ -1,9 +1,9 @@
 export type SupervisaoDataType = {
-  nome: string;
-  cor: string;
-  idSupervisao: string;
+  nome: string
+  cor: string
+  idSupervisao: string
   supervisor: {
-    id: string;
-    first_name: string;
-  };
-};
+    id: string
+    first_name: string
+  }
+}

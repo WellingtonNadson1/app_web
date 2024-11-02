@@ -1,5 +1,5 @@
-"use client";
-import { Button } from "@/components/ui/button";
+'use client'
+import { Button } from '@/components/ui/button'
 import {
   Dialog,
   DialogContent,
@@ -7,54 +7,54 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
-import { toast } from "@/components/ui/use-toast";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Spinner, Trash } from "@phosphor-icons/react/dist/ssr";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
+} from '@/components/ui/dialog'
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+import { toast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { useState } from 'react'
 
 export default function DeleteCelula({
   celulaId,
   celulaName,
 }: {
-  celulaId: string;
-  celulaName: string;
+  celulaId: string
+  celulaName: string
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const deleteMemberFunction = async (CelulaId: string) => {
-    const URLM = `${BASE_URL}/celulas/${CelulaId}`;
+    const URLM = `${BASE_URL}/celulas/${CelulaId}`
     try {
-      const response = await axiosAuth.delete(URLM);
+      const response = await axiosAuth.delete(URLM)
       toast({
-        title: "Sucesso!!!",
-        description: "Célula DELETADA com Sucesso!!! 🧨",
-      });
-      return response.data;
+        title: 'Sucesso!!!',
+        description: 'Célula DELETADA com Sucesso!!! 🧨',
+      })
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const { mutateAsync: deleteCelulaFn, isPending } = useMutation({
     mutationFn: deleteMemberFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["allCelulasIbb"] });
+      queryClient.invalidateQueries({ queryKey: ['allCelulasIbb'] })
     },
-  });
+  })
 
   const handleDeleteCelula = async (CelulaId: string) => {
-    await deleteCelulaFn(CelulaId);
-  };
+    await deleteCelulaFn(CelulaId)
+  }
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <>
@@ -79,11 +79,11 @@ export default function DeleteCelula({
             {celulaName}
           </div>
           <div className="flex flex-col-reverse gap-2 sm:gap-0 sm:flex-row sm:justify-end sm:space-x-2">
-            <Button variant={"outline"} onClick={() => setOpen(false)}>
+            <Button variant={'outline'} onClick={() => setOpen(false)}>
               Cancelar
             </Button>
             <Button
-              variant={"destructive"}
+              variant={'destructive'}
               onClick={() => handleDeleteCelula(celulaId)}
               type="submit"
             >
@@ -93,13 +93,12 @@ export default function DeleteCelula({
                   Deletando...
                 </div>
               ) : (
-                "Deletar"
+                'Deletar'
               )}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
-

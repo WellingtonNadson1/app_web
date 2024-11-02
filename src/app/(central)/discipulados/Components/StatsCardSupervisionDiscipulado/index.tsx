@@ -1,9 +1,9 @@
 // 'use client'
-import { useSupervisaoContext } from "@/contexts/supervisao/supervisao";
-import { UsersFour } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
-import { twMerge } from "tailwind-merge";
-import { SupervisaoDataType } from "./schema";
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
+import { UsersFour } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
+import { twMerge } from 'tailwind-merge'
+import { SupervisaoDataType } from './schema'
 
 export default function StatsCardSupervisionDiscipulado({
   idSupervisao,
@@ -11,18 +11,18 @@ export default function StatsCardSupervisionDiscipulado({
   nome,
   supervisor,
 }: SupervisaoDataType) {
-  const router = useRouter();
-  const contextParamsSupervisaoId = useSupervisaoContext();
-  console.log("idSupervisao", idSupervisao);
+  const router = useRouter()
+  const contextParamsSupervisaoId = useSupervisaoContext()
+  console.log('idSupervisao', idSupervisao)
 
   const handleClickDiscipuladoSUpervisor = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
-    const idSupervisao = event.currentTarget.id;
+    const idSupervisao = event.currentTarget.id
     router.push(
       `/discipulados/${contextParamsSupervisaoId}/supervisor/${idSupervisao}`,
-    );
-  };
+    )
+  }
   return (
     <>
       <div className="relative z-10 w-full py-2 mx-auto">
@@ -64,5 +64,5 @@ export default function StatsCardSupervisionDiscipulado({
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -1,51 +1,51 @@
-"use client";
+'use client'
 import {
   FishSimple,
   Footprints,
   HandsPraying,
   UsersFour,
-} from "@phosphor-icons/react";
-import Link from "next/link";
+} from '@phosphor-icons/react'
+import Link from 'next/link'
 
 export default function StatsCardEscolas() {
   const escolasIbb = [
     {
-      title: "Princípios",
-      supervisor: "Ana Ceila",
-      total: "234",
-      status: "up",
+      title: 'Princípios',
+      supervisor: 'Ana Ceila',
+      total: '234',
+      status: 'up',
       icon: Footprints,
-      color: "bg-[#F55343]",
-      nivel: "Área",
+      color: 'bg-[#F55343]',
+      nivel: 'Área',
     },
     {
-      title: "Fundamentos",
-      supervisor: "Zedequias",
-      total: "334",
-      status: "up",
+      title: 'Fundamentos',
+      supervisor: 'Zedequias',
+      total: '334',
+      status: 'up',
       icon: FishSimple,
-      color: "bg-[#43a2f5]",
-      nivel: "Distrito",
+      color: 'bg-[#43a2f5]',
+      nivel: 'Distrito',
     },
     {
-      title: "Discípulos",
-      supervisor: "Carlos e Thaisa",
-      total: "234",
-      status: "up",
+      title: 'Discípulos',
+      supervisor: 'Carlos e Thaisa',
+      total: '234',
+      status: 'up',
       icon: UsersFour,
-      color: "bg-[#e2de5f]",
-      nivel: "Área",
+      color: 'bg-[#e2de5f]',
+      nivel: 'Área',
     },
     {
-      title: "Oração",
-      supervisor: "Paulo e Patrícia",
-      total: "234",
-      status: "up",
+      title: 'Oração',
+      supervisor: 'Paulo e Patrícia',
+      total: '234',
+      status: 'up',
       icon: HandsPraying,
-      color: "bg-[#f58224]",
-      nivel: "Área",
+      color: 'bg-[#f58224]',
+      nivel: 'Área',
     },
-  ];
+  ]
   return (
     <>
       <div className="relative z-10 mx-auto w-full py-2">
@@ -84,5 +84,5 @@ export default function StatsCardEscolas() {
         </div>
       </div>
     </>
-  );
+  )
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -10,16 +10,13 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-} from "@tanstack/react-table";
+  useReactTable,
+} from '@tanstack/react-table'
 
-import {
-  RankingInfo,
-  rankItem
-} from "@tanstack/match-sorter-utils";
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
 
-import { TagQuantidadeCelulas } from "@/app/(central)/celulas/_components/TagQuantidadeCelulas";
-import { Input } from "@/components/ui/input";
+import { TagQuantidadeCelulas } from '@/app/(central)/celulas/_components/TagQuantidadeCelulas'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -27,47 +24,47 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useState } from "react";
-import AddNewLicaoCelula from "../../AddNewLicaoCelula";
-import { DataTablePaginationLicoes } from "./table-licoes-pagination";
+} from '@/components/ui/table'
+import { useState } from 'react'
+import AddNewLicaoCelula from '../../AddNewLicaoCelula'
+import { DataTablePaginationLicoes } from './table-licoes-pagination'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
+  columns: ColumnDef<TData, TValue>[]
   data: TData[]
 }
 
-declare module "@tanstack/react-table" {
+declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>;
+    fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo;
+    itemRank: RankingInfo
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  });
+  })
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+  return itemRank.passed
+}
 
 export function DataTableLicoesCelulas<TData, TValue>({
   columns,
-  data
+  data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const table = useReactTable({
     data,
@@ -82,13 +79,13 @@ export function DataTableLicoesCelulas<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: 'fuzzy',
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   console.log('data Front', data)
   //@ts-ignore
@@ -105,7 +102,12 @@ export function DataTableLicoesCelulas<TData, TValue>({
               </h1>
             </div>
             <div className="flex items-center justify-start flex-wrap gap-3">
-              <TagQuantidadeCelulas key={Math.random()} cor="sky" nomeSupervisao="Total" data={qntCelulasSupVerde} />
+              <TagQuantidadeCelulas
+                key={Math.random()}
+                cor="sky"
+                nomeSupervisao="Total"
+                data={qntCelulasSupVerde}
+              />
             </div>
           </div>
         </div>
@@ -114,9 +116,9 @@ export function DataTableLicoesCelulas<TData, TValue>({
       <div className="flex items-center  justify-between py-4">
         <Input
           placeholder="🔍 Filtrar pelo título..."
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ''}
           onChange={(event) => {
-            setGlobalFilter(String(event.target.value));
+            setGlobalFilter(String(event.target.value))
           }}
           className="sm:max-w-sm"
         />
@@ -136,11 +138,11 @@ export function DataTableLicoesCelulas<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -150,7 +152,7 @@ export function DataTableLicoesCelulas<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -179,5 +181,5 @@ export function DataTableLicoesCelulas<TData, TValue>({
         <DataTablePaginationLicoes table={table} />
       </div>
     </div>
-  );
+  )
 }

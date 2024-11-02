@@ -1,20 +1,16 @@
-"use client";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import {
-  BASE_URL,
-  errorCadastro,
-  success
-} from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { User } from "@phosphor-icons/react";
-import ProgressBar from "@ramonak/react-progress-bar";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import { ControlePresencaCelulaProps, attendance } from "../../schema";
+'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { User } from '@phosphor-icons/react'
+import ProgressBar from '@ramonak/react-progress-bar'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import { ControlePresencaCelulaProps, attendance } from '../../schema'
 
 export default function ControlePresenceSecond({
   id,
@@ -23,19 +19,19 @@ export default function ControlePresenceSecond({
 }: ControlePresencaCelulaProps) {
   const celulaSort = celula.membros.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  );
-  const URLControlePresenca = `${BASE_URL}/presencacultos`;
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`;
-  const [progress, setProgress] = useState(0);
-  const { handleSubmit, register } = useForm<attendance[]>();
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
-  const queryClient = useQueryClient();
+  )
+  const URLControlePresenca = `${BASE_URL}/presencacultos`
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+  const [progress, setProgress] = useState(0)
+  const { handleSubmit, register } = useForm<attendance[]>()
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const queryClient = useQueryClient()
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId);
-    return data;
-  };
+    const { data } = await axiosAuth.get(URLPresencaCultoId)
+    return data
+  }
 
   const {
     data: PresenceSecondExistRegistered,
@@ -43,46 +39,46 @@ export default function ControlePresenceSecond({
     isSuccess: isSuccessGetPresence,
     error,
   } = useQuery({
-    queryKey: ["presenceSecondExistRegistered"],
+    queryKey: ['presenceSecondExistRegistered'],
     queryFn: getPresenceRegistered,
-  });
+  })
 
   if (isSuccessGetPresence) {
-    console.log("PresenceSecondExistRegistered", PresenceSecondExistRegistered);
+    console.log('PresenceSecondExistRegistered', PresenceSecondExistRegistered)
   }
 
   const createPresencaCultoFunction = async (data: attendance[]) => {
     // Transforma o objeto data em um array
-    const dataArray = Object.values(data);
-    const totalRecords = dataArray.length;
-    const increment = 100 / totalRecords;
-    let currentProgress = 0;
+    const dataArray = Object.values(data)
+    const totalRecords = dataArray.length
+    const increment = 100 / totalRecords
+    let currentProgress = 0
 
     // Use loop for ...of
     for (const currentData of dataArray) {
       try {
         const response = await axiosAuth.post(URLControlePresenca, {
           ...currentData,
-          status: currentData.status === "true",
-        });
+          status: currentData.status === 'true',
+        })
 
         // Atualize o progresso com base no incremento
-        currentProgress += increment;
-        currentProgress = Math.min(currentProgress, 100);
-        const formattedProgress = currentProgress.toFixed(2);
-        const numericProgress = parseFloat(formattedProgress);
-        setProgress(numericProgress); // Garanta que não exceda 100%
+        currentProgress += increment
+        currentProgress = Math.min(currentProgress, 100)
+        const formattedProgress = currentProgress.toFixed(2)
+        const numericProgress = parseFloat(formattedProgress)
+        setProgress(numericProgress) // Garanta que não exceda 100%
 
         if (!response.data) {
-          throw new Error("Failed to submit dados de presenca");
+          throw new Error('Failed to submit dados de presenca')
         }
       } catch (error) {
-        console.error("Error submitting member data:", error);
+        console.error('Error submitting member data:', error)
         // Lide com o erro conforme necessário
       }
     }
-    success("😉 Presenças Registradas!");
-  };
+    success('😉 Presenças Registradas!')
+  }
 
   const {
     mutateAsync: createSecondPresencaCultoFn,
@@ -92,34 +88,34 @@ export default function ControlePresenceSecond({
     mutationFn: createPresencaCultoFunction,
     onError: (err, newMember, context) => {
       queryClient.invalidateQueries({
-        queryKey: ["presenceSecondExistRegistered"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["meetingsData"] });
+        queryKey: ['presenceSecondExistRegistered'],
+      })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({
-        queryKey: ["presenceSecondExistRegistered"],
-      });
-      queryClient.invalidateQueries({ queryKey: ["meetingsData"] });
+        queryKey: ['presenceSecondExistRegistered'],
+      })
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
     },
-  });
+  })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
-      await createSecondPresencaCultoFn(data);
+      await createSecondPresencaCultoFn(data)
     } catch (error) {
-      errorCadastro("Já existem presenças registradas!");
+      errorCadastro('Já existem presenças registradas!')
     }
-  };
+  }
 
   return (
     <>
       {isLoadingSecondRegistered ? (
-        <SpinnerButton message={""} />
+        <SpinnerButton message={''} />
       ) : isLoadingSecondRegistered ? (
-        <SpinnerButton message={""} />
+        <SpinnerButton message={''} />
       ) : (
         <>
           {PresenceSecondExistRegistered ? (
@@ -187,23 +183,24 @@ export default function ControlePresenceSecond({
                               </div>
                               <div className="hidden w-full text-center sm:block">
                                 <span
-                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === "Ativo"
-                                      ? "border border-green-200 bg-green-100 ring-green-500"
+                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
+                                    user.situacao_no_reino?.nome === 'Ativo'
+                                      ? 'border border-green-200 bg-green-100 ring-green-500'
                                       : user.situacao_no_reino?.nome ===
-                                        "Normal"
-                                        ? "border border-blue-200 bg-blue-100 ring-blue-500"
+                                          'Normal'
+                                        ? 'border border-blue-200 bg-blue-100 ring-blue-500'
                                         : user.situacao_no_reino?.nome ===
-                                          "Frio"
-                                          ? "border border-orange-200 bg-orange-100 ring-orange-500"
-                                          : "border border-red-200 bg-red-100 ring-red-500"
-                                    }`}
+                                            'Frio'
+                                          ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                          : 'border border-red-200 bg-red-100 ring-red-500'
+                                  }`}
                                 >
                                   {user.situacao_no_reino.nome}
                                 </span>
                               </div>
                               <div className="hidden w-full text-center sm:block">
                                 <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:inline">
-                                  {user.cargo_de_lideranca.nome}{" "}
+                                  {user.cargo_de_lideranca.nome}{' '}
                                 </span>
                               </div>
                               <div className="flex w-full items-center justify-end gap-3.5">
@@ -280,5 +277,5 @@ export default function ControlePresenceSecond({
         </>
       )}
     </>
-  );
+  )
 }

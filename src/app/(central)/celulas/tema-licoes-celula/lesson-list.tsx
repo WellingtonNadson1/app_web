@@ -1,8 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useState } from "react"
-import { LessonRegistrationForm } from "./lesson-registration-form"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { useState } from 'react'
+import { LessonRegistrationForm } from './lesson-registration-form'
 
 type Lesson = {
   id: string
@@ -29,13 +41,20 @@ export function LessonList({ lessons, onEdit, onDelete }: LessonListProps) {
             <CardTitle>{lesson.title}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p><strong>Key Verse:</strong> {lesson.keyVerse}</p>
-            <p><strong>Date:</strong> {lesson.date.toLocaleDateString()}</p>
+            <p>
+              <strong>Key Verse:</strong> {lesson.keyVerse}
+            </p>
+            <p>
+              <strong>Date:</strong> {lesson.date.toLocaleDateString()}
+            </p>
           </CardContent>
           <CardFooter className="flex justify-between">
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => setEditingLesson(lesson)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingLesson(lesson)}
+                >
                   Edit
                 </Button>
               </DialogTrigger>

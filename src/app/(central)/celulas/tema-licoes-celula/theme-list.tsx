@@ -1,8 +1,20 @@
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-import { useState } from "react"
-import { ThemeRegistrationForm } from "./theme-registration-form"
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from '@/components/ui/card'
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import { useState } from 'react'
+import { ThemeRegistrationForm } from './theme-registration-form'
 
 type Theme = {
   folderName: string
@@ -15,7 +27,12 @@ type ThemeListProps = {
   onSelect: (theme: Theme) => void
 }
 
-export function ThemeList({ themes, onEdit, onDelete, onSelect }: ThemeListProps) {
+export function ThemeList({
+  themes,
+  onEdit,
+  onDelete,
+  onSelect,
+}: ThemeListProps) {
   const [editingTheme, setEditingTheme] = useState<Theme | null>(null)
 
   return (
@@ -26,7 +43,9 @@ export function ThemeList({ themes, onEdit, onDelete, onSelect }: ThemeListProps
             <CardTitle>{theme.folderName}</CardTitle>
           </CardHeader>
           <CardContent>
-            <p><strong>Nome:</strong> {theme.folderName}</p>
+            <p>
+              <strong>Nome:</strong> {theme.folderName}
+            </p>
           </CardContent>
           <CardFooter className="flex justify-between mt-auto">
             <Button variant="outline" onClick={() => onSelect(theme)}>
@@ -34,7 +53,10 @@ export function ThemeList({ themes, onEdit, onDelete, onSelect }: ThemeListProps
             </Button>
             <Dialog>
               <DialogTrigger asChild>
-                <Button variant="outline" onClick={() => setEditingTheme(theme)}>
+                <Button
+                  variant="outline"
+                  onClick={() => setEditingTheme(theme)}
+                >
                   Edit
                 </Button>
               </DialogTrigger>
@@ -52,7 +74,10 @@ export function ThemeList({ themes, onEdit, onDelete, onSelect }: ThemeListProps
                 )}
               </DialogContent>
             </Dialog>
-            <Button variant="destructive" onClick={() => onDelete(theme.folderName)}>
+            <Button
+              variant="destructive"
+              onClick={() => onDelete(theme.folderName)}
+            >
               Delete
             </Button>
           </CardFooter>

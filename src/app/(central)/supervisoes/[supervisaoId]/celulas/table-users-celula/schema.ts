@@ -1,41 +1,41 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 const discipuladorUsuarioSchema = z.object({
   user_discipulador: z.object({
     id: z.string().uuid(),
     first_name: z.string(),
   }),
-});
+})
 
 const supervisaoPertenceSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 const celulaSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 const situacaoNoReinoSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 const cargoDeLiderancaSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 export const escolaSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 const encontroSchema = z.object({
   id: z.string().uuid(),
   nome: z.string(),
-});
+})
 
 export const userSchemaTable = z.object({
   id: z.string().uuid(),
@@ -82,9 +82,9 @@ export const userSchemaTable = z.object({
   bairro: z.string().optional(),
   endereco: z.string().optional(),
   numero_casa: z.string().optional(),
-});
+})
 
-export type TUser = z.infer<typeof userSchemaTable>;
+export type TUser = z.infer<typeof userSchemaTable>
 
 // Validando um objeto
 // const data = {

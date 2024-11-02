@@ -1,49 +1,49 @@
-"use client";
+'use client'
 
-import { Menu, Transition } from "@headlessui/react";
-import { BellIcon } from "@heroicons/react/24/outline";
-import { UserCircle } from "@phosphor-icons/react";
-import { format } from "date-fns";
-import { pt } from "date-fns/locale";
-import { signOut, useSession } from "next-auth/react";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
-import { Fragment } from "react";
-import HeaderLoad from "./HeaderLoad";
+import { Menu, Transition } from '@headlessui/react'
+import { BellIcon } from '@heroicons/react/24/outline'
+import { UserCircle } from '@phosphor-icons/react'
+import { format } from 'date-fns'
+import { pt } from 'date-fns/locale'
+import { signOut, useSession } from 'next-auth/react'
+import Image from 'next/image'
+import { usePathname } from 'next/navigation'
+import { Fragment } from 'react'
+import HeaderLoad from './HeaderLoad'
 // import Image from 'next/image'
 const userNavigation = [
-  { name: "Meu Perfil", href: "#" },
-  { name: "Configurações", href: "#" },
-];
+  { name: 'Meu Perfil', href: '#' },
+  { name: 'Configurações', href: '#' },
+]
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(" ");
+  return classes.filter(Boolean).join(' ')
 }
 
 export default function Header() {
-  const { data: session, status } = useSession();
+  const { data: session, status } = useSession()
 
-  const toDay = format(new Date(), "PP", { locale: pt });
+  const toDay = format(new Date(), 'PP', { locale: pt })
 
-  const pathName = usePathname().split("/")[1];
+  const pathName = usePathname().split('/')[1]
   function captitalizeTheFirstLetter(word: string) {
-    return word.charAt(0).toUpperCase() + word.slice(1);
+    return word.charAt(0).toUpperCase() + word.slice(1)
   }
 
-  const NamePage = captitalizeTheFirstLetter(pathName);
+  const NamePage = captitalizeTheFirstLetter(pathName)
 
-  if (status === "loading") {
-    return <HeaderLoad />;
+  if (status === 'loading') {
+    return <HeaderLoad />
   }
 
-  const isAuthenticated = status === "authenticated";
+  const isAuthenticated = status === 'authenticated'
 
   if (!isAuthenticated) {
     return (
       <nav className="relative flex items-center justify-between p-1 mx-1 mt-1 mb-6 bg-white rounded-full shadow-none">
         <h2>Deu não autenticado!</h2>
       </nav>
-    );
+    )
   }
 
   return (
@@ -60,7 +60,7 @@ export default function Header() {
           <>
             <div>
               <h2 className="hidden text-xs text-gray-700 truncate sm:block">
-                Shalom,{" "}
+                Shalom,{' '}
                 <span className="font-bold">{session?.user?.first_name}</span>
               </h2>
               <p className="hidden text-xs text-gray-700 sm:block">{toDay}</p>
@@ -117,8 +117,8 @@ export default function Header() {
                             <a
                               href={item.href}
                               className={classNames(
-                                active ? "bg-gray-100" : "",
-                                "block px-4 py-2 text-sm text-gray-700",
+                                active ? 'bg-gray-100' : '',
+                                'block px-4 py-2 text-sm text-gray-700',
                               )}
                             >
                               {item.name}
@@ -149,5 +149,5 @@ export default function Header() {
         </div>
       </nav>
     </>
-  );
+  )
 }

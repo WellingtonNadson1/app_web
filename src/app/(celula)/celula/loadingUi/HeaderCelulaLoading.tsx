@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client'
+import React from 'react'
 
 function HeaderCelulaLoad() {
   return (
@@ -29,7 +29,7 @@ function HeaderCelulaLoad() {
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default HeaderCelulaLoad;
+export default HeaderCelulaLoad

@@ -1,118 +1,118 @@
 /* eslint-disable camelcase */
-"use client";
-import CalendarLiderCelula from "@/components/CalendarLiderCelula";
-import LicoesCelula from "@/components/LicoesCelula";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { Card } from "@/components/ui/card";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { Disclosure } from "@headlessui/react";
-import { ChevronUpIcon } from "@heroicons/react/24/outline";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import { format, isSameDay, parseISO, startOfToday } from "date-fns";
-import { pt } from "date-fns/locale";
-import dayjs from "dayjs";
-import { useSession } from "next-auth/react";
-import { useState } from "react";
-import { RegisterPresenceFormFirst } from "./_components/ControlePresenceFirst/registerpresence";
-import { RegisterPresenceFormSecond } from "./_components/ControlePresenceSecond/registerpresencesecond";
-import ControlePresencaReuniaoCelula from "./ControlePresencaReuniaoCelula";
-import HeaderCelula from "./HeaderCelula";
-import CalendarLoading from "./loadingUi/CalendarLoading";
-import HeaderCelulaLoad from "./loadingUi/HeaderCelulaLoading";
-import LicoesLoading from "./loadingUi/LicoesLoading";
-import { CelulaProps, Meeting } from "./schema";
+'use client'
+import CalendarLiderCelula from '@/components/CalendarLiderCelula'
+import LicoesCelula from '@/components/LicoesCelula'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { Card } from '@/components/ui/card'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { useUserDataStore } from '@/store/UserDataStore'
+import { Disclosure } from '@headlessui/react'
+import { ChevronUpIcon } from '@heroicons/react/24/outline'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
+import { pt } from 'date-fns/locale'
+import dayjs from 'dayjs'
+import { useSession } from 'next-auth/react'
+import { useState } from 'react'
+import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence'
+import { RegisterPresenceFormSecond } from './_components/ControlePresenceSecond/registerpresencesecond'
+import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
+import HeaderCelula from './HeaderCelula'
+import CalendarLoading from './loadingUi/CalendarLoading'
+import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
+import LicoesLoading from './loadingUi/LicoesLoading'
+import { CelulaProps, Meeting } from './schema'
 
 export default function ControleCelulaSupervision() {
-  const { data: session } = useSession();
-  const [presenceIsRegister, setPresenceIsRegister] = useState(false);
+  const { data: session } = useSession()
+  const [presenceIsRegister, setPresenceIsRegister] = useState(false)
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
-    useState(false);
+    useState(false)
 
-  const celulaId = session?.user.celulaId;
-  const { token } = useUserDataStore.getState();
+  const celulaId = session?.user.celulaId
+  const { token } = useUserDataStore.getState()
 
-  const axiosAuth = useAxiosAuthToken(token);
+  const axiosAuth = useAxiosAuthToken(token)
 
-  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
-  const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
+  const URLCelula = `${BASE_URL}/celulas/${celulaId}`
 
   const CelulaData = async () => {
     try {
-      const result = await axiosAuth.get(URLCelula);
+      const result = await axiosAuth.get(URLCelula)
       console.log('result', result)
       const existPresenceForCulto =
-        result.data.membros[0].presencas_cultos.length > 0;
-      setPresenceIsRegister(existPresenceForCulto);
+        result.data.membros[0].presencas_cultos.length > 0
+      setPresenceIsRegister(existPresenceForCulto)
       console.log('existPresenceForCulto', existPresenceForCulto)
       const existSecondPresenceForCulto =
-        result.data.membros[0].presencas_cultos.length > 1;
-      setSecondPresenceIsRegister(existSecondPresenceForCulto);
+        result.data.membros[0].presencas_cultos.length > 1
+      setSecondPresenceIsRegister(existSecondPresenceForCulto)
 
-      return result.data;
+      return result.data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ["celula", celulaId],
+    queryKey: ['celula', celulaId],
     queryFn: CelulaData,
     enabled: !!celulaId,
     refetchOnWindowFocus: false,
     retry: false,
-  });
+  })
 
-  const dataHoje = new Date();
-  const dayOfWeek = dataHoje.getDay();
+  const dataHoje = new Date()
+  const dayOfWeek = dataHoje.getDay()
   const firstDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth(),
     1,
-  );
+  )
   const lastDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth() + 1,
     0,
-  );
+  )
 
   const MeetingsData = async () => {
     try {
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
-      });
-      return data;
+      })
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   const { data, isLoading, isSuccess } = useQuery<Meeting>({
-    queryKey: ["meetingsData"],
+    queryKey: ['meetingsData'],
     queryFn: MeetingsData,
     refetchOnWindowFocus: false,
-  });
+  })
 
   // if (isSuccess) {
   //   return;
   // }
 
-  const today = startOfToday();
+  const today = startOfToday()
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
-  );
+  )
 
   return (
     <>
@@ -139,7 +139,7 @@ export default function ControleCelulaSupervision() {
           {/* FREQUENCIA DE PRESENCA NOS CULTOS #1*/}
           <Card className="bg-white relative w-full mx-auto mb-4">
             {isLoading ? (
-              <SpinnerButton message={""} />
+              <SpinnerButton message={''} />
             ) : selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
               celula ? (
                 <div
@@ -156,27 +156,28 @@ export default function ControleCelulaSupervision() {
                               <>
                                 <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                   <span>
-                                    Frequência de Culto -{" "}
+                                    Frequência de Culto -{' '}
                                     {format(
                                       dayjs(
                                         new Date(
                                           selectedDayMeetings[0].data_inicio_culto,
                                         ),
                                       )
-                                        .add(3, "hour")
+                                        .add(3, 'hour')
                                         .toDate(),
-                                      "Pp",
+                                      'Pp',
                                       { locale: pt },
                                     )}
                                   </span>
                                   <ChevronUpIcon
-                                    className={`${open ? "rotate-180 transform" : ""
-                                      } h-5 w-5 text-blue-500`}
+                                    className={`${
+                                      open ? 'rotate-180 transform' : ''
+                                    } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                   {selectedDayMeetings &&
-                                    !presenceIsRegister ? (
+                                  !presenceIsRegister ? (
                                     <RegisterPresenceFormFirst
                                       id={selectedDayMeetings[0].id}
                                       key={selectedDayMeetings[0].id}
@@ -196,7 +197,7 @@ export default function ControleCelulaSupervision() {
                   </div>
                 </div>
               ) : (
-                <SpinnerButton message={""} key={selectedDayMeetings[0].id} />
+                <SpinnerButton message={''} key={selectedDayMeetings[0].id} />
               )
             ) : (
               // NAO HA CULTO
@@ -212,8 +213,9 @@ export default function ControleCelulaSupervision() {
                                 <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                   <span>Frequência de Culto</span>
                                   <ChevronUpIcon
-                                    className={`${open ? "rotate-180 transform" : ""
-                                      } h-5 w-5 text-blue-500`}
+                                    className={`${
+                                      open ? 'rotate-180 transform' : ''
+                                    } h-5 w-5 text-blue-500`}
                                   />
                                 </Disclosure.Button>
                                 <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -228,7 +230,7 @@ export default function ControleCelulaSupervision() {
                   </div>
                 </div>
               </div>
-            )}{" "}
+            )}{' '}
           </Card>
           {/* FREQUENCIA DE PRESENCA NOS CULTOS #2*/}
           {selectedDayMeetings &&
@@ -236,9 +238,9 @@ export default function ControleCelulaSupervision() {
             selectedDayMeetings?.length > 1 && (
               <Card className="bg-white relative w-full mx-auto mb-4">
                 {selectedDayMeetings &&
-                  isLoading &&
-                  selectedDayMeetings?.length <= 2 ? (
-                  <SpinnerButton message={""} />
+                isLoading &&
+                selectedDayMeetings?.length <= 2 ? (
+                  <SpinnerButton message={''} />
                 ) : selectedDayMeetings &&
                   selectedDayMeetings?.length <= 2 &&
                   selectedDayMeetings?.length > 1 ? (
@@ -258,27 +260,28 @@ export default function ControleCelulaSupervision() {
                                   <>
                                     <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                       <span>
-                                        Frequência de Culto -{" "}
+                                        Frequência de Culto -{' '}
                                         {format(
                                           dayjs(
                                             new Date(
                                               selectedDayMeetings[1].data_inicio_culto,
                                             ),
                                           )
-                                            .add(3, "hour")
+                                            .add(3, 'hour')
                                             .toDate(),
-                                          "Pp",
+                                          'Pp',
                                           { locale: pt },
                                         )}
                                       </span>
                                       <ChevronUpIcon
-                                        className={`${open ? "rotate-180 transform" : ""
-                                          } h-5 w-5 text-blue-500`}
+                                        className={`${
+                                          open ? 'rotate-180 transform' : ''
+                                        } h-5 w-5 text-blue-500`}
                                       />
                                     </Disclosure.Button>
                                     <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
                                       {selectedDayMeetings &&
-                                        !secondPresenceIsRegister ? (
+                                      !secondPresenceIsRegister ? (
                                         <RegisterPresenceFormSecond
                                           id={selectedDayMeetings[1]?.id}
                                           key={selectedDayMeetings[1]?.id}
@@ -299,7 +302,7 @@ export default function ControleCelulaSupervision() {
                     </div>
                   ) : (
                     <SpinnerButton
-                      message={""}
+                      message={''}
                       key={selectedDayMeetings[1]?.id}
                     />
                   )
@@ -317,8 +320,9 @@ export default function ControleCelulaSupervision() {
                                   <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                     <span>Frequência de Culto</span>
                                     <ChevronUpIcon
-                                      className={`${open ? "rotate-180 transform" : ""
-                                        } h-5 w-5 text-blue-500`}
+                                      className={`${
+                                        open ? 'rotate-180 transform' : ''
+                                      } h-5 w-5 text-blue-500`}
                                     />
                                   </Disclosure.Button>
                                   <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -332,7 +336,7 @@ export default function ControleCelulaSupervision() {
                       </div>
                     </div>
                   </div>
-                )}{" "}
+                )}{' '}
               </Card>
             )}
           {/* FREQUENCIA DE REUNIAO DE CELULA */}
@@ -348,12 +352,13 @@ export default function ControleCelulaSupervision() {
                             <>
                               <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                 <span>
-                                  Frequência de Célula -{" "}
-                                  {format(today, "P", { locale: pt })}
+                                  Frequência de Célula -{' '}
+                                  {format(today, 'P', { locale: pt })}
                                 </span>
                                 <ChevronUpIcon
-                                  className={`${open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                  className={`${
+                                    open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -382,8 +387,9 @@ export default function ControleCelulaSupervision() {
                               <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                                 <span>Frequência de Célula</span>
                                 <ChevronUpIcon
-                                  className={`${open ? "rotate-180 transform" : ""
-                                    } h-5 w-5 text-blue-500`}
+                                  className={`${
+                                    open ? 'rotate-180 transform' : ''
+                                  } h-5 w-5 text-blue-500`}
                                 />
                               </Disclosure.Button>
                               <Disclosure.Panel className="w-full px-1 pt-4 pb-2 text-sm text-gray-500">
@@ -402,5 +408,5 @@ export default function ControleCelulaSupervision() {
         </div>
       )}
     </>
-  );
+  )
 }

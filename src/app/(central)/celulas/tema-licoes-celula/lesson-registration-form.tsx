@@ -1,12 +1,23 @@
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { cn } from "@/lib/utils"
-import { format } from "date-fns"
-import { CalendarIcon } from "lucide-react"
-import { useForm } from "react-hook-form"
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { cn } from '@/lib/utils'
+import { format } from 'date-fns'
+import { CalendarIcon } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
 type LessonFormData = {
   title: string
@@ -19,11 +30,14 @@ type LessonRegistrationFormProps = {
   onSubmit: (data: LessonFormData & { id: string; themeId: string }) => void
 }
 
-export function LessonRegistrationForm({ themeId, onSubmit }: LessonRegistrationFormProps) {
+export function LessonRegistrationForm({
+  themeId,
+  onSubmit,
+}: LessonRegistrationFormProps) {
   const form = useForm<LessonFormData>({
     defaultValues: {
-      title: "",
-      keyVerse: "",
+      title: '',
+      keyVerse: '',
       date: new Date(),
     },
   })
@@ -74,14 +88,14 @@ export function LessonRegistrationForm({ themeId, onSubmit }: LessonRegistration
                 <PopoverTrigger asChild>
                   <FormControl>
                     <Button
-                      variant={"outline"}
+                      variant={'outline'}
                       className={cn(
-                        "w-[240px] pl-3 text-left font-normal",
-                        !field.value && "text-muted-foreground"
+                        'w-[240px] pl-3 text-left font-normal',
+                        !field.value && 'text-muted-foreground',
                       )}
                     >
                       {field.value ? (
-                        format(field.value, "PPP")
+                        format(field.value, 'PPP')
                       ) : (
                         <span>Pick a date</span>
                       )}

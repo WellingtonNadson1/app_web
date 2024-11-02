@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 const MeetingSchema = z
   .object({
@@ -10,9 +10,9 @@ const MeetingSchema = z
     data_inicio_culto: z.string(),
     data_termino_culto: z.string(),
   })
-  .array();
+  .array()
 
-export type Meeting = z.infer<typeof MeetingSchema>;
+export type Meeting = z.infer<typeof MeetingSchema>
 
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
@@ -20,7 +20,7 @@ const ReuniaoCelulaSchema = z.object({
   celula: z.string(),
   data_reuniao: z.string(),
   presencas_reuniao_celula: z.object({}).array(),
-});
+})
 
 const UserSchema = z.object({
   id: z.string(),
@@ -41,7 +41,7 @@ const UserSchema = z.object({
       date_update: z.date(),
     })
     .array(),
-});
+})
 
 export const CelulaSchema = z.object({
   id: z.string(),
@@ -64,54 +64,54 @@ export const CelulaSchema = z.object({
   membros: z.array(UserSchema),
   reunioes_celula: z.array(ReuniaoCelulaSchema),
   userId: z.string(),
-});
+})
 
-export type CelulaProps = z.infer<typeof CelulaSchema>;
+export type CelulaProps = z.infer<typeof CelulaSchema>
 
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
   status: z.boolean(),
   membro: z.string(),
   presenca_culto: z.string(),
-});
+})
 
-export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>;
+export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
 
 const ControlePresencaCelulaPropsSchema = z.object({
   id: z.string(),
   celula: CelulaSchema,
   culto: z.string(),
-});
+})
 
 export type ControlePresencaCelulaProps = z.infer<
   typeof ControlePresencaCelulaPropsSchema
->;
+>
 
 const attendanceSchema = z.object({
   status: z.string(),
   membro: z.string(),
   presenca_culto: z.string(),
-});
+})
 
-export type attendance = z.infer<typeof attendanceSchema>;
+export type attendance = z.infer<typeof attendanceSchema>
 
 export type ReuniaoCelulaSuccessData = {
-  status: string;
-  celula: string;
-  data_reuniao: string;
-  presencas_membros_reuniao_celula: string;
-  id?: string | undefined;
-  visitantes: number;
-  almas_ganhas: number;
-};
+  status: string
+  celula: string
+  data_reuniao: string
+  presencas_membros_reuniao_celula: string
+  id?: string | undefined
+  visitantes: number
+  almas_ganhas: number
+}
 
 export const reuniaoCelulaUpdateSchema = z.object({
   id: z.string().optional(),
   visitantes: z.number().int().positive(),
   almas_ganhas: z.number().int().positive(),
-});
+})
 
-export type reuniaoCelulaUpdate = z.infer<typeof reuniaoCelulaUpdateSchema>;
+export type reuniaoCelulaUpdate = z.infer<typeof reuniaoCelulaUpdateSchema>
 
 export const reuniaoCelulaUpdateSchemaReturn = z.object({
   id: z.string().optional(),
@@ -121,11 +121,11 @@ export const reuniaoCelulaUpdateSchemaReturn = z.object({
   presencas_membros_reuniao_celula: z.string(),
   visitantes: z.number().int().positive(),
   almas_ganhas: z.number().int().positive(),
-});
+})
 
 export type reuniaoCelulaUpdateReturn = z.infer<
   typeof reuniaoCelulaUpdateSchemaReturn
->;
+>
 
 const reuniaoCelulaDataSchema = z.object({
   id: z.string().optional(),
@@ -135,25 +135,25 @@ const reuniaoCelulaDataSchema = z.object({
   presencas_membros_reuniao_celula: z.string(),
   visitantes: z.number().int().positive(),
   almas_ganhas: z.number().int().positive(),
-});
+})
 
-export type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>;
+export type reuniaoCelulaData = z.infer<typeof reuniaoCelulaDataSchema>
 
 const reuniaoCelulaDataSchema2 = z.object({
   status: z.string(),
   celula: z.string(),
   data_reuniao: z.string(),
   presencas_membros_reuniao_celula: z.string().nullable(),
-});
+})
 
-export type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>;
+export type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
 
 const attendanceReuniaCelulaSchema = z.object({
   status: z.string(),
   membro: z.string(),
   which_reuniao_celula: z.string(),
-});
+})
 
 export type attendanceReuniaoCelula = z.infer<
   typeof attendanceReuniaCelulaSchema
->;
+>

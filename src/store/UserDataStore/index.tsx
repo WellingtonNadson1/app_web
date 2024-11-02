@@ -1,65 +1,65 @@
 // "use client"
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand'
+import { persist, createJSONStorage } from 'zustand/middleware'
 
 export type RefreshToken = {
-  id: string;
-  expiresIn: number;
-  userIdRefresh: string;
-};
+  id: string
+  expiresIn: number
+  userIdRefresh: string
+}
 
 export type UserRoles = {
   rolenew: {
-    name: string;
-  };
-};
+    name: string
+  }
+}
 
 type ActionsProps = {
-  setId: (id: string) => void;
-  setRole: (role: string) => void;
-  setUserRoles: (user_roles: UserRoles) => void;
-  setEmail: (email: string) => void;
-  setImageURL: (image_url: string) => void;
-  setFirstName: (first_name: string) => void;
-  setToken: (token: string) => void;
-  setRefreshToken: (refreshToken: RefreshToken) => void;
-};
+  setId: (id: string) => void
+  setRole: (role: string) => void
+  setUserRoles: (user_roles: UserRoles) => void
+  setEmail: (email: string) => void
+  setImageURL: (image_url: string) => void
+  setFirstName: (first_name: string) => void
+  setToken: (token: string) => void
+  setRefreshToken: (refreshToken: RefreshToken) => void
+}
 
 type UserDataStore = {
-  id: string;
-  role: string;
-  user_roles: UserRoles[];
-  email: string;
-  image_url: string;
-  first_name: string;
-  token: string;
+  id: string
+  role: string
+  user_roles: UserRoles[]
+  email: string
+  image_url: string
+  first_name: string
+  token: string
   refreshToken: {
-    id: string;
-    expiresIn: number;
-    userIdRefresh: string;
-  };
-  actions: ActionsProps;
-};
+    id: string
+    expiresIn: number
+    userIdRefresh: string
+  }
+  actions: ActionsProps
+}
 
 export const useUserDataStore = create(
   persist<UserDataStore>(
     (set) => ({
-      id: "",
-      role: "",
+      id: '',
+      role: '',
       user_roles: [],
-      email: "",
-      image_url: "",
-      first_name: "",
-      token: "",
+      email: '',
+      image_url: '',
+      first_name: '',
+      token: '',
       refreshToken: {
-        id: "",
+        id: '',
         expiresIn: 0,
-        userIdRefresh: "",
+        userIdRefresh: '',
       },
       newRefreshToken: {
-        id: "",
+        id: '',
         expiresIn: 0,
-        userIdRefresh: "",
+        userIdRefresh: '',
       },
       actions: {
         setId: (id) =>
@@ -136,8 +136,8 @@ export const useUserDataStore = create(
       },
     }),
     {
-      name: "data-user",
+      name: 'data-user',
       storage: createJSONStorage(() => localStorage),
     },
   ),
-);
+)

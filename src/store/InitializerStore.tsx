@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   CargoLidereanca,
@@ -6,17 +6,17 @@ import {
   Escolas,
   SituacoesNoReino,
   SupervisaoData,
-} from "@/app/(central)/novo-membro/schema";
-import { useRef } from "react";
-import { useCombinedStore } from "./DataCombineted";
+} from '@/app/(central)/novo-membro/schema'
+import { useRef } from 'react'
+import { useCombinedStore } from './DataCombineted'
 
 type InitializerStoreProps = {
-  supervisoes: SupervisaoData[];
-  escolas: Escolas[];
-  encontros: Encontros[];
-  situacoesNoReino: SituacoesNoReino[];
-  cargoLideranca: CargoLidereanca[];
-};
+  supervisoes: SupervisaoData[]
+  escolas: Escolas[]
+  encontros: Encontros[]
+  situacoesNoReino: SituacoesNoReino[]
+  cargoLideranca: CargoLidereanca[]
+}
 
 export const InitializerStore = ({
   supervisoes,
@@ -25,7 +25,7 @@ export const InitializerStore = ({
   situacoesNoReino,
   cargoLideranca,
 }: InitializerStoreProps) => {
-  const initializer = useRef(false);
+  const initializer = useRef(false)
 
   if (!initializer.current) {
     useCombinedStore.setState({
@@ -36,7 +36,7 @@ export const InitializerStore = ({
         situacoesNoReino,
         cargoLideranca,
       },
-    });
+    })
   }
-  return null;
-};
+  return null
+}

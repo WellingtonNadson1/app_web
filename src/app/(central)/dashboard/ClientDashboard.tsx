@@ -1,31 +1,35 @@
-"use client";
+'use client'
 
-import { ChartConversions } from "@/components/Graficos/chart-coversoes";
-import MainSide from "@/components/MainSide";
-import { useAlmasAnoStore, useAlmasMesPassadoStore, useAlmasMesStore } from "@/store/AlmasStorage";
-import { useCombinedStore } from "@/store/DataCombineted";
-import { InitializerAlmasAnoStore } from "@/store/InitializerAlmasAnoStore";
-import { InitializerAlmasMesPassadoStore } from "@/store/InitializerAlmasMesPassadoStore";
-import { InitializerAlmasMesStore } from "@/store/InitializerAlmasMesStore";
-import { InitializerStore } from "@/store/InitializerStore";
-import { InitializerUserStore } from "@/store/InitializerUserStore";
-import { useEffect } from "react";
+import { ChartConversions } from '@/components/Graficos/chart-coversoes'
+import MainSide from '@/components/MainSide'
+import {
+  useAlmasAnoStore,
+  useAlmasMesPassadoStore,
+  useAlmasMesStore,
+} from '@/store/AlmasStorage'
+import { useCombinedStore } from '@/store/DataCombineted'
+import { InitializerAlmasAnoStore } from '@/store/InitializerAlmasAnoStore'
+import { InitializerAlmasMesPassadoStore } from '@/store/InitializerAlmasMesPassadoStore'
+import { InitializerAlmasMesStore } from '@/store/InitializerAlmasMesStore'
+import { InitializerStore } from '@/store/InitializerStore'
+import { InitializerUserStore } from '@/store/InitializerUserStore'
+import { useEffect } from 'react'
 
 interface Session {
   user: {
-    id: string;
-    role: string;
-    user_roles: string[];
-    email: string;
-    image_url: string;
-    first_name: string;
-    token: string;
+    id: string
+    role: string
+    user_roles: string[]
+    email: string
+    image_url: string
+    first_name: string
+    token: string
     refreshToken: {
-      id: string;
-      expiresIn: number;
-      userIdRefresh: string;
-    };
-  };
+      id: string
+      expiresIn: number
+      userIdRefresh: string
+    }
+  }
 }
 
 interface Result {
@@ -34,16 +38,16 @@ interface Result {
     escolas: any[],
     encontros: any[],
     situacoesNoReino: any[],
-    cargoLideranca: any[]
+    cargoLideranca: any[],
   ]
-  almasGanhasNoMes: number;
-  almasGanhasNoMesPassado: number;
-  almasGanhasNoAno: number;
+  almasGanhasNoMes: number
+  almasGanhasNoMesPassado: number
+  almasGanhasNoAno: number
 }
 
 interface ClientDashboardProps {
-  session: Session | null;
-  result: Result;
+  session: Session | null
+  result: Result
 }
 
 export default function ClientDashboard({
@@ -51,14 +55,14 @@ export default function ClientDashboard({
   result,
 }: ClientDashboardProps) {
   console.log('result', result)
-  const id = session?.user.id;
-  const role = session?.user.role;
-  const user_roles = session?.user.user_roles;
-  const email = session?.user.token;
-  const image_url = session?.user.image_url;
-  const first_name = session?.user.first_name;
-  const token = session?.user.token;
-  const refreshToken = session?.user.refreshToken;
+  const id = session?.user.id
+  const role = session?.user.role
+  const user_roles = session?.user.user_roles
+  const email = session?.user.token
+  const image_url = session?.user.image_url
+  const first_name = session?.user.first_name
+  const token = session?.user.token
+  const refreshToken = session?.user.refreshToken
 
   useEffect(() => {
     useCombinedStore.setState({
@@ -74,32 +78,32 @@ export default function ClientDashboard({
         // @ts-ignore
         cargoLideranca: result.combinedData[4] ?? [],
       },
-    });
+    })
     useAlmasAnoStore.setState({
       // @ts-ignore
-      almasGanhasNoAno: result?.almasGanhasNoAno ?? []
+      almasGanhasNoAno: result?.almasGanhasNoAno ?? [],
     })
     useAlmasMesPassadoStore.setState({
-      almasGanhasNoMesPassado: result?.almasGanhasNoMesPassado ?? []
+      almasGanhasNoMesPassado: result?.almasGanhasNoMesPassado ?? [],
     })
     useAlmasMesStore.setState({
-      almasGanhasNoMes: result?.almasGanhasNoMes ?? []
+      almasGanhasNoMes: result?.almasGanhasNoMes ?? [],
     })
-  }, [result]);
+  }, [result])
 
   return (
     <div className="w-full px-2 py-2 mx-auto">
       <InitializerUserStore
-        id={id ?? ""}
-        role={role ?? ""}
+        id={id ?? ''}
+        role={role ?? ''}
         // @ts-ignore
         user_roles={user_roles ?? []}
-        email={email ?? ""}
-        image_url={image_url ?? ""}
-        first_name={first_name ?? ""}
-        token={token ?? ""}
+        email={email ?? ''}
+        image_url={image_url ?? ''}
+        first_name={first_name ?? ''}
+        token={token ?? ''}
         refreshToken={
-          refreshToken ?? { id: "", expiresIn: 0, userIdRefresh: "" }
+          refreshToken ?? { id: '', expiresIn: 0, userIdRefresh: '' }
         }
       />
       <InitializerStore
@@ -117,18 +121,21 @@ export default function ClientDashboard({
 
       <InitializerAlmasMesStore
         // @ts-ignore
-        almasGanhasNoAno={result?.almasGanhasNoMes ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoMes ?? []}
+      />
 
       <InitializerAlmasMesPassadoStore
         // @ts-ignore
-        almasGanhasNoAno={result?.almasGanhasNoMesPassado ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoMesPassado ?? []}
+      />
 
       <InitializerAlmasAnoStore
         // @ts-ignore
-        almasGanhasNoAno={result?.almasGanhasNoAno ?? []} />
+        almasGanhasNoAno={result?.almasGanhasNoAno ?? []}
+      />
 
       <MainSide />
       <ChartConversions />
     </div>
-  );
+  )
 }

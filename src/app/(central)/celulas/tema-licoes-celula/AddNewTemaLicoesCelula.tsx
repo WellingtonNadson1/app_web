@@ -1,31 +1,41 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { PlusCircle } from "lucide-react";
-import { useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { ThemeRegistrationForm } from "./theme-registration-form";
+'use client'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { PlusCircle } from 'lucide-react'
+import { useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
+import { ThemeRegistrationForm } from './theme-registration-form'
 
 interface Celula {
-  id: string;
-  nome: string;
+  id: string
+  nome: string
   lider: {
-    id: string;
-    first_name: string;
-  };
+    id: string
+    first_name: string
+  }
 }
 
 interface User {
-  id: string;
-  first_name?: string;
+  id: string
+  first_name?: string
 }
 
 export interface SupervisaoData {
-  id: string;
-  nome: string;
-  celulas: Celula[];
-  membros: User[];
+  id: string
+  nome: string
+  celulas: Celula[]
+  membros: User[]
 }
 
 type Theme = {
@@ -41,7 +51,7 @@ type Lesson = {
 }
 
 export default function AddNewTemaLicoesCelula() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
   const [themes, setThemes] = useState<Theme[]>([])
 
   const addTheme = (theme: Theme) => {
@@ -77,9 +87,7 @@ export default function AddNewTemaLicoesCelula() {
                     {themes.length === 0 ? (
                       <ThemeRegistrationForm onSubmitForm={addTheme} />
                     ) : (
-                      <>
-
-                      </>
+                      <></>
                     )}
                   </div>
                 </div>
@@ -89,5 +97,5 @@ export default function AddNewTemaLicoesCelula() {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

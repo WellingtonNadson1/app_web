@@ -1,4 +1,4 @@
-"use client";
+'use client'
 
 import {
   ColumnDef,
@@ -10,17 +10,14 @@ import {
   getFilteredRowModel,
   getPaginationRowModel,
   getSortedRowModel,
-  useReactTable
-} from "@tanstack/react-table";
+  useReactTable,
+} from '@tanstack/react-table'
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
-import {
-  RankingInfo,
-  rankItem
-} from "@tanstack/match-sorter-utils";
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
 
-import { DataTablePagination } from "@/app/(central)/novo-membro/table-users/table-pagination";
-import { Input } from "@/components/ui/input";
+import { DataTablePagination } from '@/app/(central)/novo-membro/table-users/table-pagination'
+import { Input } from '@/components/ui/input'
 import {
   Table,
   TableBody,
@@ -28,37 +25,37 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from "@/components/ui/table";
-import { useState } from "react";
+} from '@/components/ui/table'
+import { useState } from 'react'
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[];
-  data: TData[];
+  columns: ColumnDef<TData, TValue>[]
+  data: TData[]
 }
 
-declare module "@tanstack/react-table" {
+declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>;
+    fuzzy: FilterFn<unknown>
   }
   interface FilterMeta {
-    itemRank: RankingInfo;
+    itemRank: RankingInfo
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value);
+  const itemRank = rankItem(row.getValue(columnId), value)
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  });
+  })
 
   // Return if the item should be filtered in/out
-  return itemRank.passed;
-};
+  return itemRank.passed
+}
 
 // Define a custom fuzzy sort function that will sort by rank if the row has ranking information
 // const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
@@ -80,9 +77,9 @@ export function DataTable<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([]);
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
-  const [globalFilter, setGlobalFilter] = useState("");
+  const [sorting, setSorting] = useState<SortingState>([])
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+  const [globalFilter, setGlobalFilter] = useState('')
 
   const table = useReactTable({
     data,
@@ -97,18 +94,18 @@ export function DataTable<TData, TValue>({
     },
     onColumnFiltersChange: setColumnFilters,
     onGlobalFilterChange: setGlobalFilter,
-    globalFilterFn: "fuzzy",
+    globalFilterFn: 'fuzzy',
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  });
+  })
 
   const situationNormal = data.filter(
     // @ts-ignore
-    (situatio) => situatio?.situacao_no_reino?.nome === "Normal",
-  );
+    (situatio) => situatio?.situacao_no_reino?.nome === 'Normal',
+  )
   // const situationAtivo = data.filter(
   //   // @ts-ignore
   //   (situatio) => situatio?.situacao_no_reino?.nome === "Ativo",
@@ -120,10 +117,10 @@ export function DataTable<TData, TValue>({
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
           // value={(table.getColumn("cnpj")?.getFilterValue() as string) ?? ""}
-          value={globalFilter ?? ""}
+          value={globalFilter ?? ''}
           onChange={(event) => {
             // table.getColumn("empresa_vistoriada.cnpj")?.setFilterValue(event.target.value)
-            setGlobalFilter(String(event.target.value));
+            setGlobalFilter(String(event.target.value))
           }}
           className="sm:max-w-sm"
         />
@@ -139,11 +136,11 @@ export function DataTable<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  );
+                  )
                 })}
               </TableRow>
             ))}
@@ -153,7 +150,7 @@ export function DataTable<TData, TValue>({
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
-                  data-state={row.getIsSelected() && "selected"}
+                  data-state={row.getIsSelected() && 'selected'}
                 >
                   {row.getVisibleCells().map((cell) => (
                     <TableCell key={cell.id}>
@@ -201,5 +198,5 @@ export function DataTable<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  );
+  )
 }

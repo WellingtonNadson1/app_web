@@ -1,5 +1,5 @@
-"use client";
-import React from "react";
+'use client'
+import React from 'react'
 
 function HeaderDiscipuladosLoadSupervisor() {
   return (
@@ -29,7 +29,7 @@ function HeaderDiscipuladosLoadSupervisor() {
         </div>
       </nav>
     </>
-  );
+  )
 }
 
-export default HeaderDiscipuladosLoadSupervisor;
+export default HeaderDiscipuladosLoadSupervisor

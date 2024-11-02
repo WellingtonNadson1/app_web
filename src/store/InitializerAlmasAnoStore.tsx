@@ -1,20 +1,20 @@
-"use client";
-import { useRef } from "react";
-import { useAlmasAnoStore } from "./AlmasStorage";
+'use client'
+import { useRef } from 'react'
+import { useAlmasAnoStore } from './AlmasStorage'
 
 type InitializerAlmasAnoStoreProps = {
-  almasGanhasNoAno: number;
-};
+  almasGanhasNoAno: number
+}
 
 export const InitializerAlmasAnoStore = ({
-  almasGanhasNoAno
+  almasGanhasNoAno,
 }: InitializerAlmasAnoStoreProps) => {
-  const initializerAlmasAno = useRef(false);
+  const initializerAlmasAno = useRef(false)
 
   if (!initializerAlmasAno.current) {
     useAlmasAnoStore.setState({
-      almasGanhasNoAno
-    });
+      almasGanhasNoAno,
+    })
   }
-  return null;
-};
+  return null
+}

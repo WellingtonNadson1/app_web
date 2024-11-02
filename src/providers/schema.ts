@@ -1,4 +1,4 @@
-import { z } from "zod";
+import { z } from 'zod'
 
 const combinedDataSchema = z.array(
   z.union([
@@ -77,12 +77,12 @@ const combinedDataSchema = z.array(
       }),
     ),
   ]),
-);
+)
 
 const schemaDataCombineted = z.object({
   combinedData: combinedDataSchema,
   almasGanhasNoMes: z.number(),
   almasGanhasNoAno: z.number(),
-});
+})
 
-export type DataCombineted = z.infer<typeof schemaDataCombineted>;
+export type DataCombineted = z.infer<typeof schemaDataCombineted>

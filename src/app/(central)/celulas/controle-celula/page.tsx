@@ -1,7 +1,7 @@
-"use client";
-import Calendar from "@/components/Calendar/Calendar";
+'use client'
+import Calendar from '@/components/Calendar/Calendar'
 // import ControlePresenca from '@/components/ControlePresenca'
-import LicoesCelula from "@/components/LicoesCelula";
+import LicoesCelula from '@/components/LicoesCelula'
 
 export default function ControleCelula() {
   return (
@@ -16,5 +16,5 @@ export default function ControleCelula() {
         <ControlePresenca />
       </div> */}
     </div>
-  );
+  )
 }

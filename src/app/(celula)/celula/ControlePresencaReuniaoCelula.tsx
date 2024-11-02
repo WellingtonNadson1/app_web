@@ -1,25 +1,25 @@
 /* eslint-disable camelcase */
-"use client";
-import SpinnerButton from "@/components/spinners/SpinnerButton";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { BASE_URL, errorCadastro, success } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { UserFocus } from "@phosphor-icons/react";
-import ProgressBar from "@ramonak/react-progress-bar";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { AxiosError } from "axios";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import { useEffect, useMemo, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
+'use client'
+import SpinnerButton from '@/components/spinners/SpinnerButton'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { UserFocus } from '@phosphor-icons/react'
+import ProgressBar from '@ramonak/react-progress-bar'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
+import { AxiosError } from 'axios'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useMemo, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
 import {
   CelulaProps,
   ReuniaoCelulaSuccessData,
@@ -28,99 +28,98 @@ import {
   reuniaoCelulaData2,
   reuniaoCelulaUpdate,
   reuniaoCelulaUpdateSchema,
-} from "./schema";
+} from './schema'
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 interface UpdateDataParams {
-  URL: string;
-  newData: reuniaoCelulaUpdate;
-  token: string;
+  URL: string
+  newData: reuniaoCelulaUpdate
+  token: string
 }
 
 // Função assíncrona para fazer a requisição PUT com Bearer Token
 async function updateData({ URL, newData, token }: UpdateDataParams) {
   const response = await fetch(URL, {
-    method: "PUT",
+    method: 'PUT',
     headers: {
-      "Content-Type": "application/json",
+      'Content-Type': 'application/json',
       Authorization: `Bearer ${token}`,
     },
     body: JSON.stringify(newData),
-  });
+  })
 
   if (!response.ok) {
-    throw new Error("Failed to update data");
+    throw new Error('Failed to update data')
   }
-  return response.json();
+  return response.json()
 }
 
 export default function ControlePresencaReuniaoCelula({
   celulaId,
   dataCelula,
 }: {
-  celulaId: string;
-  dataCelula: CelulaProps;
+  celulaId: string
+  dataCelula: CelulaProps
 }) {
-  const { data: session } = useSession();
-  const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>();
-  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`;
-  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`;
-  const URLUpdateReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`;
-  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`;
-  const [progress, setProgress] = useState(0);
-  const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData[]>();
-  const [erro, setErro] = useState<Error>();
-  const router = useRouter();
-  const { handleSubmit, register, reset } =
-    useForm<attendanceReuniaoCelula[]>();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-  const token = session?.user.token;
+  const { data: session } = useSession()
+  const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
+  const URLControlePresencaReuniaoCelula = `${BASE_URL}/presencareuniaocelulas`
+  const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
+  const URLUpdateReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas/${reuniaoRegisteredId}`
+  const URLReuniaoCelula = `${BASE_URL}/reunioessemanaiscelulas`
+  const [progress, setProgress] = useState(0)
+  const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData[]>()
+  const [erro, setErro] = useState<Error>()
+  const router = useRouter()
+  const { handleSubmit, register, reset } = useForm<attendanceReuniaoCelula[]>()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const token = session?.user.token
 
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const memoizedDataHoje = useMemo(() => dayjs(), []);
+  const memoizedDataHoje = useMemo(() => dayjs(), [])
   const memoizedDataHojeString = memoizedDataHoje
-    .tz("America/Sao_Paulo")
-    .format("YYYY-MM-DDTHH:mm:ss.SSS[Z]");
+    .tz('America/Sao_Paulo')
+    .format('YYYY-MM-DDTHH:mm:ss.SSS[Z]')
 
-  const status = "Marcado";
-  const celula = celulaId;
-  const data_reuniao = memoizedDataHojeString;
-  const presencas_membros_reuniao_celula = null;
+  const status = 'Marcado'
+  const celula = celulaId
+  const data_reuniao = memoizedDataHojeString
+  const presencas_membros_reuniao_celula = null
 
   const dataSend = {
     status,
     celula,
     data_reuniao,
     presencas_membros_reuniao_celula,
-  };
+  }
 
   const createReuniaoCelula = async (
     dataSend: reuniaoCelulaData2,
   ): Promise<reuniaoCelulaData[] | reuniaoCelulaData | undefined> => {
     try {
-      const response = await axiosAuth.post(URLReuniaoCelula, dataSend);
-      console.debug(response);
-      setReuniaRegisteredId(response?.data.id);
-      return response.data;
+      const response = await axiosAuth.post(URLReuniaoCelula, dataSend)
+      console.debug(response)
+      setReuniaRegisteredId(response?.data.id)
+      return response.data
     } catch (error) {
-      const axiosError = error as AxiosError;
+      const axiosError = error as AxiosError
       if (axiosError.response) {
-        const errorResponseData = axiosError.response.data;
+        const errorResponseData = axiosError.response.data
         if (Array.isArray(errorResponseData) && errorResponseData.length > 0) {
           // Access the 'id' from the first element in the array (assuming it's the only one)
-          const id = errorResponseData[0].id;
-          setReuniaRegisteredId(id);
+          const id = errorResponseData[0].id
+          setReuniaRegisteredId(id)
           // Now you can use 'id' in other parts of your code
-          console.debug("Error Response ID Em Novo Cadastro:", id);
+          console.debug('Error Response ID Em Novo Cadastro:', id)
         }
       } else {
-        console.error("Error response is not available");
+        console.error('Error response is not available')
       }
     }
-  };
+  }
 
   const {
     mutate,
@@ -130,59 +129,59 @@ export default function ControlePresencaReuniaoCelula({
   } = useMutation({
     mutationFn: createReuniaoCelula,
     onSuccess: async (responseData) => {
-      queryClient.invalidateQueries({ queryKey: ["reuniaocelula"] });
-      const { id } = responseData as ReuniaoCelulaSuccessData;
-      setReuniaRegisteredId(id);
+      queryClient.invalidateQueries({ queryKey: ['reuniaocelula'] })
+      const { id } = responseData as ReuniaoCelulaSuccessData
+      setReuniaRegisteredId(id)
     },
     onError: async (errorData) => {
-      const axiosError = errorData as AxiosError;
+      const axiosError = errorData as AxiosError
       if (axiosError.response) {
-        const errorResponseData = axiosError.response.data;
+        const errorResponseData = axiosError.response.data
         if (Array.isArray(errorResponseData) && errorResponseData.length > 0) {
           // Access the 'id' from the first element in the array (assuming it's the only one)
-          const id = errorResponseData[0].id;
-          setReuniaRegisteredId(id);
+          const id = errorResponseData[0].id
+          setReuniaRegisteredId(id)
           // Now you can use 'id' in other parts of your code
-          console.debug("Error Response ID:", id);
+          console.debug('Error Response ID:', id)
         }
       } else {
-        console.error("Error response is not available");
+        console.error('Error response is not available')
       }
     },
-  });
+  })
 
   useEffect(() => {
     // Criando uma nova Reunião de Célula para que seja tirada as faltas dos membros
-    mutate(dataSend);
+    mutate(dataSend)
 
     if (isError) {
-      setDataReuniao(dataMutate);
-      setErro(new Error("A reunião já está registrada"));
-      console.error(erro);
-      setErro(undefined);
+      setDataReuniao(dataMutate)
+      setErro(new Error('A reunião já está registrada'))
+      console.error(erro)
+      setErro(undefined)
     }
-  }, []);
+  }, [])
 
   const getPresenceRegistered = async () => {
     try {
-      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter);
-      const PresenceExistRegistered = response.data;
-      return PresenceExistRegistered;
+      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter)
+      const PresenceExistRegistered = response.data
+      return PresenceExistRegistered
     } catch (error) {
-      console.log("Error in GET Presenca Registrada", error);
+      console.log('Error in GET Presenca Registrada', error)
     }
-  };
+  }
 
   const {
     data,
     isLoading,
     isSuccess: isSuccessGetPresenceRegistered,
   } = useQuery({
-    queryKey: ["presenceCellMetting"],
+    queryKey: ['presenceCellMetting'],
     queryFn: getPresenceRegistered,
     enabled: !!reuniaoRegisteredId, // A consulta será executada apenas se reuniaoRegisteredId existir
     retry: false,
-  });
+  })
 
   const formUpdate = useForm<reuniaoCelulaUpdate>({
     resolver: zodResolver(reuniaoCelulaUpdateSchema),
@@ -190,34 +189,34 @@ export default function ControlePresencaReuniaoCelula({
       visitantes: 0,
       almas_ganhas: 0,
     },
-  });
+  })
 
   const dataSendUpdate: reuniaoCelulaUpdate = {
     visitantes: formUpdate.watch().visitantes,
     almas_ganhas: formUpdate.watch().almas_ganhas,
     id: reuniaoRegisteredId!,
-  };
+  }
 
   const mutation = useMutation({
     mutationFn: updateData,
-  });
+  })
 
   const handleUpdate = () => {
     mutation.mutate({
       URL: URLUpdateReuniaoCelula,
       newData: dataSendUpdate,
       token: token!,
-    });
-  };
+    })
+  }
 
   const createPresencaReuniaoCelulaFunction = async (
     data: attendanceReuniaoCelula[],
   ) => {
     // Transforma o objeto data em um array
-    const dataArray = Object.values(data);
-    const totalRecords = dataArray.length;
-    const increment = 100 / totalRecords;
-    let currentProgress = 0;
+    const dataArray = Object.values(data)
+    const totalRecords = dataArray.length
+    const increment = 100 / totalRecords
+    let currentProgress = 0
 
     // Use loop for ...of
     for (const currentData of dataArray) {
@@ -226,28 +225,28 @@ export default function ControlePresencaReuniaoCelula({
           URLControlePresencaReuniaoCelula,
           {
             ...currentData,
-            status: currentData.status === "true",
+            status: currentData.status === 'true',
             which_reuniao_celula: reuniaoRegisteredId,
           },
-        );
+        )
 
         // Atualize o progresso com base no incremento
-        currentProgress += increment;
-        currentProgress = Math.min(currentProgress, 100);
-        const formattedProgress = currentProgress.toFixed(2);
-        const numericProgress = parseFloat(formattedProgress);
-        setProgress(numericProgress); // Garanta que não exceda 100%
+        currentProgress += increment
+        currentProgress = Math.min(currentProgress, 100)
+        const formattedProgress = currentProgress.toFixed(2)
+        const numericProgress = parseFloat(formattedProgress)
+        setProgress(numericProgress) // Garanta que não exceda 100%
 
         if (!response.data) {
-          throw new Error("Failed to submit dados de presenca");
+          throw new Error('Failed to submit dados de presenca')
         }
       } catch (error) {
-        console.error("Error submitting member data:", error);
+        console.error('Error submitting member data:', error)
         // Lide com o erro conforme necessário
       }
     }
-    success("😉 Presenças de Célula Registradas!");
-  };
+    success('😉 Presenças de Célula Registradas!')
+  }
 
   const {
     mutateAsync: createPresencaReuniaoCelulaFn,
@@ -256,37 +255,37 @@ export default function ControlePresencaReuniaoCelula({
   } = useMutation({
     mutationFn: createPresencaReuniaoCelulaFunction,
     onError: (err, newMember, context) => {
-      queryClient.invalidateQueries({ queryKey: ["presenceCellMetting"] });
+      queryClient.invalidateQueries({ queryKey: ['presenceCellMetting'] })
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["presenceCellMetting"] });
+      queryClient.invalidateQueries({ queryKey: ['presenceCellMetting'] })
     },
-  });
+  })
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendanceReuniaoCelula[]> = async (data) => {
     try {
-      await createPresencaReuniaoCelulaFn(data);
+      await createPresencaReuniaoCelulaFn(data)
     } catch (error) {
-      errorCadastro("Já existem presenças registradas!");
+      errorCadastro('Já existem presenças registradas!')
     }
-  };
+  }
 
   const hnadleFormsSubmit = async () => {
     try {
-      handleUpdate();
-      await handleSubmit(onSubmit)();
+      handleUpdate()
+      await handleSubmit(onSubmit)()
     } catch (error) {
-      console.error("Erro ao submeter os formulários", error);
+      console.error('Erro ao submeter os formulários', error)
     }
-  };
+  }
 
   return (
     <>
       {isPendingCreateReunia || isLoading ? (
         <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
-          <SpinnerButton message={""} />
+          <SpinnerButton message={''} />
         </p>
       ) : (
         <>
@@ -328,7 +327,7 @@ export default function ControlePresencaReuniaoCelula({
                           </Label>
                           <div className="mt-3">
                             <Input
-                              {...formUpdate.register("visitantes")}
+                              {...formUpdate.register('visitantes')}
                               type="number"
                               min={0}
                               required
@@ -348,7 +347,7 @@ export default function ControlePresencaReuniaoCelula({
                           </Label>
                           <div className="mt-3">
                             <Input
-                              {...formUpdate.register("almas_ganhas")}
+                              {...formUpdate.register('almas_ganhas')}
                               type="number"
                               min={0}
                               // defaultValue={0}
@@ -413,16 +412,17 @@ export default function ControlePresencaReuniaoCelula({
                               {/* STATUS */}
                               <div className="hidden sm:block">
                                 <span
-                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === "Ativo"
-                                      ? "border border-green-200 bg-green-100 ring-green-500"
+                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${
+                                    user.situacao_no_reino?.nome === 'Ativo'
+                                      ? 'border border-green-200 bg-green-100 ring-green-500'
                                       : user.situacao_no_reino?.nome ===
-                                        "Normal"
-                                        ? "border border-blue-200 bg-blue-100 ring-blue-500"
+                                          'Normal'
+                                        ? 'border border-blue-200 bg-blue-100 ring-blue-500'
                                         : user.situacao_no_reino?.nome ===
-                                          "Frio"
-                                          ? "border border-orange-200 bg-orange-100 ring-orange-500"
-                                          : "border border-red-200 bg-red-100 ring-red-500"
-                                    }`}
+                                            'Frio'
+                                          ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                          : 'border border-red-200 bg-red-100 ring-red-500'
+                                  }`}
                                 >
                                   {user.situacao_no_reino?.nome}
                                 </span>
@@ -431,7 +431,7 @@ export default function ControlePresencaReuniaoCelula({
                               {/* CARGO LIDERANÇA */}
                               <div className="hidden md:block">
                                 <span className="hidden w-full px-2 py-1 text-center truncate border border-gray-200 rounded-md bg-gray-50 ring-gray-500 md:block">
-                                  {user.cargo_de_lideranca?.nome}{" "}
+                                  {user.cargo_de_lideranca?.nome}{' '}
                                 </span>
                               </div>
                               <Input
@@ -501,5 +501,5 @@ export default function ControlePresencaReuniaoCelula({
         </>
       )}
     </>
-  );
+  )
 }

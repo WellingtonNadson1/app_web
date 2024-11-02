@@ -1,33 +1,43 @@
-"use client";
-import { Button } from "@/components/ui/button";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { Toaster } from "@/components/ui/toaster";
-import { PlusCircle } from "lucide-react";
-import { useSearchParams } from "next/navigation";
-import { useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { LicaoRegistrationForm } from "./_forms/licao-registration-form";
+'use client'
+import { Button } from '@/components/ui/button'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { Toaster } from '@/components/ui/toaster'
+import { PlusCircle } from 'lucide-react'
+import { useSearchParams } from 'next/navigation'
+import { useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
+import { LicaoRegistrationForm } from './_forms/licao-registration-form'
 
 interface Celula {
-  id: string;
-  nome: string;
+  id: string
+  nome: string
   lider: {
-    id: string;
-    first_name: string;
-  };
+    id: string
+    first_name: string
+  }
 }
 
 interface User {
-  id: string;
-  first_name?: string;
+  id: string
+  first_name?: string
 }
 
 export interface SupervisaoData {
-  id: string;
-  nome: string;
-  celulas: Celula[];
-  membros: User[];
+  id: string
+  nome: string
+  celulas: Celula[]
+  membros: User[]
 }
 
 type Theme = {
@@ -35,12 +45,12 @@ type Theme = {
 }
 
 export default function AddNewLicaoCelula() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   const searchParams = useSearchParams()
   const temaIdForGetFolderName = searchParams.get('id')
   if (!temaIdForGetFolderName) {
-    throw new Error("Prisma instance is null");
+    throw new Error('Prisma instance is null')
   }
   console.log('temaIdForGetFolderName', temaIdForGetFolderName)
 
@@ -72,7 +82,9 @@ export default function AddNewLicaoCelula() {
               <div className="relative mx-auto py-4">
                 <div className="p-2 mx-auto bg-white rounded-lg">
                   <div className="mt-2 card-body">
-                    <LicaoRegistrationForm folderNameId={temaIdForGetFolderName} />
+                    <LicaoRegistrationForm
+                      folderNameId={temaIdForGetFolderName}
+                    />
                   </div>
                 </div>
               </div>
@@ -81,5 +93,5 @@ export default function AddNewLicaoCelula() {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }

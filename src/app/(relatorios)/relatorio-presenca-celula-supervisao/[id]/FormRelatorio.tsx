@@ -1,27 +1,27 @@
-import { cn } from "@/lib/utils";
-import React, { Fragment } from "react";
-import { TCelula, TSupervisionData } from "./schema";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import dayjs from "dayjs";
+import { cn } from '@/lib/utils'
+import React, { Fragment } from 'react'
+import { TCelula, TSupervisionData } from './schema'
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
+import dayjs from 'dayjs'
 
 interface ITableRelatorioProsp {
-  supervisionData: TSupervisionData;
-  celula: TCelula;
+  supervisionData: TSupervisionData
+  celula: TCelula
 }
 
 const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
   celula,
   supervisionData,
 }) => {
-  const corSupervisao = supervisionData.supervisionData.nome;
-  const newCorSupervisao = CorSupervision(corSupervisao);
-  const Supervisor = ListSupervisores(corSupervisao);
+  const corSupervisao = supervisionData.supervisionData.nome
+  const newCorSupervisao = CorSupervision(corSupervisao)
+  const Supervisor = ListSupervisores(corSupervisao)
 
   const meetingSortedByDate = celula.reunioes_celula.sort((a, b) => {
-    const dateA = new Date(a.data_reuniao);
-    const dateB = new Date(b.data_reuniao);
-    return dateA.getTime() - dateB.getTime(); // Compare dates
-  });
+    const dateA = new Date(a.data_reuniao)
+    const dateB = new Date(b.data_reuniao)
+    return dateA.getTime() - dateB.getTime() // Compare dates
+  })
 
   return (
     <div className="pt-3">
@@ -75,8 +75,8 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
                     key={dataCelulaIndex}
                   >
                     <div className="">
-                      <p>{`${dayjs(dataCelula.data_reuniao).format("ddd").toUpperCase()}`}</p>
-                      <p>{`${dayjs(dataCelula.data_reuniao).format("DD/MM")}`}</p>
+                      <p>{`${dayjs(dataCelula.data_reuniao).format('ddd').toUpperCase()}`}</p>
+                      <p>{`${dayjs(dataCelula.data_reuniao).format('DD/MM')}`}</p>
                     </div>
                   </th>
                 ))
@@ -96,7 +96,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
             <td className="px-4 bg-gray-50">
               <p className="text-base font-medium text-black">{celula?.nome}</p>
               <p className="text-sm font-medium text-slate-600">
-                Líder:{" "}
+                Líder:{' '}
                 <span className="font-normal">{celula?.lider?.first_name}</span>
               </p>
               <p className="text-sm text-slate-600">
@@ -133,7 +133,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
                       const presenca =
                         meeting.presencas_membros_reuniao_celula.find(
                           (p) => p.membro?.id === member.id,
-                        );
+                        )
 
                       return (
                         <>
@@ -154,10 +154,10 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
                             )}
                           </div>
                         </>
-                      );
+                      )
                     })}
                   </td>
-                );
+                )
               })
             ) : (
               <td className="mx-4 mb-4 text-center border border-zinc-200">
@@ -172,7 +172,7 @@ const TabelRelatorio: React.FC<ITableRelatorioProsp> = ({
         </tbody>
       </table>
     </div>
-  );
-};
+  )
+}
 
-export default TabelRelatorio;
+export default TabelRelatorio

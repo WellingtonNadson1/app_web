@@ -1,24 +1,24 @@
-import { Dialog, Transition } from "@headlessui/react";
-import { X } from "lucide-react";
-import React, { Fragment, useRef, useState } from "react";
-import { Button } from "../ui/button";
+import { Dialog, Transition } from '@headlessui/react'
+import { X } from 'lucide-react'
+import React, { Fragment, useRef, useState } from 'react'
+import { Button } from '../ui/button'
 
 type IconHeaderModal = {
   icon: React.ForwardRefExoticComponent<
-    Omit<React.SVGProps<SVGSVGElement>, "ref"> & {
-      title?: string | undefined;
-      titleId?: string | undefined;
+    Omit<React.SVGProps<SVGSVGElement>, 'ref'> & {
+      title?: string | undefined
+      titleId?: string | undefined
     } & React.RefAttributes<SVGSVGElement>
-  >;
-};
+  >
+}
 
 type ModalProps = {
-  icon: IconHeaderModal["icon"];
-  titleModal: string;
-  titleButton: string;
-  buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
-  children: React.ReactNode;
-};
+  icon: IconHeaderModal['icon']
+  titleModal: string
+  titleButton: string
+  buttonProps?: React.ButtonHTMLAttributes<HTMLButtonElement>
+  children: React.ReactNode
+}
 
 export default function Modal({
   icon: IconComponent,
@@ -27,16 +27,16 @@ export default function Modal({
   buttonProps,
   children,
 }: ModalProps) {
-  const [isOpen, setIsOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false)
 
-  const cancelButtonRef = useRef(null);
+  const cancelButtonRef = useRef(null)
 
   function closeModal() {
-    setIsOpen(false);
+    setIsOpen(false)
   }
 
   function openModal() {
-    setIsOpen(true);
+    setIsOpen(true)
   }
 
   return (
@@ -144,5 +144,5 @@ export default function Modal({
         </Dialog>
       </Transition.Root>
     </>
-  );
+  )
 }

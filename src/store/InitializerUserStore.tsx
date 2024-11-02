@@ -1,21 +1,21 @@
-"use client";
-import { useRef } from "react";
-import { UserRoles, useUserDataStore } from "./UserDataStore";
+'use client'
+import { useRef } from 'react'
+import { UserRoles, useUserDataStore } from './UserDataStore'
 
 type InitializerUserStoreProps = {
-  id: string;
-  role: string;
-  user_roles: UserRoles[];
-  email: string;
-  image_url: string;
-  first_name: string;
-  token: string;
+  id: string
+  role: string
+  user_roles: UserRoles[]
+  email: string
+  image_url: string
+  first_name: string
+  token: string
   refreshToken: {
-    id: string;
-    expiresIn: number;
-    userIdRefresh: string;
-  };
-};
+    id: string
+    expiresIn: number
+    userIdRefresh: string
+  }
+}
 
 export const InitializerUserStore = ({
   id,
@@ -27,7 +27,7 @@ export const InitializerUserStore = ({
   token,
   refreshToken,
 }: InitializerUserStoreProps) => {
-  const initializerUser = useRef(false);
+  const initializerUser = useRef(false)
 
   if (!initializerUser.current) {
     useUserDataStore.setState({
@@ -39,7 +39,7 @@ export const InitializerUserStore = ({
       first_name,
       token,
       refreshToken,
-    });
+    })
   }
-  return null;
-};
+  return null
+}

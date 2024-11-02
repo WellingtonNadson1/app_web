@@ -1,24 +1,24 @@
-"use client";
-import { useData } from "@/providers/providers";
-import { UsersFour } from "@phosphor-icons/react";
-import { useRouter } from "next/navigation";
-import React from "react";
-import { twMerge } from "tailwind-merge";
+'use client'
+import { useData } from '@/providers/providers'
+import { UsersFour } from '@phosphor-icons/react'
+import { useRouter } from 'next/navigation'
+import React from 'react'
+import { twMerge } from 'tailwind-merge'
 
 export default function StatsDiscipuladosCardSupervisions() {
   // @ts-ignore
-  const { data, error, isLoading } = useData();
+  const { data, error, isLoading } = useData()
 
-  const router = useRouter();
-  const supervisoes = data?.combinedData[0];
+  const router = useRouter()
+  const supervisoes = data?.combinedData[0]
 
-  console.log("supervisoes", supervisoes);
+  console.log('supervisoes', supervisoes)
   const handleDiscipuladosSupervisaoSelecionada = (
     event: React.MouseEvent<HTMLElement>,
   ) => {
-    const id = event.currentTarget.id;
-    router.push(`/discipulados/${id}`);
-  };
+    const id = event.currentTarget.id
+    router.push(`/discipulados/${id}`)
+  }
 
   return isLoading ? (
     <div className="relative z-10 w-full py-2 mx-auto">
@@ -70,5 +70,5 @@ export default function StatsDiscipuladosCardSupervisions() {
           ))}
       </div>
     </div>
-  );
+  )
 }

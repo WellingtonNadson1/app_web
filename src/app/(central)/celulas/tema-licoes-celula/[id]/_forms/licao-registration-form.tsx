@@ -1,25 +1,37 @@
-"use client"
+'use client'
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Switch } from "@/components/ui/switch"
-import { Textarea } from "@/components/ui/textarea"
-import { Toaster } from "@/components/ui/toaster"
-import { useToast } from "@/components/ui/use-toast"
-import { cn } from "@/lib/utils"
-import { useMutation, useQueryClient } from "@tanstack/react-query"
-import axios from "axios"
-import { format } from "date-fns"
-import dayjs from "dayjs"
-import { CalendarIcon, Loader2, Upload } from "lucide-react"
-import { useState } from "react"
-import { SubmitHandler, useForm } from "react-hook-form"
-import * as z from "zod"
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import {
+  Form,
+  FormControl,
+  FormDescription,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '@/components/ui/popover'
+import { Switch } from '@/components/ui/switch'
+import { Textarea } from '@/components/ui/textarea'
+import { Toaster } from '@/components/ui/toaster'
+import { useToast } from '@/components/ui/use-toast'
+import { cn } from '@/lib/utils'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import axios from 'axios'
+import { format } from 'date-fns'
+import dayjs from 'dayjs'
+import { CalendarIcon, Loader2, Upload } from 'lucide-react'
+import { useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import * as z from 'zod'
 
-const DATE_REQUIRED_ERROR = "Date is required.";
+const DATE_REQUIRED_ERROR = 'Date is required.'
 
 const formSchema = z.object({
   titulo: z.string(),
@@ -28,14 +40,19 @@ const formSchema = z.object({
   versiculo_chave: z.string(),
   temaLicaoCelulaId: z.string(),
   folderName: z.string().min(2, {
-    message: "Theme must be at least 2 characters.",
+    message: 'Theme must be at least 2 characters.',
   }),
-  date: z.object({
-    from: z.date().optional(),
-    to: z.date().optional(),
-  }, { required_error: DATE_REQUIRED_ERROR }).refine((date) => {
-    return !!date.from;
-  }, DATE_REQUIRED_ERROR),
+  date: z
+    .object(
+      {
+        from: z.date().optional(),
+        to: z.date().optional(),
+      },
+      { required_error: DATE_REQUIRED_ERROR },
+    )
+    .refine((date) => {
+      return !!date.from
+    }, DATE_REQUIRED_ERROR),
 })
 
 type FormData = z.infer<typeof formSchema>
@@ -44,18 +61,20 @@ type LicaoRegistrationFormProps = {
   folderNameId: string
 }
 
-export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormProps) {
+export function LicaoRegistrationForm({
+  folderNameId,
+}: LicaoRegistrationFormProps) {
   const [pdfName, setPdfName] = useState<string | null>(null)
   const queryClient = useQueryClient()
-  const URLApi = "/api/licoes-celula/create-lesson-celula"
+  const URLApi = '/api/licoes-celula/create-lesson-celula'
   const { toast } = useToast()
   console.log('folderNameId', folderNameId)
 
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
     defaultValues: {
-      titulo: "",
-      folderName: "",
+      titulo: '',
+      folderName: '',
       licao_lancando_redes: false,
       date: {
         from: undefined,
@@ -65,66 +84,68 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
   })
 
   const CreateNewLessonCelulaFunction = async (
-    values
-      : z.infer<typeof formSchema>) => {
-
-
+    values: z.infer<typeof formSchema>,
+  ) => {
     if (values) {
       console.log('values', values)
     }
-    const response = await axios.post(URLApi, {
-      ...values
-    },
+    const response = await axios.post(
+      URLApi,
+      {
+        ...values,
+      },
       {
         responseType: 'stream',
         headers: {
           'Content-Type': 'multipart/form-data',
-        }
-      }
-      ,
+        },
+      },
     )
-    form.reset();
-    return response.data;
-  };
+    form.reset()
+    return response.data
+  }
 
   const { mutateAsync: createNewLessonCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewLessonCelulaFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["licoesCelulasIbb"] });
+      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
     },
-  });
+  })
 
-  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (values) => {
+  const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
+    values,
+  ) => {
     const { titulo } = values
     const { date } = values
     const startDate = dayjs(date.from).format('DD-MMM-YY')
     const endDate = dayjs(date.to).format('DD-MMM-YY')
 
-    const formattedTituloName = `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
+    const formattedTituloName =
+      `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase()
 
     const valuesFormated = {
       ...values,
       titulo: titulo,
       temaLicaoCelulaId: folderNameId,
-      folderName: formattedTituloName
+      folderName: formattedTituloName,
     }
 
     const response = await createNewLessonCelulaFn(valuesFormated)
     console.log('responseFolder: ', response)
     if (response) {
       toast({
-        variant: "default",
-        title: "Successo",
-        description: "LIÇÃO Registrada com Sucesso. 😇",
-      });
-      form.reset();
+        variant: 'default',
+        title: 'Successo',
+        description: 'LIÇÃO Registrada com Sucesso. 😇',
+      })
+      form.reset()
     } else {
       toast({
-        title: "Erro!!!",
-        description: "Erro no Cadastro do LIÇÃO. 😰",
-        variant: "destructive",
-      });
-    };
+        title: 'Erro!!!',
+        description: 'Erro no Cadastro do LIÇÃO. 😰',
+        variant: 'destructive',
+      })
+    }
   }
 
   return (
@@ -139,7 +160,11 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
               <FormItem>
                 <FormLabel>Título</FormLabel>
                 <FormControl>
-                  <Input required placeholder="Digite o Título da Lição" {...field} />
+                  <Input
+                    required
+                    placeholder="Digite o Título da Lição"
+                    {...field}
+                  />
                 </FormControl>
                 <FormMessage />
               </FormItem>
@@ -156,21 +181,21 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                     <FormControl>
                       <Button
                         id="date"
-                        variant={"outline"}
+                        variant={'outline'}
                         className={cn(
-                          "w-full justify-start text-left font-normal",
-                          !field.value?.from && "text-muted-foreground"
+                          'w-full justify-start text-left font-normal',
+                          !field.value?.from && 'text-muted-foreground',
                         )}
                       >
                         <CalendarIcon className="mr-2 h-4 w-4" />
                         {field.value?.from ? (
                           field.value?.to ? (
                             <>
-                              {format(field.value?.from, "LLL dd, y")} -{" "}
-                              {format(field.value?.to, "LLL dd, y")}
+                              {format(field.value?.from, 'LLL dd, y')} -{' '}
+                              {format(field.value?.to, 'LLL dd, y')}
                             </>
                           ) : (
-                            format(field.value?.from, "LLL dd, y")
+                            format(field.value?.from, 'LLL dd, y')
                           )
                         ) : (
                           <span>Defina o príodo</span>
@@ -184,8 +209,12 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
                       mode="range"
                       // defaultMonth={field.value?.from ? new Date(field.value?.from) : new Date()}
                       selected={{
-                        from: field.value?.from ? new Date(field.value?.from) : undefined,
-                        to: field.value?.to ? new Date(field.value?.to) : undefined,
+                        from: field.value?.from
+                          ? new Date(field.value?.from)
+                          : undefined,
+                        to: field.value?.to
+                          ? new Date(field.value?.to)
+                          : undefined,
                       }}
                       onSelect={field.onChange}
                       numberOfMonths={1}
@@ -206,7 +235,11 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
               <FormItem>
                 <FormLabel>Base Bíblica</FormLabel>
                 <FormControl>
-                  <Textarea className="h-24 overflow-y-auto flex-wrap" placeholder="Digite a base bíblica" {...field} />
+                  <Textarea
+                    className="h-24 overflow-y-auto flex-wrap"
+                    placeholder="Digite a base bíblica"
+                    {...field}
+                  />
                 </FormControl>
                 <FormDescription>
                   Digite a base bíblica para a Lição da semana.
@@ -281,7 +314,11 @@ export function LicaoRegistrationForm({ folderNameId }: LicaoRegistrationFormPro
               </FormItem>
             )}
           />
-          <Button className="w-full bg-btnIbb hover:bg-btnIbb/90" type="submit" disabled={isPending}>
+          <Button
+            className="w-full bg-btnIbb hover:bg-btnIbb/90"
+            type="submit"
+            disabled={isPending}
+          >
             {isPending ? (
               <>
                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />

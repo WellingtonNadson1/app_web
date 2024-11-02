@@ -1,8 +1,8 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
-import { Checkbox } from "@/components/ui/checkbox";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
+import { Checkbox } from '@/components/ui/checkbox'
 import {
   Command,
   CommandEmpty,
@@ -10,7 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from "@/components/ui/command";
+} from '@/components/ui/command'
 import {
   Dialog,
   DialogContent,
@@ -18,8 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { DropdownMenuItem } from "@/components/ui/dropdown-menu";
+} from '@/components/ui/dialog'
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import {
   Form,
   FormControl,
@@ -27,212 +27,210 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form'
+import { Input } from '@/components/ui/input'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 
-import { ScrollArea } from "@/components/ui/scroll-area";
+import { ScrollArea } from '@/components/ui/scroll-area'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Toaster } from "@/components/ui/toaster";
-import { toast } from "@/components/ui/use-toast";
-import { BASE_URL } from "@/functions/functions";
-import { handleZipCode } from "@/functions/zipCodeUtils";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { PencilSimple, Spinner } from "@phosphor-icons/react/dist/ssr";
-import { CaretSortIcon, CheckIcon } from "@radix-ui/react-icons";
-import { useQuery } from "@tanstack/react-query";
-import axios from "axios";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/navigation";
-import React, { useRef, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import type { TUser } from "./table-users/schema";
-import { userSchemaTable } from "./table-users/schema";
-import { handleCPFNumber, handlePhoneNumber } from "./utils";
-dayjs.extend(utc);
-dayjs.extend(timezone);
+} from '@/components/ui/select'
+import { Toaster } from '@/components/ui/toaster'
+import { toast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/functions/functions'
+import { handleZipCode } from '@/functions/zipCodeUtils'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { cn } from '@/lib/utils'
+import { useData } from '@/providers/providers'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr'
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
+import { useQuery } from '@tanstack/react-query'
+import axios from 'axios'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
+import React, { useRef, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import type { TUser } from './table-users/schema'
+import { userSchemaTable } from './table-users/schema'
+import { handleCPFNumber, handlePhoneNumber } from './utils'
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
 const estadoCivil = [
-  { label: "Solteiro(a)", value: "solteiro" },
-  { label: "Casado(a)", value: "casado" },
-  { label: "Divorciado(a)", value: "divorciado" },
-  { label: "Uniao Estável", value: "uniao_estavel" },
-  { label: "Viúvo(a)", value: "viuvo" },
-];
+  { label: 'Solteiro(a)', value: 'solteiro' },
+  { label: 'Casado(a)', value: 'casado' },
+  { label: 'Divorciado(a)', value: 'divorciado' },
+  { label: 'Uniao Estável', value: 'uniao_estavel' },
+  { label: 'Viúvo(a)', value: 'viuvo' },
+]
 const trueFalse = [
-  { label: "Sim", value: "true" },
-  { label: "Não", value: "false" },
-];
+  { label: 'Sim', value: 'true' },
+  { label: 'Não', value: 'false' },
+]
 
 function UpdateMember({ member }: { member: TUser }) {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
-  const URLUsersId = `${BASE_URL}/users/${member.id}`;
-  const URLUsers = `${BASE_URL}/users`;
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const URLUsersId = `${BASE_URL}/users/${member.id}`
+  const URLUsers = `${BASE_URL}/users`
 
   // Zustand Store
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  console.log("dataAllCtx", dataAllCtx);
-  const supervisoes = dataAllCtx?.combinedData[0] || [];
+  const { data: dataAllCtx } = useData()
+  console.log('dataAllCtx', dataAllCtx)
+  const supervisoes = dataAllCtx?.combinedData[0] || []
 
-  const escolas = dataAllCtx?.combinedData[1] || [];
-  const encontros = dataAllCtx?.combinedData[2];
-  const situacoesNoReino = dataAllCtx?.combinedData[3] || [];
-  const cargoLideranca = dataAllCtx?.combinedData[4] || [];
-  const masculinoFeminino = ["M", "F"];
+  const escolas = dataAllCtx?.combinedData[1] || []
+  const encontros = dataAllCtx?.combinedData[2]
+  const situacoesNoReino = dataAllCtx?.combinedData[3] || []
+  const cargoLideranca = dataAllCtx?.combinedData[4] || []
+  const masculinoFeminino = ['M', 'F']
   const escolaridade = [
-    "Sem Escolaridade",
-    "Fundamental Incompleto",
-    "Fundamental Completo",
-    "Médio Incompleto",
-    "Médio Completo",
-    "Superior Incompleto",
-    "Superior Completo",
-    "Pós Graduado",
-    "Mestre",
-    "Doutor",
-  ];
-  console.log("supervisoes", supervisoes);
+    'Sem Escolaridade',
+    'Fundamental Incompleto',
+    'Fundamental Completo',
+    'Médio Incompleto',
+    'Médio Completo',
+    'Superior Incompleto',
+    'Superior Completo',
+    'Pós Graduado',
+    'Mestre',
+    'Doutor',
+  ]
+  console.log('supervisoes', supervisoes)
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
-    useState<string>();
-  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false);
-  const [open, setOpen] = useState(false);
+    useState<string>()
+  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
+  const [open, setOpen] = useState(false)
 
   // const { register, handleSubmit, setValue, reset } = useForm<TUser>({
   const form = useForm<TUser>({
     defaultValues: { ...member },
-  });
+  })
 
-  const cancelButtonRef = useRef(null);
-  const router = useRouter();
+  const cancelButtonRef = useRef(null)
+  const router = useRouter()
 
   // Combobox Autocomplete
-  const [queryUpDate, setQueryUpDate] = useState("");
+  const [queryUpDate, setQueryUpDate] = useState('')
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, form.setValue);
-  };
+    handleZipCode(e, form.setValue)
+  }
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<z.infer<typeof userSchemaTable>> = async (
     data,
   ) => {
-    console.log("dataToSend", data);
+    console.log('dataToSend', data)
 
     try {
       const selectedEncontros = data?.encontros?.filter(
-        (encontro) => encontro.id !== "",
-      );
+        (encontro) => encontro.id !== '',
+      )
       const selectedEscolas = data?.escolas?.filter(
-        (escola) => escola.id !== "",
-      );
+        (escola) => escola.id !== '',
+      )
 
       // Verifica se não há encontros selecionados e define o valor como nulo
       const encontrosToSend =
         selectedEncontros && selectedEncontros.length === 0
           ? null
-          : selectedEncontros;
+          : selectedEncontros
 
       const escolasToSend =
-        selectedEscolas && selectedEscolas.length === 0
-          ? null
-          : selectedEscolas;
+        selectedEscolas && selectedEscolas.length === 0 ? null : selectedEscolas
 
       const dataToSend = {
         ...data,
         encontros: encontrosToSend,
         escolas: escolasToSend,
-      };
+      }
 
-      setIsLoadingSubmitUpDate(true);
+      setIsLoadingSubmitUpDate(true)
 
-      const response = await axiosAuth.put(URLUsersId, dataToSend);
-      const result = await response.data;
+      const response = await axiosAuth.put(URLUsersId, dataToSend)
+      const result = await response.data
       if (result) {
-        setIsLoadingSubmitUpDate(false);
+        setIsLoadingSubmitUpDate(false)
         toast({
-          title: "Sucesso!!!",
-          description: "Membro atualizado com Sucesso!!! 🥳",
-        });
-        form.reset();
-        router.refresh();
+          title: 'Sucesso!!!',
+          description: 'Membro atualizado com Sucesso!!! 🥳',
+        })
+        form.reset()
+        router.refresh()
       } else {
         toast({
-          title: "Erro!!!",
-          description: "Erro na Atualização do Membro. 😰",
-          variant: "destructive",
-        });
-        setIsLoadingSubmitUpDate(false);
+          title: 'Erro!!!',
+          description: 'Erro na Atualização do Membro. 😰',
+          variant: 'destructive',
+        })
+        setIsLoadingSubmitUpDate(false)
       }
     } catch (error) {
       toast({
-        title: "Erro!!!",
-        description: "Erro na Atualização do Membro. 😰",
-        variant: "destructive",
-      });
-      console.error(error);
-      setIsLoadingSubmitUpDate(false);
+        title: 'Erro!!!',
+        description: 'Erro na Atualização do Membro. 😰',
+        variant: 'destructive',
+      })
+      console.error(error)
+      setIsLoadingSubmitUpDate(false)
     }
-  };
+  }
 
   const AllMembers = async () => {
     try {
-      const { data } = await axiosAuth.get(URLUsers);
-      return data;
+      const { data } = await axiosAuth.get(URLUsers)
+      return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data);
+        console.error(error.response.data)
       } else {
-        console.error(error);
+        console.error(error)
       }
     }
-  };
+  }
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
     TUser[]
   >({
-    queryKey: ["membersquery"],
+    queryKey: ['membersquery'],
     queryFn: AllMembers,
     retry: 3,
-  });
+  })
 
   const filteredPeople =
-    queryUpDate === ""
+    queryUpDate === ''
       ? queryMembers
       : queryMembers?.filter((person) =>
-        person.first_name
-          .toLowerCase()
-          .replace(/\s+/g, "")
-          .includes(queryUpDate.toLowerCase().replace(/\s+/g, "")),
-      );
+          person.first_name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
+        )
 
   const handleSupervisaoSelecionada = (supervisao: string) => {
-    setSupervisaoSelecionadaUpDate(supervisao);
-  };
+    setSupervisaoSelecionadaUpDate(supervisao)
+  }
 
   //@ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao: { id: string | undefined }) =>
       supervisao.id === supervisaoSelecionadaUpDate,
-  )?.celulas;
+  )?.celulas
 
   return isLoadingQueryUpdate ? (
     <Spinner className="animate-spin" />
@@ -344,20 +342,20 @@ function UpdateMember({ member }: { member: TUser }) {
                                     <PopoverTrigger asChild>
                                       <FormControl>
                                         <Button
-                                          variant={"outline"}
+                                          variant={'outline'}
                                           className={cn(
-                                            " pl-3 text-left font-normal",
+                                            ' pl-3 text-left font-normal',
                                             !field.value &&
-                                            "text-muted-foreground",
+                                              'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
                                             dayjs(field.value)
-                                              .subtract(3, "hours")
+                                              .subtract(3, 'hours')
                                               .utc()
                                               .local()
-                                              .locale("pt-br")
-                                              .format("DD-MM-YYYY HH:mm:ss")
+                                              .locale('pt-br')
+                                              .format('DD-MM-YYYY HH:mm:ss')
                                           ) : (
                                             <span>Selecione uma data</span>
                                           )}
@@ -374,9 +372,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date();
-                                          today.setHours(0, 0, 0, 0);
-                                          return date > today;
+                                          const today = new Date()
+                                          today.setHours(0, 0, 0, 0)
+                                          return date > today
                                         }}
                                         initialFocus
                                       />
@@ -581,20 +579,20 @@ function UpdateMember({ member }: { member: TUser }) {
                                     <PopoverTrigger asChild>
                                       <FormControl>
                                         <Button
-                                          variant={"outline"}
+                                          variant={'outline'}
                                           className={cn(
-                                            " pl-3 text-left font-normal",
+                                            ' pl-3 text-left font-normal',
                                             !field.value &&
-                                            "text-muted-foreground",
+                                              'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
                                             dayjs(field.value)
-                                              .subtract(3, "hours")
+                                              .subtract(3, 'hours')
                                               .utc()
                                               .local()
-                                              .locale("pt-br")
-                                              .format("DD-MM-YYYY HH:mm:ss")
+                                              .locale('pt-br')
+                                              .format('DD-MM-YYYY HH:mm:ss')
                                           ) : (
                                             <span>Selecione uma data</span>
                                           )}
@@ -611,9 +609,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date();
-                                          today.setHours(0, 0, 0, 0);
-                                          return date > today;
+                                          const today = new Date()
+                                          today.setHours(0, 0, 0, 0)
+                                          return date > today
                                         }}
                                         initialFocus
                                       />
@@ -680,17 +678,17 @@ function UpdateMember({ member }: { member: TUser }) {
                                             variant="outline"
                                             role="combobox"
                                             className={cn(
-                                              "w-full justify-between",
+                                              'w-full justify-between',
                                               !field.value &&
-                                              "text-muted-foreground",
+                                                'text-muted-foreground',
                                             )}
                                           >
                                             {field.value
                                               ? filteredPeople?.find(
-                                                (membro) =>
-                                                  membro.id === field.value,
-                                              )?.first_name
-                                              : "Selecione discipulador"}
+                                                  (membro) =>
+                                                    membro.id === field.value,
+                                                )?.first_name
+                                              : 'Selecione discipulador'}
                                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                           </Button>
                                         </FormControl>
@@ -714,19 +712,19 @@ function UpdateMember({ member }: { member: TUser }) {
                                                       key={membro.id}
                                                       onSelect={() => {
                                                         form.setValue(
-                                                          "discipuladorId",
+                                                          'discipuladorId',
                                                           membro.id,
-                                                        );
+                                                        )
                                                       }}
                                                     >
                                                       {membro.first_name}
                                                       <CheckIcon
                                                         className={cn(
-                                                          "ml-auto h-4 w-4",
+                                                          'ml-auto h-4 w-4',
                                                           membro.id ===
                                                             field.value
-                                                            ? "opacity-100"
-                                                            : "opacity-0",
+                                                            ? 'opacity-100'
+                                                            : 'opacity-0',
                                                         )}
                                                       />
                                                     </CommandItem>
@@ -779,7 +777,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           ),
                                         )
                                       ) : (
-                                        <SelectItem value={""}>
+                                        <SelectItem value={''}>
                                           Carregando...
                                         </SelectItem>
                                       )}
@@ -823,7 +821,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           ),
                                         )
                                       ) : (
-                                        <SelectItem value={""}>
+                                        <SelectItem value={''}>
                                           Carregando...
                                         </SelectItem>
                                       )}
@@ -850,54 +848,54 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormLabel>
                                   </div>
                                   {//@ts-ignore
-                                    escolas?.map((escola) => (
-                                      <FormField
-                                        key={escola.id}
-                                        control={form.control}
-                                        name="escolas"
-                                        render={({ field }) => {
-                                          const isChecked = field.value?.some(
-                                            (value) => value.id === escola.id,
-                                          );
-                                          return (
-                                            <div
-                                              key={escola.id + 1}
-                                              className="flex"
+                                  escolas?.map((escola) => (
+                                    <FormField
+                                      key={escola.id}
+                                      control={form.control}
+                                      name="escolas"
+                                      render={({ field }) => {
+                                        const isChecked = field.value?.some(
+                                          (value) => value.id === escola.id,
+                                        )
+                                        return (
+                                          <div
+                                            key={escola.id + 1}
+                                            className="flex"
+                                          >
+                                            <FormItem
+                                              key={escola.id}
+                                              className="flex flex-row items-start space-x-3 space-y-0"
                                             >
-                                              <FormItem
-                                                key={escola.id}
-                                                className="flex flex-row items-start space-x-3 space-y-0"
-                                              >
-                                                <FormControl>
-                                                  <Checkbox
-                                                    checked={isChecked}
-                                                    onCheckedChange={(
-                                                      checked,
-                                                    ) => {
-                                                      return checked
-                                                        ? field.onChange([
+                                              <FormControl>
+                                                <Checkbox
+                                                  checked={isChecked}
+                                                  onCheckedChange={(
+                                                    checked,
+                                                  ) => {
+                                                    return checked
+                                                      ? field.onChange([
                                                           ...field.value,
                                                           escola,
                                                         ])
-                                                        : field.onChange(
+                                                      : field.onChange(
                                                           field.value?.filter(
                                                             (value) =>
                                                               value.id !==
                                                               escola.id,
                                                           ),
-                                                        );
-                                                    }}
-                                                  />
-                                                </FormControl>
-                                                <FormLabel className="text-sm font-normal">
-                                                  {escola.nome}
-                                                </FormLabel>
-                                              </FormItem>
-                                            </div>
-                                          );
-                                        }}
-                                      />
-                                    ))}
+                                                        )
+                                                  }}
+                                                />
+                                              </FormControl>
+                                              <FormLabel className="text-sm font-normal">
+                                                {escola.nome}
+                                              </FormLabel>
+                                            </FormItem>
+                                          </div>
+                                        )
+                                      }}
+                                    />
+                                  ))}
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -922,7 +920,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                     >
                                       <div className="flex items-center h-6">
                                         <input
-                                          {...form.register("encontros")}
+                                          {...form.register('encontros')}
                                           value={encontro.id}
                                           id={encontro.id}
                                           type="checkbox"
@@ -965,14 +963,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                        situacoesNoReino?.map((situacao) => (
-                                          <SelectItem
-                                            key={situacao.id}
-                                            value={situacao.id}
-                                          >
-                                            {situacao.nome}
-                                          </SelectItem>
-                                        ))}
+                                      situacoesNoReino?.map((situacao) => (
+                                        <SelectItem
+                                          key={situacao.id}
+                                          value={situacao.id}
+                                        >
+                                          {situacao.nome}
+                                        </SelectItem>
+                                      ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -1000,14 +998,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                        cargoLideranca?.map((cargo) => (
-                                          <SelectItem
-                                            key={cargo.id}
-                                            value={cargo.id}
-                                          >
-                                            {cargo.nome}
-                                          </SelectItem>
-                                        ))}
+                                      cargoLideranca?.map((cargo) => (
+                                        <SelectItem
+                                          key={cargo.id}
+                                          value={cargo.id}
+                                        >
+                                          {cargo.nome}
+                                        </SelectItem>
+                                      ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -1086,20 +1084,20 @@ function UpdateMember({ member }: { member: TUser }) {
                                     <PopoverTrigger asChild>
                                       <FormControl>
                                         <Button
-                                          variant={"outline"}
+                                          variant={'outline'}
                                           className={cn(
-                                            " pl-3 text-left font-normal",
+                                            ' pl-3 text-left font-normal',
                                             !field.value &&
-                                            "text-muted-foreground",
+                                              'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
                                             dayjs(field.value)
-                                              .subtract(3, "hours")
+                                              .subtract(3, 'hours')
                                               .utc()
                                               .local()
-                                              .locale("pt-br")
-                                              .format("DD-MM-YYYY HH:mm:ss")
+                                              .locale('pt-br')
+                                              .format('DD-MM-YYYY HH:mm:ss')
                                           ) : (
                                             <span>Selecione uma data</span>
                                           )}
@@ -1116,9 +1114,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date();
-                                          today.setHours(0, 0, 0, 0);
-                                          return date > today;
+                                          const today = new Date()
+                                          today.setHours(0, 0, 0, 0)
+                                          return date > today
                                         }}
                                         initialFocus
                                       />
@@ -1210,7 +1208,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("cep")}
+                                {...form.register('cep')}
                                 type="text"
                                 id="cep"
                                 onKeyUp={handleZipCodeChange}
@@ -1229,7 +1227,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("cidade")}
+                                {...form.register('cidade')}
                                 type="text"
                                 id="cidade"
                                 className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -1246,7 +1244,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("estado")}
+                                {...form.register('estado')}
                                 type="text"
                                 id="estado"
                                 autoComplete="address-level1"
@@ -1266,7 +1264,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("bairro")}
+                                {...form.register('bairro')}
                                 type="text"
                                 id="bairro"
                                 className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -1282,7 +1280,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("endereco")}
+                                {...form.register('endereco')}
                                 type="text"
                                 id="endereco"
                                 className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -1298,7 +1296,7 @@ function UpdateMember({ member }: { member: TUser }) {
                             </label>
                             <div className="mt-3">
                               <input
-                                {...form.register("numero_casa")}
+                                {...form.register('numero_casa')}
                                 type="text"
                                 id="numero_casa"
                                 className="block w-full rounded-md border-0 py-1.5 text-slate-700 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
@@ -1364,7 +1362,7 @@ function UpdateMember({ member }: { member: TUser }) {
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
 
-export default UpdateMember;
+export default UpdateMember

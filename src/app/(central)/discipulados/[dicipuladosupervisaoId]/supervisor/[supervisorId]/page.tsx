@@ -1,32 +1,32 @@
-"use client";
-import { useData } from "@/providers/providers";
-import { useParams } from "next/navigation";
-import ListMembersDiscipuladoSupervisor from "../../../Components/ListMembersDiscipuladoSupervisor";
+'use client'
+import { useData } from '@/providers/providers'
+import { useParams } from 'next/navigation'
+import ListMembersDiscipuladoSupervisor from '../../../Components/ListMembersDiscipuladoSupervisor'
 
 export default function ControleDiscipuladoSupervisior({
   params: { supervisorId },
 }: {
-  params: { supervisorId: string };
+  params: { supervisorId: string }
 }) {
-  const { data, error, isLoading } = useData();
+  const { data, error, isLoading } = useData()
 
   if (isLoading) {
-    return <p>Carregando...</p>;
+    return <p>Carregando...</p>
   }
 
   if (error) {
-    return <p>Ocorreu um erro ao carregar os dados.</p>;
+    return <p>Ocorreu um erro ao carregar os dados.</p>
   }
 
-  const supervisoes = data?.combinedData[0];
+  const supervisoes = data?.combinedData[0]
 
-  const id = useParams();
+  const id = useParams()
 
   // @ts-ignore
   const supervisao = supervisoes?.filter(
     // @ts-ignore
     (supervisao) => supervisao.id === id.supervisorId,
-  );
+  )
 
   return (
     <div className="relative w-full px-2 py-2 mx-auto">
@@ -40,5 +40,5 @@ export default function ControleDiscipuladoSupervisior({
         )}
       </div>
     </div>
-  );
+  )
 }

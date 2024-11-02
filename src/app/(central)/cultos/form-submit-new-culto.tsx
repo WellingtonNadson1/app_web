@@ -1,7 +1,7 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Form,
   FormControl,
@@ -9,132 +9,132 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Toaster } from "@/components/ui/toaster";
-import { toast } from "@/components/ui/use-toast";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { cn } from "@/lib/utils";
-import { useUserDataStore } from "@/store/UserDataStore";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { CultoSchema } from "./schemaNewCulto";
+} from '@/components/ui/select'
+import { Toaster } from '@/components/ui/toaster'
+import { toast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { cn } from '@/lib/utils'
+import { useUserDataStore } from '@/store/UserDataStore'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useForm } from 'react-hook-form'
+import { z } from 'zod'
+import { CultoSchema } from './schemaNewCulto'
 
-dayjs.extend(utc);
-dayjs.extend(timezone);
+dayjs.extend(utc)
+dayjs.extend(timezone)
 
-const statusCulto = ["Agendado", "Realizado", "Cancelado"];
+const statusCulto = ['Agendado', 'Realizado', 'Cancelado']
 const cultosSemanais = [
   {
-    id: "10875852-929b-4e81-a8cb-34721362c7c3",
-    nome: "Culto de Ceia",
-    descricao: "Culto Em Memória de Cristo",
+    id: '10875852-929b-4e81-a8cb-34721362c7c3',
+    nome: 'Culto de Ceia',
+    descricao: 'Culto Em Memória de Cristo',
   },
   {
-    id: "4064be1d-bf55-4851-9f76-99c4554a6265",
-    nome: "Culto de Edificação",
-    descricao: "Culto de Edificação as quartas-feiras",
+    id: '4064be1d-bf55-4851-9f76-99c4554a6265',
+    nome: 'Culto de Edificação',
+    descricao: 'Culto de Edificação as quartas-feiras',
   },
   {
-    id: "84acfbe4-c7e0-4841-813c-04731ffa9c67",
-    nome: "Capacitação Para Discípulos - CPD",
-    descricao: "Culto aos Sábados",
+    id: '84acfbe4-c7e0-4841-813c-04731ffa9c67',
+    nome: 'Capacitação Para Discípulos - CPD',
+    descricao: 'Culto aos Sábados',
   },
   {
-    id: "bffb62af-8d03-473a-ba20-ab5a9d7dafbe",
-    nome: "Culto de Primícias",
-    descricao: "Culto de Primícias ao Senhor",
+    id: 'bffb62af-8d03-473a-ba20-ab5a9d7dafbe',
+    nome: 'Culto de Primícias',
+    descricao: 'Culto de Primícias ao Senhor',
   },
   {
-    id: "cab02f30-cade-46ca-b118-930461013d53",
-    nome: "Culto de Celebração - Manhã",
-    descricao: "Culto aos Domingos pela manhã",
+    id: 'cab02f30-cade-46ca-b118-930461013d53',
+    nome: 'Culto de Celebração - Manhã',
+    descricao: 'Culto aos Domingos pela manhã',
   },
   {
-    id: "ea08ec9b-3d1b-42f3-818a-ec53ef99b78f",
-    nome: "Culto de Celebração - Tarde",
-    descricao: "Culto aos Domingos pela tarde",
+    id: 'ea08ec9b-3d1b-42f3-818a-ec53ef99b78f',
+    nome: 'Culto de Celebração - Tarde',
+    descricao: 'Culto aos Domingos pela tarde',
   },
   {
-    id: "e7bc72d1-8faa-4bbe-9c24-475b64f956cf",
-    nome: "Domingo de Sacrifício",
-    descricao: "Culto de 12h de relacionamento com Deus",
+    id: 'e7bc72d1-8faa-4bbe-9c24-475b64f956cf',
+    nome: 'Domingo de Sacrifício',
+    descricao: 'Culto de 12h de relacionamento com Deus',
   },
-];
+]
 
 export default function FormNewCulto() {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
   const form = useForm<z.infer<typeof CultoSchema>>({
     resolver: zodResolver(CultoSchema),
-  });
-  const { token } = useUserDataStore();
-  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`;
-  const axiosAuth = useAxiosAuth(token);
+  })
+  const { token } = useUserDataStore()
+  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
+  const axiosAuth = useAxiosAuth(token)
 
   const createNewCultoFunction = async (data: z.infer<typeof CultoSchema>) => {
     // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR
     const data_inicio_culto1 = dayjs(data.data_inicio_culto)
-      .subtract(3, "hour")
-      .toISOString();
+      .subtract(3, 'hour')
+      .toISOString()
     const data_termino_culto2 = dayjs(data.data_termino_culto)
-      .subtract(3, "hour")
-      .toISOString();
+      .subtract(3, 'hour')
+      .toISOString()
 
-    const data_inicio_culto = new Date(data_inicio_culto1);
-    const data_termino_culto = new Date(data_termino_culto2);
+    const data_inicio_culto = new Date(data_inicio_culto1)
+    const data_termino_culto = new Date(data_termino_culto2)
 
-    var data = { ...data, data_inicio_culto, data_termino_culto };
+    var data = { ...data, data_inicio_culto, data_termino_culto }
 
     const response = await axiosAuth.post(URLCultosIndividuais, {
       data,
-    });
-    form.reset();
-    return response.data;
-  };
+    })
+    form.reset()
+    return response.data
+  }
 
   const { mutateAsync: createNewCultoFn, isPending } = useMutation({
     mutationFn: createNewCultoFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cultosMarcados"] });
+      queryClient.invalidateQueries({ queryKey: ['cultosMarcados'] })
     },
-  });
+  })
 
   const onSubmit = async (data: z.infer<typeof CultoSchema>) => {
     try {
-      await createNewCultoFn(data);
+      await createNewCultoFn(data)
       toast({
-        title: "Sucesso!!!",
-        description: "Culto criado com Sucesso!!! 🥳",
-      });
-      form.reset();
+        title: 'Sucesso!!!',
+        description: 'Culto criado com Sucesso!!! 🥳',
+      })
+      form.reset()
     } catch (error) {
       toast({
-        title: "Erro!!!",
-        description: "Erro na Criaçao do Culto. 😰",
-        variant: "destructive",
-      });
-      console.error(error);
+        title: 'Erro!!!',
+        description: 'Erro na Criaçao do Culto. 😰',
+        variant: 'destructive',
+      })
+      console.error(error)
     }
-  };
+  }
 
   return (
     <>
@@ -154,10 +154,10 @@ export default function FormNewCulto() {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={'outline'}
                             className={cn(
-                              " pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
+                              ' pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground',
                             )}
                           >
                             {field.value ? (
@@ -165,8 +165,8 @@ export default function FormNewCulto() {
                                 // .subtract(3, "hours")
                                 .utc()
                                 .local()
-                                .locale("pt-br")
-                                .format("DD-MM-YYYY HH:mm:ss")
+                                .locale('pt-br')
+                                .format('DD-MM-YYYY HH:mm:ss')
                             ) : (
                               <span>Selecione uma data</span>
                             )}
@@ -180,9 +180,9 @@ export default function FormNewCulto() {
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) => {
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            return date < today;
+                            const today = new Date()
+                            today.setHours(0, 0, 0, 0)
+                            return date < today
                           }}
                           initialFocus
                         />
@@ -212,10 +212,10 @@ export default function FormNewCulto() {
                       <PopoverTrigger asChild>
                         <FormControl>
                           <Button
-                            variant={"outline"}
+                            variant={'outline'}
                             className={cn(
-                              " pl-3 text-left font-normal",
-                              !field.value && "text-muted-foreground",
+                              ' pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground',
                             )}
                           >
                             {field.value ? (
@@ -223,8 +223,8 @@ export default function FormNewCulto() {
                                 // .subtract(3, "hours")
                                 .utc()
                                 .local()
-                                .locale("pt-br")
-                                .format("DD-MM-YYYY HH:mm:ss")
+                                .locale('pt-br')
+                                .format('DD-MM-YYYY HH:mm:ss')
                             ) : (
                               <span>Selecione uma data</span>
                             )}
@@ -238,9 +238,9 @@ export default function FormNewCulto() {
                           selected={field.value}
                           onSelect={field.onChange}
                           disabled={(date) => {
-                            const today = new Date();
-                            today.setHours(0, 0, 0, 0);
-                            return date < today;
+                            const today = new Date()
+                            today.setHours(0, 0, 0, 0)
+                            return date < today
                           }}
                           initialFocus
                         />
@@ -332,11 +332,11 @@ export default function FormNewCulto() {
                 Salvando
               </div>
             ) : (
-              "Salvar"
+              'Salvar'
             )}
           </Button>
         </form>
       </Form>
     </>
-  );
+  )
 }

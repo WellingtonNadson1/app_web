@@ -1,7 +1,7 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Form,
   FormControl,
@@ -9,81 +9,81 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { CorSupervision, ListSupervisores } from "@/contexts/ListSupervisores";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import dayjs from "dayjs";
-import ptBr from "dayjs/locale/pt-br";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { Fragment, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
+} from '@/components/ui/select'
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
+import { useData } from '@/providers/providers'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import dayjs from 'dayjs'
+import ptBr from 'dayjs/locale/pt-br'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Fragment, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
 import {
   FormRelatorioDataSchema,
   MemberDataDiscipulado,
   MembersDataDiscipulado,
-} from "./schema";
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.locale(ptBr);
-dayjs.tz.setDefault("America/Sao_Paulo");
+} from './schema'
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.locale(ptBr)
+dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function DiscipuladosRelatoriosSupervisoes() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-  const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`;
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
-    useState<Record<string, MemberDataDiscipulado[]>>();
-  const [corSupervisao, setCorSupervisao] = useState("");
+    useState<Record<string, MemberDataDiscipulado[]>>()
+  const [corSupervisao, setCorSupervisao] = useState('')
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
     resolver: zodResolver(FormRelatorioDataSchema),
-  });
-  const queryClient = useQueryClient();
+  })
+  const queryClient = useQueryClient()
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
 
   const DiscipuladosSupervisoes = async ({
     startDate,
     endDate,
     superVisionId,
   }: {
-    startDate: Date;
-    endDate: Date;
-    superVisionId: string;
+    startDate: Date
+    endDate: Date
+    superVisionId: string
   }): Promise<MembersDataDiscipulado[]> => {
     const { data } = await axiosAuth.post(URLDiscipuladosSupervisoes, {
       startDate,
       endDate,
       superVisionId,
-    });
-    return data as MembersDataDiscipulado[];
-  };
+    })
+    return data as MembersDataDiscipulado[]
+  }
 
   const {
     data: DiscipuladosSupervisao,
@@ -91,35 +91,35 @@ export default function DiscipuladosRelatoriosSupervisoes() {
     isPending,
     isSuccess,
   } = useMutation({
-    mutationKey: ["getDiscipuladosSupervisao"],
+    mutationKey: ['getDiscipuladosSupervisao'],
     mutationFn: DiscipuladosSupervisoes,
     onSuccess: async (data) => {
       queryClient.invalidateQueries({
-        queryKey: ["getDiscipuladosSupervisao"],
-      });
-      const dataGroupedForCell = await groupDiscipuladoByCell(data[0]);
-      setDiscipuladoForCellForCell(dataGroupedForCell);
-      setCorSupervisao(data[0]?.membros[0]?.supervisao_pertence?.nome);
+        queryKey: ['getDiscipuladosSupervisao'],
+      })
+      const dataGroupedForCell = await groupDiscipuladoByCell(data[0])
+      setDiscipuladoForCellForCell(dataGroupedForCell)
+      setCorSupervisao(data[0]?.membros[0]?.supervisao_pertence?.nome)
     },
-  });
+  })
 
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(
     relatorio: MembersDataDiscipulado,
   ): Promise<Record<string, MemberDataDiscipulado[]>> {
-    const celula: Record<string, MemberDataDiscipulado[]> = {};
+    const celula: Record<string, MemberDataDiscipulado[]> = {}
 
     relatorio.membros.forEach((membro) => {
-      const cellName = membro?.celula?.nome;
+      const cellName = membro?.celula?.nome
 
       if (cellName) {
         if (!celula[cellName]) {
-          celula[cellName] = [];
+          celula[cellName] = []
         }
-        celula[cellName].push(membro);
+        celula[cellName].push(membro)
       }
-    });
-    return Promise.resolve(celula);
+    })
+    return Promise.resolve(celula)
   }
 
   const handleRelatorio: SubmitHandler<
@@ -129,11 +129,11 @@ export default function DiscipuladosRelatoriosSupervisoes() {
       startDate,
       endDate,
       superVisionId,
-    });
-  };
+    })
+  }
 
-  const newCorSupervisao = CorSupervision(corSupervisao);
-  const Supervisor = ListSupervisores(corSupervisao);
+  const newCorSupervisao = CorSupervision(corSupervisao)
+  const Supervisor = ListSupervisores(corSupervisao)
 
   return (
     <Fragment>
@@ -142,7 +142,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
           <Fragment>
             <div className="flex flex-col gap-4 p-3">
               <div className="flex items-center justify-start gap-4">
-                <Link href={"/dashboard"}>
+                <Link href={'/dashboard'}>
                   <Image
                     className="cursor-pointer"
                     src="/images/logo-ibb-1.svg"
@@ -176,10 +176,10 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -187,8 +187,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -232,10 +232,10 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -243,8 +243,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -262,7 +262,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   onSelect={field.onChange}
                                   disabled={(date) =>
                                     date > new Date() ||
-                                    date < new Date("1900-01-01")
+                                    date < new Date('1900-01-01')
                                   }
                                   initialFocus
                                 />
@@ -344,7 +344,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
         {/* TABELA DE REGISTRO DE DISCIPULADOS DA SUPERVISÃO */}
         {isPending ? (
           <p className="flex items-center justify-center gap-2 text-center">
-            {" "}
+            {' '}
             <Spinner className="animate-spin" /> Carregando dados...
           </p>
         ) : discipuladoForCell ? (
@@ -370,14 +370,14 @@ export default function DiscipuladosRelatoriosSupervisoes() {
               {isSuccess ? (
                 <div className="pb-2 pl-2">
                   <p className="p-2 text-base font-medium uppercase text-start">
-                    SUPERVISOR(ES):{" "}
+                    SUPERVISOR(ES):{' '}
                     <span className="font-normal ">{Supervisor}</span>
                   </p>
                 </div>
               ) : (
                 <div className="pb-2 pl-2">
                   <p className="p-2 text-base font-medium uppercase text-start">
-                    SUPERVISOR(ES):{" "}
+                    SUPERVISOR(ES):{' '}
                     <span className="font-normal ">Sem Dados</span>
                   </p>
                 </div>
@@ -445,7 +445,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           {cellName}
                         </p>
                         <p className="text-sm text-slate-600">
-                          Líder:{" "}
+                          Líder:{' '}
                           <span className="capitalize">
                             {
                               discipuladoForCell[cellName][0].celula.lider
@@ -454,7 +454,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           </span>
                         </p>
                         <p className="text-sm text-slate-600">
-                          Membros:{" "}
+                          Membros:{' '}
                           <span>{discipuladoForCell[cellName].length}</span>
                         </p>
                       </td>
@@ -466,8 +466,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                             key={member.id}
                           >
                             {member.first_name ===
-                              discipuladoForCell[cellName][0].celula.lider
-                                .first_name ? (
+                            discipuladoForCell[cellName][0].celula.lider
+                              .first_name ? (
                               <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
                                 {member.first_name}
                               </div>
@@ -504,7 +504,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                         {discipuladoForCell[cellName].map(
                           (member, indexMember) => {
                             const totalDiscipulado =
-                              member?.discipulador[0]?.discipulado.length;
+                              member?.discipulador[0]?.discipulado.length
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -517,10 +517,10 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   {totalDiscipulado ? (
                                     <Fragment>
                                       {totalDiscipulado === 1 ? (
-                                        <p className="text-sky-600">{"50%"}</p>
+                                        <p className="text-sky-600">{'50%'}</p>
                                       ) : (
                                         <p className="text-green-600">
-                                          {"100%"}
+                                          {'100%'}
                                         </p>
                                       )}
                                     </Fragment>
@@ -529,12 +529,12 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                       className="text-red-600"
                                       key={indexMember}
                                     >
-                                      {"00%"}
+                                      {'00%'}
                                     </p>
                                   )}
                                 </div>
                               </tr>
-                            );
+                            )
                           },
                         )}
                       </td>
@@ -544,7 +544,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           (member, indexMember) => {
                             const discipulado1 =
                               member?.discipulador[0]?.discipulado[0]
-                                ?.data_ocorreu;
+                                ?.data_ocorreu
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -557,7 +557,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   {discipulado1 ? (
                                     <Fragment>
                                       {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                      <p className="text-green-600">{`${dayjs(discipulado1).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                      <p className="text-green-600">{`${dayjs(discipulado1).utcOffset('+03:00').format('DD/MM')}`}</p>
                                     </Fragment>
                                   ) : (
                                     <p key={indexMember}>
@@ -568,7 +568,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   )}
                                 </div>
                               </tr>
-                            );
+                            )
                           },
                         )}
                       </td>
@@ -578,7 +578,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           (member, indexMember) => {
                             const discipulado2 =
                               member?.discipulador[0]?.discipulado[1]
-                                ?.data_ocorreu;
+                                ?.data_ocorreu
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -591,7 +591,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   {discipulado2 ? (
                                     <Fragment>
                                       {/* tive que aumentar 3h por causa do fuso q foi gravado a data no DB */}
-                                      <p className="text-green-600">{`${dayjs(discipulado2).utcOffset("+03:00").format("DD/MM")}`}</p>
+                                      <p className="text-green-600">{`${dayjs(discipulado2).utcOffset('+03:00').format('DD/MM')}`}</p>
                                     </Fragment>
                                   ) : (
                                     <p key={indexMember}>
@@ -602,7 +602,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   )}
                                 </div>
                               </tr>
-                            );
+                            )
                           },
                         )}
                       </td>
@@ -616,5 +616,5 @@ export default function DiscipuladosRelatoriosSupervisoes() {
         )}
       </div>
     </Fragment>
-  );
+  )
 }

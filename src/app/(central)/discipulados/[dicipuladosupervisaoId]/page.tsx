@@ -1,46 +1,46 @@
-"use client";
-import ListDisicipuladoCelulasSupervision from "@/app/(central)/discipulados/Components/ListDisicipuladoCelulasSupervision";
-import StatsCardSupervisionDiscipulado from "@/app/(central)/discipulados/Components/StatsCardSupervisionDiscipulado";
-import { ICelula } from "@/components/ListCelulas";
-import { useData } from "@/providers/providers";
-import { useParams } from "next/navigation";
+'use client'
+import ListDisicipuladoCelulasSupervision from '@/app/(central)/discipulados/Components/ListDisicipuladoCelulasSupervision'
+import StatsCardSupervisionDiscipulado from '@/app/(central)/discipulados/Components/StatsCardSupervisionDiscipulado'
+import { ICelula } from '@/components/ListCelulas'
+import { useData } from '@/providers/providers'
+import { useParams } from 'next/navigation'
 
 interface IUser {
-  id: string;
-  first_name: string;
+  id: string
+  first_name: string
 }
 
 interface ISupervisor {
-  id: string;
-  first_name: string;
+  id: string
+  first_name: string
 }
 
 export interface ISupervisaoData {
-  id: string;
-  nome: string;
-  cor: string;
-  supervisor: ISupervisor;
-  nivel: string;
-  User: IUser[];
-  celulas: ICelula[];
+  id: string
+  nome: string
+  cor: string
+  supervisor: ISupervisor
+  nivel: string
+  User: IUser[]
+  celulas: ICelula[]
 }
 
 export default function Supervisao({
   params: { supervisaoId },
 }: {
-  params: { supervisaoId: string };
+  params: { supervisaoId: string }
 }) {
-  const id = useParams();
+  const id = useParams()
   // @ts-ignore
-  const { data, error, isLoading } = useData();
+  const { data, error, isLoading } = useData()
 
-  const supervisoes = data?.combinedData[0];
-  console.log("supervisoes", supervisoes);
+  const supervisoes = data?.combinedData[0]
+  console.log('supervisoes', supervisoes)
   // @ts-ignore
   const supervisao = supervisoes?.filter(
     // @ts-ignore
     (supervisao) => supervisao.id === id.dicipuladosupervisaoId,
-  );
+  )
 
   return (
     <div className="w-full px-2 py-2 mx-auto">
@@ -55,5 +55,5 @@ export default function Supervisao({
         <ListDisicipuladoCelulasSupervision data={supervisao[0]?.celulas} />
       )}
     </div>
-  );
+  )
 }

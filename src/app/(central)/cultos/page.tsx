@@ -1,17 +1,17 @@
-"use client";
-import MyCalendar from "@/components/Calendar/Calendar";
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+'use client'
+import MyCalendar from '@/components/Calendar/Calendar'
+import { Button } from '@/components/ui/button'
+import { Card } from '@/components/ui/card'
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import FormNewCulto from "./form-submit-new-culto";
+} from '@/components/ui/dialog'
+import { ToastContainer } from 'react-toastify'
+import 'react-toastify/dist/ReactToastify.css'
+import FormNewCulto from './form-submit-new-culto'
 
 export default function Cultos() {
   return (
@@ -47,5 +47,5 @@ export default function Cultos() {
         </Card>
       </div>
     </>
-  );
+  )
 }

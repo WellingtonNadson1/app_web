@@ -1,81 +1,81 @@
-"use client";
+'use client'
 
-import { errorCadastro, success } from "@/functions/functions";
-import { UploadSimple } from "@phosphor-icons/react";
-import { useSession } from "next-auth/react";
-import { useCallback, useState } from "react";
-import { useDropzone } from "react-dropzone";
-import { SubmitHandler, useForm } from "react-hook-form";
+import { errorCadastro, success } from '@/functions/functions'
+import { UploadSimple } from '@phosphor-icons/react'
+import { useSession } from 'next-auth/react'
+import { useCallback, useState } from 'react'
+import { useDropzone } from 'react-dropzone'
+import { SubmitHandler, useForm } from 'react-hook-form'
 
 interface ILicaoCelula {
-  title: string;
-  versiculoChave: string;
-  data_inicio: string;
-  data_termino: string;
+  title: string
+  versiculoChave: string
+  data_inicio: string
+  data_termino: string
 }
 
 function DropzoneUpload() {
   // Logica Submit Data to BackEnd
   // const hostname = 'app-ibb.onrender.com'
   // const URLSupervisoes = `https://${hostname}/supervisoes`
-  const hostname = "back-ibb.vercel.app";
-  const URLCelulas = `https://${hostname}/celulas`;
+  const hostname = 'back-ibb.vercel.app'
+  const URLCelulas = `https://${hostname}/celulas`
 
-  const { data: session } = useSession();
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
-  const [formSuccess, setFormSuccess] = useState(false);
-  const { register, handleSubmit, reset } = useForm<ILicaoCelula>();
+  const { data: session } = useSession()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const [formSuccess, setFormSuccess] = useState(false)
+  const { register, handleSubmit, reset } = useForm<ILicaoCelula>()
 
   const onSubmit: SubmitHandler<ILicaoCelula> = async (data) => {
     try {
-      console.log("Celula: ", data);
-      setIsLoadingSubmitForm(true);
+      console.log('Celula: ', data)
+      setIsLoadingSubmitForm(true)
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString);
-        return dataObj.toISOString();
-      };
+        const dataObj = new Date(dataString)
+        return dataObj.toISOString()
+      }
 
-      data.data_inicio = formatDatatoISO8601(data.data_inicio);
-      data.data_termino = formatDatatoISO8601(data.data_termino);
+      data.data_inicio = formatDatatoISO8601(data.data_inicio)
+      data.data_termino = formatDatatoISO8601(data.data_termino)
 
       const response = await fetch(URLCelulas, {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
           Authorization: `Bearer ${session?.user.token}`,
         },
         body: JSON.stringify(data),
-      });
+      })
 
       if (response.ok) {
-        setIsLoadingSubmitForm(false);
-        setFormSuccess(true);
-        success("Lição Cadastrada");
+        setIsLoadingSubmitForm(false)
+        setFormSuccess(true)
+        success('Lição Cadastrada')
       } else {
-        errorCadastro("Erro ao Cadastrar Lição");
+        errorCadastro('Erro ao Cadastrar Lição')
       }
     } catch (error) {
-      console.log(error);
-      errorCadastro("Erro ao Cadastrar Lição");
+      console.log(error)
+      errorCadastro('Erro ao Cadastrar Lição')
     }
-    reset();
-  };
+    reset()
+  }
 
   // Logica Drop
-  const [uploadFiles, setUploadFiles] = useState<File | null>(null);
+  const [uploadFiles, setUploadFiles] = useState<File | null>(null)
 
   const onDrop = useCallback((files: File[]) => {
-    setUploadFiles(files[0]);
-  }, []);
+    setUploadFiles(files[0])
+  }, [])
 
-  if (uploadFiles) return null;
+  if (uploadFiles) return null
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
-      accept: { "application/pdf": [".pdf"] },
+      accept: { 'application/pdf': ['.pdf'] },
       onDrop,
-    });
+    })
   return (
     <>
       <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
@@ -108,7 +108,7 @@ function DropzoneUpload() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("title")}
+                            {...register('title')}
                             type="text"
                             name="title"
                             id="title"
@@ -127,7 +127,7 @@ function DropzoneUpload() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("data_inicio")}
+                            {...register('data_inicio')}
                             type="datetime-local"
                             name="data_inicio"
                             id="data_inicio"
@@ -145,7 +145,7 @@ function DropzoneUpload() {
                         </label>
                         <div className="mt-3">
                           <input
-                            {...register("data_termino")}
+                            {...register('data_termino')}
                             type="datetime-local"
                             name="data_termino"
                             id="data_termino"
@@ -194,13 +194,13 @@ function DropzoneUpload() {
                             </label>
                           ) : (
                             <label
-                              className={`flex flex-col rounded-lg border-2 border-dashed w-full h-60 p-10 ${isDragActive ? "border-green-400" : "border-gray-400"} text-center`}
+                              className={`flex flex-col rounded-lg border-2 border-dashed w-full h-60 p-10 ${isDragActive ? 'border-green-400' : 'border-gray-400'} text-center`}
                             >
                               <div className="h-full w-full text-center flex flex-col items-center justify-center">
                                 <div className="flex items-center flex-auto max-h-48 mx-auto -mt-10">
                                   <UploadSimple
                                     size={32}
-                                    color={isDragActive ? "#75d587" : "#827d7d"}
+                                    color={isDragActive ? '#75d587' : '#827d7d'}
                                   />
                                 </div>
                                 {isDragActive ? (
@@ -212,15 +212,15 @@ function DropzoneUpload() {
                                   <p className="pointer-none text-gray-500 ">
                                     <span className="text-sm">
                                       Arraste e solte
-                                    </span>{" "}
-                                    o arquivo aqui <br /> ou{" "}
+                                    </span>{' '}
+                                    o arquivo aqui <br /> ou{' '}
                                     <a
                                       href=""
                                       id=""
                                       className="text-blue-600 hover:underline"
                                     >
                                       selecione um arquivo
-                                    </a>{" "}
+                                    </a>{' '}
                                     do seu dispositivo
                                   </p>
                                 )}
@@ -294,7 +294,7 @@ function DropzoneUpload() {
         </div>
       </div>
     </>
-  );
+  )
 }
 
-export default DropzoneUpload;
+export default DropzoneUpload

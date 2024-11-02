@@ -1,7 +1,7 @@
-"use client";
-import { TimePicker } from "@/components/timer-picker-input/time-picker";
-import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
+'use client'
+import { TimePicker } from '@/components/timer-picker-input/time-picker'
+import { Button } from '@/components/ui/button'
+import { Calendar } from '@/components/ui/calendar'
 import {
   Form,
   FormControl,
@@ -9,62 +9,62 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@/components/ui/form";
+} from '@/components/ui/form'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from "@/components/ui/popover";
+} from '@/components/ui/popover'
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuthToken from "@/lib/hooks/useAxiosAuthToken";
-import { cn } from "@/lib/utils";
-import { useData } from "@/providers/providers";
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Spinner } from "@phosphor-icons/react/dist/ssr";
-import dayjs from "dayjs";
-import ptBr from "dayjs/locale/pt-br";
-import localizedFormat from "dayjs/plugin/localizedFormat";
-import timezone from "dayjs/plugin/timezone";
-import utc from "dayjs/plugin/utc";
-import { useSession } from "next-auth/react";
-import Image from "next/image";
-import Link from "next/link";
-import { Fragment, useState } from "react";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { z } from "zod";
-import TabelRelatorio from "./FormRelatorio";
+} from '@/components/ui/select'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { cn } from '@/lib/utils'
+import { useData } from '@/providers/providers'
+import { CalendarIcon } from '@heroicons/react/24/outline'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
+import dayjs from 'dayjs'
+import ptBr from 'dayjs/locale/pt-br'
+import localizedFormat from 'dayjs/plugin/localizedFormat'
+import timezone from 'dayjs/plugin/timezone'
+import utc from 'dayjs/plugin/utc'
+import { useSession } from 'next-auth/react'
+import Image from 'next/image'
+import Link from 'next/link'
+import { Fragment, useState } from 'react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import { z } from 'zod'
+import TabelRelatorio from './FormRelatorio'
 import {
   FormRelatorioDataSchema,
   FormRelatorioSchema,
   TSupervisionData,
-} from "./schema";
-dayjs.extend(localizedFormat);
-dayjs.extend(utc);
-dayjs.extend(timezone);
-dayjs.locale(ptBr);
-dayjs.tz.setDefault("America/Sao_Paulo");
+} from './schema'
+dayjs.extend(localizedFormat)
+dayjs.extend(utc)
+dayjs.extend(timezone)
+dayjs.locale(ptBr)
+dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function RelatoriosPresencaCelula() {
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string);
-  const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`;
-  const [RelatorioData, setRelatorioData] = useState<TSupervisionData>();
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`
+  const [RelatorioData, setRelatorioData] = useState<TSupervisionData>()
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
     resolver: zodResolver(FormRelatorioDataSchema),
-  });
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  })
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
+  const { data: dataAllCtx } = useData()
+  const supervisoes = dataAllCtx?.combinedData[0]
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
     startDate,
@@ -72,19 +72,19 @@ export default function RelatoriosPresencaCelula() {
     superVisionId,
   }) => {
     try {
-      setIsLoadingSubmitForm(true);
+      setIsLoadingSubmitForm(true)
       const response = await axiosAuth.post(URLPresencaReuniaoCelula, {
         superVisionId,
         startDate,
         endDate,
-      });
-      const result = await response.data;
-      setRelatorioData(result);
-      setIsLoadingSubmitForm(false);
+      })
+      const result = await response.data
+      setRelatorioData(result)
+      setIsLoadingSubmitForm(false)
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   return (
     <Fragment>
@@ -93,7 +93,7 @@ export default function RelatoriosPresencaCelula() {
           <Fragment>
             <div className="p-3">
               <div className="flex items-center justify-start gap-4">
-                <Link href={"/dashboard"}>
+                <Link href={'/dashboard'}>
                   <Image
                     className="cursor-pointer"
                     src="/images/logo-ibb-1.svg"
@@ -126,10 +126,10 @@ export default function RelatoriosPresencaCelula() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -137,8 +137,8 @@ export default function RelatoriosPresencaCelula() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -182,10 +182,10 @@ export default function RelatoriosPresencaCelula() {
                               <PopoverTrigger asChild>
                                 <FormControl>
                                   <Button
-                                    variant={"outline"}
+                                    variant={'outline'}
                                     className={cn(
-                                      " pl-3 text-left font-normal",
-                                      !field.value && "text-muted-foreground",
+                                      ' pl-3 text-left font-normal',
+                                      !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
@@ -193,8 +193,8 @@ export default function RelatoriosPresencaCelula() {
                                         // .subtract(3, "hours")
                                         .utc()
                                         .local()
-                                        .locale("pt-br")
-                                        .format("DD-MM-YYYY HH:mm:ss")
+                                        .locale('pt-br')
+                                        .format('DD-MM-YYYY HH:mm:ss')
                                     ) : (
                                       <span>Selecione uma data</span>
                                     )}
@@ -212,7 +212,7 @@ export default function RelatoriosPresencaCelula() {
                                   onSelect={field.onChange}
                                   disabled={(date) =>
                                     date > new Date() ||
-                                    date < new Date("1900-01-01")
+                                    date < new Date('1900-01-01')
                                   }
                                   initialFocus
                                 />
@@ -305,5 +305,5 @@ export default function RelatoriosPresencaCelula() {
           ))}
       </div>
     </Fragment>
-  );
+  )
 }

@@ -1,5 +1,5 @@
-"use client";
-import { useSession } from "next-auth/react";
+'use client'
+import { useSession } from 'next-auth/react'
 import {
   Dialog,
   DialogContent,
@@ -7,55 +7,55 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "../ui/dialog";
-import { DropdownMenuItem } from "../ui/dropdown-menu";
-import { Spinner, Trash } from "@phosphor-icons/react/dist/ssr";
-import { Button } from "../ui/button";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { BASE_URL } from "@/functions/functions";
-import useAxiosAuth from "@/lib/hooks/useAxiosAuth";
-import { Toaster } from "../ui/toaster";
-import { toast } from "../ui/use-toast";
-import { useState } from "react";
+} from '../ui/dialog'
+import { DropdownMenuItem } from '../ui/dropdown-menu'
+import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
+import { Button } from '../ui/button'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { BASE_URL } from '@/functions/functions'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { Toaster } from '../ui/toaster'
+import { toast } from '../ui/use-toast'
+import { useState } from 'react'
 
 function DeleteCulto({
   culto,
   cultoName,
 }: {
-  culto: string;
-  cultoName: string;
+  culto: string
+  cultoName: string
 }) {
-  const queryClient = useQueryClient();
+  const queryClient = useQueryClient()
 
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user.token as string);
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user.token as string)
 
   const deleteCultoFunction = async (cultoId: string) => {
-    const URLCultosInd = `${BASE_URL}/cultosindividuais/${cultoId}`;
+    const URLCultosInd = `${BASE_URL}/cultosindividuais/${cultoId}`
     try {
-      const response = await axiosAuth.delete(URLCultosInd);
+      const response = await axiosAuth.delete(URLCultosInd)
       toast({
-        title: "Sucesso!!!",
-        description: "Culto DELETADO com Sucesso!!! 🥳",
-      });
-      return response.data;
+        title: 'Sucesso!!!',
+        description: 'Culto DELETADO com Sucesso!!! 🥳',
+      })
+      return response.data
     } catch (error) {
-      console.error(error);
+      console.error(error)
     }
-  };
+  }
 
   const { mutateAsync: deleteCultoFn, isPending } = useMutation({
     mutationFn: deleteCultoFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ["cultosMarcados"] });
+      queryClient.invalidateQueries({ queryKey: ['cultosMarcados'] })
     },
-  });
+  })
 
   const handleDelete = async (cultoId: string) => {
-    await deleteCultoFn(cultoId);
-  };
+    await deleteCultoFn(cultoId)
+  }
 
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <>
@@ -81,11 +81,11 @@ function DeleteCulto({
             {cultoName}
           </div>
           <div className="flex flex-col-reverse gap-2 sm:gap-0 sm:flex-row sm:justify-end sm:space-x-2">
-            <Button variant={"outline"} onClick={() => setOpen(false)}>
+            <Button variant={'outline'} onClick={() => setOpen(false)}>
               Cancelar
             </Button>
             <Button
-              variant={"destructive"}
+              variant={'destructive'}
               onClick={() => handleDelete(culto)}
               type="submit"
             >
@@ -95,14 +95,14 @@ function DeleteCulto({
                   Deletando...
                 </div>
               ) : (
-                "Deletar"
+                'Deletar'
               )}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
 
-export default DeleteCulto;
+export default DeleteCulto

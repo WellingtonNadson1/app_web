@@ -1,5 +1,5 @@
-import { FilePdf } from "@phosphor-icons/react";
-import React from "react";
+import { FilePdf } from '@phosphor-icons/react'
+import React from 'react'
 
 export default function LicoesLoading() {
   return (
@@ -48,5 +48,5 @@ export default function LicoesLoading() {
         </div>
       </div>
     </div>
-  );
+  )
 }

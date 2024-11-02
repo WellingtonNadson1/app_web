@@ -1,4 +1,4 @@
-"use client"
+'use client'
 import {
   Sidebar,
   SidebarContent,
@@ -13,30 +13,30 @@ import {
   SidebarMenuItem,
   SidebarSeparator,
   SidebarTrigger,
-  useSidebar
-} from "@/components/ui/sidebar";
-import { cn } from "@/lib/utils";
-import { HandHeart, House, Plus, SignOut, Users } from "@phosphor-icons/react";
-import { usePathname, useRouter } from "next/navigation";
-import { useState } from "react";
-import ThemeImage from "./theme-image";
-import { Button } from "./ui/button";
+  useSidebar,
+} from '@/components/ui/sidebar'
+import { cn } from '@/lib/utils'
+import { HandHeart, House, Plus, SignOut, Users } from '@phosphor-icons/react'
+import { usePathname, useRouter } from 'next/navigation'
+import { useState } from 'react'
+import ThemeImage from './theme-image'
+import { Button } from './ui/button'
 
 // Menu items.
 const items = [
   {
-    title: "Home",
-    url: "#",
+    title: 'Home',
+    url: '#',
     icon: House,
   },
   {
-    title: "Célula",
-    url: "#",
+    title: 'Célula',
+    url: '#',
     icon: Users,
   },
   {
-    title: "Discipulado",
-    url: "#",
+    title: 'Discipulado',
+    url: '#',
     icon: HandHeart,
   },
 ]
@@ -44,7 +44,7 @@ const items = [
 export function AppSidebar() {
   const [isCollapsed, setIsCollapsed] = useState(false)
   const { open, isMobile } = useSidebar()
-  const route = useRouter();
+  const route = useRouter()
   const pathAtual = usePathname()
   return (
     <div className="flex">
@@ -52,10 +52,20 @@ export function AppSidebar() {
         data-collapsed={isCollapsed}
         variant="sidebar"
         collapsible="icon"
-        className={cn("transition-all duration-300", isCollapsed && isMobile ? "w-16" : "w-56")}
+        className={cn(
+          'transition-all duration-300',
+          isCollapsed && isMobile ? 'w-16' : 'w-56',
+        )}
       >
         <SidebarHeader>
-          <div className={cn("p-2", !open ? 'flex items-center justify-center' : 'flex items-center justify-center')}>
+          <div
+            className={cn(
+              'p-2',
+              !open
+                ? 'flex items-center justify-center'
+                : 'flex items-center justify-center',
+            )}
+          >
             <ThemeImage
               alt="Logo IBB"
               srcLight="images/logo-ibb-1.svg"
@@ -77,7 +87,10 @@ export function AppSidebar() {
               <SidebarMenu>
                 {items.map((item) => (
                   <SidebarMenuItem key={item.title}>
-                    <SidebarMenuButton asChild className="transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:rounded-md hover:fill-current hover:text-gray-200 focus:outline-none">
+                    <SidebarMenuButton
+                      asChild
+                      className="transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:rounded-md hover:fill-current hover:text-gray-200 focus:outline-none"
+                    >
                       <a href={item.url} className="text-gray-500 p-2">
                         <item.icon className={cn('h-6 w-6')} />
                         {!isCollapsed && (
@@ -106,9 +119,7 @@ export function AppSidebar() {
               type="button"
             >
               <SignOut size={26} />
-              {!isCollapsed && (
-                <span className="ml-2">Sair</span>
-              )}
+              {!isCollapsed && <span className="ml-2">Sair</span>}
               {isCollapsed && (
                 <span className="absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100">
                   Sair
@@ -118,7 +129,10 @@ export function AppSidebar() {
           </SidebarMenu>
         </SidebarFooter>
       </Sidebar>
-      <SidebarTrigger onClick={() => setIsCollapsed(!isCollapsed)} className={cn("z-50 mt-6 p-2", isCollapsed ? "ml-2" : "ml-4")} />
+      <SidebarTrigger
+        onClick={() => setIsCollapsed(!isCollapsed)}
+        className={cn('z-50 mt-6 p-2', isCollapsed ? 'ml-2' : 'ml-4')}
+      />
     </div>
   )
 }

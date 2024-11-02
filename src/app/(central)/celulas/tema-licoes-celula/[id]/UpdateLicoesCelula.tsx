@@ -1,27 +1,38 @@
-"use client";
-import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { DropdownMenu, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
-import { PencilSimple } from "@phosphor-icons/react/dist/ssr";
-import { useState } from "react";
-import "react-toastify/dist/ReactToastify.css";
-import { LicaoUpdateForm } from "./_forms/licao-update-form";
+'use client'
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from '@/components/ui/dialog'
+import {
+  DropdownMenu,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
+import { PencilSimple } from '@phosphor-icons/react/dist/ssr'
+import { useState } from 'react'
+import 'react-toastify/dist/ReactToastify.css'
+import { LicaoUpdateForm } from './_forms/licao-update-form'
 
 type dataLicaoType = {
-  id: string;
-  titulo: string;
-  versiculo_chave: string;
-  licao_lancando_redes: boolean,
-  data_inicio: string;
-  data_termino: string;
-  link_objeto_aws: string;
+  id: string
+  titulo: string
+  versiculo_chave: string
+  licao_lancando_redes: boolean
+  data_inicio: string
+  data_termino: string
+  link_objeto_aws: string
 }
 
 export default function UpdateLicoesCelula({
   temaData,
 }: {
-  temaData: dataLicaoType;
+  temaData: dataLicaoType
 }) {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <>
@@ -59,5 +70,5 @@ export default function UpdateLicoesCelula({
         </DialogContent>
       </Dialog>
     </>
-  );
+  )
 }
