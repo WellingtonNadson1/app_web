@@ -91,7 +91,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
       .toISOString()
 
     const data_ocorreu = new Date(data_discipulado2)
-    var data = { ...dataForm, data_ocorreu }
+    const data = { ...dataForm, data_ocorreu }
 
     try {
       const response: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
