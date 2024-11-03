@@ -32,11 +32,10 @@ export default function MySidebar() {
   }
 
   return (
-    <div className="shadow p-1">
+    <div className="p-1">
       <aside
-        className={`flex flex-col rounded-lg border border-sidebar-border border-r border-l relative h-full ${
-          open ? 'w-44' : 'w-[4.4rem]'
-        } bg-white p-2 px-3 py-5 duration-500 mt-2`}
+        className={`flex flex-col rounded-lg border border-sidebar-border border-r border-l relative h-full shadow-md ${open ? 'w-44' : 'w-[4.4rem]'
+          } bg-white p-2 px-3 py-5 duration-500 mt-2`}
       >
         <div
           className={cn(
@@ -56,15 +55,13 @@ export default function MySidebar() {
           />
         </div>
         <div
-          className={`absolute top-[3.7rem] z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${
-            open ? 'ml-[9.3rem]' : 'ml-[2.7rem] rotate-45 top-[2.4rem]'
-          } `}
+          className={`absolute top-[4.7rem] z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[9.3rem]' : 'ml-[2.7rem] rotate-45 top-[2.4rem]'
+            } `}
           onClick={() => setOpen(!open)}
         >
           <X
-            className={`${
-              !open ? 'mx-auto' : 'justify-end'
-            } transition-all duration-200`}
+            className={`${!open ? 'mx-auto' : 'justify-end'
+              } transition-all duration-200`}
             size={14}
           />
         </div>
@@ -92,24 +89,22 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${
-                        !open && 'translate-x-28 overflow-hidden opacity-0'
-                      }`}
+                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                        }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${
-                        open && 'hidden'
-                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${open && 'hidden'
+                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
                   </li>
                 ))
               ) : user_roles?.every(
-                  (role) => role.rolenew.name === 'USERLIDER',
-                ) &&
+                (role) => role.rolenew.name === 'USERLIDER',
+              ) &&
                 !user_roles.every(
                   (role) => role.rolenew.name === 'USERSUPERVISOR',
                 ) ? (
@@ -130,24 +125,22 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${
-                        !open && 'translate-x-28 overflow-hidden opacity-0'
-                      }`}
+                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                        }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${
-                        open && 'hidden'
-                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${open && 'hidden'
+                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
                   </li>
                 ))
               ) : roles?.every(
-                  (role) => role.rolenew.name === 'USERSUPERVISOR',
-                ) ? (
+                (role) => role.rolenew.name === 'USERSUPERVISOR',
+              ) ? (
                 sidebarSupervisor.map((item) => (
                   <li
                     key={item.name}
@@ -165,25 +158,23 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${
-                        !open && 'translate-x-28 overflow-hidden opacity-0'
-                      }`}
+                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                        }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${
-                        open && 'hidden'
-                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${open && 'hidden'
+                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
                   </li>
                 ))
               ) : user_roles?.every((role) => [
-                  'USERSUPERVISOR',
-                  'USERLIDER',
-                ]) ? (
+                'USERSUPERVISOR',
+                'USERLIDER',
+              ]) ? (
                 sidebarSupervisorLider.map((item) => (
                   <li
                     key={item.name}
@@ -201,16 +192,14 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${
-                        !open && 'translate-x-28 overflow-hidden opacity-0'
-                      }`}
+                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                        }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${
-                        open && 'hidden'
-                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${open && 'hidden'
+                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
@@ -241,16 +230,14 @@ export default function MySidebar() {
                   size={`${open ? 24 : 26}`}
                 />
                 <span
-                  className={`whitespace-pre duration-150 ${
-                    !open && 'translate-x-28 overflow-hidden opacity-0'
-                  }`}
+                  className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
+                    }`}
                 >
                   Sair
                 </span>
                 <span
-                  className={`${
-                    open && 'hidden'
-                  } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                  className={`${open && 'hidden'
+                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                 >
                   Sair
                 </span>
