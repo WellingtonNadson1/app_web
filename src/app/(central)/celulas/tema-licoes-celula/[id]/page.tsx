@@ -7,11 +7,7 @@ import { useSearchParams } from 'next/navigation'
 import { columnsLicoes } from './licoes-celula/table-licoes-celula/columns-licoes'
 import { DataTableLicoesCelulas } from './licoes-celula/table-licoes-celula/data-table-licoes-celulas'
 
-export default function Licao({
-  idTemaLicaoCelula,
-}: {
-  idTemaLicaoCelula: string
-}) {
+export default function Licao() {
   const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`
   const URLTemaMonth = `/api/licoes-celula/tema-of-month`
 
