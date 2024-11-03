@@ -466,8 +466,8 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                             key={member.id}
                           >
                             {member.first_name ===
-                              discipuladoForCell[cellName][0].celula.lider
-                                .first_name ? (
+                            discipuladoForCell[cellName][0].celula.lider
+                              .first_name ? (
                               <div className="flex flex-col justify-center w-40 h-24 px-4 py-4 font-semibold text-gray-500 capitalize">
                                 {member.first_name}
                               </div>

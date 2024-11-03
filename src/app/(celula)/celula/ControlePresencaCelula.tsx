@@ -181,16 +181,17 @@ export default function ControlePresencaCelula({
                               </div>
                               <div className="hidden w-full text-center sm:block">
                                 <span
-                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === 'Ativo'
-                                    ? 'border border-green-200 bg-green-100 ring-green-500'
-                                    : user.situacao_no_reino?.nome ===
-                                      'Normal'
-                                      ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
+                                    user.situacao_no_reino?.nome === 'Ativo'
+                                      ? 'border border-green-200 bg-green-100 ring-green-500'
                                       : user.situacao_no_reino?.nome ===
-                                        'Frio'
-                                        ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                                        : 'border border-red-200 bg-red-100 ring-red-500'
-                                    }`}
+                                          'Normal'
+                                        ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                                        : user.situacao_no_reino?.nome ===
+                                            'Frio'
+                                          ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                          : 'border border-red-200 bg-red-100 ring-red-500'
+                                  }`}
                                 >
                                   {user.situacao_no_reino?.nome}
                                 </span>

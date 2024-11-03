@@ -153,7 +153,7 @@ export function DataTableUsersCelula<TData, TValue>({
                 <Badge
                   className={cn(
                     corBadge[supervisaoNome] ||
-                    'bg-gray-100 text-gray-700 hover:bg-gray-200',
+                      'bg-gray-100 text-gray-700 hover:bg-gray-200',
                   )}
                 >
                   {supervisaoNome}
@@ -221,9 +221,9 @@ export function DataTableUsersCelula<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
                   )
                 })}

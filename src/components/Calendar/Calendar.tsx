@@ -198,12 +198,14 @@ export default function MyCalendar() {
                                 key={index}
                               >
                                 <span
-                                  className={`animate-ping absolute inline-flex h-full w-full rounded-full ${index === 0 ? 'bg-sky-400' : 'bg-orange-400'
-                                    } opacity-75`}
+                                  className={`animate-ping absolute inline-flex h-full w-full rounded-full ${
+                                    index === 0 ? 'bg-sky-400' : 'bg-orange-400'
+                                  } opacity-75`}
                                 ></span>
                                 <span
-                                  className={`relative inline-flex rounded-full h-2 w-2 ${index === 0 ? 'bg-sky-500' : 'bg-orange-500'
-                                    }`}
+                                  className={`relative inline-flex rounded-full h-2 w-2 ${
+                                    index === 0 ? 'bg-sky-500' : 'bg-orange-500'
+                                  }`}
                                 ></span>
                               </span>
                             ))}
@@ -221,8 +223,9 @@ export default function MyCalendar() {
                             .map((meeting, index) => (
                               <div className="w-1 h-1 mt-1" key={index}>
                                 <div
-                                  className={`w-1 h-1 rounded-full ${index === 0 ? 'bg-sky-500' : 'bg-orange-500'
-                                    }`}
+                                  className={`w-1 h-1 rounded-full ${
+                                    index === 0 ? 'bg-sky-500' : 'bg-orange-500'
+                                  }`}
                                 ></div>
                               </div>
                             ))}

@@ -458,7 +458,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* Coluna para Discípulos */}
                       <td>
                         {discipuladoForCell[cellName][0].discipulos.length !==
-                          0 ? (
+                        0 ? (
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulo) => (
                               <tr
@@ -489,7 +489,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                         key={cellName + cellIndex}
                       >
                         {discipuladoForCell[cellName][0].discipulos.length !==
-                          0 ? (
+                        0 ? (
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexMember) => {
                               const totalDiscipulado =
@@ -548,7 +548,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* // 1º Discipulado */}
                       <td className="mx-4 text-center" key={cellName}>
                         {discipuladoForCell[cellName][0].discipulos.length !==
-                          0 ? (
+                        0 ? (
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
@@ -605,7 +605,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       {/* // 2º Discipulado */}
                       <td className="mx-4 text-center " key={cellIndex}>
                         {discipuladoForCell[cellName][0].discipulos.length !==
-                          0 ? (
+                        0 ? (
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =

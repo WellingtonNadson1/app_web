@@ -1,4 +1,3 @@
-
 export default function Scheleton() {
   return (
     <div className="relative w-full px-2 py-2 mx-auto bg-gray-100 shadow-md rounded-xl">

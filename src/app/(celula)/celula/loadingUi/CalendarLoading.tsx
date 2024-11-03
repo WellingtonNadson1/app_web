@@ -1,4 +1,3 @@
-
 export default function CalendarLoading() {
   return (
     <div className="pt-4">

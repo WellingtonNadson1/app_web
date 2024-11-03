@@ -187,10 +187,11 @@ export default function ControlePresenceSupervisorFirst({
         toast({
           variant: 'destructive',
           title: 'Ocorreu um Erro',
-          description: `${axiosError.response?.status === 409
+          description: `${
+            axiosError.response?.status === 409
               ? 'Presença de Culto já Registrada para hoje!'
               : axiosError.message
-            }`,
+          }`,
         })
       } else {
         toast({
@@ -296,7 +297,7 @@ export default function ControlePresenceSupervisorFirst({
                                 {/* Status */}
                                 <div className="sm:grid col-span-1 hidden w-full text-center">
                                   {session?.user.situacaoNoReinoId ===
-                                    'f4c1c9ee-5f5a-4681-af13-99c422c240e0' ? (
+                                  'f4c1c9ee-5f5a-4681-af13-99c422c240e0' ? (
                                     <Badge
                                       className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-green-200 bg-green-100 ring-green-500'} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                     >
@@ -323,7 +324,7 @@ export default function ControlePresenceSupervisorFirst({
                                 <div className="hidden w-full text-center sm:grid col-span-1 mx-2">
                                   <Badge className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 hover:border-gray-300 hover:bg-gray-200 hover:ring-gray-600 sm:block">
                                     {session?.user.cargoDeLiderancaId ===
-                                      'c394f146-c054-4d77-97a8-d24ee4d9013c' ? (
+                                    'c394f146-c054-4d77-97a8-d24ee4d9013c' ? (
                                       <span
                                         className="text-foreground"
                                         key={'ativo'}

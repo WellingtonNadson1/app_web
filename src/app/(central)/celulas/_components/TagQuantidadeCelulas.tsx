@@ -18,7 +18,7 @@ export const TagQuantidadeCelulas: React.FC<TagQuantidadeCelulasProps> = ({
     <Badge
       className={cn(
         cor &&
-        `items-center justify-center px-2 py-1 text-xs font-medium text-center bg-yellow-100 text-yellow-600 ring-yellow-500 rounded-md ring-1 ring-inset md:block`,
+          `items-center justify-center px-2 py-1 text-xs font-medium text-center bg-yellow-100 text-yellow-600 ring-yellow-500 rounded-md ring-1 ring-inset md:block`,
         `bg-${cor}-100 text-${cor}-700 ring-${cor}-500 hover:bg-${cor}-200`,
       )}
     >

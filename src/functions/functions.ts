@@ -5,7 +5,7 @@ import { NextAuthRequest } from 'next-auth/lib'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 
-export interface FetchError extends AxiosError { }
+export interface FetchError extends AxiosError {}
 
 // const hostname = 'backibb-production.up.railway.app'
 // const hostname = 'app-ibb.onrender.com'

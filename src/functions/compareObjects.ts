@@ -36,9 +36,9 @@ export function deepEqual(
     getFolderNameTema.tema === tema &&
     getFolderNameTema.versiculo_chave === versiculo_chave &&
     new Date(getFolderNameTema.data_inicio).getTime() ===
-    new Date(data_inicio).getTime() &&
+      new Date(data_inicio).getTime() &&
     new Date(getFolderNameTema.data_termino).getTime() ===
-    new Date(data_termino).getTime()
+      new Date(data_termino).getTime()
   )
 }
 
@@ -59,8 +59,8 @@ export function deepEqualLesson(
     getFolderNameTema.TemaLicaoCelula.folderName === folderName &&
     getFolderNameTema.versiculo_chave === versiculo_chave &&
     new Date(getFolderNameTema.data_inicio).getTime() ===
-    new Date(data_inicio).getTime() &&
+      new Date(data_inicio).getTime() &&
     new Date(getFolderNameTema.data_termino).getTime() ===
-    new Date(data_termino).getTime()
+      new Date(data_termino).getTime()
   )
 }

@@ -225,7 +225,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                         </FormItem>
                       )}
                     />
-                    { }
+                    {}
 
                     <FormField
                       disabled
@@ -351,7 +351,7 @@ export default function FormSecondDiscipuladoSupervisor(membro: PropsForm) {
                       )}
                     />
 
-                    { }
+                    {}
 
                     <FormField
                       control={form.control}

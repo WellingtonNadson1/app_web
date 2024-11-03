@@ -157,7 +157,7 @@ export default function FormSecondDiscipulado({ membro }: PropsForm) {
                     value={discipulador_id}
                     {...register(`discipulador_id`)}
                   />
-                  { }
+                  {}
                   <Input
                     type="date"
                     disabled
