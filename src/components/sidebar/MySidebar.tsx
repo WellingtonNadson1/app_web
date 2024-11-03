@@ -55,7 +55,7 @@ export default function MySidebar() {
           />
         </div>
         <div
-          className={`absolute top-[4.7rem] z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[9.3rem]' : 'ml-[2.7rem] rotate-45 top-[2.4rem]'
+          className={`absolute z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[9.3rem] mt-[2.5rem]' : 'ml-[2.7rem] rotate-45 mt-[1.2rem]'
             } `}
           onClick={() => setOpen(!open)}
         >
