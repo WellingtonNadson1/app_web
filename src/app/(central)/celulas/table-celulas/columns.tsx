@@ -127,7 +127,7 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
           <Badge
             className={cn(
               corBadge[supervisaoNome] ||
-                'bg-gray-100 text-gray-700 hover:bg-gray-200',
+              'bg-gray-100 text-gray-700 hover:bg-gray-200',
             )}
           >
             {supervisaoNome}

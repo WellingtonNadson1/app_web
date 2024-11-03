@@ -310,7 +310,7 @@ export default function AddNewCelula() {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                              'text-muted-foreground',
+                                            'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
@@ -373,7 +373,7 @@ export default function AddNewCelula() {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                              'text-muted-foreground',
+                                            'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (

@@ -6,7 +6,6 @@ import { UserFocus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
-import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
@@ -187,21 +186,20 @@ export default function ControlePresencaSupervisor({
                             </div>
                             <div className="hidden sm:block">
                               <span
-                                className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
-                                  session?.user.situacaoNoReinoId ===
-                                  '0892b1ed-3e99-4e13-acf6-99f7a0e99358'
+                                className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${session?.user.situacaoNoReinoId ===
+                                    '0892b1ed-3e99-4e13-acf6-99f7a0e99358'
                                     ? 'border border-green-200 bg-green-100 ring-green-500'
                                     : session?.user.situacaoNoReinoId ===
-                                        'f4c1c9ee-5f5a-4681-af13-99c422c240e0'
+                                      'f4c1c9ee-5f5a-4681-af13-99c422c240e0'
                                       ? 'border border-blue-200 bg-blue-100 ring-blue-500'
                                       : session?.user.situacaoNoReinoId ===
-                                          'fab25926-b19e-4a2b-bfad-cf33fa0ace86'
+                                        'fab25926-b19e-4a2b-bfad-cf33fa0ace86'
                                         ? 'border border-orange-200 bg-orange-100 ring-orange-500'
                                         : 'border border-red-200 bg-red-100 ring-red-500'
-                                }`}
+                                  }`}
                               >
                                 {session?.user.situacaoNoReinoId ===
-                                '0892b1ed-3e99-4e13-acf6-99f7a0e99358' ? (
+                                  '0892b1ed-3e99-4e13-acf6-99f7a0e99358' ? (
                                   <span key={'ativo'}>Ativo</span>
                                 ) : session?.user.situacaoNoReinoId ===
                                   'f4c1c9ee-5f5a-4681-af13-99c422c240e0' ? (
@@ -217,7 +215,7 @@ export default function ControlePresencaSupervisor({
                             <div className="hidden sm:block">
                               <span className="hidden w-full px-2 py-1 text-center border border-gray-200 rounded-md bg-gray-50 ring-gray-500 sm:block">
                                 {session?.user.cargoDeLiderancaId ===
-                                'c394f146-c054-4d77-97a8-d24ee4d9013c' ? (
+                                  'c394f146-c054-4d77-97a8-d24ee4d9013c' ? (
                                   <span key={'ativo'}>Pastor</span>
                                 ) : session?.user.cargoDeLiderancaId ===
                                   '1777ff88-7b8a-4ac9-9926-9f6ac13872c6' ? (

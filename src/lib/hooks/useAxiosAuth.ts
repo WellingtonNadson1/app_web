@@ -1,9 +1,9 @@
 'use client'
+import { AxiosInstance } from 'axios'
 import { useSession } from 'next-auth/react'
 import { useEffect } from 'react'
 import { axiosAuth } from '../axios'
 import { useRefreshToken } from './useRefreshToken'
-import { AxiosInstance } from 'axios'
 
 const useAxiosAuth = (token: string): AxiosInstance => {
   const { data: session } = useSession()

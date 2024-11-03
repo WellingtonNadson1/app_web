@@ -216,11 +216,11 @@ function UpdateMember({ member }: { member: TUser }) {
     queryUpDate === ''
       ? queryMembers
       : queryMembers?.filter((person) =>
-          person.first_name
-            .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
-        )
+        person.first_name
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
+      )
 
   const handleSupervisaoSelecionada = (supervisao: string) => {
     setSupervisaoSelecionadaUpDate(supervisao)
@@ -346,7 +346,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                              'text-muted-foreground',
+                                            'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
@@ -583,7 +583,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                              'text-muted-foreground',
+                                            'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
@@ -680,14 +680,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                             className={cn(
                                               'w-full justify-between',
                                               !field.value &&
-                                                'text-muted-foreground',
+                                              'text-muted-foreground',
                                             )}
                                           >
                                             {field.value
                                               ? filteredPeople?.find(
-                                                  (membro) =>
-                                                    membro.id === field.value,
-                                                )?.first_name
+                                                (membro) =>
+                                                  membro.id === field.value,
+                                              )?.first_name
                                               : 'Selecione discipulador'}
                                             <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                                           </Button>
@@ -848,54 +848,54 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormLabel>
                                   </div>
                                   {//@ts-ignore
-                                  escolas?.map((escola) => (
-                                    <FormField
-                                      key={escola.id}
-                                      control={form.control}
-                                      name="escolas"
-                                      render={({ field }) => {
-                                        const isChecked = field.value?.some(
-                                          (value) => value.id === escola.id,
-                                        )
-                                        return (
-                                          <div
-                                            key={escola.id + 1}
-                                            className="flex"
-                                          >
-                                            <FormItem
-                                              key={escola.id}
-                                              className="flex flex-row items-start space-x-3 space-y-0"
+                                    escolas?.map((escola) => (
+                                      <FormField
+                                        key={escola.id}
+                                        control={form.control}
+                                        name="escolas"
+                                        render={({ field }) => {
+                                          const isChecked = field.value?.some(
+                                            (value) => value.id === escola.id,
+                                          )
+                                          return (
+                                            <div
+                                              key={escola.id + 1}
+                                              className="flex"
                                             >
-                                              <FormControl>
-                                                <Checkbox
-                                                  checked={isChecked}
-                                                  onCheckedChange={(
-                                                    checked,
-                                                  ) => {
-                                                    return checked
-                                                      ? field.onChange([
+                                              <FormItem
+                                                key={escola.id}
+                                                className="flex flex-row items-start space-x-3 space-y-0"
+                                              >
+                                                <FormControl>
+                                                  <Checkbox
+                                                    checked={isChecked}
+                                                    onCheckedChange={(
+                                                      checked,
+                                                    ) => {
+                                                      return checked
+                                                        ? field.onChange([
                                                           ...field.value,
                                                           escola,
                                                         ])
-                                                      : field.onChange(
+                                                        : field.onChange(
                                                           field.value?.filter(
                                                             (value) =>
                                                               value.id !==
                                                               escola.id,
                                                           ),
                                                         )
-                                                  }}
-                                                />
-                                              </FormControl>
-                                              <FormLabel className="text-sm font-normal">
-                                                {escola.nome}
-                                              </FormLabel>
-                                            </FormItem>
-                                          </div>
-                                        )
-                                      }}
-                                    />
-                                  ))}
+                                                    }}
+                                                  />
+                                                </FormControl>
+                                                <FormLabel className="text-sm font-normal">
+                                                  {escola.nome}
+                                                </FormLabel>
+                                              </FormItem>
+                                            </div>
+                                          )
+                                        }}
+                                      />
+                                    ))}
                                   <FormMessage />
                                 </FormItem>
                               )}
@@ -963,14 +963,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                      situacoesNoReino?.map((situacao) => (
-                                        <SelectItem
-                                          key={situacao.id}
-                                          value={situacao.id}
-                                        >
-                                          {situacao.nome}
-                                        </SelectItem>
-                                      ))}
+                                        situacoesNoReino?.map((situacao) => (
+                                          <SelectItem
+                                            key={situacao.id}
+                                            value={situacao.id}
+                                          >
+                                            {situacao.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -998,14 +998,14 @@ function UpdateMember({ member }: { member: TUser }) {
                                     </FormControl>
                                     <SelectContent>
                                       {//@ts-ignore
-                                      cargoLideranca?.map((cargo) => (
-                                        <SelectItem
-                                          key={cargo.id}
-                                          value={cargo.id}
-                                        >
-                                          {cargo.nome}
-                                        </SelectItem>
-                                      ))}
+                                        cargoLideranca?.map((cargo) => (
+                                          <SelectItem
+                                            key={cargo.id}
+                                            value={cargo.id}
+                                          >
+                                            {cargo.nome}
+                                          </SelectItem>
+                                        ))}
                                     </SelectContent>
                                   </Select>
                                   <FormMessage />
@@ -1088,7 +1088,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                              'text-muted-foreground',
+                                            'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (

@@ -109,7 +109,7 @@ export default function LicoesCelula() {
                   className={cn(
                     'rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80',
                     stat.licao_lancando_redes &&
-                      'bg-blue-50 hover:bg-blue-100/75',
+                    'bg-blue-50 hover:bg-blue-100/75',
                   )}
                   rel="noreferrer"
                 >

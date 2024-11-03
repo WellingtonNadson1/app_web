@@ -6,7 +6,7 @@ import {
   SupervisaoData,
 } from '@/app/(central)/novo-membro/schema'
 import { create } from 'zustand'
-import { persist, createJSONStorage } from 'zustand/middleware'
+import { createJSONStorage, persist } from 'zustand/middleware'
 
 type ActionsProps = {
   setSupervisao: (supervisao: SupervisaoData) => void

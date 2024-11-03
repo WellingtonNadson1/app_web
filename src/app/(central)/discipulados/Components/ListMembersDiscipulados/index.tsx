@@ -1,9 +1,9 @@
 'use client'
+import UpdateDisicipulador from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
+import Pagination from '@/components/Pagination'
 import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { ListMembersCelulaProps } from './schema'
-import UpdateDisicipulador from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador'
-import Pagination from '@/components/Pagination'
 
 export default function ListMembersDiscipulados({
   data,
@@ -68,15 +68,14 @@ export default function ListMembersDiscipulados({
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
-                            user.situacao_no_reino?.nome === 'Ativo'
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
                               ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
                                 ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
                                 : user.situacao_no_reino?.nome === 'Frio'
                                   ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
                                   : 'bg-red-100  text-red-700 ring-red-600/20'
-                          }`}
+                            }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>

@@ -1,16 +1,16 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
-import { UserFocus } from '@phosphor-icons/react'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { useQuery } from '@tanstack/react-query'
+import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { UserFocus } from '@phosphor-icons/react'
+import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { Suspense } from 'react'
-import { columns } from './table-users/columns'
 import { z } from 'zod'
-import { userSchemaTable } from './table-users/schema'
+import { columns } from './table-users/columns'
 import { DataTableUsers } from './table-users/data-table-users'
+import { userSchemaTable } from './table-users/schema'
 
 export default function NovoMembro() {
   const { data: session } = useSession()

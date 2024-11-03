@@ -192,8 +192,8 @@ export default function ControleSupervisor() {
             selectedDayMeetings?.length > 1 && (
               <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mb-4">
                 {selectedDayMeetings &&
-                isLoading &&
-                selectedDayMeetings?.length <= 2 ? (
+                  isLoading &&
+                  selectedDayMeetings?.length <= 2 ? (
                   <SpinnerButton message={''} />
                 ) : selectedDayMeetings &&
                   selectedDayMeetings?.length <= 2 &&

@@ -130,11 +130,11 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
     queryUpDate === ''
       ? queryMembersSort
       : queryMembersSort?.filter((person) =>
-          person.first_name
-            .toLowerCase()
-            .replace(/\s+/g, '')
-            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
-        )
+        person.first_name
+          .toLowerCase()
+          .replace(/\s+/g, '')
+          .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
+      )
 
   return isLoadingQueryUpdate ? (
     <SpinnerButton message="" />
@@ -248,7 +248,7 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
                               >
                                 <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
-                                  queryUpDate !== '' ? (
+                                    queryUpDate !== '' ? (
                                     <div className="relative px-4 py-2 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
@@ -257,10 +257,9 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
                                       <Combobox.Option
                                         key={person.id}
                                         className={({ active }) =>
-                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                                            active
-                                              ? 'bg-[#E5F3FF] text-black'
-                                              : 'text-gray-900'
+                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${active
+                                            ? 'bg-[#E5F3FF] text-black'
+                                            : 'text-gray-900'
                                           }`
                                         }
                                         value={person}
@@ -268,21 +267,19 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
                                         {({ selected, active }) => (
                                           <>
                                             <span
-                                              className={`block truncate ${
-                                                selected
+                                              className={`block truncate ${selected
                                                   ? 'font-medium'
                                                   : 'font-normal'
-                                              }`}
+                                                }`}
                                             >
                                               {person.first_name}
                                             </span>
                                             {selected ? (
                                               <span
-                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
-                                                  active
+                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
                                                     ? 'text-white'
                                                     : 'text-teal-600'
-                                                }`}
+                                                  }`}
                                               >
                                                 <CheckIcon
                                                   className="w-5 h-5"

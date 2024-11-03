@@ -1,8 +1,8 @@
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
 import { cn } from '@/lib/utils'
+import dayjs from 'dayjs'
 import React, { Fragment } from 'react'
 import { TCelula, TSupervisionData } from './schema'
-import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import dayjs from 'dayjs'
 
 interface ITableRelatorioProsp {
   supervisionData: TSupervisionData
