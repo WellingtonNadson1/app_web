@@ -9,7 +9,6 @@ import { DataTableLicoesCelulas } from './licoes-celula/table-licoes-celula/data
 
 export default function Licao() {
   const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`
-  const URLTemaMonth = `/api/licoes-celula/tema-of-month`
 
   const searchParams = useSearchParams()
 

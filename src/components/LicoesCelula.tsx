@@ -34,6 +34,7 @@ interface LessonData {
   link_objeto_aws?: string
 }
 
+
 export default function LicoesCelula() {
   const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`
   const URLTemaMonth = `/api/licoes-celula/tema-of-month`
@@ -55,6 +56,7 @@ export default function LicoesCelula() {
   const { data: dataTema } = useQuery<TemaData[]>({
     queryKey: ['idTemaMonth', 'licoesCelulasIbb'],
     queryFn: GetIdTema,
+    refetchOnWindowFocus: true,
   })
 
   // useEffect to update idTema when query is successful
@@ -70,6 +72,7 @@ export default function LicoesCelula() {
     queryKey: ['licoesCelulasIbb', id],
     queryFn: getLicoesCelula,
     enabled: !!id,
+    refetchOnWindowFocus: true,
   })
 
   if (licoesCelula) {
@@ -109,7 +112,7 @@ export default function LicoesCelula() {
                   className={cn(
                     'rounded-md p-1 cursor-pointer bg-gray-50 hover:bg-gray-100/80',
                     stat.licao_lancando_redes &&
-                      'bg-blue-50 hover:bg-blue-100/75',
+                    'bg-blue-50 hover:bg-blue-100/75',
                   )}
                   rel="noreferrer"
                 >
