@@ -92,24 +92,24 @@ export function DataTableCelulas<TData, TValue>({
     getSortedRowModel: getSortedRowModel(),
   })
 
-  //@ts-ignore
   const qntCelulasSupVermelha = String(
+    //@ts-ignore
     data.filter((celula) => celula?.supervisao?.nome === 'vermelha').length,
   ).padStart(2, '0')
-  //@ts-ignore
   const qntCelulasSupAzul = String(
+    //@ts-ignore
     data.filter((celula) => celula?.supervisao?.nome === 'azul').length,
   ).padStart(2, '0')
-  //@ts-ignore
   const qntCelulasSupLaranja = String(
+    //@ts-ignore
     data.filter((celula) => celula?.supervisao?.nome === 'laranja').length,
   ).padStart(2, '0')
-  //@ts-ignore
   const qntCelulasSupVerde = String(
+    //@ts-ignore
     data.filter((celula) => celula?.supervisao?.nome === 'verde').length,
   ).padStart(2, '0')
-  //@ts-ignore
   const qntCelulasSupAmarela = String(
+    //@ts-ignore
     data.filter((celula) => celula?.supervisao?.nome === 'amarela').length,
   ).padStart(2, '0')
 
@@ -198,9 +198,9 @@ export function DataTableCelulas<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   )
                 })}
