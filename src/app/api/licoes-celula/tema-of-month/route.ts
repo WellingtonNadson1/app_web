@@ -1,7 +1,7 @@
 import {
   createPrismaInstance,
   disconnectPrisma,
-} from '@/services/database/db/prisma'
+} from '@/components/services/database/db/prisma'
 import { NextResponse } from 'next/server'
 
 export async function GET(request: Request) {

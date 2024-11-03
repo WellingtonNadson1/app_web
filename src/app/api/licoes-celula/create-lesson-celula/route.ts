@@ -1,10 +1,8 @@
 // app/api/licoes-celula/create-tema-folder/route.ts
+import { createPrismaInstance, disconnectPrisma } from '@/components/services/database/db/prisma'
 import { deepEqualLesson } from '@/functions/compareObjects'
 import { normalizeFolderName } from '@/functions/normalize'
-import {
-  createPrismaInstance,
-  disconnectPrisma,
-} from '@/services/database/db/prisma'
+
 import {
   DeleteObjectCommand,
   PutObjectCommand,
