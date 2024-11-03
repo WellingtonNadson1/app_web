@@ -11,7 +11,7 @@
     "simple-import-sort/imports": "error",
     "simple-import-sort/exports": "error",
     "camelcase": "off",
-    "no-warning-comments": "off",
+    "no-warning-comments": "off"
   },
   "parserOptions": {
     "sourceType": "module",
