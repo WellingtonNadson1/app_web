@@ -114,7 +114,8 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
-    onSettled: () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
       queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
     },
   })

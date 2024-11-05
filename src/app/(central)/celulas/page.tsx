@@ -25,6 +25,7 @@ export default function Celulas() {
   } = useQuery({
     queryKey: ['allCelulasIbb'],
     queryFn: getCelulas,
+    staleTime: 0
   })
 
   return (

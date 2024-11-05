@@ -107,7 +107,8 @@ export function LicaoRegistrationForm({
 
   const { mutateAsync: createNewLessonCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewLessonCelulaFunction,
-    onSettled: () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
       queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
     },
   })

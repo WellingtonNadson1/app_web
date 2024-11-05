@@ -22,6 +22,7 @@ export default function LicoesCelula() {
   } = useQuery({
     queryKey: ['temasCelulasIbb'],
     queryFn: getTemasLicoesCelula,
+    staleTime: 0
   })
 
   const temasLicoesCelulaNotReturn: never[] = []

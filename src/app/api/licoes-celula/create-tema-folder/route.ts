@@ -88,16 +88,23 @@ export async function POST(request: Request) {
 
     console.log('resultCreateTema', resultCreateTema)
 
-    return NextResponse.json(
-      { message: `Folder '${tema}' created successfully!` },
-      { status: 200 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: `Folder '${tema}' created successfully!` }),
+      {
+        status: 200,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
+
   } catch (error) {
     console.error('Error creating folder:', error)
-    return NextResponse.json(
-      { message: 'Error creating folder' },
-      { status: 500 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: 'Error creating folder' }),
+      {
+        status: 500,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
   }
 }
 
@@ -126,7 +133,11 @@ export async function GET(request: Request) {
     })
     await disconnectPrisma()
 
-    return NextResponse.json(allTema, { status: 200 })
+    return new NextResponse(JSON.stringify(allTema), {
+      status: 200,
+      headers: { 'Cache-Control': 'no-store' }, // Evita cache
+    });
+
   } catch (error) {
     await disconnectPrisma()
 
@@ -204,10 +215,13 @@ export async function PUT(request: Request) {
       console.log('isObjectUpdateEqual: ', isObjectUpdateEqual)
 
       if (isObjectUpdateEqual) {
-        return NextResponse.json(
-          { message: 'Tema de Lição ATUALIZADO' },
-          { status: 200 },
-        )
+        return new NextResponse(
+          JSON.stringify({ message: `Tema de Lição ATUALIZADO!` }),
+          {
+            status: 200,
+            headers: { 'Cache-Control': 'no-store' }, // Evita cache
+          }
+        );
       }
 
       // Verifica se o folderName termina com "/"
@@ -286,16 +300,22 @@ export async function PUT(request: Request) {
 
     console.log('result', result)
     await disconnectPrisma()
-    return NextResponse.json(
-      { message: 'Tema de Lição ATUALIZADO' },
-      { status: 200 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: `Tema de Lição ATUALIZADO!` }),
+      {
+        status: 200,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
   } catch (error) {
     await disconnectPrisma()
-    return NextResponse.json(
-      { message: 'Error in Update Tema' },
-      { status: 500 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: 'Error in Update Tema' }),
+      {
+        status: 500,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
   }
 }
 
@@ -354,17 +374,23 @@ export async function PATCH(request: Request) {
     console.log('result Update Status: ', result)
 
     await disconnectPrisma()
-    return NextResponse.json(
-      { message: 'Status do Tema de Lição ATUALIZADO' },
-      { status: 200 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: `Status do Tema de Lição ATUALIZADO!` }),
+      {
+        status: 200,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
   } catch (error) {
     await disconnectPrisma()
     console.log('Error in Update Status Tema: ', error)
-    return NextResponse.json(
-      { message: 'Error in Update Status Tema' },
-      { status: 500 },
-    )
+    return new NextResponse(
+      JSON.stringify({ message: 'Error in Update Status Tema' }),
+      {
+        status: 500,
+        headers: { 'Cache-Control': 'no-store' }, // Evita cache
+      }
+    );
   }
 }
 

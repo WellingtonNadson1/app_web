@@ -41,7 +41,8 @@ export default function DeleteLIcaoCelula({
 
   const { mutateAsync: deleteLicaoFn, isPending } = useMutation({
     mutationFn: deleteLicaoFunction,
-    onSettled: () => {
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
       queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
     },
   })
