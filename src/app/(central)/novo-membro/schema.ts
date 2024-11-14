@@ -82,6 +82,10 @@ const SupervisaoDataSchema = z.object({
         user_discipulos: z.object({
           id: z.string(),
           first_name: z.string(),
+          cargo_de_lideranca: z.object({
+            id: z.string().uuid(),
+            nome: z.string(),
+          })
         }),
       })
       .array(),

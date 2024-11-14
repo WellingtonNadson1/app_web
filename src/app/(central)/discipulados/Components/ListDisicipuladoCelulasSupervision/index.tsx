@@ -9,7 +9,7 @@ export default function ListDisicipuladoCelulasSupervision({
 }: ListCelulasProps) {
   const router = useRouter()
   const contextParamsSupervisaoId = useSupervisaoContext()
-  const dataSort = data.sort((a, b) => a.nome.localeCompare(b.nome))
+  const dataSort = data.sort((a, b) => a.nome?.localeCompare(b.nome))
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
     const idCelula = event.currentTarget.id
@@ -23,7 +23,7 @@ export default function ListDisicipuladoCelulasSupervision({
         <div className="relative w-full py-2 mx-auto">
           <div className="w-full p-4 bg-white rounded-lg shadow-md">
             <h2 className="px-2 py-2 mb-6 text-lg font-medium leading-7 text-gray-700">
-              Lista de Células
+              Discipulados por Células
             </h2>
             <div className="p-2">
               <table className="w-full px-2 border-separate table-auto">

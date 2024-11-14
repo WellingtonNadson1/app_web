@@ -13,6 +13,7 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { TypeLogin } from '@/types'
+import { Eye, EyeSlash } from '@phosphor-icons/react'
 import { Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useMutation } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -22,6 +23,7 @@ import { loginFunction } from '../../../../actions/login'
 export default function Login() {
   const [error, setError] = useState<string | undefined>('')
   const [success, setSuccess] = useState<string | undefined>('')
+  const [showPassword, setShowPassword] = useState(false)
   const { handleSubmit, register } = useForm<TypeLogin>()
 
   const loginFn = async ({ email, password }: TypeLogin) => {
@@ -48,8 +50,17 @@ export default function Login() {
         return login
       })
     } catch (error) {
+      // Convert the error to a string if it's an object
+      console.log('Error caught:', error);
+      localStorage.clear()
+
+      setError('Acesso não autorizado!')
       console.error(error)
     }
+  }
+
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev)
   }
 
   return (
@@ -97,49 +108,28 @@ export default function Login() {
                       <div className="flex items-center justify-between">
                         <Label htmlFor="password">Senha</Label>
                       </div>
-                      <div className="mt-2">
+                      <div className="mt-2 relative">
                         <Input
                           {...register('password')}
                           id="password"
-                          type="password"
+                          type={showPassword ? 'text' : 'password'}
                           autoComplete="current-password"
                           placeholder="Digite sua senha"
                           required
                           className="block w-full mb-2 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#014874] sm:text-sm sm:leading-7"
                         />
+                        <div
+                          className="absolute inset-y-0 right-0 flex items-center pr-3 cursor-pointer"
+                          onClick={togglePasswordVisibility}
+                        >
+                          {showPassword ? (
+                            <EyeSlash color='#9ca3af' size={20} />
+                          ) : (
+                            <Eye color='#6b7280' size={20} />
+                          )}
+                        </div>
                       </div>
                     </div>
-
-                    {/* <div className="flex items-center justify-between">
-                      <div className="flex items-center justify-center gap-x-3">
-                        <div className="relative flex">
-                          <div className="flex items-center h-6">
-                            <Input
-                              id="lembrar"
-                              name="lembrar"
-                              type="checkbox"
-                              className="h-4 w-4 rounded border-gray-300 text-[#014874] focus:ring-[#014874]"
-                            />
-                          </div>
-                        </div>
-                        <div className="text-sm leading-6">
-                          <label
-                            htmlFor="lembrar"
-                            className="font-medium text-gray-900"
-                          >
-                            Lembrar
-                          </label>
-                        </div>
-                      </div>
-                      <div className="text-sm">
-                        <a
-                          href="#"
-                          className="font-semibold text-[#014874] hover:text-[#1D70B6]"
-                        >
-                          Esqueceu a Senha?
-                        </a>
-                      </div>
-                    </div> */}
 
                     <div>
                       {isPending ? (
@@ -166,26 +156,6 @@ export default function Login() {
 
                   <hr className='opacity-30" mb-6 mt-8 mx-0 my-4 h-px border-0 bg-transparent bg-gradient-to-r from-transparent via-black/50 to-transparent' />
 
-                  {/* <button
-                // onClick={() => signIn('google')}
-                type="button"
-                className="flex w-full items-center justify-center rounded-md bg-white px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm ring-1 ring-red-300 duration-100 hover:bg-gray-100/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-red-500"
-              >
-                <GoogleLogo color="#f00" size={24} weight="bold" />
-                <span className="ml-2 text-sm font-semibold leading-7 text-gray-900">
-                  Entrar com Google
-                </span>
-              </button> */}
-
-                  {/* <p className="mt-8 mb-4 text-sm text-center text-gray-500">
-                Não tem uma conta?{' '}
-                <Link
-                  href="#"
-                  className="font-semibold leading-6 text-[#014874] hover:text-[#1D70B6]"
-                >
-                  Cadastre-se
-                </Link>
-              </p> */}
                 </div>
               </CardContent>
               {/* form */}

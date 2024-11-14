@@ -74,14 +74,15 @@ export default function StatsCard() {
 
   const statusIbb = [
     {
-      title: 'Conversões Células/Mês',
+      title: 'Conversões nas Células',
       porcentagem: `${porcentagemAlmasGanhasMesPassado.toFixed(2)}%`,
       total:
-        almasGanhasNoMes !== undefined ? almasGanhasNoMes : 'Carregando...',
+        almasGanhasNoMes !== undefined ? `este mês: ${almasGanhasNoMes} almas` : 'Carregando...',
       status: 'up',
+      referenciaAnterior: `${almasGanhasNoMesPassado} almas`,
       icon: HandsPraying,
       color: 'bg-[#6074E1]',
-      destaq: ' o último mês',
+      destaq: `mês passado: `,
     },
     {
       title: 'Conversões/Ano',
@@ -120,21 +121,23 @@ export default function StatsCard() {
             </div>
           </div>
           <div className="flex items-center">
-            <span className="text-lg font-semibold">{stat.total}</span>
-          </div>
-          <div className="flex items-center">
             <span
-              className={cn('text-sm font-bold leading-normal', {
+              className={cn('text-lg font-bold', {
                 'text-red-500':
-                  almasGanhasNoMes < porcentagemAlmasGanhasMesPassado,
+                  almasGanhasNoMes < almasGanhasNoMesPassado,
                 'text-emerald-500':
-                  almasGanhasNoMes >= porcentagemAlmasGanhasMesPassado,
+                  almasGanhasNoMes >= almasGanhasNoMesPassado,
               })}
-            >
-              {stat.porcentagem}
-            </span>
+            >{stat.total}</span>
+          </div>
+          <div className="flex items-center gap-2">
             <span className="ml-2 text-sm font-bold leading-normal text-gray-500">
-              desde {stat.destaq}
+              {stat.destaq}
+            </span>
+            <span
+              className={'text-sm font-bold leading-normal text-emerald-500'}
+            >
+              {stat?.referenciaAnterior}
             </span>
           </div>
         </Card>

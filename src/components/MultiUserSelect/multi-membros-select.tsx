@@ -22,7 +22,7 @@ import { Badge } from '../ui/badge'
 
 interface User {
   id: string
-  first_name?: string // `first_name` agora é opcional
+  first_name: string // `first_name` agora é opcional
 }
 
 interface ComboboxDemoProps {

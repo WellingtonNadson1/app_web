@@ -1,11 +1,10 @@
 'use client'
 import { cn } from '@/lib/utils'
 import { useUserDataStore } from '@/store/UserDataStore'
-import { SignOut, X } from '@phosphor-icons/react'
+import { SignOut, Spinner, X } from '@phosphor-icons/react'
 import { signOut, useSession } from 'next-auth/react'
 import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
-import SpinnerButton from '../spinners/SpinnerButton'
+import { useEffect, useState } from 'react'
 import ThemeImage from '../theme-image'
 import {
   sidebarCentral,
@@ -31,8 +30,14 @@ export default function MySidebar() {
     signOut()
   }
 
+  useEffect(() => {
+    if (user_roles?.length === 0) {
+      handleLogout();
+    }
+  }, [user_roles]);
+
   return (
-    <div className="p-1">
+    <div className="p-1 z-50">
       <aside
         className={`flex flex-col rounded-lg border border-sidebar-border border-r border-l relative h-full shadow-md ${open ? 'w-44' : 'w-[4.4rem]'
           } bg-white p-2 px-3 py-5 duration-500 mt-2`}
@@ -211,7 +216,7 @@ export default function MySidebar() {
             </ul>
           ) : (
             <div className="mt-7">
-              <SpinnerButton message={''} />
+              <Spinner className='animate-spin' />
             </div>
           )}
         </div>
@@ -244,8 +249,17 @@ export default function MySidebar() {
               </button>
             </ul>
           ) : (
-            <div className="mt-[21rem]">
-              <SpinnerButton message={''} />
+            <div>
+              <ul className="relative flex flex-col pt-4 gap-y-2">
+                <hr className="h-px mb-2 -mt-1 bg-transparent bg-gradient-to-r from-transparent via-black/40 to-transparent dark:bg-gradient-to-r dark:from-transparent dark:via-white dark:to-transparent" />
+                <button
+                  disabled
+                  className="focus:outline-none` group z-50 flex transform cursor-pointer items-center justify-center gap-x-2 rounded-md bg-red-400/90 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out hover:scale-105 hover:bg-red-400 hover:fill-current hover:text-white "
+                  type="button"
+                >
+                  <Spinner className='animate-spin' />
+                </button>
+              </ul>
             </div>
           )}
         </div>

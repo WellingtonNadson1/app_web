@@ -1,6 +1,7 @@
 'use client'
 import UpdateSupervisorDisicipulado from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/UpdateSupervisorDiscipulado'
 import Pagination from '@/components/Pagination'
+import { Badge } from '@/components/ui/badge'
 import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { SupervisaoData } from './schema'
@@ -32,13 +33,13 @@ export default function ListMembersDiscipuladoSupervisor(
       <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
         <div className="w-full px-2 py-2 ">
           <div className="w-full px-1 py-2 rounded-md">
-            <div className="flex flex-col items-start justify-between gap-1 mb-4">
+            <div className="flex items-start justify-start gap-3 mb-4">
               <h2 className="text-lg font-semibold leading-6 text-gray-700">
-                Discipulados do(a) Supervisor(a)
+                Discipulados do(a) Supervisor(a):
               </h2>
-              <h2 className="text-lg font-normal leading-7 text-gray-600 uppercase">
+              <Badge>
                 {SupervisaoData?.supervisor?.first_name}
-              </h2>
+              </Badge>
             </div>
             <table className="w-full border-separate table-auto">
               <thead className="bg-[#F8FAFC]">
@@ -46,23 +47,17 @@ export default function ListMembersDiscipuladoSupervisor(
                   <th className="px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
                     Membro
                   </th>
-                  {/* <th className="hidden py-2 font-medium text-[#6D8396] border-b-2 border-orange-300 text-start sm:table-cell">
-                    Status
-                  </th> */}
-                  {/* <th className="hidden py-2 font-medium text-[#6D8396] border-b-2 border-indigo-300 text-start sm:table-cell">
-                    Discipulador(a)
-                  </th> */}
                   <th className="py-2 font-medium text-center text-[#6D8396] border-b-2 border-red-300">
                     Opções
                   </th>
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {SupervisaoData ? (
-                  displayedMembers?.map((user, index) => (
+                {displayedMembers.map((member) => (
+                  <>
                     <tr
                       className="hover:bg-gray-50/90"
-                      key={user?.user_discipulos?.id}
+                      key={member?.user_discipulos?.id}
                     >
                       <td className="px-2 py-1 border-b border-gray-200">
                         <div className="flex items-center justify-start gap-2">
@@ -70,50 +65,26 @@ export default function ListMembersDiscipuladoSupervisor(
                             <User size={22} color="#6D8396" />
                           </div>
                           <h2 className="ml-4">
-                            {user?.user_discipulos?.first_name}
+                            {member?.user_discipulos?.first_name}
                           </h2>
                         </div>
                       </td>
-                      {/* <td className="px-2 py-1 text-center border-b border-gray-200"> */}
-                      {/* <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
-                            ? 'bg-green-100  text-green-700 ring-green-600/20'
-                            : user.situacao_no_reino?.nome === 'Normal'
-                              ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
-                              : user.situacao_no_reino?.nome === 'Frio'
-                                ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
-                                : 'bg-red-100  text-red-700 ring-red-600/20'
-                            }`}
-                        >
-                          {user.situacao_no_reino?.nome}
-                        </span> */}
-                      {/* </td> */}
-                      {/* <td className="px-2 py-1 text-center border-b border-gray-200">
-                        <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
-                          {user?.user_discipulos?.first_name}
-                        </span>
-                      </td> */}
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <div
                           className="flex items-center justify-center"
                           onClick={() => setShouldFetch(true)}
                         >
                           <UpdateSupervisorDisicipulado
-                            member={membersSort[0]} // Pass the member object
+                            member={member} // Pass the member object
                             key={membersSort[0]?.user_discipulos?.id}
                             supervisor={SupervisaoData?.supervisor} // Pass the supervisor object
                           />
                         </div>
                       </td>
                     </tr>
-                  ))
-                ) : (
-                  <tr>
-                    <td>
-                      <p>Carregando...</p>
-                    </td>
-                  </tr>
-                )}
+                  </>
+                ))}
+
               </tbody>
             </table>
             {/* Use the Pagination component */}

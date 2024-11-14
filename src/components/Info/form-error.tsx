@@ -4,8 +4,6 @@ interface FomrErrorPrpops {
   message?: string
 }
 
-import React from 'react'
-
 export const FormError = ({ message }: FomrErrorPrpops) => {
   if (!message) {
     return null
