@@ -107,6 +107,14 @@ export type User = z.infer<typeof schemaUser>
 const schemaUserCombobox = z.object({
   id: z.string(),
   first_name: z.string().optional(),
+  situacao_no_reino: z.object({
+    id: z.string(),
+    nome: z.string(),
+  }),
+  cargo_de_lideranca: z.object({
+    id: z.string(),
+    nome: z.string(),
+  }),
 })
 
 export type UserCombobox = z.infer<typeof schemaUserCombobox>

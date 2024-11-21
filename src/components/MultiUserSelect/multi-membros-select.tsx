@@ -21,8 +21,16 @@ import { cn } from '@/lib/utils'
 import { Badge } from '../ui/badge'
 
 interface User {
-  id: string
-  first_name: string // `first_name` agora é opcional
+  id: string;
+  situacao_no_reino: {
+    id: string;
+    nome: string;
+  };
+  cargo_de_lideranca: {
+    id: string;
+    nome: string;
+  };
+  first_name?: string | undefined;
 }
 
 interface ComboboxDemoProps {
