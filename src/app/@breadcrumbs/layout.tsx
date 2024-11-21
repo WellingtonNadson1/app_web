@@ -9,16 +9,13 @@ export const metadata = {
 }
 
 export default function RootLayout({
-  children,
-  breadcrumbs,
+  children
 }: {
   children: React.ReactNode,
-  breadcrumbs: React.ReactNode
 }) {
   return (
     <html lang="pt">
       <body>
-        {breadcrumbs}
         {children}
       </body>
     </html>
