@@ -95,11 +95,6 @@ export default function ControleCelulaSupervision() {
   }, [data]);
 
   const CelulaData = async () => {
-    if (!idsCultos || idsCultos.length === 0) {
-      console.error('idsCultos está vazio ou indefinido');
-      return {};
-    }
-
     try {
       const result = await axiosAuth.post(URLCelula, {
         idsCultos

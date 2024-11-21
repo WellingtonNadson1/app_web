@@ -1,6 +1,5 @@
 /* eslint-disable camelcase */
 'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
@@ -8,6 +7,7 @@ import { BASE_URL, errorCadastro, success } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserFocus } from '@phosphor-icons/react'
+import { Spinner } from '@phosphor-icons/react/dist/ssr'
 import ProgressBar from '@ramonak/react-progress-bar'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
@@ -15,7 +15,6 @@ import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
 import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
@@ -72,7 +71,6 @@ export default function ControlePresencaReuniaoCelula({
   const [progress, setProgress] = useState(0)
   const [dataReuniao, setDataReuniao] = useState<reuniaoCelulaData[]>()
   const [erro, setErro] = useState<Error>()
-  const router = useRouter()
   const { handleSubmit, register, reset } = useForm<attendanceReuniaoCelula[]>()
   const axiosAuth = useAxiosAuthToken(session?.user.token as string)
   const token = session?.user.token
@@ -285,7 +283,7 @@ export default function ControlePresencaReuniaoCelula({
     <>
       {isPendingCreateReunia || isLoading ? (
         <p className="mb-3 text-sm font-normal text-gray-500 leading-2">
-          <SpinnerButton message={''} />
+          <Spinner className='animate-spin' />
         </p>
       ) : (
         <>
@@ -412,17 +410,16 @@ export default function ControlePresencaReuniaoCelula({
                               {/* STATUS */}
                               <div className="hidden sm:block">
                                 <span
-                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${
-                                    user.situacao_no_reino?.nome === 'Ativo'
-                                      ? 'border border-green-200 bg-green-100 ring-green-500'
+                                  className={`hidden rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === 'Ativo'
+                                    ? 'border border-green-200 bg-green-100 ring-green-500'
+                                    : user.situacao_no_reino?.nome ===
+                                      'Normal'
+                                      ? 'border border-blue-200 bg-blue-100 ring-blue-500'
                                       : user.situacao_no_reino?.nome ===
-                                          'Normal'
-                                        ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                                        : user.situacao_no_reino?.nome ===
-                                            'Frio'
-                                          ? 'border border-orange-200 bg-orange-100 ring-orange-500'
-                                          : 'border border-red-200 bg-red-100 ring-red-500'
-                                  }`}
+                                        'Frio'
+                                        ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                                        : 'border border-red-200 bg-red-100 ring-red-500'
+                                    }`}
                                 >
                                   {user.situacao_no_reino?.nome}
                                 </span>
@@ -459,28 +456,9 @@ export default function ControlePresencaReuniaoCelula({
                           <Button
                             type="submit"
                             disabled={isPending}
-                            className="mx-auto flex w-full items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
+                            className="mx-auto flex w-full gap-2 items-center justify-center rounded-md bg-[#014874] px-3 py-1.5 text-sm font-semibold leading-7 text-white shadow-sm duration-100 hover:bg-[#1D70B6] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#014874]"
                           >
-                            <svg
-                              className="w-5 h-5 mr-3 text-white animate-spin"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              ></circle>
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
-                            </svg>
+                            <Spinner className='animate-spin' />
                             <span>Registrando...</span>
                           </Button>
                         ) : (
