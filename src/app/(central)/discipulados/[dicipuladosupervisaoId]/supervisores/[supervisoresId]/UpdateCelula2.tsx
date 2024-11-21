@@ -46,8 +46,16 @@ dayjs.extend(utc)
 dayjs.extend(timezone)
 
 interface User {
-  id: string
-  first_name: string // `first_name` agora é opcional
+  id: string;
+  situacao_no_reino: {
+    id: string;
+    nome: string;
+  };
+  cargo_de_lideranca: {
+    id: string;
+    nome: string;
+  };
+  first_name?: string | undefined;
 }
 
 export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorProps2) {
@@ -141,14 +149,14 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
   }
 
   const queryMembersSort = queryMembers?.sort((a, b) =>
-    a.first_name.localeCompare(b.first_name),
+    (a.first_name ?? '').localeCompare(b.first_name ?? ''),
   )
 
   const filteredPeople =
     queryUpDate === ''
       ? queryMembersSort
       : queryMembersSort?.filter((person) =>
-        person.first_name
+        (person.first_name ?? '')
           .toLowerCase()
           .replace(/\s+/g, '')
           .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
