@@ -33,7 +33,7 @@ export default function Celulas() {
       <Toaster />
       {/* <AddNewCelula /> */}
       {isSuccess && celulas && (
-        <div className="relative z-10 px-2">
+        <div className="relative z-10 px-2 mt-2">
           <DataTableCelulas columns={columns} data={celulas as any} />
         </div>
       )}

@@ -9,6 +9,7 @@ import { RedirectType } from 'next/dist/client/components/redirect'
 import { redirect } from 'next/navigation'
 import NextTopLoader from 'nextjs-toploader'
 import React, { Suspense } from 'react'
+import BreadcrumbsSlot from '../@breadcrumbs/[...catchAll]/page'
 import { LoaderHeader } from './loading'
 
 export const metadata = {
@@ -73,15 +74,16 @@ export default async function RootLayout({
           shadow="0 0 10px #fff,0 0 5px #fff"
         />
         <div>
-          <div className="z-10 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
+          <div className="z-0 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
             <SidebarProvider>
               <Providers>
                 <MySidebar />
-                <div className="z-50 w-full px-2 py-2 mx-auto">
+                <div className="z-30 w-full px-2 py-2 mx-auto">
                   <Suspense fallback={<LoaderHeader />}>
                     <Header />
                   </Suspense>
+                  <BreadcrumbsSlot />
                   {children}
                 </div>
               </Providers>

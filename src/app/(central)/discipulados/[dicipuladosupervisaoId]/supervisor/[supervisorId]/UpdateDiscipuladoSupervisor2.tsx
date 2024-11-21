@@ -23,11 +23,11 @@ import {
   FormMessage,
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useCombinedStore } from '@/store/DataCombineted'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -35,7 +35,6 @@ import axios from 'axios'
 import dayjs from 'dayjs'
 import timezone from 'dayjs/plugin/timezone'
 import utc from 'dayjs/plugin/utc'
-import { useParams } from 'next/navigation'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
@@ -50,22 +49,15 @@ interface User {
   first_name: string // `first_name` agora é opcional
 }
 
-export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorProps2) {
+export default function UpdateDiscipuladoSupervisor2(props: UpdateSupervisorProps2) {
   const { token } = useUserDataStore.getState()
   const URLUsers = `${BASE_URL}/users/alldiscipulados`
-  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulad`
-
-  const { supervisorId } = useParams()
-  const { state } = useCombinedStore()
-  const supervisoes = state.supervisoes
-  const currentSupervisao = supervisoes.filter((supervisao) => supervisao.id === supervisorId)
-  const supervisor = currentSupervisao[0].supervisor
+  const URLUpdateDiscipulador = `${BASE_URL_LOCAL}/users/discipulador`
 
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [queryUpDate, setQueryUpDate] = useState('')
-  const [supervisorDiscipulador, setSupervisorDiscipulador] = useState(supervisor)
 
   const axiosAuth = useAxiosAuthToken(token)
 
@@ -74,7 +66,6 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
   const CreateNewRelationDiscipuladoFunction = async (
     data: z.infer<typeof schemaDataUpdateDiscipulador2>,
   ) => {
-
     const response = await axiosAuth.put(URLUpdateDiscipulador, {
       ...data,
     })
@@ -92,13 +83,16 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
   const onSubmit: SubmitHandler<z.infer<typeof schemaDataUpdateDiscipulador2>> = async (
     data,
   ) => {
+
+    console.log('data.discipuladorId', data.newDiscipuladorId)
     const newData = {
-      id: props.member.user_discipulos.id,
+      id: props.discipulo.id,
       //@ts-ignore
-      discipuladorId: data.discipuladorId[0].id
+      newDiscipuladorId: data.newDiscipuladorId[0].id
     }
     console.log('Valor selecionado:', newData);
-    const response = await createNewRelationDiscipuladoFn(data)
+
+    const response = await createNewRelationDiscipuladoFn(newData)
     if (response) {
       toast({
         variant: 'default',
@@ -115,6 +109,7 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
     }
   }
 
+  // Busca dos Membros para podermos selecionar como novo Discipulador
   const AllMembers = async () => {
     try {
       const { data } = await axiosAuth.get(URLUsers)
@@ -128,7 +123,7 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
     }
   }
 
-  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
+  const { data: queryMembers } = useQuery<
     User[]
   >({
     queryKey: ['membersquery'],
@@ -183,7 +178,7 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
                   <Form {...form}>
                     <form onSubmit={form.handleSubmit(onSubmit)}>
                       <div className="pb-3">
-                        {/* Nome da Celula */}
+                        {/* Discípulo */}
                         <div className="grid grid-cols-1 mt-4 gap-x-4 gap-y-6 sm:grid-cols-8">
                           <div className="sm:col-span-4">
                             <FormField
@@ -195,7 +190,7 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
                                   <FormControl>
                                     <Input
                                       disabled
-                                      placeholder={props?.member?.user_discipulos?.first_name}
+                                      placeholder={props?.discipulo?.first_name}
                                       {...field}
                                     />
                                   </FormControl>
@@ -204,31 +199,19 @@ export default function UpdateSupervisorDisicipulado2(props: UpdateSupervisorPro
                               )}
                             />
                           </div>
-                          {/* Lider */}
-                          <div className="sm:col-span-4">
-                            <FormField
-                              control={form.control}
-                              name="id"
-                              render={({ field }) => (
-                                <FormItem>
-                                  <FormLabel>Discipulador Atual</FormLabel>
-                                  <FormControl>
-                                    <Input
-                                      disabled
-                                      placeholder={supervisorDiscipulador.first_name}
-                                      {...field}
-                                    />
-                                  </FormControl>
-                                  <FormMessage />
-                                </FormItem>
-                              )}
+                          {/* Supervisor */}
+                          <div className="sm:col-span-4 space-y-2">
+                            <Label>Discipulador Atual</Label>
+                            <Input
+                              disabled
+                              placeholder={props?.supervisor?.discipulador[0]?.user_discipulador?.first_name}
                             />
                           </div>
-                          {/* Selecao de Membros */}
+                          {/* Selecao do Novo Discipulador */}
                           <div className="sm:col-span-8">
                             <FormField
                               control={form.control}
-                              name="discipuladorId"
+                              name="newDiscipuladorId"
                               render={({ field }) => (
                                 <FormItem className="flex flex-col space-y-2">
                                   <FormLabel>Novo Discipulador</FormLabel>

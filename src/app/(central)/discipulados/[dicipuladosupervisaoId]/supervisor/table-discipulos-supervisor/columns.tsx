@@ -17,6 +17,7 @@ import { ArrowUpDown, MoreHorizontal, UserCircle } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { z } from 'zod'
 import { SupervisorSchema } from '../../supervisores/table-discipulos-supervisores/schema'
+import UpdateDiscipuladoSupervisor2 from '../[supervisorId]/UpdateDiscipuladoSupervisor2'
 
 export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
   // NOME CELULA
@@ -62,7 +63,7 @@ export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
       )
     },
     cell: ({ row }) => {
-      const discipulo = row.original
+      const discipuloOrignal = row.original
       const router = useRouter()
       const contextParamsSupervisaoId = useSupervisaoContext()
       const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
@@ -105,7 +106,7 @@ export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
               </DropdownMenuItem> */}
               {/* UPDATE CELULA */}
               <DropdownMenuItem asChild>
-                {/* <UpdateSupervisorDisicipulado2 member={discipulo.user_discipulador.discipulos} supervisor={discipulo.supervisor} /> */}
+                <UpdateDiscipuladoSupervisor2 discipulo={discipuloOrignal} supervisor={discipuloOrignal} />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>

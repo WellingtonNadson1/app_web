@@ -1,5 +1,5 @@
 'use client'
-import { BASE_URL_LOCAL } from '@/functions/functions'
+import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
@@ -12,11 +12,13 @@ export default function ControleDiscipuladoSupervisior() {
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user.token as string)
 
-  const URLDiscipulosSupervisor = `${BASE_URL_LOCAL}/users/alldiscipulossupervisor`
+  const URLDiscipulosSupervisor = `${BASE_URL}/users/alldiscipulossupervisor`
 
   const { dicipuladosupervisaoId, supervisorId } = useParams()
 
-  console.log('Params:', dicipuladosupervisaoId, supervisorId);
+  const params = useParams()
+
+  console.log('params original', params)
 
   const getDiscipuloSupervisorBySupervisor = async () => {
     const { data } = await axiosAuth.post(URLDiscipulosSupervisor, {

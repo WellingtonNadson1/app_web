@@ -166,7 +166,7 @@ export function DataTableCelulas<TData, TValue>({
         </div>
       </div>
       {/* FILTRO */}
-      <div className="flex items-center  justify-between py-4">
+      <div className="flex items-center gap-3 justify-between py-4">
         <Input
           placeholder="🔍 Filtrar por qualquer dado..."
           value={globalFilter ?? ''}
@@ -198,9 +198,9 @@ export function DataTableCelulas<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext(),
-                          )}
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
                     </TableHead>
                   )
                 })}

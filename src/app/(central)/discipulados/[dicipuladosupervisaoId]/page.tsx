@@ -99,7 +99,7 @@ export default function Supervisao({
       }
       {/* DISCIPULADOS POR CELULAS */}
       {supervisao && (
-        <ListDisicipuladoCelulasSupervision data={supervisao[0].celulas} />
+        <ListDisicipuladoCelulasSupervision data={supervisao[0]?.celulas} />
       )}
     </div>
   )
