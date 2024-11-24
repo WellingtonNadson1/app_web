@@ -200,7 +200,7 @@ export default function ControleCelulaSupervision() {
                                       celula={celula}
                                     />
                                   ) : (
-                                    <p>Presença já registrada!</p>
+                                    <p>Presença já registrada!!</p>
                                   )}
                                 </Disclosure.Panel>
                               </>
