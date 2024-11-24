@@ -29,7 +29,6 @@ import { CelulaProps, Meeting } from './schema'
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
   const celulaId = session?.user.celulaId
-  const isCelulaIdValid = celulaId !== undefined && celulaId !== null;
 
   const [presenceIsRegister, setPresenceIsRegister] = useState(false)
   const [idsCultos, setIdsCultos] = useState<any>()
@@ -87,10 +86,12 @@ export default function ControleCelulaSupervision() {
     if (data) {
       const selectedDayMeetings = data?.filter((meeting) =>
         isSameDay(parseISO(meeting.data_inicio_culto), today),
-      )
+      );
       const ids = selectedDayMeetings.map((meeting) => meeting.id);
       setIdsCultos(ids);
-      console.log('ids', ids); // Verifique se os ids estão corretos
+      console.log('Selected Day Meetings:', selectedDayMeetings);
+      console.log('IDs:', ids); // Verifique se os ids estão corretos
+      console.log('presenceIsRegister', presenceIsRegister)
     }
   }, [data]);
 
@@ -100,6 +101,8 @@ export default function ControleCelulaSupervision() {
         idsCultos
       });
 
+      console.log('Result Data:', result.data);
+
       const existPresenceForCulto =
         result.data.membros[0].presencas_cultos.length > 0;
       setPresenceIsRegister(existPresenceForCulto);
@@ -108,7 +111,6 @@ export default function ControleCelulaSupervision() {
         result.data.membros[0].presencas_cultos.length > 1;
       setSecondPresenceIsRegister(existSecondPresenceForCulto);
 
-      console.log('result', result);
       return result.data;
 
     } catch (error) {
@@ -121,11 +123,9 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-
   const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
     queryKey: ['celula', celulaId],
     queryFn: CelulaData,
-    enabled: isCelulaIdValid,
     refetchOnWindowFocus: false,
     retry: false,
   })

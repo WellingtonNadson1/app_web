@@ -50,7 +50,7 @@ export function RegisterPresenceFormReuniaoCelula({
   const { toast } = useToast()
 
   const getSecondPresenceRegistered = async () => {
-    const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`
+    const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`
 
     const { data } = await axiosAuth.get(URLPresencaCultoId)
     return data
@@ -183,11 +183,10 @@ export function RegisterPresenceFormReuniaoCelula({
         toast({
           variant: 'destructive',
           title: 'Ocorreu um Erro',
-          description: `${
-            axiosError.response?.status === 409
+          description: `${axiosError.response?.status === 409
               ? 'Presença de Culto já Registrada para hoje!'
               : axiosError.message
-          }`,
+            }`,
         })
       } else {
         toast({
@@ -296,7 +295,7 @@ export function RegisterPresenceFormReuniaoCelula({
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
                                       {member?.situacao_no_reino?.nome ===
-                                      'Normal' ? (
+                                        'Normal' ? (
                                         <Badge
                                           className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-green-200 bg-green-100 ring-green-500'} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                         >
