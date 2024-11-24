@@ -9,14 +9,13 @@ import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
-import { Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
 import { pt } from 'date-fns/locale'
 import dayjs from 'dayjs'
 import { useSession } from 'next-auth/react'
-import { useEffect, useState } from 'react'
+import { useState } from 'react'
 import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence'
 import { RegisterPresenceFormSecond } from './_components/ControlePresenceSecond/registerpresencesecond'
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula'
@@ -28,19 +27,48 @@ import { CelulaProps, Meeting } from './schema'
 
 export default function ControleCelulaSupervision() {
   const { data: session } = useSession()
-  const celulaId = session?.user.celulaId
-
   const [presenceIsRegister, setPresenceIsRegister] = useState(false)
-  const [idsCultos, setIdsCultos] = useState<any>()
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
     useState(false)
 
+  const celulaId = session?.user.celulaId
   const { token } = useUserDataStore.getState()
 
   const axiosAuth = useAxiosAuthToken(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
+
+  const CelulaData = async () => {
+    try {
+      const result = await axiosAuth.get(URLCelula)
+      console.log('result', result)
+      const existPresenceForCulto =
+        result.data.membros[0].presencas_cultos.length > 0
+      setPresenceIsRegister(existPresenceForCulto)
+      console.log('existPresenceForCulto', existPresenceForCulto)
+      const existSecondPresenceForCulto =
+        result.data.membros[0].presencas_cultos.length > 1
+      setSecondPresenceIsRegister(existSecondPresenceForCulto)
+
+      return result.data
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data)
+      } else {
+        console.error(error)
+      }
+    }
+  }
+
+  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
+    queryKey: ['celula', celulaId],
+    queryFn: CelulaData,
+    enabled: !!celulaId,
+    refetchOnWindowFocus: false,
+    retry: false,
+  })
+
   const dataHoje = new Date()
   const dayOfWeek = dataHoje.getDay()
   const firstDayOfMonth = new Date(
@@ -76,59 +104,15 @@ export default function ControleCelulaSupervision() {
     refetchOnWindowFocus: false,
   })
 
+  // if (isSuccess) {
+  //   return;
+  // }
+
   const today = startOfToday()
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   )
-
-  useEffect(() => {
-    if (data) {
-      const selectedDayMeetings = data?.filter((meeting) =>
-        isSameDay(parseISO(meeting.data_inicio_culto), today),
-      );
-      const ids = selectedDayMeetings.map((meeting) => meeting.id);
-      setIdsCultos(ids);
-      console.log('Selected Day Meetings:', selectedDayMeetings);
-      console.log('IDs:', ids); // Verifique se os ids estão corretos
-      console.log('presenceIsRegister', presenceIsRegister)
-    }
-  }, [data]);
-
-  const CelulaData = async () => {
-    try {
-      const result = await axiosAuth.post(URLCelula, {
-        idsCultos
-      });
-
-      console.log('Result Data:', result.data);
-
-      const existPresenceForCulto =
-        result.data.membros[0].presencas_cultos.length > 0;
-      setPresenceIsRegister(existPresenceForCulto);
-
-      const existSecondPresenceForCulto =
-        result.data.membros[0].presencas_cultos.length > 1;
-      setSecondPresenceIsRegister(existSecondPresenceForCulto);
-
-      return result.data;
-
-    } catch (error) {
-      if (axios.isAxiosError(error) && error.response) {
-        console.error('Erro na resposta da API:', error.response.data);
-      } else {
-        console.error('Erro na requisição:', error);
-      }
-      return {};
-    }
-  };
-
-  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
-    queryKey: ['celula', celulaId],
-    queryFn: CelulaData,
-    refetchOnWindowFocus: false,
-    retry: false,
-  })
 
   return (
     <>
@@ -155,7 +139,7 @@ export default function ControleCelulaSupervision() {
           {/* FREQUENCIA DE PRESENCA NOS CULTOS #1*/}
           <Card className="bg-white relative w-full mx-auto mb-4">
             {isLoading ? (
-              <Spinner className='animate-spin' />
+              <SpinnerButton message={''} />
             ) : selectedDayMeetings && selectedDayMeetings?.length > 0 ? (
               celula ? (
                 <div
@@ -200,7 +184,7 @@ export default function ControleCelulaSupervision() {
                                       celula={celula}
                                     />
                                   ) : (
-                                    <p>Presença já registrada!!</p>
+                                    <p>Presença já registrada!</p>
                                   )}
                                 </Disclosure.Panel>
                               </>
@@ -212,7 +196,7 @@ export default function ControleCelulaSupervision() {
                   </div>
                 </div>
               ) : (
-                <Spinner className='animate-spin' key={selectedDayMeetings[0].id} />
+                <SpinnerButton message={''} key={selectedDayMeetings[0].id} />
               )
             ) : (
               // NAO HA CULTO
