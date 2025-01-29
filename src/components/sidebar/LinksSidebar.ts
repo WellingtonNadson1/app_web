@@ -29,11 +29,15 @@ export const sidebarCentral = [
 export const sidebarLiderCelula = [
   // { name: 'Dashboard', icon: LayoutDashboard, href: '/dashboard' },
   { name: 'Célula', icon: Users, href: '/celula' },
+<<<<<<< HEAD
   {
     name: 'Discipulados',
     icon: HandHeart,
     href: '/discipuladoscelularegister',
   },
+=======
+  { name: 'Discipulados', icon: HandHeart, href: '/discipuladoscelularegister' },
+>>>>>>> e89915e (DB: add two tabels, discipualdor, discipulos  and discipulados)
 ]
 
 export const sidebarSupervisor = [

@@ -11,9 +11,27 @@ interface Membro {
   id: string
   first_name: string
   cargo_de_lideranca: {
+<<<<<<< HEAD
     id: string
     nome: string
   }
+=======
+    id: string;
+    nome: string;
+  };
+  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
+    user_discipulador_usuario_discipulador_idTouser: {
+      id: string,
+      first_name: string
+    },
+  }[],
+  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
+    user_discipulador_usuario_usuario_idTouser: {
+      id: string,
+      first_name: string
+    },
+  }[],
+>>>>>>> e89915e (DB: add two tabels, discipualdor, discipulos  and discipulados)
   user: {
     id: string
     first_name: string

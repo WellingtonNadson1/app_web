@@ -3,6 +3,18 @@ import { z } from 'zod'
 export const MemberSchema = z.object({
   id: z.string(),
   role: z.string(),
+  discipulador_usuario_discipulador_usuario_discipulador_idTouser: z.object({
+    user_discipulador_usuario_discipulador_idTouser: z.object({
+      id: z.string(),
+      first_name: z.string()
+    })
+  }).array(),
+  discipulador_usuario_discipulador_usuario_usuario_idTouser: z.object({
+    user_discipulador_usuario_usuario_idTouser: z.object({
+      id: z.string(),
+      first_name: z.string()
+    })
+  }).array(),
   image_url: z.string().optional(),
   email: z.string().email(),
   first_name: z.string(),
