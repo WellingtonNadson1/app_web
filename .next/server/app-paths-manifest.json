@@ -1,8 +1,4 @@
 {
-  "/not-found": "app/not-found.js",
-  "/(authenticed)/dashboard/page": "app/(authenticed)/dashboard/page.js",
-  "/(login)/login/page": "app/(login)/login/page.js",
-  "/(supervisor)/supervisao/page": "app/(supervisor)/supervisao/page.js",
-  "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(discipuladosregister)/discipuladoscelularegister/page": "app/(discipuladosregister)/discipuladoscelularegister/page.js"
+  "/@breadcrumbs/[...catchAll]/page": "app/@breadcrumbs/[...catchAll]/page.js",
+  "/(central)/agenda-igreja/page": "app/(central)/agenda-igreja/page.js"
 }
