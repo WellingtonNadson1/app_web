@@ -5,62 +5,9 @@ import { User } from '@phosphor-icons/react'
 import { useState } from 'react'
 import { ListMembersCelulaProps } from './schema'
 
-<<<<<<< HEAD:src/app/(central)/discipulados/Components/ListMembersDiscipulados/index.tsx
 export default function ListMembersDiscipulados({
   data,
 }: ListMembersCelulaProps) {
-=======
-interface Membro {
-  id: string;
-  first_name: string;
-  cargo_de_lideranca: {
-    id: string;
-    nome: string;
-  };
-  discipulador_usuario_discipulador_usuario_usuario_idTouser: {
-    user_discipulador_usuario_discipulador_idTouser: {
-      id: string,
-      first_name: string
-    },
-  }[],
-  discipulador_usuario_discipulador_usuario_discipulador_idTouser: {
-    user_discipulador_usuario_usuario_idTouser: {
-      id: string,
-      first_name: string
-    },
-  }[],
-  user: {
-    id: string;
-    first_name: string;
-  };
-  situacao_no_reino: {
-    id: string;
-    nome: string;
-  };
-}
-
-export interface CelulaData {
-  id: string;
-  nome: string;
-  membros: Membro[];
-  lider: {
-    id: string;
-    first_name: string;
-  };
-  supervisao: {
-    id: string;
-    nome: string;
-  };
-  date_que_ocorre: boolean;
-}
-
-export interface ListMembersCelulaProps {
-  data: CelulaData;
-}
-
-
-export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps) {
->>>>>>> e89915e (DB: add two tabels, discipualdor, discipulos  and discipulados):src/components/listMembersDicipulados/index.tsx
   const [shouldFetch, setShouldFetch] = useState<boolean>(false)
 
   const handlePageChange = (newPage: number) => {
@@ -121,22 +68,21 @@ export default function ListMembersDiscipulados({ data }: ListMembersCelulaProps
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
-                            user.situacao_no_reino?.nome === 'Ativo'
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === 'Ativo'
                               ? 'bg-green-100  text-green-700 ring-green-600/20'
                               : user.situacao_no_reino?.nome === 'Normal'
                                 ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
                                 : user.situacao_no_reino?.nome === 'Frio'
                                   ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
                                   : 'bg-red-100  text-red-700 ring-red-600/20'
-                          }`}
+                            }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span className="items-center hidden px-2 py-1 text-xs font-medium text-gray-700 rounded-md bg-gray-50 ring-1 ring-inset ring-gray-600/20 sm:table-cell">
-                          {user?.discipulador_usuario_discipulador_usuario_discipulador_idTouser[0]?.user_discipulador_usuario_usuario_idTouser?.first_name}
+                          {user?.user?.first_name}
                         </span>
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
