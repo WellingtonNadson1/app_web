@@ -19,7 +19,7 @@ interface FolderLessonData {
   titulo: string
   TemaLicaoCelula: { folderName: string }
   versiculo_chave: string
-  licao_lancando_redes: boolean
+  licao_lancando_redes: boolean | null
   data_inicio: string | Date
   data_termino: string | Date
   link_objeto_aws?: string
@@ -335,134 +335,6 @@ export async function PUT(request: Request) {
     )
   }
 }
-
-// export async function PATCH(request: Request) {
-//   const formData = await request.formData();
-//   const statusDataForm = formData.get("status") === 'true'
-//   const id = formData.get("id") as string
-//   console.log('status FormData: ', statusDataForm)
-//   console.log('id FormData: ', id)
-
-//   if (!statusDataForm && !id) {
-//     return NextResponse.json({ message: "STATUS and ID is required" }, { status: 400 });
-//   }
-
-//   const prisma = createPrismaInstance();
-
-//   if (!prisma) {
-//     throw new Error("Prisma instance is null");
-//   }
-
-//   try {
-//     const temaRegister = await prisma?.temaLicaoCelula.findUnique({
-//       where: {
-//         id: id
-//       },
-//       select: {
-//         id: true,
-//         status: true,
-//         tema: true,
-//         versiculo_chave: true,
-//         folderName: true,
-//         data_inicio: true,
-//         data_termino: true,
-//         link_objeto_aws: true
-//       }
-//     })
-
-//     if (!temaRegister) {
-//       throw new Error("TEMA not found.");
-//     }
-
-//     console.log('temaRegister: ', temaRegister)
-
-//     const result = await prisma?.temaLicaoCelula.update({
-//       where: {
-//         id: id,
-//       },
-//       data: {
-//         status: statusDataForm
-//       }
-//     });
-
-//     console.log('result Update Status: ', result)
-
-//     await disconnectPrisma();
-//     return NextResponse.json({ message: "Status do Tema de Lição ATUALIZADO" }, { status: 200 });
-//   }
-//   catch (error) {
-//     await disconnectPrisma();
-//     console.log('Error in Update Status Tema: ', error)
-//     return NextResponse.json({ message: 'Error in Update Status Tema' }, { status: 500 });
-//   }
-// }
-
-// export async function DELETE(request: Request) {
-//   const { searchParams } = new URL(request.url)
-//   const id = searchParams.get("temaLicaoCelulaId")
-
-//   if (!id) {
-//     return NextResponse.json({ message: "ID is required" }, { status: 400 });
-//   }
-
-//   try {
-//     const prisma = createPrismaInstance();
-
-//     if (!prisma) {
-//       throw new Error("Prisma instance is null");
-//     }
-
-//     try {
-//       const getFolderNameTema = await prisma?.temaLicaoCelula.findUnique({
-//         where: {
-//           id: id
-//         },
-//         select: {
-//           folderName: true
-//         }
-//       })
-
-//       if (!getFolderNameTema || !getFolderNameTema.folderName) {
-//         throw new Error("Folder name not found.");
-//       }
-
-//       console.log('getFolderNameTema', getFolderNameTema.folderName)
-
-//       // Verifica se o folderName termina com "/"
-//       const folderName = getFolderNameTema.folderName.endsWith("/")
-//         ? getFolderNameTema.folderName
-//         : `${getFolderNameTema.folderName}/`;
-
-//       const params = {
-//         Bucket: process.env.AWS_S3_BUCKET_NAME,
-//         Key: folderName
-//       }
-
-//       console.log('folderName', folderName)
-//       console.log('params', params)
-
-//       const command = new DeleteObjectCommand(params)
-//       await s3.send(command)
-
-//       console.log(`Folder ${folderName} deleted successfully.`);
-//     } catch (error) {
-//       console.error("Error deleting folder:", error);
-//       throw new Error(`Could not delete folder ${id}`);
-//     }
-
-//     const result = await prisma?.temaLicaoCelula.delete({
-//       where: {
-//         id: id,
-//       },
-//     });
-//     await disconnectPrisma();
-
-//     return NextResponse.json({ message: "Tema de Lição DELETADO" }, { status: 200 });
-//   } catch (error) {
-//     await disconnectPrisma();
-//     return NextResponse.json({ message: 'Error get theme lesson' }, { status: 500 });
-//   }
-// }
 
 export async function DELETE(request: Request) {
   const { searchParams } = new URL(request.url)
