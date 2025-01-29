@@ -1,4 +1,10 @@
 {
   "/@breadcrumbs/[...catchAll]/page": "app/@breadcrumbs/[...catchAll]/page.js",
-  "/(central)/agenda-igreja/page": "app/(central)/agenda-igreja/page.js"
+  "/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page": "app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/page.js",
+  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
+  "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": "app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
+  "/(central)/cultos/page": "app/(central)/cultos/page.js",
+  "/(central)/agenda-igreja/page": "app/(central)/agenda-igreja/page.js",
+  "/api/agenda-ibb-service/create-evento-agenda/route": "app/api/agenda-ibb-service/create-evento-agenda/route.js"
 }
