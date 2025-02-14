@@ -12,7 +12,6 @@ import { useEffect, useState } from 'react'
 import LicoesCelulaSkeleton from './Skeleton-Licoes-Celula'
 import { Card } from './ui/card'
 import { useSession } from 'next-auth/react'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 dayjs.extend(utc)
 dayjs.extend(timezone)

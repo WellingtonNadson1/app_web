@@ -23,8 +23,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { cn } from '@/lib/utils'
 import { useData } from '@/providers/providers'
 import { CalendarIcon } from '@heroicons/react/24/outline'
@@ -46,6 +44,8 @@ import {
   MemberDataDiscipulado,
   MembersDataDiscipulado,
 } from './schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale(ptBr)
@@ -53,7 +53,8 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function DiscipuladosRelatoriosSupervisoes() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =

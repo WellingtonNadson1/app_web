@@ -5,12 +5,17 @@ import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { columns } from './table-temas-licoes-celulas/columns'
 import { DataTableTemasLicoesCelula } from './table-temas-licoes-celulas/data-table-licoes-celulas'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function LicoesCelula() {
   const URLTemasLicoesCelula = `/api/licoes-celula/create-tema-folder`
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const getTemasLicoesCelula = async () => {
-    const { data } = await axios.get(URLTemasLicoesCelula)
+    const { data } = await axiosAuth.get(URLTemasLicoesCelula)
     return data
   }
 

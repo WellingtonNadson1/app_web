@@ -13,7 +13,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Spinner, User } from '@phosphor-icons/react/dist/ssr'
@@ -28,6 +27,7 @@ import {
   attendance,
   attendanceSchema,
 } from '../../schema'
+import { BASE_URL } from '@/lib/axios'
 
 function isError(error: unknown): error is Error {
   return error instanceof Error
@@ -40,7 +40,6 @@ export default function ControlePresenceSupervisorFirst({
 }: ControlePresencaSupervisorProps) {
   const URLControlePresenca = `${BASE_URL}/presencacultos`
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
-  // const { handleSubmit, register } = useForm<attendance>()
   const { data: session } = useSession()
   const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const queryClient = useQueryClient()

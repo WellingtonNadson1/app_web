@@ -10,9 +10,10 @@ import {
 } from '@/components/ui/dialog'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 export default function DeleteTemaLIcaoCelula({
@@ -26,9 +27,12 @@ export default function DeleteTemaLIcaoCelula({
 
   const deleteMemberFunction = async (temaLicaoCelulaId: string) => {
     const URLTemasLicoesCelula = `/api/licoes-celula/create-tema-folder/?temaLicaoCelulaId=${temaLicaoCelulaId}`
+    const { data: session } = useSession()
+    const token = session?.user?.token as string
+    const axiosAuth = useAxiosAuth(token)
 
     try {
-      const response = await axios.delete(URLTemasLicoesCelula)
+      const response = await axiosAuth.delete(URLTemasLicoesCelula)
       toast({
         title: 'Sucesso!!!',
         description: 'Tema de Lição DELETADO com Sucesso!!! 🧨',

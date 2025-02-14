@@ -1,14 +1,16 @@
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { errorCadastro, success } from '@/functions/functions'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FormRelatorioSchema, ISupervisoes } from './schema'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 function FormRelatorio() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
   const URLSupervisoes = `${BASE_URL}/supervisoes`
 

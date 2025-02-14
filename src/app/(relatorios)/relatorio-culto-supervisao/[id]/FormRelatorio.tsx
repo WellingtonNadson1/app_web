@@ -1,16 +1,17 @@
+'use client'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { errorCadastro, success } from '@/functions/functions'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import React, { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import { FormRelatorioSchema, ISupervisoes } from './schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 function FormRelatorio() {
-  const { data: session } = useSession()
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
   const URLSupervisoes = `${BASE_URL}/supervisoes`
@@ -20,7 +21,9 @@ function FormRelatorio() {
   const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
 
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const onSubmit: SubmitHandler<FormRelatorioSchema> = async ({
     superVisionId,

@@ -18,7 +18,6 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, User } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -30,6 +29,7 @@ import {
   FormSchema,
   dataForms,
 } from '../ControlePresenceFirst/shcema-controle-first-presence'
+import { BASE_URL } from '@/lib/axios'
 
 function isError(error: unknown): error is Error {
   return error instanceof Error

@@ -6,8 +6,6 @@ import { Meeting } from '@/app/(celula)/celula/schema'
 import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
@@ -20,11 +18,13 @@ import ControlePresenceSupervisorFirst from './_components/ControlePresenceSuper
 import ControlePresenceSupervisorSecond from './_components/ControlePresenceSupervisorSecond'
 import HeaderSupervisao from './HeaderSupervisao'
 import HeaderSupervisorLoad from './loadingUi'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ControleSupervisor() {
   const { data: session } = useSession()
-
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
 

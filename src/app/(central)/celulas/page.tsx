@@ -1,11 +1,11 @@
 'use client'
 import { Toaster } from '@/components/ui/toaster'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { columns } from './table-celulas/columns'
 import { DataTableCelulas } from './table-celulas/data-table-ucelulas'
+import { BASE_URL } from '@/lib/axios'
 
 export default function Celulas() {
   const { data: session } = useSession()
@@ -21,7 +21,6 @@ export default function Celulas() {
     data: celulas,
     isLoading,
     isSuccess,
-    error,
   } = useQuery({
     queryKey: ['allCelulasIbb'],
     queryFn: getCelulas,
@@ -32,6 +31,7 @@ export default function Celulas() {
     <>
       <Toaster />
       {/* <AddNewCelula /> */}
+      {isLoading && <div>carregando...</div>}
       {isSuccess && celulas && (
         <div className="relative z-10 px-2 mt-2">
           <DataTableCelulas columns={columns} data={celulas as any} />

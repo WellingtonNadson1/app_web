@@ -1,8 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { cn } from '@/lib/utils'
 import { useData } from '@/providers/providers'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -20,6 +18,8 @@ import {
   MemberDataDiscipulado,
   MembersDataDiscipulado,
 } from './schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale(ptBr)
@@ -27,7 +27,8 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function DiscipuladosRelatoriosSupervisor() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =

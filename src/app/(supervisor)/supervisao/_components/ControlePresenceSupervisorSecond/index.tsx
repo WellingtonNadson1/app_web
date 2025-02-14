@@ -1,7 +1,7 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { Badge } from '@/components/ui/badge'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { errorCadastro, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
@@ -10,6 +10,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ControlePresencaSupervisorProps, attendance } from '../../schema'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ControlePresenceSupervisorSecond({
   id,

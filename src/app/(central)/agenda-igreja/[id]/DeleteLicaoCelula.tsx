@@ -10,9 +10,10 @@ import {
 } from '@/components/ui/dialog'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 export default function DeleteLIcaoCelula({
@@ -26,9 +27,11 @@ export default function DeleteLIcaoCelula({
 
   const deleteLicaoFunction = async (licaoCelulaId: string) => {
     const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula/?licaoCelulaId=${licaoCelulaId}`
-
+    const { data: session } = useSession()
+    const token = session?.user?.token as string
+    const axiosAuth = useAxiosAuth(token)
     try {
-      const response = await axios.delete(URLLicoesCelula)
+      const response = await axiosAuth.delete(URLLicoesCelula)
       toast({
         title: 'Sucesso!!!',
         description: 'Lição DELETADA com Sucesso!!! 🧨',

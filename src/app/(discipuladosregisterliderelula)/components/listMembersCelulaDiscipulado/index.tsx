@@ -2,9 +2,6 @@
 import Pagination from '@/components/Pagination'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr'
 import { useQuery } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -16,6 +13,9 @@ import {
   dataSchemaGetDiscipuladoAllCell,
   dataSchemaReturnExistDiscipuladoAllCell,
 } from './schema'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function ListMembersCelulaDiscipulado({
   data,
@@ -27,8 +27,10 @@ export default function ListMembersCelulaDiscipulado({
   // Pagination
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
-  const { token } = useUserDataStore.getState()
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
+
   const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberscell/existing-register`
 
   const GetAllRegisterDiscipuladoCell = async (

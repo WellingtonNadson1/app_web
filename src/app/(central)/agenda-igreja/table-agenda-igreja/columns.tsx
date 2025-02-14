@@ -25,7 +25,6 @@ import { cn } from '@/lib/utils'
 import { CalendarHeart } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import { ArrowUpDown, Check, ChevronDown, MoreHorizontal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -34,6 +33,8 @@ import { z } from 'zod'
 import DeleteEventoAgenda from '../DeleteEventoAgenda'
 import UpdateAgendaIgreja from '../UpdateAgendaIgreja'
 import { allAgendaReturnSchemaTable } from './schema'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export const columns: ColumnDef<z.infer<typeof allAgendaReturnSchemaTable>>[] = [
   // Status
@@ -77,7 +78,10 @@ export const columns: ColumnDef<z.infer<typeof allAgendaReturnSchemaTable>>[] = 
         values: updateStatusProps,
       ) => {
         console.log('values', values)
-        const response = await axios.patch(
+        const { data: session } = useSession()
+        const token = session?.user?.token as string
+        const axiosAuth = useAxiosAuth(token)
+        const response = await axiosAuth.patch(
           URLApi,
           {
             id: values.idEventoAgenda,

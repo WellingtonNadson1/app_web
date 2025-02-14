@@ -1,12 +1,12 @@
 'use client'
 import { CelulaData } from '@/components/listMembersCelula'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { useSession } from 'next-auth/react'
 import { columns } from '../table-users-celula/columns'
 import { DataTableUsersCelula } from '../table-users-celula/data-table-users-celula'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
@@ -14,7 +14,8 @@ export default function ControleCelulaSupervision({
   params: { celulaId: string }
 }) {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const URL = `${BASE_URL}/celulas/${celulaId}`
 

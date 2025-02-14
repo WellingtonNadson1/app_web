@@ -10,9 +10,10 @@ import {
 } from '@/components/ui/dialog'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 
 export default function DeleteEventoAgenda({
@@ -23,12 +24,15 @@ export default function DeleteEventoAgenda({
   NomeEvento: string
 }) {
   const queryClient = useQueryClient()
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const deleteEventoAgendaFunction = async (eventoAgendaId: string) => {
     const URLTemasLicoesCelula = `/api/agenda-ibb-service/create-evento-agenda/?eventoAgendaId=${eventoAgendaId}`
 
     try {
-      const response = await axios.delete(URLTemasLicoesCelula)
+      const response = await axiosAuth.delete(URLTemasLicoesCelula)
       toast({
         title: 'Sucesso!!!',
         description: 'Evento da Agenda DELETADO com Sucesso!!! 🧨',

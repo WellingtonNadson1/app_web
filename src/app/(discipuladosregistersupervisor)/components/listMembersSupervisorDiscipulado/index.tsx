@@ -3,8 +3,6 @@ import Scheleton from '@/app/(discipuladosregisterliderelula)/components/listMem
 import Pagination from '@/components/Pagination'
 import { Badge } from '@/components/ui/badge'
 import { Card } from '@/components/ui/card'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr'
 import { useQuery } from '@tanstack/react-query'
@@ -16,6 +14,9 @@ import {
   dataSchemaGetDiscipuladoAllSupervisor,
   dataSchemaReturnExistDiscipuladoAllCell,
 } from './schema'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   // console.log('data', data)
@@ -25,8 +26,9 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   // Pagination
   const itemsPerPage = 10
   const [currentPage, setCurrentPage] = useState(1)
-  const { token } = useUserDataStore.getState()
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberssupervisor/existing-register`
 
   const GetAllRegisterDiscipuladoCell = async (

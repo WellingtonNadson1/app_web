@@ -45,7 +45,6 @@ import {
 } from '@/components/ui/select'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
@@ -66,7 +65,7 @@ import { z } from 'zod'
 import type { TUser } from './table-users/schema'
 import { userSchemaTable } from './table-users/schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
-import { MemberOf } from '@phosphor-icons/react'
+import { BASE_URL } from '@/lib/axios'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 

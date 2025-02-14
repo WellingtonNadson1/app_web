@@ -1,10 +1,8 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
 import Modal from '@/components/modal'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { errorCadastro, success } from '@/functions/functions'
 import { handleZipCode } from '@/functions/zipCodeUtils'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
 import dayjs from 'dayjs'
@@ -13,6 +11,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { FormCelula, Member, SupervisaoData, User } from './schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { useSession } from 'next-auth/react'
+import { BASE_URL } from '@/lib/axios'
 
 export default function UpdateCelula({
   celulaId,
@@ -24,7 +25,9 @@ export default function UpdateCelula({
   const URLSupervisoes = `${BASE_URL}/supervisoes`
   const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
   const URLCelulas = `${BASE_URL}/celulas`
-  const { token } = useUserDataStore.getState()
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
@@ -35,7 +38,6 @@ export default function UpdateCelula({
     User[]
   >([])
   const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const axiosAuth = useAxiosAuthToken(token)
   const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
 
   const { data: dataCelula } = useQuery<FormCelula>({

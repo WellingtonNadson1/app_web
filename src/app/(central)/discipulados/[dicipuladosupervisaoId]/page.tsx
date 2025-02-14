@@ -1,6 +1,5 @@
 'use client'
 import { ICelula } from '@/components/ListCelulas'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useCombinedStore } from '@/store/DataCombineted'
 import { useQuery } from '@tanstack/react-query'
@@ -11,6 +10,7 @@ import TableSkeletonDiscipulosSupervisor from './supervisor/[supervisorId]/table
 import { columns } from './supervisores/table-discipulos-supervisores/columns'
 import { DataTableDiscipulosSUpervisores } from './supervisores/table-discipulos-supervisores/data-table-discipulos-supervisores'
 import { TSupervisor } from './supervisores/table-discipulos-supervisores/schema'
+import { BASE_URL } from '@/lib/axios'
 
 interface IUser {
   id: string

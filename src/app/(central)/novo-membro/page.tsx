@@ -1,7 +1,5 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { UserFocus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
@@ -11,10 +9,12 @@ import { z } from 'zod'
 import { columns } from './table-users/columns'
 import { DataTableUsers } from './table-users/data-table-users'
 import { userSchemaTable } from './table-users/schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 export default function NovoMembro() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const URL = `${BASE_URL}/users`
 

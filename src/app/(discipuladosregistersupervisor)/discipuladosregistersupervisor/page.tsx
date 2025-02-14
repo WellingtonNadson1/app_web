@@ -1,6 +1,6 @@
 /* eslint-disable camelcase */
 import { auth } from '@/auth'
-import { axiosAuthToken } from '@/lib/axios'
+import axiosAuth from '@/lib/axios'
 import axios from 'axios'
 import ListMembersSupervisorDiscipulado from '../components/listMembersSupervisorDiscipulado'
 import HeaderDiscipuladosSupervisor from './HeaderDiscipuladosSupervisor'
@@ -20,7 +20,7 @@ export default async function DiscipuladosSupervisor() {
 
   const UserData = async () => {
     try {
-      const { data } = await axiosAuthToken.get(URLUser, config)
+      const { data } = await axiosAuth.get(URLUser, config)
       return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

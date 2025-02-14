@@ -25,7 +25,6 @@ import { cn } from '@/lib/utils'
 import { MagnifyingGlass, Notepad } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { ColumnDef } from '@tanstack/react-table'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import { ArrowUpDown, Check, ChevronDown, MoreHorizontal } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -34,6 +33,8 @@ import { z } from 'zod'
 import DeleteTemaLIcaoCelula from '../DeleteTemaLicaoCelula'
 import UpdateTemaLicoesCelula from '../UpdateTemaLicoesCelula'
 import { allTemaReturnSchemaTable } from './schema'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
   // Status
@@ -76,8 +77,13 @@ export const columns: ColumnDef<z.infer<typeof allTemaReturnSchemaTable>>[] = [
       const updateStatusTemaLicaoCelulaFunction = async (
         values: updateStatusProps,
       ) => {
+        const { data: session } = useSession()
+        const token = session?.user?.token as string
+        const axiosAuth = useAxiosAuth(token)
+
         console.log('values', values)
-        const response = await axios.patch(
+
+        const response = await axiosAuth.patch(
           URLApi,
           {
             id: values.idTema,

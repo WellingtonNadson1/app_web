@@ -1,6 +1,6 @@
 'use client'
 import Modal from '@/components/modal'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { errorCadastro, success } from '@/functions/functions'
 import { handleZipCode } from '@/functions/zipCodeUtils'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useData } from '@/providers/providers'
@@ -17,6 +17,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Member } from './schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
+import { BASE_URL } from '@/lib/axios'
 
 function AddNewMember() {
   const { data: session } = useSession()

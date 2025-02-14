@@ -1,11 +1,9 @@
 /* eslint-disable camelcase */
-// import { getServerSession } from 'next-auth'
-// import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import { auth } from '@/auth'
-import { axiosAuthToken } from '@/lib/axios'
-import axios from 'axios'
+import axiosAuth from '@/lib/axios'
 import ListMembersCelulaDiscipulado from '../components/listMembersCelulaDiscipulado'
 import HeaderCelulaDiscipulados from './HeaderCelulaDiscipulados'
+import axios from 'axios'
 
 export default async function DiscipuladosCelula() {
   const session = await auth()
@@ -18,13 +16,11 @@ export default async function DiscipuladosCelula() {
   }
 
   const celulaId = session?.user?.celulaId
-  // const URLCelula = `https://backibb-production.up.railway.app/celulas/${celulaId}`
-  // const URLCelula = `https://app-ibb.onrender.com/celulas/${celulaId}`;
   const URLCelula = `https://back-ibb.vercel.app/celulas/${celulaId}`
 
   const CelulaData = async () => {
     try {
-      const { data } = await axiosAuthToken.get(URLCelula, config)
+      const { data } = await axiosAuth.get(URLCelula, config)
       return data
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {

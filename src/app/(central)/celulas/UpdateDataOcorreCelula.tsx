@@ -31,9 +31,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { CalendarCheck, Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { useState } from 'react'
@@ -42,6 +39,9 @@ import 'react-toastify/dist/ReactToastify.css'
 import { z } from 'zod'
 import { celulaDtaUpdate, celulaSchemaTableDateUpdate } from './schema'
 import { celulaSchemaTable } from './table-celulas/schema'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function UpdateDataOcorreCelula({
   date_que_ocorre,
@@ -51,9 +51,10 @@ export default function UpdateDataOcorreCelula({
   const queryClient = useQueryClient()
   const celulaId = id
   const URLCelulas = `${BASE_URL}/celulas`
-  const { token } = useUserDataStore.getState()
   const [open, setOpen] = useState(false)
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const daysWeek = [
     { label: 'Domingo', value: '0' },

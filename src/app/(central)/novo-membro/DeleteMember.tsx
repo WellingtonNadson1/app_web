@@ -133,7 +133,7 @@ import {
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL } from '@/lib/axios'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'

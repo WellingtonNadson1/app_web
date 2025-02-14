@@ -26,9 +26,6 @@ import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
@@ -40,6 +37,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import 'react-toastify/dist/ReactToastify.css'
 import { z } from 'zod'
 import { dataUpdateDiscipulador2, schemaDataUpdateDiscipulador2, UpdateSupervisorProps2 } from './schema'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -58,16 +58,16 @@ interface User {
 }
 
 export default function UpdateDiscipuladoSupervisor2(props: UpdateSupervisorProps2) {
-  const { token } = useUserDataStore.getState()
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLUsers = `${BASE_URL}/users/alldiscipulados`
-  const URLUpdateDiscipulador = `${BASE_URL_LOCAL}/users/discipulador`
+  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
 
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
   const [queryUpDate, setQueryUpDate] = useState('')
-
-  const axiosAuth = useAxiosAuthToken(token)
 
   const form = useForm<dataUpdateDiscipulador2>()
 

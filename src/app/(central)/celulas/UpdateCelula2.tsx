@@ -39,11 +39,8 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { cn } from '@/lib/utils'
 import { useCombinedStore } from '@/store/DataCombineted'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { CalendarIcon } from '@heroicons/react/24/outline'
 import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -60,6 +57,9 @@ import {
   SupervisaoData,
   UserCombobox,
 } from './schema'
+import { useSession } from 'next-auth/react'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -89,7 +89,6 @@ const handleZipCode = async (
 }
 
 export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
-  const { token } = useUserDataStore.getState()
   const { toast } = useToast()
   const queryClient = useQueryClient()
   const [open, setOpen] = useState(false)
@@ -99,10 +98,11 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     UserCombobox[]
   >([])
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`
-  const URLCelulas = `${BASE_URL}/celulas`
   const URLSupervisoes = `${BASE_URL}/supervisoes`
 
   const daysWeek = [

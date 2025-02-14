@@ -1,10 +1,10 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 const ResponseSchema = z.object({
   data: z.string().array(),
@@ -15,7 +15,8 @@ type ApiResponse = z.infer<typeof ResponseSchema>
 export default function AvisoLicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
     queryFn: () => axiosAuth.get(URLLicoesCelula),

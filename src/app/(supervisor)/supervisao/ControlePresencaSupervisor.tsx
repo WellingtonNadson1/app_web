@@ -1,6 +1,7 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, success } from '@/functions/functions'
+import { success } from '@/functions/functions'
+import { BASE_URL } from '@/lib/axios'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { UserFocus } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'

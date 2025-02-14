@@ -20,13 +20,14 @@ import {
 import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { format } from 'date-fns'
 import dayjs from 'dayjs'
 import { CalendarIcon, Loader2, Upload } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -96,7 +97,11 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
     values: z.infer<typeof formSchema>,
   ) => {
     console.log('values', values)
-    const response = await axios.put(
+    const { data: session } = useSession()
+    const token = session?.user?.token as string
+    const axiosAuth = useAxiosAuth(token)
+
+    const response = await axiosAuth.put(
       URLApi,
       {
         ...values,

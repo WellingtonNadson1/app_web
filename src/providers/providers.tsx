@@ -1,5 +1,4 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import {
   QueryClient,
@@ -9,6 +8,7 @@ import {
 import { SessionProvider, useSession } from 'next-auth/react'
 import React, { createContext, useContext } from 'react'
 import { DataCombineted } from './schema'
+import { BASE_URL } from '@/lib/axios'
 
 interface IProps {
   children: React.ReactNode

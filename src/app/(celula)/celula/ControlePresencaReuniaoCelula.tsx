@@ -3,8 +3,7 @@
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { errorCadastro } from '@/functions/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { UserFocus } from '@phosphor-icons/react'
 import { Spinner } from '@phosphor-icons/react/dist/ssr'
@@ -28,6 +27,8 @@ import {
   reuniaoCelulaUpdateSchema,
 } from './schema'
 import { z } from 'zod'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -72,10 +73,9 @@ export default function ControlePresencaReuniaoCelula({
     },
   });
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const [successRegisterPresence, setSuccessRegisterPresence] = useState(false);
-
-  const token = session?.user?.token
 
   const queryClient = useQueryClient()
 

@@ -21,12 +21,13 @@ import { Switch } from '@/components/ui/switch'
 import { Textarea } from '@/components/ui/textarea'
 import { Toaster } from '@/components/ui/toaster'
 import { useToast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
 import { format } from 'date-fns'
 import dayjs from 'dayjs'
 import { CalendarIcon, Loader2, Upload } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { useState } from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
@@ -89,7 +90,10 @@ export function LicaoRegistrationForm({
     if (values) {
       console.log('values', values)
     }
-    const response = await axios.post(
+    const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
+    const response = await axiosAuth.post(
       URLApi,
       {
         ...values,

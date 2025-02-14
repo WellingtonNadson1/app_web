@@ -19,12 +19,14 @@ import {
 } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import axios from 'axios'
 import { format } from 'date-fns'
 import dayjs from 'dayjs'
 import { CalendarIcon, Loader2 } from 'lucide-react'
+import { useSession } from 'next-auth/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as z from 'zod'
 
@@ -68,6 +70,9 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
   const queryClient = useQueryClient()
   const URLApi = '/api/licoes-celula/create-tema-folder'
   const { toast } = useToast()
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
@@ -87,7 +92,7 @@ export function ThemeUpdateForm({ temaData }: ThemeUpdateFormProps) {
     values: z.infer<typeof formSchema>,
   ) => {
     console.log('values', values)
-    const response = await axios.put(
+    const response = await axiosAuth.put(
       URLApi,
       {
         id: temaData.id,

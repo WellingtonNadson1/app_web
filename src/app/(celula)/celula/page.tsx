@@ -4,8 +4,6 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula'
 import LicoesCelula from '@/components/LicoesCelula'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { Card } from '@/components/ui/card'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
@@ -23,13 +21,15 @@ import CalendarLoading from './loadingUi/CalendarLoading'
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading'
 import LicoesLoading from './loadingUi/LicoesLoading'
 import { CelulaProps, Meeting } from './schema'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function ControleCelulaSupervision() {
   const [presenceIsRegister, setPresenceIsRegister] = useState(false)
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
   useState(false)
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const celulaId = session?.user.celulaId
 

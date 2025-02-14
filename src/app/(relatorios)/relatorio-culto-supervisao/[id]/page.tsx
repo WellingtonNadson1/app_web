@@ -23,8 +23,6 @@ import {
   SelectValue,
 } from '@/components/ui/select'
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { cn } from '@/lib/utils'
 import { useData } from '@/providers/providers'
 import { CalendarIcon } from '@heroicons/react/24/outline'
@@ -47,6 +45,8 @@ import {
   Pessoa,
   PresencaForDate,
 } from './schema'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 dayjs.extend(localizedFormat)
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -55,7 +55,8 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function StatsCardRelatorios() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`

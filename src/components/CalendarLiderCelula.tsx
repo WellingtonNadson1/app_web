@@ -1,8 +1,6 @@
 'use client'
 import { Meeting } from '@/app/(celula)/celula/schema'
 import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { Player } from '@lordicon/react'
 import { BookBookmark, Cross, Student } from '@phosphor-icons/react'
@@ -28,6 +26,9 @@ import { useEffect, useRef, useState } from 'react'
 import { z } from 'zod'
 import SpinnerButton from './spinners/SpinnerButton'
 import { Card } from './ui/card'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -48,9 +49,9 @@ function classNames(...classes: string[]) {
 export default function CalendarLiderCelula() {
   const today = startOfToday()
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
-  const { token } = useUserDataStore.getState()
-
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const [selectedDay, setSelectedDay] = useState(today)
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))

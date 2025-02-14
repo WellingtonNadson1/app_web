@@ -7,17 +7,6 @@ import 'react-toastify/dist/ReactToastify.css'
 
 export interface FetchError extends AxiosError {}
 
-// const hostname = 'backibb-production.up.railway.app'
-// const hostname = 'app-ibb.onrender.com'
-// const hostname = "back-ibb.vercel.app";
-// const hostnameLocal = "localhost:8080";
-
-
-export const BASE_URL =
-  process.env.NEXT_PUBLIC_HOSTNAME_URL
-export const BASE_URL_LOCAL =
-  process.env.NEXT_PUBLIC_HOSTNAME_URL_LOCAL
-
 export async function fetchWithToken(
   url: string,
   methodType: 'GET' | 'POST' | 'PUT' | 'DELETE', // Aceita os tipos de método axios permitidos

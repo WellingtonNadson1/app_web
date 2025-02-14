@@ -4,10 +4,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { cn } from '@/lib/utils'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { Disclosure } from '@headlessui/react'
 import { CheckFat, Warning } from '@phosphor-icons/react'
 import { Spinner } from '@phosphor-icons/react/dist/ssr'
@@ -21,6 +18,9 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { dataCreateDiscipulado, MembroCell } from './schema'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -30,8 +30,9 @@ interface PropsForm {
 }
 export default function FormSecondDiscipulado({ membro }: PropsForm) {
   const queryClient = useQueryClient()
-  const { token } = useUserDataStore.getState()
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
   const discipulador =
     membro?.discipulador?.[0]?.user_discipulador?.first_name || 'Sem Registro'

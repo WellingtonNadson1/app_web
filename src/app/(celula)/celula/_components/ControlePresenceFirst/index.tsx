@@ -1,6 +1,6 @@
 'use client'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
+import { errorCadastro, success } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { User } from '@phosphor-icons/react'
 import ProgressBar from '@ramonak/react-progress-bar'
@@ -11,6 +11,7 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { ControlePresencaCelulaProps, attendance } from '../../schema'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ControlePresenceFirst({
   id,
