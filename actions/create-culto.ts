@@ -1,7 +1,7 @@
 'use server'
 
 import { auth } from '@/auth'
-import { BASE_URL } from '@/functions/functions'
+import { BASE_URL } from '@/lib/axios'
 import axios from 'axios'
 import { revalidatePath } from 'next/cache'
 
