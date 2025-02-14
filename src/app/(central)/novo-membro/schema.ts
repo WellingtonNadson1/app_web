@@ -153,14 +153,14 @@ export interface ReturnMembers {
   telefone: string
   escolaridade: string
   profissao: string
-  batizado: string
+  batizado: boolean
   date_batizado: Date
-  is_discipulado: string
+  is_discipulado: boolean
   discipuladorId: string
   estado_civil: string
   nome_conjuge: string
   date_casamento: Date
-  has_filho: string
+  has_filho: boolean
   quantidade_de_filho: number
   date_decisao: Date
   cep: string
