@@ -150,7 +150,7 @@ function DeleteMember({
   const queryClient = useQueryClient()
 
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const deleteMemberFunction = async (MemberId: string) => {
     const URLMember = `${BASE_URL}/users/${memberId}`

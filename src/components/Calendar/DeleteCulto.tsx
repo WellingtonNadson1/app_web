@@ -28,7 +28,7 @@ function DeleteCulto({
   const queryClient = useQueryClient()
 
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const deleteCultoFunction = async (cultoId: string) => {
     const URLCultosInd = `${BASE_URL}/cultosindividuais/${cultoId}`

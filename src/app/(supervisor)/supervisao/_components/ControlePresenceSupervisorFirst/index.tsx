@@ -42,7 +42,7 @@ export default function ControlePresenceSupervisorFirst({
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
   // const { handleSubmit, register } = useForm<attendance>()
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const queryClient = useQueryClient()
   const [progress, setProgress] = useState<number>(0)
   const [isCompleted, setIsCompleted] = useState(false)
@@ -272,13 +272,13 @@ export default function ControlePresenceSupervisorFirst({
                           >
                             <>
                               <Separator
-                                key={session?.user.id}
+                                key={session?.user?.id}
                                 className=" bg-gray-200 w-full"
                               />
 
                               <div
                                 className="grid sm:grid-cols-6 grid-cols-4 items-center justify-between"
-                                key={session?.user.first_name}
+                                key={session?.user?.first_name}
                               >
                                 <div className="col-span-2 w-full grid grid-cols-2 gap-2 items-center justify-between">
                                   {/* Nome */}
@@ -288,7 +288,7 @@ export default function ControlePresenceSupervisorFirst({
                                         <User size={20} />
                                       </div>
                                       <h2 className="sm:ml-2 truncate">
-                                        {session?.user.first_name}
+                                        {session?.user?.first_name}
                                       </h2>
                                     </div>
                                   </div>

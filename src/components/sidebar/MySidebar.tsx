@@ -20,7 +20,7 @@ export default function MySidebar() {
   const pathAtual = usePathname()
   const { data: session, status } = useSession()
   const { user_roles } = useUserDataStore.getState()
-  const roles = session?.user.user_roles
+  const roles = session?.user?.user_roles
 
   const handleLogout = () => {
     // Clear the store from localStorage

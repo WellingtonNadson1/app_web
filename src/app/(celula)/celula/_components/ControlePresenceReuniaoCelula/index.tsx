@@ -43,7 +43,7 @@ export function RegisterPresenceFormReuniaoCelula({
   celula,
 }: ControlePresencaCelulaProps) {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const [progress, setProgress] = useState<number>(0)
   const [isCompleted, setIsCompleted] = useState(false)
   const timerRef = useRef<NodeJS.Timeout | null>(null)

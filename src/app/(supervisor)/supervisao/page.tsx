@@ -24,7 +24,7 @@ import HeaderSupervisorLoad from './loadingUi'
 export default function ControleSupervisor() {
   const { data: session } = useSession()
 
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
 
@@ -143,7 +143,7 @@ export default function ControleSupervisor() {
                                     id={selectedDayMeetings[0].id}
                                     key={selectedDayMeetings[0].id}
                                     culto={selectedDayMeetings[0].id}
-                                    supervisorId={session?.user.id}
+                                    supervisorId={session?.user?.id}
                                   />
                                 </Disclosure.Panel>
                               </>
@@ -235,7 +235,7 @@ export default function ControleSupervisor() {
                                         id={selectedDayMeetings[1]?.id}
                                         key={selectedDayMeetings[1]?.id}
                                         culto={selectedDayMeetings[1]?.id}
-                                        supervisorId={session?.user.id}
+                                        supervisorId={session?.user?.id}
                                       />
                                     </Disclosure.Panel>
                                   </>

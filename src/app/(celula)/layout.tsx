@@ -30,18 +30,18 @@ export default async function RootLayout({
     // Signed in
     return redirect('/login', RedirectType.replace)
   }
-  const id = session?.user.id
-  const role = session?.user.role
-  const user_roles = session?.user.user_roles
-  const email = session?.user.token
-  const image_url = session?.user.image_url
-  const first_name = session?.user.first_name
-  const token = session?.user.token
-  const refreshToken = session?.user.refreshToken
+  const id = session?.user?.id
+  const role = session?.user?.role
+  const user_roles = session?.user?.user_roles
+  const email = session?.user?.token
+  const image_url = session?.user?.image_url
+  const first_name = session?.user?.first_name
+  const token = session?.user?.token
+  const refreshToken = session?.user?.refreshToken
 
   return (
     <html lang="pt">
-      <body>
+      <body suppressHydrationWarning>
         <div>
           <div className="absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
@@ -72,7 +72,7 @@ export default async function RootLayout({
                   speed={200}
                   shadow="0 0 10px #FFFF00,0 0 5px #FFFF00"
                 />
-                <div className="w-full px-2 mx-auto">{children}</div>
+                <div suppressHydrationWarning className="w-full px-2 mx-auto">{children}</div>
               </Providers>
             </SidebarProvider>
           </div>

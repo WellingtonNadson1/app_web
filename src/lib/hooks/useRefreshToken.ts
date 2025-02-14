@@ -9,9 +9,9 @@ export const useRefreshToken = () => {
   const { data: session, update } = useSession()
 
   const refreshToken = async () => {
-    if (session?.user.token && session?.user.refreshToken) {
+    if (session?.user?.token && session?.user?.refreshToken) {
       // Verificar se o token de acesso expirou
-      const decoded = decode(session?.user.token)
+      const decoded = decode(session?.user?.token)
       console.log('decoded: ', decoded)
       if (typeof decoded === 'object' && decoded !== null && 'exp' in decoded) {
         if (decoded.exp !== undefined) {
@@ -21,7 +21,7 @@ export const useRefreshToken = () => {
 
           if (isTokenExpired) {
             const response = await axios.post('/refresh-token', {
-              refresh_token: session?.user.refreshToken.id,
+              refresh_token: session?.user?.refreshToken.id,
             })
             const newToken = response.data
             console.log('New Token Function Refresh', newToken)

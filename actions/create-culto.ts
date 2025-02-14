@@ -13,7 +13,7 @@ export async function createcultosTest(formaData: FormData) {
   const status = formaData.get('status') as string
   const session = await auth()
   const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
-  const token = session?.user.token
+  const token = session?.user?.token
 
   const axiosAuth = axios.create({
     baseURL: 'https://back-ibb.vercel.app',

@@ -8,7 +8,7 @@ import { FormRelatorioSchema, ISupervisoes } from './schema'
 
 function FormRelatorio() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
   const URLSupervisoes = `${BASE_URL}/supervisoes`
 

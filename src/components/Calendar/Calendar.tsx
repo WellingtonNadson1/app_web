@@ -58,7 +58,7 @@ function classNames(...classes: string[]) {
 
 export default function MyCalendar() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)

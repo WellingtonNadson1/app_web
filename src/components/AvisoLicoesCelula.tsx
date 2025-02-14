@@ -15,7 +15,7 @@ type ApiResponse = z.infer<typeof ResponseSchema>
 export default function AvisoLicoesCelula() {
   const URLLicoesCelula = `${BASE_URL}/licoescelulas`
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const { data, isLoading, isError } = useQuery<ApiResponse>({
     queryKey: ['licoesCelula'],
     queryFn: () => axiosAuth.get(URLLicoesCelula),

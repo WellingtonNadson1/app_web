@@ -9,7 +9,7 @@ import { DataTableCelulas } from './table-celulas/data-table-ucelulas'
 
 export default function Celulas() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const URLCelulas = `${BASE_URL}/celulas`
 
   const getCelulas = async () => {

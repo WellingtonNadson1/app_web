@@ -9,7 +9,7 @@ const BASE_URL = `https://${hostname}`
 
 // const Token = async () => {
 //   const session = await getServerSession(authOptions)
-//   const token = session?.user.token
+//   const token = session?.user?.token
 //   if (!token) {
 //     return null; // Or handle the missing token as needed
 //   }

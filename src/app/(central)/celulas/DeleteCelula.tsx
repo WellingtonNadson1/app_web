@@ -27,7 +27,7 @@ export default function DeleteCelula({
   const queryClient = useQueryClient()
 
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const deleteMemberFunction = async (CelulaId: string) => {
     const URLM = `${BASE_URL}/celulas/${CelulaId}`

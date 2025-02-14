@@ -96,7 +96,7 @@ export default function FormUpdateCulto(meeting: { meeting: meeting }) {
   const { data: session } = useSession()
   const { id } = meeting.meeting
   const queryClient = useQueryClient()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const URLCultoIndividual = `${BASE_URL}/cultosindividuais/${id}`
 
   const form = useForm<z.infer<typeof CultoSchema>>({

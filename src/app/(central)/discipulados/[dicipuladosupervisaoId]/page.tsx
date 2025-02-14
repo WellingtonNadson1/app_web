@@ -58,7 +58,7 @@ export default function Supervisao({
   )
 
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const getDiscipuloSupervisorBySupervisao = async () => {
     const { data } = await axiosAuth.post(URLSupervisoresDiscipulos, {

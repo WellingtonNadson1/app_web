@@ -11,6 +11,9 @@ import Link from 'next/link'
 import { useEffect, useState } from 'react'
 import LicoesCelulaSkeleton from './Skeleton-Licoes-Celula'
 import { Card } from './ui/card'
+import { useSession } from 'next-auth/react'
+import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale(ptBr)
@@ -37,17 +40,19 @@ interface LessonData {
 
 
 export default function LicoesCelula() {
-  const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`
-  const URLTemaMonth = `/api/licoes-celula/tema-of-month`
   const [id, setIdTema] = useState<string | null>(null) // Use null as initial value
+  const URLLicoesCelula = `/api/licoes-celula/${id}`
+  const URLTemaMonth = `/api/licoes-celula/tema-of-month`
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const GetIdTema = async () => {
-    const { data } = await axios.get(URLTemaMonth)
+    const { data } = await axiosAuth.get(URLTemaMonth)
     return data
   }
 
   const getLicoesCelula = async () => {
-    const { data } = await axios.get(URLLicoesCelula, {
+    const { data } = await axiosAuth.get(URLLicoesCelula, {
       params: { id },
     })
     console.log('data lesson get: ', data)

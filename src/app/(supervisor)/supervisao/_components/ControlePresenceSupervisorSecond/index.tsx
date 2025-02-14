@@ -20,7 +20,7 @@ export default function ControlePresenceSupervisorSecond({
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
   const { handleSubmit, register } = useForm<attendance>()
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const queryClient = useQueryClient()
 
   const getPresenceRegistered = async () => {
@@ -155,7 +155,7 @@ export default function ControlePresenceSupervisorSecond({
                                 size={28}
                               />
                               <h2 className="ml-4">
-                                {session?.user.first_name}
+                                {session?.user?.first_name}
                               </h2>
                             </div>
 
@@ -261,14 +261,14 @@ export default function ControlePresenceSupervisorSecond({
                               })}
                               value="true"
                               type="radio"
-                              id={session?.user.id}
+                              id={session?.user?.id}
                               className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                             />
                             <input
                               {...register('status', { required: true })}
                               value="false"
                               type="radio"
-                              id={session?.user.first_name}
+                              id={session?.user?.first_name}
                               className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
                             />
                           </div>

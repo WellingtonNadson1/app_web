@@ -36,7 +36,7 @@ const queryClient = new QueryClient()
 
 const DataProvider = ({ children }: IProps) => {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const fetchDataFunction = async () => {
     const response = await axiosAuth.get(`${BASE_URL}/users/all`)

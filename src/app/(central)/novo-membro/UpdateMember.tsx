@@ -66,6 +66,7 @@ import { z } from 'zod'
 import type { TUser } from './table-users/schema'
 import { userSchemaTable } from './table-users/schema'
 import { handleCPFNumber, handlePhoneNumber } from './utils'
+import { MemberOf } from '@phosphor-icons/react'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 
@@ -83,7 +84,7 @@ const trueFalse = [
 
 function UpdateMember({ member }: { member: TUser }) {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const URLUsersId = `${BASE_URL}/users/${member.id}`
   const URLUsers = `${BASE_URL}/users`
 
@@ -118,7 +119,29 @@ function UpdateMember({ member }: { member: TUser }) {
 
   // const { register, handleSubmit, setValue, reset } = useForm<TUser>({
   const form = useForm<TUser>({
-    defaultValues: { ...member },
+    defaultValues: { 
+      id: member.id,
+      role: member.role,
+      email: member.email,
+      image_url: member.image_url,
+      first_name: member.first_name,
+      last_name: member.last_name,
+      cpf: member.cpf,
+      date_nascimento: member.date_nascimento,
+      sexo: member.sexo,
+      telefone: member.telefone,
+      escolaridade: member.escolaridade,
+      profissao: member.profissao,
+      batizado: Boolean(member.batizado),
+      date_batizado: member.date_batizado,
+      is_discipulado: member.is_discipulado,
+      discipuladorId: member.discipuladorId,
+      supervisao_pertence: member.supervisao_pertence,
+      bairro: member.bairro,
+      cidade: member.cidade,
+      estado: member.estado,
+      estado_civil: member.estado,
+     },
   })
 
   const cancelButtonRef = useRef(null)
@@ -543,7 +566,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                   <FormLabel>É Batizado?</FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -639,7 +661,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                   <FormLabel>É Discipulado?</FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -1143,7 +1164,6 @@ function UpdateMember({ member }: { member: TUser }) {
                                   <FormLabel>Tem Filho(s)?</FormLabel>
                                   <Select
                                     onValueChange={field.onChange}
-                                    defaultValue={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>

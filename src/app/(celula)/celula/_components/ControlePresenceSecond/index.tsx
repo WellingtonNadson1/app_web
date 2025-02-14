@@ -25,7 +25,7 @@ export default function ControlePresenceSecond({
   const [progress, setProgress] = useState(0)
   const { handleSubmit, register } = useForm<attendance[]>()
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const queryClient = useQueryClient()
 
   const getPresenceRegistered = async () => {

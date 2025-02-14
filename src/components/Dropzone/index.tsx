@@ -43,7 +43,7 @@ function DropzoneUpload() {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${session?.user.token}`,
+          Authorization: `Bearer ${session?.user?.token}`,
         },
         body: JSON.stringify(data),
       })

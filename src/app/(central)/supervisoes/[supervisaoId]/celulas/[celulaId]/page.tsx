@@ -14,7 +14,7 @@ export default function ControleCelulaSupervision({
   params: { celulaId: string }
 }) {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
   const URL = `${BASE_URL}/celulas/${celulaId}`
 

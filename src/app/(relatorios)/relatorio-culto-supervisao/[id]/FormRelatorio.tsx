@@ -20,7 +20,7 @@ function FormRelatorio() {
   const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>()
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
 
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
   const onSubmit: SubmitHandler<FormRelatorioSchema> = async ({
     superVisionId,

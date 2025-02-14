@@ -148,12 +148,42 @@ const reuniaoCelulaDataSchema2 = z.object({
 
 export type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
 
-const attendanceReuniaCelulaSchema = z.object({
-  status: z.string(),
-  membro: z.string(),
+export const attendanceReuniaCelulaSchema = z.object({
   which_reuniao_celula: z.string(),
-})
+  membro: z.array(
+    z.object({
+      id: z.string(),
+      status: z.string(), // Alterado para aceitar boolean
+    })
+  ),
+});
 
 export type attendanceReuniaoCelula = z.infer<
   typeof attendanceReuniaCelulaSchema
->
+>;
+
+export const CelulaSortSchema = z.array(
+  z.object({
+    id: z.string(),
+    first_name: z.string(),
+    situacao_no_reino: z.object({
+      nome: z.string(),
+    }),
+    cargo_de_lideranca: z.object({
+      nome: z.string(),
+    }),
+    presencas_cultos: z.array(
+      z.object({
+        id: z.string(),
+        status: z.boolean(),
+        userId: z.string(),
+        cultoIndividualId: z.string(),
+        date_create: z.date(),
+        date_update: z.date(),
+      })
+    ),
+  })
+);
+
+// Exemplo de uso
+export type CelulaSort = z.infer<typeof CelulaSortSchema>;

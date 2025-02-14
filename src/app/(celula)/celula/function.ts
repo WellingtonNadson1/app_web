@@ -18,7 +18,7 @@ type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
 export const createReuniao = (celulaId: string) => {
   const { data: session } = useSession()
 
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
   // const hostname = 'app-ibb.onrender.com'
   const hostname = 'back-ibb.vercel.app'

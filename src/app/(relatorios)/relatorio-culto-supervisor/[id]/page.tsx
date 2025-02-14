@@ -27,7 +27,7 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function StatsCardRelatoriosSupervisores() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const URLPresencaGeralCultos = `${BASE_URL}/presencacultos/relatorios/supervisores`
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
 

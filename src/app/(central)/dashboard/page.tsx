@@ -5,7 +5,7 @@ import ClientDashboard from './ClientDashboard'
 // Função que roda no servidor para obter os dados
 async function fetchServerData() {
   const session = await auth()
-  const token = session?.user.token
+  const token = session?.user?.token
   const DataCombinetedt = async () => {
     const axiosAuth = axios.create({
       baseURL: 'https://back-ibb.vercel.app',

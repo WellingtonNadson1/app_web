@@ -40,7 +40,7 @@ export function RegisterPresenceFormFirst({
   const URLControlePresenca = `${BASE_URL}/presencacultos/speed`
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const queryClient = useQueryClient()
   const [progress, setProgress] = useState<number>(0)
   const [isCompleted, setIsCompleted] = useState(false)

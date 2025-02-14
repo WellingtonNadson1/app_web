@@ -10,7 +10,7 @@ import TableSkeletonDiscipulosSupervisor from './table-skeleton'
 
 export default function ControleDiscipuladoSupervisior() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const URLDiscipulosSupervisor = `${BASE_URL}/users/alldiscipulossupervisor`
 

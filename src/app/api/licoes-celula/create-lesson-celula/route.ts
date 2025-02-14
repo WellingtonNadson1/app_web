@@ -26,10 +26,10 @@ interface FolderLessonData {
 }
 
 const s3 = new S3Client({
-  region: process.env.AWS_BUCKET_REGION,
+  region: process.env.NEXT_PUBLIC_AWS_BUCKET_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
   },
 })
 
@@ -93,7 +93,7 @@ export async function POST(request: Request) {
       const buffer = Buffer.from(arrayBuffer)
 
       const pdfParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME || bucketName,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || bucketName,
         Key: folderKey, // Nome único para o PDF
         Body: buffer, // Converte o arquivo para ArrayBuffer
         ContentType: pdfFile.type, // Define o tipo de conteúdo como PDF
@@ -279,7 +279,7 @@ export async function PUT(request: Request) {
         const buffer = Buffer.from(arrayBuffer)
 
         const pdfParams = {
-          Bucket: process.env.AWS_S3_BUCKET_NAME || bucketName,
+          Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || bucketName,
           Key: folderKey, // Nome único para o PDF
           Body: buffer, // Converte o arquivo para ArrayBuffer
           ContentType: pdfFile.type, // Define o tipo de conteúdo como PDF
@@ -290,7 +290,7 @@ export async function PUT(request: Request) {
 
       // DELETAR OBJETO ANTEIOR
       const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
         Key: folderKeyOld,
       }
       const deleteCommand = new DeleteObjectCommand(params)
@@ -407,7 +407,7 @@ export async function DELETE(request: Request) {
       const folderKeyOld = `${folderKeyNormalize}${lastPart}`
 
       const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
         Key: folderKeyOld,
       }
 

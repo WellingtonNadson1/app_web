@@ -33,14 +33,14 @@ export default async function RootLayout({
     return redirect('/login', RedirectType.replace)
   }
 
-  const id = session?.user.id
-  const role = session?.user.role
-  const user_roles = session?.user.user_roles
-  const email = session?.user.token
-  const image_url = session?.user.image_url
-  const first_name = session?.user.first_name
-  const token = session?.user.token
-  const refreshToken = session?.user.refreshToken
+  const id = session?.user?.id
+  const role = session?.user?.role
+  const user_roles = session?.user?.user_roles
+  const email = session?.user?.token
+  const image_url = session?.user?.image_url
+  const first_name = session?.user?.first_name
+  const token = session?.user?.token
+  const refreshToken = session?.user?.refreshToken
 
   return (
     <html lang="pt">

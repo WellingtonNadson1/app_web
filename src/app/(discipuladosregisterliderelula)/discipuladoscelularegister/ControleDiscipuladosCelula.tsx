@@ -27,7 +27,7 @@
 //   const router = useRouter()
 //   const { handleSubmit, register, reset, formState: { errors }, setValue } = useForm<attendance[]>()
 //   const { data: session } = useSession()
-//   const axiosAuth = useAxiosAuth(session?.user.token as string)
+//   const axiosAuth = useAxiosAuth(session?.user?.token as string)
 //   const queryClient = useQueryClient()
 
 //   const getPresenceRegistered = async () => {

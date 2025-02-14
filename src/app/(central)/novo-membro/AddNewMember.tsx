@@ -20,8 +20,8 @@ import { handleCPFNumber, handlePhoneNumber } from './utils'
 
 function AddNewMember() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user.token as string)
-  const token = session?.user.token
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  const token = session?.user?.token
   const URLUsers = `${BASE_URL}/users`
   // Zustand Store
   // @ts-ignore

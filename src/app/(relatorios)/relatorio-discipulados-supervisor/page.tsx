@@ -27,7 +27,7 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function DiscipuladosRelatoriosSupervisor() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =

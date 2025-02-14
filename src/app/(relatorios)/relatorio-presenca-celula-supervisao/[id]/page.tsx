@@ -54,7 +54,7 @@ dayjs.tz.setDefault('America/Sao_Paulo')
 
 export default function RelatoriosPresencaCelula() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user.token as string)
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const URLPresencaReuniaoCelula = `${BASE_URL}/relatorio/presencacelula`
   const [RelatorioData, setRelatorioData] = useState<TSupervisionData>()
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({

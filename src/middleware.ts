@@ -30,7 +30,7 @@ export default async function middleware(req: NextRequest) {
   const session = await auth()
 
   const isLoggedIn = !!session
-  const roleUser = session?.user.user_roles // roleUser agora é um array de objetos com rolenew.name
+  const roleUser = session?.user?.user_roles // roleUser agora é um array de objetos com rolenew.name
 
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix)
   const isPublicRoute = matchRoute(pathname, publicRoutes)
@@ -120,7 +120,7 @@ export default async function middleware(req: NextRequest) {
 //   const session = await auth();
 
 //   const isLoggedIn = !!session;
-//   const roleUser = session?.user.user_roles; // roleUser agora é um array de objetos com rolenew.name
+//   const roleUser = session?.user?.user_roles; // roleUser agora é um array de objetos com rolenew.name
 
 //   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
 //   const isPublicRoute = matchRoute(pathname, publicRoutes);
@@ -204,7 +204,7 @@ export default async function middleware(req: NextRequest) {
 //   const session = await auth();
 
 //   const isLoggedIn = !!session;
-//   const roleUser = session?.user.role;
+//   const roleUser = session?.user?.role;
 
 //   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
 //   const isPublicRoute = matchRoute(pathname, publicRoutes);

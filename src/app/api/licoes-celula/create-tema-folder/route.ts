@@ -26,10 +26,10 @@ interface FolderData {
 }
 
 const s3 = new S3Client({
-  region: process.env.AWS_BUCKET_REGION,
+  region: process.env.NEXT_PUBLIC_AWS_BUCKET_REGION,
   credentials: {
-    accessKeyId: process.env.AWS_ACCESS_KEY_ID!,
-    secretAccessKey: process.env.AWS_SECRET_ACCESS_KEY!,
+    accessKeyId: process.env.NEXT_PUBLIC_AWS_ACCESS_KEY_ID!,
+    secretAccessKey: process.env.NEXT_PUBLIC_AWS_SECRET_ACCESS_KEY!,
   },
 })
 
@@ -56,7 +56,7 @@ export async function POST(request: Request) {
       : `${folderKeyNormalize}/`
 
     const params = {
-      Bucket: process.env.AWS_S3_BUCKET_NAME || bucketName,
+      Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME || bucketName,
       Key: folderKey,
       Body: '', // O conteúdo do objeto para criar a "pasta"
     }
@@ -240,8 +240,8 @@ export async function PUT(request: Request) {
       console.log('folderNameOld', folderNameOld)
 
       const copyParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
-        CopySource: `${process.env.AWS_S3_BUCKET_NAME}/${folderNameOld}`,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
+        CopySource: `${process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME}/${folderNameOld}`,
         Key: folderKey,
       }
 
@@ -251,7 +251,7 @@ export async function PUT(request: Request) {
       console.log('resultCopy', resultCopy)
 
       const params = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
         Key: folderNameOld,
       }
 
@@ -429,7 +429,7 @@ export async function DELETE(request: Request) {
         : `${getFolderNameTema.folderName}/`
 
       const listParams = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME,
         Prefix: folderName,
       }
 
@@ -440,7 +440,7 @@ export async function DELETE(request: Request) {
         Bucket: string
         Delete: { Objects: ObjectIdentifier[] }
       } = {
-        Bucket: process.env.AWS_S3_BUCKET_NAME!,
+        Bucket: process.env.NEXT_PUBLIC_AWS_S3_BUCKET_NAME!,
         Delete: { Objects: [] },
       }
 

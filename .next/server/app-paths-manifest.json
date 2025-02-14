@@ -1,9 +1,8 @@
 {
+  "/(login)/login/page": "app/(login)/login/page.js",
+  "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
   "/@breadcrumbs/[...catchAll]/page": "app/@breadcrumbs/[...catchAll]/page.js",
-  "/(central)/relatorios/page": "app/(central)/relatorios/page.js",
-  "/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page": "app/(relatorios)/relatorio-presenca-celula-supervisao/[id]/page.js",
-  "/(central)/cultos/page": "app/(central)/cultos/page.js",
-  "/(central)/agenda-igreja/page": "app/(central)/agenda-igreja/page.js",
-  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js",
-  "/api/agenda-ibb-service/create-evento-agenda/route": "app/api/agenda-ibb-service/create-evento-agenda/route.js"
+  "/(celula)/celula/page": "app/(celula)/celula/page.js",
+  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }
