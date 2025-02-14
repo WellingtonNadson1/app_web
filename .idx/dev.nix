@@ -2,6 +2,8 @@
   channel = "stable-24.05";
   packages = [
     pkgs.nodejs_20
+    pkgs.openssl_3
+    pkgs.ocamlPackages.ssl
   ];
   idx.extensions = [
     

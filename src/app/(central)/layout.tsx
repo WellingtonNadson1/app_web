@@ -46,7 +46,7 @@ export default async function RootLayout({
 
   return (
     <html lang="pt">
-      <body>
+      <body suppressHydrationWarning>
         <InitializerUserStore
           id={id ?? ''}
           role={role ?? ''}
@@ -73,13 +73,13 @@ export default async function RootLayout({
           speed={200}
           shadow="0 0 10px #fff,0 0 5px #fff"
         />
-        <div>
+        <div suppressHydrationWarning>
           <div className="z-0 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
           <div className="flex min-h-screen bg-slate-100">
             <SidebarProvider>
               <Providers>
                 <MySidebar />
-                <div className="z-30 w-full px-2 py-2 mx-auto">
+                <div suppressHydrationWarning className="z-30 w-full px-2 py-2 mx-auto">
                   <Suspense fallback={<LoaderHeader />}>
                     <Header />
                   </Suspense>

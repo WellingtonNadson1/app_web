@@ -90,8 +90,6 @@ export async function GET(request: Request) {
     const take = parseInt(url.searchParams.get('take') || '10', 10) // Limitar para 10 resultados por padrão
     const skip = parseInt(url.searchParams.get('skip') || '0', 10) // Ignorar 0 registros por padrão
 
-    console.log('Prisma:', prisma);
-    console.log('Agenda Model:', prisma?.agenda);
     console.log('Schemas disponíveis:', Object.keys(prisma));
 
     const allEventosAgenda = await prisma?.agenda.findMany({
@@ -105,9 +103,7 @@ export async function GET(request: Request) {
       },
     })
 
-    console.log('Prisma:', prisma);
-    console.log('Prisma Agenda:', prisma?.agenda);
-
+    await disconnectPrisma()
     return new NextResponse(JSON.stringify(allEventosAgenda), {
       status: 200,
       headers: { 'Cache-Control': 'no-store' }, // Evita cache

@@ -18,6 +18,7 @@ import {
 } from '@/components/ui/popover'
 import { Textarea } from '@/components/ui/textarea'
 import { useToast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/lib/axios'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -48,8 +49,11 @@ const formSchema = z.object({
 type FormData = z.infer<typeof formSchema>
 
 export function AgendaRegistrationForm() {
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const queryClient = useQueryClient()
-  const URLApi = '/api/agenda-ibb-service/create-evento-agenda'
+  const URLApi = `${BASE_URL}/agenda-ibb-service/create-evento-agenda`
   const { toast } = useToast()
 
   const form = useForm<FormData>({
@@ -68,9 +72,7 @@ export function AgendaRegistrationForm() {
     values: z.infer<typeof formSchema>,
   ) => {
     console.log('values', values)
-    const { data: session } = useSession()
-    const token = session?.user?.token as string
-    const axiosAuth = useAxiosAuth(token)
+
     const response = await axiosAuth.post(
       URLApi,
       {

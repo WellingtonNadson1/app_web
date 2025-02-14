@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/dialog'
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
 import { toast } from '@/components/ui/use-toast'
+import { BASE_URL } from '@/lib/axios'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -29,7 +30,7 @@ export default function DeleteEventoAgenda({
   const axiosAuth = useAxiosAuth(token)
 
   const deleteEventoAgendaFunction = async (eventoAgendaId: string) => {
-    const URLTemasLicoesCelula = `/api/agenda-ibb-service/create-evento-agenda/?eventoAgendaId=${eventoAgendaId}`
+    const URLTemasLicoesCelula = `${BASE_URL}/agenda-ibb-service/create-evento-agenda/?eventoAgendaId=${eventoAgendaId}`
 
     try {
       const response = await axiosAuth.delete(URLTemasLicoesCelula)
