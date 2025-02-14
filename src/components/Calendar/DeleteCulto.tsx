@@ -1,5 +1,4 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -17,6 +16,7 @@ import {
 import { DropdownMenuItem } from '../ui/dropdown-menu'
 import { Toaster } from '../ui/toaster'
 import { toast } from '../ui/use-toast'
+import { BASE_URL } from '@/lib/axios'
 
 function DeleteCulto({
   culto,
@@ -28,7 +28,8 @@ function DeleteCulto({
   const queryClient = useQueryClient()
 
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const deleteCultoFunction = async (cultoId: string) => {
     const URLCultosInd = `${BASE_URL}/cultosindividuais/${cultoId}`

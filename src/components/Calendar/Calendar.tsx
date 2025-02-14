@@ -1,7 +1,5 @@
 'use client'
 import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
 import { Player } from '@lordicon/react'
 import { BookBookmark, Cross, Student } from '@phosphor-icons/react'
@@ -37,6 +35,8 @@ import {
   DropdownMenuTrigger,
 } from '../ui/dropdown-menu'
 import DeleteCulto from './DeleteCulto'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import { BASE_URL } from '@/lib/axios'
 
 export type meeting = {
   id: string
@@ -58,7 +58,8 @@ function classNames(...classes: string[]) {
 
 export default function MyCalendar() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const today = startOfToday()
   const [selectedDay, setSelectedDay] = useState(today)

@@ -21,8 +21,8 @@ import { BASE_URL } from '@/lib/axios'
 
 function AddNewMember() {
   const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const token = session?.user?.token
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
   const URLUsers = `${BASE_URL}/users`
   // Zustand Store
   // @ts-ignore
