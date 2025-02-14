@@ -1,4 +1,5 @@
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+'use client'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { AxiosError } from 'axios'
 import dayjs from 'dayjs'
@@ -18,14 +19,10 @@ type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>
 export const createReuniao = (celulaId: string) => {
   const { data: session } = useSession()
 
-  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>()
-  // const hostname = 'app-ibb.onrender.com'
   const hostname = 'back-ibb.vercel.app'
-  const URLPresencaReuniaoCelulaIsRegiter = `https://${hostname}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
   const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`
-  // const URLPresencaReuniaoCelulaIsRegiter = `http://localhost:3333/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
-  // const URLReuniaoCelula = `http://localhost:3333/reunioessemanaiscelulas`
 
   const queryClient = useQueryClient()
 
