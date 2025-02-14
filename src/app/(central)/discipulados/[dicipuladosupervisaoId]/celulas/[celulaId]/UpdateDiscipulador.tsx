@@ -2,9 +2,7 @@
 import { Member } from '@/app/(central)/novo-membro/schema'
 import Modal from '@/components/modal'
 import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { BASE_URL, errorCadastro, success } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
+import { errorCadastro, success } from '@/functions/functions'
 import { Combobox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
 import { UserPlusIcon } from '@heroicons/react/24/outline'
@@ -15,14 +13,15 @@ import { SubmitHandler, useForm } from 'react-hook-form'
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Membro, dataUpdateDiscipulador } from './schema'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 function UpdateDisicipulador({ member }: { member: Membro }) {
   const URLUsers = `${BASE_URL}/users/alldiscipulados`
   const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
-
-  const { token } = useUserDataStore.getState()
-
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
   const [nome, setNome] = useState(

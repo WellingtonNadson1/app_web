@@ -1,20 +1,19 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { useQuery } from '@tanstack/react-query'
 import axios from 'axios'
 import { CelulaDataDiscipulado } from '../../../Components/ListMembersDiscipuladoSupervisor/schema'
 import ListMembersDiscipulados from '../../../Components/ListMembersDiscipulados'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
 }: {
   params: { celulaId: string }
 }) {
-  const { token } = useUserDataStore.getState()
-
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const URL = `${BASE_URL}/celulas/${celulaId}`
 

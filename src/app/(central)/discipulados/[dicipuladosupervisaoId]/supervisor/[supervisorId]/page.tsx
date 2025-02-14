@@ -1,5 +1,4 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useQuery } from '@tanstack/react-query'
 import { useSession } from 'next-auth/react'
@@ -7,6 +6,7 @@ import { useParams } from 'next/navigation'
 import { columns } from '../table-discipulos-supervisor/columns'
 import { DataTableDiscipulosSUpervisor } from '../table-discipulos-supervisor/data-table-discipulos-supervisor'
 import TableSkeletonDiscipulosSupervisor from './table-skeleton'
+import { BASE_URL } from '@/lib/axios'
 
 export default function ControleDiscipuladoSupervisior() {
   const { data: session } = useSession()
