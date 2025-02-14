@@ -1,5 +1,5 @@
-'use client'
-import { Button } from '@/components/ui/button'
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,56 +7,56 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/lib/axios'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
 
 export default function DeleteEventoAgenda({
   eventoAgendaId,
   NomeEvento,
 }: {
-  eventoAgendaId: string
-  NomeEvento: string
+  eventoAgendaId: string;
+  NomeEvento: string;
 }) {
-  const queryClient = useQueryClient()
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
   const deleteEventoAgendaFunction = async (eventoAgendaId: string) => {
-    const URLTemasLicoesCelula = `${BASE_URL}/agenda-ibb-service/create-evento-agenda/?eventoAgendaId=${eventoAgendaId}`
+    const URLTemasLicoesCelula = `${BASE_URL}/agenda-ibb-service/create-evento-agenda/${eventoAgendaId}`;
 
     try {
-      const response = await axiosAuth.delete(URLTemasLicoesCelula)
+      const response = await axiosAuth.delete(URLTemasLicoesCelula);
       toast({
         title: 'Sucesso!!!',
         description: 'Evento da Agenda DELETADO com Sucesso!!! 🧨',
-      })
-      return response.data
+      });
+      return response.data;
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const { mutateAsync: deleteCelulaFn, isPending } = useMutation({
     mutationFn: deleteEventoAgendaFunction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['eventosAgendaIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['eventosAgendaIbb'] });
     },
-  })
+  });
 
   const handleDeleteCelula = async (eventoAgendaId: string) => {
-    await deleteCelulaFn(eventoAgendaId)
-    setOpen(false)
-  }
+    await deleteCelulaFn(eventoAgendaId);
+    setOpen(false);
+  };
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -102,5 +102,5 @@ export default function DeleteEventoAgenda({
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

@@ -1,6 +1,6 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+'use client';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -9,26 +9,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/lib/axios'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { cn } from '@/lib/utils'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import { CalendarIcon, Loader2 } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+} from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { cn } from '@/lib/utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { format } from 'date-fns';
+import { CalendarIcon, Loader2 } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-const DATE_REQUIRED_ERROR = 'Date is required.'
+const DATE_REQUIRED_ERROR = 'Date is required.';
 
 const formSchema = z.object({
   title: z.string(),
@@ -42,19 +42,19 @@ const formSchema = z.object({
       { required_error: DATE_REQUIRED_ERROR },
     )
     .refine((date) => {
-      return !!date.from
+      return !!date.from;
     }, DATE_REQUIRED_ERROR),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 export function AgendaRegistrationForm() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const queryClient = useQueryClient()
-  const URLApi = `${BASE_URL}/agenda-ibb-service/create-evento-agenda`
-  const { toast } = useToast()
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const queryClient = useQueryClient();
+  const URLApi = `${BASE_URL}/agenda-ibb-service/create-evento-agenda`;
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
@@ -66,61 +66,52 @@ export function AgendaRegistrationForm() {
         to: undefined,
       },
     },
-  })
+  });
 
   const CreateNewCelulaFunction = async (
     values: z.infer<typeof formSchema>,
   ) => {
-    console.log('values', values)
+    console.log('values', values);
 
-    const response = await axiosAuth.post(
-      URLApi,
-      {
-        title: values.title,
-        description: values.description,
-        date: {
-          from: values.date.from,
-          to: values.date.to,
-        },
+    const response = await axiosAuth.post(URLApi, {
+      title: values.title,
+      description: values.description,
+      date: {
+        from: values.date.from,
+        to: values.date.to,
       },
-      {
-        headers: {
-          // 'Content-Type': 'application/json',
-          'Content-Type': 'multipart/form-data',
-        },
-      },
-    )
-    form.reset()
-    return response.data
-  }
+    });
+    form.reset();
+    return response.data;
+  };
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['eventosAgendaIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['eventosAgendaIbb'] });
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     values,
   ) => {
-    const response = await createNewCelulaFn(values)
-    console.log('responseFolder: ', response)
+    const response = await createNewCelulaFn(values);
+    console.log('responseFolder: ', response);
     if (response) {
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'Evento Registrado com Sucesso. 😇',
-      })
-      form.reset()
+      });
+      form.reset();
     } else {
       toast({
         title: 'Erro!!!',
         description: 'Erro no Cadastro do Evento. 😰',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -233,5 +224,5 @@ export function AgendaRegistrationForm() {
         </form>
       </Form>
     </>
-  )
+  );
 }

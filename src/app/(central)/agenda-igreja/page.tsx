@@ -1,35 +1,32 @@
-'use client'
-import { Toaster } from '@/components/ui/toaster'
-import { Spinner } from '@phosphor-icons/react/dist/ssr'
-import { useQuery } from '@tanstack/react-query'
-import { columns } from './table-agenda-igreja/columns'
-import { DataTableAgendaIgreja } from './table-agenda-igreja/data-table-agenda-igreja'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { Toaster } from '@/components/ui/toaster';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Spinner } from '@phosphor-icons/react/dist/ssr';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { columns } from './table-agenda-igreja/columns';
+import { DataTableAgendaIgreja } from './table-agenda-igreja/data-table-agenda-igreja';
 
 export default function LicoesCelula() {
-  const URLEventosAgenda = `${BASE_URL}/agenda-ibb-service/create-evento-agenda`
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const URLEventosAgenda = `${BASE_URL}/agenda-ibb-service/create-evento-agenda/all`;
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
   const getEventosAgenda = async () => {
-    const { data } = await axiosAuth.get(URLEventosAgenda)
-    console.log('data agenda:', data)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLEventosAgenda);
+    console.log('data agenda:', data);
+    return data;
+  };
 
-  const {
-    data: eventosNaAgenda,
-    isLoading,
-  } = useQuery({
+  const { data: eventosNaAgenda, isLoading } = useQuery({
     queryKey: ['eventosAgendaIbb'],
     queryFn: getEventosAgenda,
-    staleTime: 0
-  })
+    staleTime: 0,
+  });
 
-  const eventosNaAgendaNotReturn: never[] = []
+  const eventosNaAgendaNotReturn: never[] = [];
 
   return (
     <>
@@ -52,5 +49,5 @@ export default function LicoesCelula() {
         )}
       </div>
     </>
-  )
+  );
 }
