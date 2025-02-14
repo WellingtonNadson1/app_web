@@ -24,7 +24,6 @@ import {
 } from '@/components/ui/select'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { useUserDataStore } from '@/store/UserDataStore'
@@ -38,6 +37,8 @@ import utc from 'dayjs/plugin/utc'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { CultoSchema } from './schemaNewCulto'
+import { BASE_URL } from '@/lib/axios'
+import { useSession } from 'next-auth/react'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -86,9 +87,11 @@ export default function FormNewCulto() {
   const form = useForm<z.infer<typeof CultoSchema>>({
     resolver: zodResolver(CultoSchema),
   })
-  const { token } = useUserDataStore()
-  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
   const axiosAuth = useAxiosAuth(token)
+  
+  const URLCultosIndividuais = `${BASE_URL}/cultosindividuais`
 
   const createNewCultoFunction = async (data: z.infer<typeof CultoSchema>) => {
     // ADAPTANDO HORARIO DEVIDO AO FUSO DO SERVIDOR

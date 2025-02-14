@@ -34,7 +34,6 @@ import {
 } from '@/components/ui/select'
 import { Toaster } from '@/components/ui/toaster'
 import { toast } from '@/components/ui/use-toast'
-import { BASE_URL } from '@/functions/functions'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { cn } from '@/lib/utils'
 import { CalendarIcon } from '@heroicons/react/24/outline'
@@ -49,6 +48,7 @@ import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { CultoSchema } from './schemaNewCulto'
+import { BASE_URL } from '@/lib/axios'
 
 dayjs.extend(utc)
 dayjs.extend(timezone)
@@ -94,9 +94,11 @@ const cultosSemanais = [
 
 export default function FormUpdateCulto(meeting: { meeting: meeting }) {
   const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
+
   const { id } = meeting.meeting
   const queryClient = useQueryClient()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const URLCultoIndividual = `${BASE_URL}/cultosindividuais/${id}`
 
   const form = useForm<z.infer<typeof CultoSchema>>({
