@@ -1,8 +1,8 @@
-import axios from '@/lib/axios'
-import { loginSchema } from '@/types'
-import NextAuth from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
-import { ZodError } from 'zod'
+import axios from '@/lib/axios';
+import { loginSchema } from '@/types';
+import NextAuth from 'next-auth';
+import Credentials from 'next-auth/providers/credentials';
+import { ZodError } from 'zod';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -17,23 +17,23 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
       },
       async authorize(credentials): Promise<any> {
         try {
-          const { email, password } = await loginSchema.parseAsync(credentials)
+          const { email, password } = await loginSchema.parseAsync(credentials);
 
           const result = await axios.post('/login', {
             email: email,
             password: password,
-          })
+          });
 
-          const user = result.data
+          const user = result.data;
 
           if (user) {
-            console.log(JSON.stringify(user))
-            return user
+            console.log(JSON.stringify(user));
+            return user;
           }
         } catch (error) {
           if (error instanceof ZodError) {
             // Return `null` to indicate that the credentials are invalid
-            return null
+            return null;
           }
         }
       },
@@ -46,8 +46,8 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   session: {
     strategy: 'jwt',
   },
-  secret: process.env.NEXT_PUBLIC_NEXTAUTH_SECRET,
-  debug: process.env.NEXT_PUBLIC_NODE_ENV === 'development',
+  secret: process.env.NEXTAUTH_SECRET,
+  debug: process.env.NODE_ENV === 'development',
   pages: {
     signIn: '/login',
     signOut: '/login',
@@ -55,14 +55,14 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
   callbacks: {
     async jwt({ token, trigger, user, session }) {
       if (trigger === 'update' && session) {
-        return { ...token, ...session?.user }
+        return { ...token, ...session?.user };
       }
-      return { ...token, ...user }
+      return { ...token, ...user };
     },
 
     async session({ session, token }) {
-      session.user = token as any
-      return session
+      session.user = token as any;
+      return session;
     },
   },
-})
+});
