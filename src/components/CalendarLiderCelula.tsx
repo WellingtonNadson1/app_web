@@ -1,7 +1,6 @@
 'use client'
 import { Meeting } from '@/app/(celula)/celula/schema'
 import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { Player } from '@lordicon/react'
 import { BookBookmark, Cross, Student } from '@phosphor-icons/react'
 import { Church } from '@phosphor-icons/react/dist/ssr'

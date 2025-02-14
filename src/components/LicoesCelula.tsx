@@ -2,7 +2,6 @@
 import { cn } from '@/lib/utils'
 import { FilePdf } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
 import dayjs from 'dayjs'
 import ptBr from 'dayjs/locale/pt-br'
 import timezone from 'dayjs/plugin/timezone'

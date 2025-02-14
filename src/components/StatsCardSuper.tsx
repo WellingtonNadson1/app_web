@@ -1,9 +1,10 @@
 'use client'
-import { BASE_URL } from '@/functions/functions'
-import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
+import { BASE_URL } from '@/lib/axios'
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
 import { useUserDataStore } from '@/store/UserDataStore'
 import { UsersFour } from '@phosphor-icons/react'
 import { useQuery } from '@tanstack/react-query'
+import { useSession } from 'next-auth/react'
 import { useRouter } from 'next/navigation'
 import React from 'react'
 import { twMerge } from 'tailwind-merge'
@@ -19,9 +20,9 @@ export interface SupervisaoDataCard {
 }
 
 export default function StatsCardSuper() {
-  const { token } = useUserDataStore.getState()
-
-  const axiosAuth = useAxiosAuthToken(token)
+  const { data: session } = useSession()
+  const token = session?.user?.token as string
+  const axiosAuth = useAxiosAuth(token)
 
   const router = useRouter()
 
