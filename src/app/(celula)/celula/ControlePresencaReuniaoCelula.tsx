@@ -62,7 +62,6 @@ export default function ControlePresencaReuniaoCelula({
   celulaId: string
   dataCelula: CelulaProps
 }) {
-  const { data: session } = useSession()
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState('')
   const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`
   const [celulaSort, setCelulaSort] = useState<CelulaSort>([]);
@@ -72,6 +71,7 @@ export default function ControlePresencaReuniaoCelula({
       which_reuniao_celula: reuniaoRegisteredId,
     },
   });
+  const { data: session } = useSession()
   const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
   const [successRegisterPresence, setSuccessRegisterPresence] = useState(false);
 

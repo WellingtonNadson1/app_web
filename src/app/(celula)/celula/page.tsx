@@ -6,7 +6,6 @@ import SpinnerButton from '@/components/spinners/SpinnerButton'
 import { Card } from '@/components/ui/card'
 import { BASE_URL } from '@/functions/functions'
 import useAxiosAuthToken from '@/lib/hooks/useAxiosAuthToken'
-import { useUserDataStore } from '@/store/UserDataStore'
 import { Disclosure } from '@headlessui/react'
 import { ChevronUpIcon } from '@heroicons/react/24/outline'
 import { useQuery } from '@tanstack/react-query'
@@ -26,15 +25,13 @@ import LicoesLoading from './loadingUi/LicoesLoading'
 import { CelulaProps, Meeting } from './schema'
 
 export default function ControleCelulaSupervision() {
-  const { data: session } = useSession()
   const [presenceIsRegister, setPresenceIsRegister] = useState(false)
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
-    useState(false)
+  useState(false)
+  const { data: session } = useSession()
+  const axiosAuth = useAxiosAuthToken(session?.user?.token as string)
 
   const celulaId = session?.user.celulaId
-  const { token } = useUserDataStore.getState()
-
-  const axiosAuth = useAxiosAuthToken(token)
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`

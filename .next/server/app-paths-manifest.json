@@ -3,5 +3,6 @@
   "/(central)/dashboard/page": "app/(central)/dashboard/page.js",
   "/@breadcrumbs/[...catchAll]/page": "app/@breadcrumbs/[...catchAll]/page.js",
   "/(celula)/celula/page": "app/(celula)/celula/page.js",
-  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js"
+  "/(discipuladosregisterliderelula)/discipuladoscelularegister/page": "app/(discipuladosregisterliderelula)/discipuladoscelularegister/page.js",
+  "/api/auth/[...nextauth]/route": "app/api/auth/[...nextauth]/route.js"
 }
