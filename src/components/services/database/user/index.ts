@@ -1,4 +1,5 @@
-import { BASE_URL, BASE_URL_LOCAL } from '@/functions/functions'
+
+import { BASE_URL } from '@/lib/axios'
 import axios from 'axios'
 
 export const findUserById = async (id: string) => {
@@ -8,7 +9,7 @@ export const findUserById = async (id: string) => {
 }
 
 const axiosAuth = axios.create({
-  baseURL: `${BASE_URL_LOCAL}/users`,
+  baseURL: `${BASE_URL}/users`,
 })
 
 export const findUserByEmail = async (email: string) => {
