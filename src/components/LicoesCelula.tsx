@@ -60,15 +60,14 @@ export default function LicoesCelula() {
   }
 
   const { data: dataTema } = useQuery<TemaData[]>({
-    queryKey: ['idTemaMonth', 'licoesCelulasIbb'],
-    queryFn: GetIdTema,
-    refetchOnWindowFocus: true,
+    queryKey: ['idTemaMonth'],
+    queryFn: GetIdTema
   })
 
   // useEffect to update idTema when query is successful
   useEffect(() => {
     if (dataTema && !id) {
-      setIdTema(dataTema[0]?.id || '') // Ensure there's a valid id
+      setIdTema(dataTema[0]?.id || null) // Ensure there's a valid id
       console.log('Updated idTema: ', dataTema[0]?.id)
       console.log('dataTema: ', dataTema)
     }
