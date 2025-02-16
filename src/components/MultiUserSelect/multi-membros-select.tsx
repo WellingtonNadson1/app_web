@@ -1,9 +1,9 @@
-'use client'
+'use client';
 
-import { Check, ChevronsUpDown, X } from 'lucide-react'
-import * as React from 'react'
+import { Check, ChevronsUpDown, X } from 'lucide-react';
+import * as React from 'react';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   Command,
   CommandEmpty,
@@ -11,14 +11,14 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from '@/components/ui/command';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { Badge } from '../ui/badge'
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { Badge } from '../ui/badge';
 
 interface User {
   id: string;
@@ -34,9 +34,9 @@ interface User {
 }
 
 interface ComboboxDemoProps {
-  items: User[]
-  selectedItems: User[] // Para os ids dos itens selecionados
-  setSelectedItems: (val: User[]) => void // Função para atualizar os itens selecionados
+  items: User[];
+  selectedItems: User[]; // Para os ids dos itens selecionados
+  setSelectedItems: (val: User[]) => void; // Função para atualizar os itens selecionados
 }
 
 export function ComboboxDemo({
@@ -44,25 +44,27 @@ export function ComboboxDemo({
   selectedItems,
   setSelectedItems,
 }: ComboboxDemoProps) {
-  const [open, setOpen] = React.useState(false)
-  const [searchTerm, setSearchTerm] = React.useState('')
+  const [open, setOpen] = React.useState(false);
+  const [searchTerm, setSearchTerm] = React.useState('');
 
   const handleSetValue = (user: User) => {
-    let updatedValue: User[]
+    let updatedValue: User[];
 
     if (selectedItems.some((selected) => selected.id === user.id)) {
-      updatedValue = selectedItems.filter((selected) => selected.id !== user.id)
+      updatedValue = selectedItems?.filter(
+        (selected) => selected.id !== user.id,
+      );
     } else {
-      updatedValue = [...selectedItems, user]
+      updatedValue = [...selectedItems, user];
     }
 
-    setSelectedItems(updatedValue) // Passa diretamente o novo array
-  }
+    setSelectedItems(updatedValue); // Passa diretamente o novo array
+  };
 
   // Função para filtrar os usuários com base no first_name
-  const filteredItems = items.filter((user) =>
+  const filteredItems = items?.filter((user) =>
     user.first_name?.toLowerCase().includes(searchTerm.toLowerCase()),
-  )
+  );
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -85,9 +87,9 @@ export function ComboboxDemo({
                   {/* Botão para remover o usuário */}
                   <button
                     onClick={(e) => {
-                      e.preventDefault()
-                      e.stopPropagation() // Evita que o clique remova e selecione o usuário ao mesmo tempo
-                      handleSetValue(user) // Remove o usuário selecionado
+                      e.preventDefault();
+                      e.stopPropagation(); // Evita que o clique remova e selecione o usuário ao mesmo tempo
+                      handleSetValue(user); // Remove o usuário selecionado
                     }}
                     className="ml-1 text-red-500"
                   >
@@ -114,7 +116,7 @@ export function ComboboxDemo({
           <CommandEmpty>Membro não encontrado.</CommandEmpty>
           <CommandGroup>
             <CommandList className="max-h-[300px] overflow-y-auto">
-              {filteredItems.map((user) => (
+              {filteredItems?.map((user) => (
                 <CommandItem
                   key={user.id}
                   value={user.first_name || 'Sem Nome'}
@@ -138,5 +140,5 @@ export function ComboboxDemo({
         </Command>
       </PopoverContent>
     </Popover>
-  )
+  );
 }
