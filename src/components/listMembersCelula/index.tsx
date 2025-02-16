@@ -1,11 +1,11 @@
-"use client";
-import AddNewMember from "@/app/(central)/novo-membro/AddNewMember";
-import DeleteMember from "@/app/(central)/novo-membro/DeleteMember";
-import { ReturnMembers } from "@/app/(central)/novo-membro/schema";
-import UpdateMember from "@/app/(central)/novo-membro/UpdateMember";
-import { UserFocus } from "@phosphor-icons/react";
-import { useState } from "react";
-import Pagination from "../Pagination";
+'use client';
+import AddNewMember from '@/app/(central)/novo-membro/AddNewMember';
+import DeleteMember from '@/app/(central)/novo-membro/DeleteMember';
+import { ReturnMembers } from '@/app/(central)/novo-membro/schema';
+import UpdateMember from '@/app/(central)/novo-membro/UpdateMember';
+import { UserFocus } from '@phosphor-icons/react';
+import { useState } from 'react';
+import Pagination from '../Pagination';
 
 export interface CelulaData {
   id: string;
@@ -39,8 +39,8 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
 
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const membersSort = data.membros.sort((a, b) =>
-    a.first_name.localeCompare(b.first_name),
+  const membersSort = data?.membros?.sort((a, b) =>
+    a?.first_name.localeCompare(b?.first_name),
   );
   const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
@@ -95,14 +95,15 @@ export default function ListMembersCelula({ data }: ListMembersCelulaProps) {
                       </td>
                       <td className="px-2 py-1 text-center border-b border-gray-200">
                         <span
-                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${user.situacao_no_reino?.nome === "Ativo"
-                              ? "bg-green-100  text-green-700 ring-green-600/20"
-                              : user.situacao_no_reino?.nome === "Normal"
-                                ? "bg-blue-100  text-blue-700 ring-blue-600/20"
-                                : user.situacao_no_reino?.nome === "Frio"
-                                  ? "bg-orange-100  text-orange-700 ring-orange-600/20"
-                                  : "bg-red-100  text-red-700 ring-red-600/20"
-                            }`}
+                          className={`hidden w-full items-center justify-center rounded-md px-2 py-1 text-center text-xs font-medium ring-1 ring-inset sm:table-cell ${
+                            user.situacao_no_reino?.nome === 'Ativo'
+                              ? 'bg-green-100  text-green-700 ring-green-600/20'
+                              : user.situacao_no_reino?.nome === 'Normal'
+                                ? 'bg-blue-100  text-blue-700 ring-blue-600/20'
+                                : user.situacao_no_reino?.nome === 'Frio'
+                                  ? 'bg-orange-100  text-orange-700 ring-orange-600/20'
+                                  : 'bg-red-100  text-red-700 ring-red-600/20'
+                          }`}
                         >
                           {user.situacao_no_reino?.nome}
                         </span>

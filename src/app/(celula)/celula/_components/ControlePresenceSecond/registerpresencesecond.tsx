@@ -1,75 +1,72 @@
-'use client'
+'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form'
-import { Progress } from '@/components/ui/progress'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Separator } from '@/components/ui/separator'
-import { Toaster } from '@/components/ui/toaster'
-import { useToast } from '@/components/ui/use-toast'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { Spinner, User } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { useSession } from 'next-auth/react'
-import { useEffect, useRef, useState } from 'react'
-import { ControlePresencaCelulaProps } from '../../schema'
+} from '@/components/ui/form';
+import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Separator } from '@/components/ui/separator';
+import { Toaster } from '@/components/ui/toaster';
+import { useToast } from '@/components/ui/use-toast';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Spinner, User } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from 'react';
+import { ControlePresencaCelulaProps } from '../../schema';
 import {
   FormSchema,
   dataForms,
-} from '../ControlePresenceFirst/shcema-controle-first-presence'
-import { BASE_URL } from '@/lib/axios'
+} from '../ControlePresenceFirst/shcema-controle-first-presence';
 
 function isError(error: unknown): error is Error {
-  return error instanceof Error
+  return error instanceof Error;
 }
 
-const URLControlePresenca = `${BASE_URL}/presencacultos/speed`
+const URLControlePresenca = `${BASE_URL}/presencacultos/speed`;
 
 export function RegisterPresenceFormSecond({
   id,
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const [progress, setProgress] = useState<number>(0)
-  const [isCompleted, setIsCompleted] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const { toast } = useToast()
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
+  const [progress, setProgress] = useState<number>(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
+  const { toast } = useToast();
 
   const getSecondPresenceRegistered = async () => {
-    const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`
+    const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`;
 
-    const { data } = await axiosAuth.get(URLPresencaCultoId)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLPresencaCultoId);
+    return data;
+  };
 
-  const {
-    data: PresenceSecondExistRegistered,
-    isLoading,
-  } = useQuery({
+  const { data: PresenceSecondExistRegistered, isLoading } = useQuery({
     queryKey: ['secondPresenceExistRegistered'],
     queryFn: getSecondPresenceRegistered,
     retry: 1,
     refetchOnMount: true,
-  })
+  });
 
-  const celulaSort = celula?.membros.sort((a, b) =>
-    a.first_name.localeCompare(b.first_name),
-  )
-  const queryClient = useQueryClient()
+  const celulaSort = celula?.membros?.sort((a, b) =>
+    a?.first_name.localeCompare(b?.first_name),
+  );
+  const queryClient = useQueryClient();
 
   const createSecondPresencaCultoFunction = async ({
     presence_culto,
@@ -79,7 +76,7 @@ export function RegisterPresenceFormSecond({
     const MembrosComStatus = membro.map((member) => ({
       ...member,
       status: member.status === 'true',
-    }))
+    }));
 
     const response = await axiosAuth.post(
       URLControlePresenca,
@@ -91,29 +88,29 @@ export function RegisterPresenceFormSecond({
         onUploadProgress: (progressEvent) => {
           // Introduz um atraso antes de atualizar o estado de progresso
           setTimeout(() => {
-            setProgress(10)
-          }, 600)
+            setProgress(10);
+          }, 600);
 
           setTimeout(() => {
-            setProgress(30)
-          }, 1200) // 150 + 150
+            setProgress(30);
+          }, 1200); // 150 + 150
 
           setTimeout(() => {
-            setProgress(50)
-          }, 1800) // 300 + 100
+            setProgress(50);
+          }, 1800); // 300 + 100
 
           setTimeout(() => {
-            setProgress(70)
-          }, 2400) // 400 + 100
+            setProgress(70);
+          }, 2400); // 400 + 100
 
           setTimeout(() => {
-            setProgress(90)
-          }, 3000) // 500 + 50
+            setProgress(90);
+          }, 3000); // 500 + 50
         },
       },
-    )
-    return response
-  }
+    );
+    return response;
+  };
 
   const {
     mutateAsync: createSecondPresencaCultoFn,
@@ -126,73 +123,74 @@ export function RegisterPresenceFormSecond({
     onError: () => {
       queryClient.invalidateQueries({
         queryKey: ['NewPresenceRegisteredSecond'],
-      })
+      });
     },
     onSuccess: () => {
       // Invalidando queries para refetch
 
       queryClient.invalidateQueries({
         queryKey: ['NewPresenceRegisteredSecond'],
-      })
+      });
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'Presença registrada com sucesso.',
-      })
-      setIsCompleted(true)
+      });
+      setIsCompleted(true);
     },
-  })
+  });
 
   useEffect(() => {
     if (!isPending && createdPresence) {
-      setProgress(100)
+      setProgress(100);
     }
     return () => {
       if (timerRef.current) {
-        clearTimeout(timerRef.current)
+        clearTimeout(timerRef.current);
       }
-    }
-  }, [progress])
+    };
+  }, [progress]);
 
   const form = useForm<dataForms>({
     resolver: zodResolver(FormSchema),
-  })
+  });
 
   useEffect(() => {
-    form.setValue('presence_culto', culto)
+    form.setValue('presence_culto', culto);
     celulaSort?.forEach((member, index) => {
-      form.setValue(`membro.${index}.id`, member.id)
-    })
-  }, [celulaSort, culto, form])
+      form.setValue(`membro.${index}.id`, member.id);
+    });
+  }, [celulaSort, culto, form]);
 
   async function onSubmit(data: z.infer<typeof FormSchema>) {
-    setIsCompleted(false)
+    setIsCompleted(false);
     try {
-      await createSecondPresencaCultoFn(data)
+      await createSecondPresencaCultoFn(data);
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'Presença registrada com sucesso.',
-      })
+      });
     } catch (error) {
-      const axiosError = error as AxiosError
+      const axiosError = error as AxiosError;
 
       if (isError(axiosError)) {
-        console.log(axiosError)
+        console.log(axiosError);
         toast({
           variant: 'destructive',
           title: 'Ocorreu um Erro',
-          description: `${axiosError.response?.status === 409
-            ? 'Presença de Culto já Registrada para hoje!'
-            : axiosError.message
-            }`,
-        })
+          description: `${
+            axiosError.response?.status === 409
+              ? 'Presença de Culto já Registrada para hoje!'
+              : axiosError.message
+          }`,
+        });
       } else {
         toast({
           variant: 'destructive',
           title: 'Ocorreu um Erro',
           description: `Um erro desconhecido ocorreu.`,
-        })
+        });
       }
     }
   }
@@ -294,7 +292,7 @@ export function RegisterPresenceFormSecond({
                                     {/* Status */}
                                     <div className="sm:grid col-span-1 hidden w-full text-center">
                                       {member?.situacao_no_reino?.nome ===
-                                        'Normal' ? (
+                                      'Normal' ? (
                                         <Badge
                                           className={`text-zinc-800 hidden w-full rounded-md px-2 py-1 text-center sm:block ${'border border-green-200 bg-green-100 ring-green-500'} hover:border-green-300 hover:bg-green-200 hover:ring-green-600`}
                                         >
@@ -385,5 +383,5 @@ export function RegisterPresenceFormSecond({
         </>
       )}
     </>
-  )
+  );
 }

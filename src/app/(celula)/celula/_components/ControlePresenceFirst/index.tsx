@@ -1,38 +1,38 @@
-'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { errorCadastro, success } from '@/functions/functions'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { User } from '@phosphor-icons/react'
-import ProgressBar from '@ramonak/react-progress-bar'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { ControlePresencaCelulaProps, attendance } from '../../schema'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { errorCadastro, success } from '@/functions/functions';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { User } from '@phosphor-icons/react';
+import ProgressBar from '@ramonak/react-progress-bar';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { ControlePresencaCelulaProps, attendance } from '../../schema';
 
 export default function ControlePresenceFirst({
   id,
   culto,
   celula,
 }: ControlePresencaCelulaProps) {
-  const celulaSort = celula.membros.sort((a, b) =>
+  const celulaSort = celula?.membros?.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  )
-  const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`
-  const [progress, setProgress] = useState(0)
-  const { handleSubmit, register } = useForm<attendance[]>()
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const queryClient = useQueryClient()
+  );
+  const URLControlePresenca = `${BASE_URL}/presencacultos`;
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`;
+  const [progress, setProgress] = useState(0);
+  const { handleSubmit, register } = useForm<attendance[]>();
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
+  const queryClient = useQueryClient();
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLPresencaCultoId);
+    return data;
+  };
 
   const {
     data: PresenceExistRegistered,
@@ -42,18 +42,18 @@ export default function ControlePresenceFirst({
   } = useQuery({
     queryKey: ['presenceExistRegistered'],
     queryFn: getPresenceRegistered,
-  })
+  });
 
   if (isSuccessGetPresence) {
-    console.log('PresenceExistRegistered', PresenceExistRegistered)
+    console.log('PresenceExistRegistered', PresenceExistRegistered);
   }
 
   const createPresencaCultoFunction = async (data: attendance[]) => {
     // Transforma o objeto data em um array
-    const dataArray = Object.values(data)
-    const totalRecords = dataArray.length
-    const increment = 100 / totalRecords
-    let currentProgress = 0
+    const dataArray = Object.values(data);
+    const totalRecords = dataArray.length;
+    const increment = 100 / totalRecords;
+    let currentProgress = 0;
 
     // Use loop for ...of
     for (const currentData of dataArray) {
@@ -61,25 +61,25 @@ export default function ControlePresenceFirst({
         const response = await axiosAuth.post(URLControlePresenca, {
           ...currentData,
           status: currentData.status === 'true',
-        })
+        });
 
         // Atualize o progresso com base no incremento
-        currentProgress += increment
-        currentProgress = Math.min(currentProgress, 100)
-        const formattedProgress = currentProgress.toFixed(2)
-        const numericProgress = parseFloat(formattedProgress)
-        setProgress(numericProgress) // Garanta que não exceda 100%
+        currentProgress += increment;
+        currentProgress = Math.min(currentProgress, 100);
+        const formattedProgress = currentProgress.toFixed(2);
+        const numericProgress = parseFloat(formattedProgress);
+        setProgress(numericProgress); // Garanta que não exceda 100%
 
         if (!response.data) {
-          throw new Error('Failed to submit dados de presenca')
+          throw new Error('Failed to submit dados de presenca');
         }
       } catch (error) {
-        console.error('Error submitting member data:', error)
+        console.error('Error submitting member data:', error);
         // Lide com o erro conforme necessário
       }
     }
-    success('😉 Presenças Registradas!')
-  }
+    success('😉 Presenças Registradas!');
+  };
 
   const {
     mutateAsync: createPresencaCultoFn,
@@ -88,24 +88,24 @@ export default function ControlePresenceFirst({
   } = useMutation({
     mutationFn: createPresencaCultoFunction,
     onError: (err, newMember, context) => {
-      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
+      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
     },
     // Always refetch after error or success:
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
+      queryClient.invalidateQueries({ queryKey: ['presenceExistRegistered'] });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
     },
-  })
+  });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance[]> = async (data) => {
     try {
-      await createPresencaCultoFn(data)
+      await createPresencaCultoFn(data);
     } catch (error) {
-      errorCadastro('Já existem presenças registradas!')
+      errorCadastro('Já existem presenças registradas!');
     }
-  }
+  };
 
   return (
     <>
@@ -180,16 +180,17 @@ export default function ControlePresenceFirst({
                               </div>
                               <div className="hidden w-full text-center sm:block">
                                 <span
-                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${user.situacao_no_reino?.nome === 'Ativo'
+                                  className={`hidden w-full rounded-md px-2 py-1 text-center sm:block ${
+                                    user.situacao_no_reino?.nome === 'Ativo'
                                       ? 'border border-green-200 bg-green-100 ring-green-500'
                                       : user.situacao_no_reino?.nome ===
-                                        'Normal'
+                                          'Normal'
                                         ? 'border border-blue-200 bg-blue-100 ring-blue-500'
                                         : user.situacao_no_reino?.nome ===
-                                          'Frio'
+                                            'Frio'
                                           ? 'border border-orange-200 bg-orange-100 ring-orange-500'
                                           : 'border border-red-200 bg-red-100 ring-red-500'
-                                    }`}
+                                  }`}
                                 >
                                   {user.situacao_no_reino.nome}
                                 </span>
@@ -273,5 +274,5 @@ export default function ControlePresenceFirst({
         </>
       )}
     </>
-  )
+  );
 }

@@ -1,8 +1,9 @@
-'use client'
-import { ComboboxDemo } from '@/components/MultiUserSelect/multi-membros-select'
-import { TimePicker } from '@/components/timer-picker-input/time-picker'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+/* eslint-disable @typescript-eslint/ban-ts-comment */
+'use client';
+import { ComboboxDemo } from '@/components/MultiUserSelect/multi-membros-select';
+import { TimePicker } from '@/components/timer-picker-input/time-picker';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Dialog,
   DialogContent,
@@ -10,11 +11,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
+} from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -22,87 +23,86 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Separator } from '@/components/ui/separator'
-import { useToast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils'
-import { useCombinedStore } from '@/store/DataCombineted'
-import { useUserDataStore } from '@/store/UserDataStore'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { PlusCircle, Spinner } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import React, { useEffect, useState } from 'react'
-import { SubmitHandler, useForm, UseFormSetValue } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
-import { z } from 'zod'
+} from '@/components/ui/select';
+import { Separator } from '@/components/ui/separator';
+import { useToast } from '@/components/ui/use-toast';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { cn } from '@/lib/utils';
+import { useCombinedStore } from '@/store/DataCombineted';
+import { CalendarIcon } from '@heroicons/react/24/outline';
+import { PlusCircle, Spinner } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { useSession } from 'next-auth/react';
+import React, { useEffect, useState } from 'react';
+import { SubmitHandler, useForm, UseFormSetValue } from 'react-hook-form';
+import 'react-toastify/dist/ReactToastify.css';
+import { z } from 'zod';
 import {
   FormCelula,
   schemaFormCelula,
   SupervisaoData,
   UserCombobox,
-} from './schema'
-import { useSession } from 'next-auth/react'
-import { BASE_URL } from '@/lib/axios'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+} from './schema';
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const handleZipCode = async (
   e: React.FormEvent<HTMLInputElement>,
   setValue: UseFormSetValue<FormCelula>, // Atualize o valor do form
 ) => {
-  const zipCode = e.currentTarget.value.replace(/\D/g, '')
+  const zipCode = e.currentTarget.value.replace(/\D/g, '');
 
   if (zipCode.length === 8) {
     try {
-      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`)
-      const data = await response.json()
+      const response = await fetch(`https://viacep.com.br/ws/${zipCode}/json/`);
+      const data = await response.json();
 
       if (!data.erro) {
         // Defina os valores usando setValue
-        setValue('cidade', data.localidade)
-        setValue('endereco', data.logradouro)
-        setValue('estado', data.uf)
-        setValue('bairro', data.bairro)
+        setValue('cidade', data.localidade);
+        setValue('endereco', data.logradouro);
+        setValue('estado', data.uf);
+        setValue('bairro', data.bairro);
       }
     } catch (error) {
-      console.error('Erro ao buscar o CEP', error)
+      console.error('Erro ao buscar o CEP', error);
     }
   }
-}
+};
 
 export default function AddNewCelula() {
-  const { toast } = useToast()
-  const queryClient = useQueryClient()
-  const [open, setOpen] = useState(false)
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>()
+  const { toast } = useToast();
+  const queryClient = useQueryClient();
+  const [open, setOpen] = useState(false);
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>();
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     UserCombobox[]
-  >([])
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  >([]);
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const URLCelulas = `${BASE_URL}/celulas`
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
 
   const daysWeek = [
     { label: 'Domingo', value: '0' },
@@ -112,10 +112,10 @@ export default function AddNewCelula() {
     { label: 'Quinta-feira', value: '4' },
     { label: 'Sexta-feira', value: '5' },
     { label: 'Sábado', value: '6' },
-  ]
+  ];
 
-  const { state } = useCombinedStore()
-  const supervisoesAll = state.supervisoes
+  const { state } = useCombinedStore();
+  const supervisoesAll = state.supervisoes;
 
   const form = useForm<FormCelula>({
     defaultValues: {
@@ -133,83 +133,83 @@ export default function AddNewCelula() {
       endereco: '',
       numero_casa: '',
     },
-  })
+  });
 
   const CreateNewCelulaFunction = async (
     data: z.infer<typeof schemaFormCelula>,
   ) => {
-    const date_inicio = new Date(dayjs(data.date_inicio).toISOString())
-    const date_multipicar = new Date(dayjs(data.date_multipicar).toISOString())
+    const date_inicio = new Date(dayjs(data.date_inicio).toISOString());
+    const date_multipicar = new Date(dayjs(data.date_multipicar).toISOString());
 
     const response = await axiosAuth.post(URLCelulas, {
       ...data,
       date_inicio,
       date_multipicar,
       membros: data.membros.map((membro) => membro.id),
-    })
-    form.reset()
-    return response.data
-  }
+    });
+    form.reset();
+    return response.data;
+  };
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
     onSettled: () => {
-      queryClient.invalidateQueries({ queryKey: ['allCelulasIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['allCelulasIbb'] });
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof schemaFormCelula>> = async (
     data,
   ) => {
-    const response = await createNewCelulaFn(data)
+    const response = await createNewCelulaFn(data);
     if (response) {
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'Célula Cadastrada com sucesso.',
-      })
-      form.reset()
+      });
+      form.reset();
     } else {
       toast({
         title: 'Erro!!!',
         description: 'Erro no Cadastro da Célula. 😰',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   const handleSupervisaoSelecionada = (value: string) => {
-    setSupervisaoSelecionada(value)
-  }
+    setSupervisaoSelecionada(value);
+  };
 
   useEffect(() => {
     axiosAuth
       .get(URLSupervisoes)
       .then((response) => {
-        setSupervisoes(response.data)
+        setSupervisoes(response.data);
       })
       .catch((error) => {
-        console.error('Erro na requisição:', error)
-      })
-  }, [])
+        console.error('Erro na requisição:', error);
+      });
+  }, []);
 
   useEffect(() => {
     if (supervisaoSelecionada) {
-      console.log('supervisaoSelecionada', supervisaoSelecionada)
+      console.log('supervisaoSelecionada', supervisaoSelecionada);
       // Use the selected supervision ID to filter the list of users
-      console.log('supervisoes', supervisoes)
+      console.log('supervisoes', supervisoes);
       const selectedSupervisao = supervisoes?.find(
         (supervisao) => supervisao.id === supervisaoSelecionada,
-      )
-      console.log('selectedSupervisao', selectedSupervisao)
+      );
+      console.log('selectedSupervisao', selectedSupervisao);
       if (selectedSupervisao) {
-        const lideresOrdenados = selectedSupervisao.membros.sort((a, b) =>
-          (a.first_name ?? '').localeCompare(b.first_name ?? ''),
-        )
-        setUsersSupervisaoSelecionada(lideresOrdenados)
+        const lideresOrdenados = selectedSupervisao?.membros?.sort((a, b) =>
+          (a?.first_name ?? '').localeCompare(b?.first_name ?? ''),
+        );
+        setUsersSupervisaoSelecionada(lideresOrdenados);
       }
     }
-  }, [supervisaoSelecionada, supervisoes])
+  }, [supervisaoSelecionada, supervisoes]);
 
   return (
     <>
@@ -312,7 +312,7 @@ export default function AddNewCelula() {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                            'text-muted-foreground',
+                                              'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
@@ -340,9 +340,9 @@ export default function AddNewCelula() {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date()
-                                          today.setHours(0, 0, 0, 0)
-                                          return date > today
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
                                         }}
                                         initialFocus
                                       />
@@ -375,7 +375,7 @@ export default function AddNewCelula() {
                                           className={cn(
                                             ' pl-3 text-left font-normal',
                                             !field.value &&
-                                            'text-muted-foreground',
+                                              'text-muted-foreground',
                                           )}
                                         >
                                           {field.value ? (
@@ -401,9 +401,9 @@ export default function AddNewCelula() {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date()
-                                          today.setHours(0, 0, 0, 0)
-                                          return date < today
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date < today;
                                         }}
                                         initialFocus
                                       />
@@ -430,8 +430,8 @@ export default function AddNewCelula() {
                                   <FormLabel>Supervisão</FormLabel>
                                   <Select
                                     onValueChange={(value) => {
-                                      field.onChange(value)
-                                      handleSupervisaoSelecionada(value)
+                                      field.onChange(value);
+                                      handleSupervisaoSelecionada(value);
                                     }}
                                   >
                                     <FormControl>
@@ -468,7 +468,7 @@ export default function AddNewCelula() {
                                   <FormLabel>Líder</FormLabel>
                                   <Select
                                     onValueChange={(value) => {
-                                      field.onChange(value)
+                                      field.onChange(value);
                                     }}
                                   >
                                     <FormControl>
@@ -643,5 +643,5 @@ export default function AddNewCelula() {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

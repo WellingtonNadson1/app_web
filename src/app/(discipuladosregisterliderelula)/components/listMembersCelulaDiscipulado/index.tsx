@@ -1,47 +1,47 @@
-'use client'
-import Pagination from '@/components/Pagination'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
-import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import FormFirstDiscipulado from './FormFirstDiscipulado'
-import FormSecondDiscipulado from './FormSecondDiscipulado'
-import Scheleton from './scheleton'
+'use client';
+import Pagination from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import FormFirstDiscipulado from './FormFirstDiscipulado';
+import FormSecondDiscipulado from './FormSecondDiscipulado';
+import Scheleton from './scheleton';
 import {
   ListMembersCelulaProps,
   dataSchemaGetDiscipuladoAllCell,
   dataSchemaReturnExistDiscipuladoAllCell,
-} from './schema'
-import { BASE_URL } from '@/lib/axios'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+} from './schema';
 
 export default function ListMembersCelulaDiscipulado({
   data,
 }: ListMembersCelulaProps) {
   // console.log('data', data)
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberscell/existing-register`
+  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberscell/existing-register`;
 
   const GetAllRegisterDiscipuladoCell = async (
     dataForm: dataSchemaGetDiscipuladoAllCell,
   ) => {
     const result: dataSchemaReturnExistDiscipuladoAllCell =
-      await axiosAuth.post(URLDiscipuladosExist, dataForm)
-    return result
-  }
-  const cell_id = data.id
-  const data_ocorreu = new Date()
+      await axiosAuth.post(URLDiscipuladosExist, dataForm);
+    return result;
+  };
+  const cell_id = data.id;
+  const data_ocorreu = new Date();
 
   const { data: registerDiscipuladosCell, isLoading } = useQuery({
     queryKey: ['dataRegisterAllDiscipuladoCell', cell_id],
@@ -50,14 +50,14 @@ export default function ListMembersCelulaDiscipulado({
         cell_id,
         data_ocorreu,
       }),
-  })
+  });
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const membersSort = registerDiscipuladosCell?.data[0]?.membros.sort((a, b) =>
-    a.first_name.localeCompare(b.first_name),
-  )
-  const displayedMembers = membersSort?.slice(startIndex, endIndex)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const membersSort = registerDiscipuladosCell?.data[0]?.membros?.sort((a, b) =>
+    a?.first_name.localeCompare(b?.first_name),
+  );
+  const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
   return (
     <>
@@ -153,5 +153,5 @@ export default function ListMembersCelulaDiscipulado({
         </div>
       </div>
     </>
-  )
+  );
 }
