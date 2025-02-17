@@ -122,11 +122,12 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
     defaultValues: async () => {
       try {
         const response = await axiosAuth.get(URLCelula);
+        const celulaData = response.data;
         console.log('response', response.data);
+        form.setValue('supervisao', celulaData.supervisao.id);
         // Retorne os dados esperados para os defaultValues
         return {
           ...response.data,
-          supervisao: response.data.supervisao.id,
           date_multipicar: response.data.date_multipicar
             ? new Date(response.data.date_multipicar)
             : null, // Define como null se não houver data
@@ -228,19 +229,24 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
   }, []);
 
   useEffect(() => {
-    const selectedSupervisao = supervisoes?.find(
-      (supervisao) => supervisao.id === supervisaoSelecionada,
-    );
+    const selectedSupervisionId = form.watch('supervisao'); // Use form value directly
 
-    if (selectedSupervisao && Array.isArray(selectedSupervisao.membros)) {
-      const lideresOrdenados = selectedSupervisao.membros.sort((a, b) =>
-        (a.first_name ?? '').localeCompare(b.first_name ?? ''),
+    if (selectedSupervisionId && supervisoes) {
+      // Check if supervisoes is loaded
+      const selectedSupervision = supervisoes.find(
+        (supervision) => supervision.id === selectedSupervisionId.id,
       );
-      setUsersSupervisaoSelecionada(lideresOrdenados);
-    } else {
-      setUsersSupervisaoSelecionada([]); // Limpa a lista se não houver supervisão ou membros
+
+      if (selectedSupervision && Array.isArray(selectedSupervision.membros)) {
+        const lideresOrdenados = selectedSupervision.membros.sort((a, b) =>
+          (a.first_name ?? '').localeCompare(b.first_name ?? ''),
+        );
+        setUsersSupervisaoSelecionada(lideresOrdenados);
+      } else {
+        setUsersSupervisaoSelecionada([]);
+      }
     }
-  }, [supervisaoSelecionada, supervisoes]);
+  }, [supervisoes, form.watch('supervisao')]);
 
   return (
     <>
@@ -517,6 +523,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                     onValueChange={(value) => {
                                       field.onChange(value);
                                     }}
+                                    defaultValue={form.getValues('lider')?.id}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -556,7 +563,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                     selectedItems={field.value || []}
                                     setSelectedItems={(val) =>
                                       field.onChange(val)
-                                    } // Atualiza o valor selecionado
+                                    }
                                   />
                                   <FormMessage />
                                 </FormItem>
