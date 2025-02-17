@@ -281,7 +281,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
     if (selectedSupervisionId && supervisoes) {
       // Check if supervisoes is loaded
       const selectedSupervision = supervisoes.find(
-        (supervision) => supervision.id === selectedSupervisionId.id,
+        (supervision) => supervision.id === selectedSupervisionId,
       );
 
       if (selectedSupervision && Array.isArray(selectedSupervision.membros)) {
@@ -533,7 +533,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                       field.onChange(value);
                                       handleSupervisaoSelecionada(value);
                                     }}
-                                    defaultValue={field.value.id}
+                                    defaultValue={field.value}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -584,7 +584,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                           {field.value
                                             ? filteredPeople?.find(
                                                 (membro) =>
-                                                  membro.id === field.value.id,
+                                                  membro.id === field.value,
                                               )?.first_name
                                             : 'Selecione discipulador'}
                                           <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
@@ -609,7 +609,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                                   key={membro.id}
                                                   onSelect={() => {
                                                     form.setValue(
-                                                      'lider.id',
+                                                      'lider',
                                                       membro.id,
                                                     );
                                                   }}
@@ -618,8 +618,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                                   <CheckIcon
                                                     className={cn(
                                                       'ml-auto h-4 w-4',
-                                                      membro.id ===
-                                                        field.value.id
+                                                      membro.id === field.value
                                                         ? 'opacity-100'
                                                         : 'opacity-0',
                                                     )}

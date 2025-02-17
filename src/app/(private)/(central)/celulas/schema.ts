@@ -51,14 +51,8 @@ const DataCelula = z.object({
 export const schemaFormCelula = z.object({
   id: z.string(),
   nome: z.string(),
-  lider: z.object({
-    id: z.string().uuid(),
-    // first_name: z.string(),
-  }),
-  supervisao: z.object({
-    id: z.string().uuid(),
-    // nome: z.string(),
-  }),
+  lider: z.string().uuid(),
+  supervisao: z.string().uuid(),
   cep: z.string(),
   cidade: z.string(),
   estado: z.string(),
