@@ -47,15 +47,6 @@ export default async function RootLayout({
 
   return (
     <html lang="pt">
-      <header
-        suppressHydrationWarning
-        className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
-      >
-        <div suppressHydrationWarning className="flex items-center gap-2 px-4">
-          <Separator orientation="vertical" className="mr-2 h-4" />
-          <DynamicBreadcrumbs />
-        </div>
-      </header>
       <body suppressHydrationWarning>
         <InitializerUserStore
           id={id ?? ''}
@@ -93,6 +84,19 @@ export default async function RootLayout({
                   <Suspense fallback={<LoaderHeader />}>
                     <Header />
                   </Suspense>
+                  {/* Breand */}
+                  <div
+                    suppressHydrationWarning
+                    className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+                  >
+                    <div
+                      suppressHydrationWarning
+                      className="flex items-center gap-2 px-4"
+                    >
+                      <Separator orientation="vertical" className="mr-2 h-4" />
+                      <DynamicBreadcrumbs />
+                    </div>
+                  </div>
                   {children}
                 </div>
               </Providers>
