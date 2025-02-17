@@ -1,9 +1,9 @@
-'use client'
-import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json'
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid'
-import { Player } from '@lordicon/react'
-import { BookBookmark, Cross, Student } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
+'use client';
+import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/solid';
+import { Player } from '@lordicon/react';
+import { BookBookmark, Cross, Student } from '@phosphor-icons/react';
+import { useQuery } from '@tanstack/react-query';
 import {
   add,
   eachDayOfInterval,
@@ -17,89 +17,89 @@ import {
   parse,
   parseISO,
   startOfToday,
-} from 'date-fns'
-import { ptBR } from 'date-fns/locale/pt-BR'
-import { useEffect, useRef, useState } from 'react'
+} from 'date-fns';
+import { ptBR } from 'date-fns/locale/pt-BR';
+import { useEffect, useRef, useState } from 'react';
 
-import FormUpdateCulto from '@/app/(central)/cultos/form-update-culto'
-import { Church } from '@phosphor-icons/react/dist/ssr'
-import dayjs from 'dayjs'
-import { MoreVerticalIcon } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { Button } from '../ui/button'
+import FormUpdateCulto from '@/app/(private)/(central)/cultos/form-update-culto';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Church } from '@phosphor-icons/react/dist/ssr';
+import dayjs from 'dayjs';
+import { MoreVerticalIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Button } from '../ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '../ui/dropdown-menu'
-import DeleteCulto from './DeleteCulto'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+} from '../ui/dropdown-menu';
+import DeleteCulto from './DeleteCulto';
 
 export type meeting = {
-  id: string
+  id: string;
   culto_semana: {
-    id: string
-    nome: string
-  }
-  imageUrl: string
-  data_inicio_culto: string
-  data_termino_culto: string
-  status: string
-}
+    id: string;
+    nome: string;
+  };
+  imageUrl: string;
+  data_inicio_culto: string;
+  data_termino_culto: string;
+  status: string;
+};
 
-const URLCultosInd = `${BASE_URL}/cultosindividuais`
+const URLCultosInd = `${BASE_URL}/cultosindividuais`;
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function MyCalendar() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const today = startOfToday()
-  const [selectedDay, setSelectedDay] = useState(today)
-  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
-  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
-  const [year, setYear] = useState(firstDayCurrentMonth.getFullYear())
-  const [month, setMonth] = useState(firstDayCurrentMonth.getMonth() + 1)
+  const today = startOfToday();
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
+  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
+  const [year, setYear] = useState(firstDayCurrentMonth.getFullYear());
+  const [month, setMonth] = useState(firstDayCurrentMonth.getMonth() + 1);
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
-  })
+  });
 
   const { data: meetings } = useQuery<meeting[]>({
     queryKey: ['cultosMarcados', year, month],
     queryFn: async () => {
       const response = await axiosAuth.get(
         `${URLCultosInd}?year=${year}&month=${month}`,
-      )
-      return response.data
+      );
+      return response.data;
     },
-  })
+  });
 
   function previousMonth() {
-    const firstDayPreviousMonth = add(firstDayCurrentMonth, { months: -1 })
-    setCurrentMonth(format(firstDayPreviousMonth, 'MMM-yyyy'))
-    setYear(firstDayPreviousMonth.getFullYear())
-    setMonth(firstDayPreviousMonth.getMonth() + 1)
+    const firstDayPreviousMonth = add(firstDayCurrentMonth, { months: -1 });
+    setCurrentMonth(format(firstDayPreviousMonth, 'MMM-yyyy'));
+    setYear(firstDayPreviousMonth.getFullYear());
+    setMonth(firstDayPreviousMonth.getMonth() + 1);
   }
 
   function nextMonth() {
-    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 })
-    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'))
-    setYear(firstDayNextMonth.getFullYear())
-    setMonth(firstDayNextMonth.getMonth() + 1)
+    const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
+    setCurrentMonth(format(firstDayNextMonth, 'MMM-yyyy'));
+    setYear(firstDayNextMonth.getFullYear());
+    setMonth(firstDayNextMonth.getMonth() + 1);
   }
 
   const selectedDayMeetings = meetings?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
-  )
+  );
 
   return (
     <div className="pt-4">
@@ -261,24 +261,24 @@ export default function MyCalendar() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 function Meeting({ meeting }: { meeting: meeting }) {
   // ANIMACAO DO ICON
-  const playerRef = useRef<Player>(null)
+  const playerRef = useRef<Player>(null);
 
   useEffect(() => {
-    playerRef.current?.playFromBeginning()
-  }, [])
+    playerRef.current?.playFromBeginning();
+  }, []);
   // eslint-disable-next-line camelcase
   const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto))
     .add(3, 'hour')
-    .toDate()
+    .toDate();
   // eslint-disable-next-line camelcase
   const data_termino_culto = dayjs(new Date(meeting.data_termino_culto))
     .add(3, 'hour')
-    .toDate()
+    .toDate();
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
@@ -360,7 +360,7 @@ function Meeting({ meeting }: { meeting: meeting }) {
         </DropdownMenuContent>
       </DropdownMenu>
     </li>
-  )
+  );
 }
 
 const colStartClasses = [
@@ -371,4 +371,4 @@ const colStartClasses = [
   'col-start-5',
   'col-start-6',
   'col-start-7',
-]
+];

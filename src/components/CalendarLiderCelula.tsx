@@ -1,10 +1,12 @@
-'use client'
-import { Meeting } from '@/app/(celula)/celula/schema'
-import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json'
-import { Player } from '@lordicon/react'
-import { BookBookmark, Cross, Student } from '@phosphor-icons/react'
-import { Church } from '@phosphor-icons/react/dist/ssr'
-import { useQuery } from '@tanstack/react-query'
+'use client';
+import { Meeting } from '@/app/(private)/(celula)/celula/schema';
+import Ceia from '@/app/assets/wired-outline-1486-food-as-resources.json';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Player } from '@lordicon/react';
+import { BookBookmark, Cross, Student } from '@phosphor-icons/react';
+import { Church } from '@phosphor-icons/react/dist/ssr';
+import { useQuery } from '@tanstack/react-query';
 import {
   eachDayOfInterval,
   endOfMonth,
@@ -18,16 +20,14 @@ import {
   parse,
   parseISO,
   startOfToday,
-} from 'date-fns'
-import { ptBR } from 'date-fns/locale'
-import dayjs from 'dayjs'
-import { useEffect, useRef, useState } from 'react'
-import { z } from 'zod'
-import SpinnerButton from './spinners/SpinnerButton'
-import { Card } from './ui/card'
-import { BASE_URL } from '@/lib/axios'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+} from 'date-fns';
+import { ptBR } from 'date-fns/locale';
+import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from 'react';
+import { z } from 'zod';
+import SpinnerButton from './spinners/SpinnerButton';
+import { Card } from './ui/card';
 
 const meetingSchema = z.object({
   id: z.string(),
@@ -37,39 +37,39 @@ const meetingSchema = z.object({
   imageUrl: z.string(),
   data_inicio_culto: z.string(),
   data_termino_culto: z.string(),
-})
+});
 
-export type meetingsch = z.infer<typeof meetingSchema>
+export type meetingsch = z.infer<typeof meetingSchema>;
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 export default function CalendarLiderCelula() {
-  const today = startOfToday()
-  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const today = startOfToday();
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const [selectedDay, setSelectedDay] = useState(today)
-  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'))
+  const [selectedDay, setSelectedDay] = useState(today);
+  const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 
   if (!token) {
-    return <SpinnerButton message={''} />
+    return <SpinnerButton message={''} />;
   }
 
-  const dataHoje = new Date()
+  const dataHoje = new Date();
   const firstDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth(),
     1,
-  )
+  );
   const lastDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth() + 1,
     0,
-  )
+  );
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
@@ -77,20 +77,20 @@ export default function CalendarLiderCelula() {
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
-      })
-      return data
+      });
+      return data;
     },
-  })
+  });
 
   if (isLoading) {
-    return <SpinnerButton message={''} />
+    return <SpinnerButton message={''} />;
   }
-  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date())
+  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
-  })
+  });
 
   // function previousMonth() {
   //   const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
@@ -104,7 +104,7 @@ export default function CalendarLiderCelula() {
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),
-  )
+  );
 
   return (
     <Card className=" bg-white relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
@@ -246,23 +246,23 @@ export default function CalendarLiderCelula() {
         </div>
       </div>
     </Card>
-  )
+  );
 }
 
 function MeetingComponent({ meeting }: { meeting: meetingsch }) {
-  const playerRef = useRef<Player>(null)
+  const playerRef = useRef<Player>(null);
 
   useEffect(() => {
-    playerRef.current?.playFromBeginning()
-  }, [])
+    playerRef.current?.playFromBeginning();
+  }, []);
   // eslint-disable-next-line camelcase
   const data_inicio_culto = dayjs(new Date(meeting.data_inicio_culto))
     .add(3, 'hour')
-    .toDate()
+    .toDate();
   // eslint-disable-next-line camelcase
   const data_termino_culto = dayjs(new Date(meeting.data_termino_culto))
     .add(3, 'hour')
-    .toDate()
+    .toDate();
 
   return (
     <li className="flex items-center px-4 py-2 space-x-4 group rounded-xl focus-within:bg-gray-100 hover:bg-gray-100">
@@ -330,7 +330,7 @@ function MeetingComponent({ meeting }: { meeting: meetingsch }) {
         </p>
       </div>
     </li>
-  )
+  );
 }
 
 const colStartClasses = [
@@ -341,4 +341,4 @@ const colStartClasses = [
   'col-start-5',
   'col-start-6',
   'col-start-7',
-]
+];

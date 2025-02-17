@@ -1,9 +1,8 @@
-import authConfig from '@/auth/auth.config'
-import axios, { AxiosError } from 'axios'
-import NextAuth from 'next-auth'
-import { NextAuthRequest } from 'next-auth/lib'
-import { toast } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
+import authConfig from '@/auth/auth.config';
+import axios, { AxiosError } from 'axios';
+import NextAuth from 'next-auth';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 export interface FetchError extends AxiosError {}
 
@@ -19,19 +18,19 @@ export async function fetchWithToken(
       headers: {
         Authorization: `Bearer ${token}`,
       },
-    })
+    });
 
-    return response.data
+    return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
       const fetchError: FetchError = {
         ...error,
         message: 'Failed to fetch data with token.',
-      }
-      throw fetchError
+      };
+      throw fetchError;
     } else {
-      console.error('Unknown error occurred:', error)
-      throw new Error('Unknown error occurred.')
+      console.error('Unknown error occurred:', error);
+      throw new Error('Unknown error occurred.');
     }
   }
 }
@@ -47,7 +46,7 @@ export const success = (message: string) =>
     draggable: true,
     progress: undefined,
     theme: 'light',
-  })
+  });
 
 export const errorCadastro = (message: string) =>
   toast.error(`${message}`, {
@@ -59,12 +58,12 @@ export const errorCadastro = (message: string) =>
     draggable: true,
     progress: undefined,
     theme: 'light',
-  })
+  });
 
-const { auth } = NextAuth(authConfig)
+const { auth } = NextAuth(authConfig);
 
-export default auth((req: NextAuthRequest) => {
+export default auth((req) => {
   // const { nextUrl } = req;
-  const isLoggedIn = !!req.auth
-  return console.log('isLoggedIn', isLoggedIn)
-})
+  const isLoggedIn = !!req.auth;
+  return console.log('isLoggedIn', isLoggedIn);
+});
