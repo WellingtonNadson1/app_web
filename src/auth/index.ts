@@ -26,6 +26,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const user = result.data;
 
+          if (!user || !user.token) {
+            throw new Error('Invalid credentials.');
+          }
+
           if (user) {
             console.log(JSON.stringify(user));
             return user;
@@ -35,13 +39,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             // Return `null` to indicate that the credentials are invalid
             return null;
           }
+          throw new Error('Authorization failed');
         }
       },
     }),
-    // GoogleProvider({
-    //   clientId: process.env.GOOGLE_CLIENT_ID as string,
-    //   clientSecret: process.env.GOOGLE_CLIENT_SECRET as string,
-    // }),
   ],
   session: {
     strategy: 'jwt',

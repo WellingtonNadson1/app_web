@@ -1,6 +1,6 @@
-import '@/./app/globals.css'
-import { Providers } from '@/providers/providers'
-import React from 'react'
+import '@/./app/globals.css';
+import { Providers } from '@/providers/providers';
+import React from 'react';
 
 export const metadata = {
   title: 'App IBB',
@@ -10,18 +10,18 @@ export const metadata = {
     apple: ['/apple-touch-icon.png?v=4'],
     shortcut: ['/apple-touch-icon.png'],
   },
-}
+};
 
 export default async function LoginLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-    <html lang="pt">
-      <body>
+    <html lang="pt" suppressHydrationWarning>
+      <body suppressHydrationWarning>
         <Providers>{children}</Providers>
       </body>
     </html>
-  )
+  );
 }

@@ -1,37 +1,36 @@
-'use server'
+'use server';
 
-import { AuthError } from 'next-auth'
-import { InputsFormAuth, InputsFormAuthSchema } from '@/types'
-import { signIn } from '@/auth'
+import { signIn } from '@/auth';
+import { InputsFormAuth, InputsFormAuthSchema } from '@/types';
+import { AuthError } from 'next-auth';
 
 export const loginFunction = async (values: InputsFormAuth) => {
-  const validatedFields = InputsFormAuthSchema.safeParse(values)
+  const validatedFields = InputsFormAuthSchema.safeParse(values);
 
   if (!validatedFields.success) {
-    return { error: 'Campo inválido' }
+    return { error: 'Campo inválido' };
   }
 
-  const { email, password } = validatedFields.data
+  const { email, password } = validatedFields.data;
 
   try {
-    const loginSuccess = await signIn('credentials', {
+    await signIn('credentials', {
       email,
       password,
-      // redirectTo: DEFAULT_LOGIN_REDIRECT,
-    })
+      redirect: false,
+    });
     return {
       sucesso: 'Sucesso no Login',
-      loginSuccess,
-    }
+    };
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
         case 'CredentialsSignin':
-          return { error: 'Credenciais Inválidas' }
+          return { error: 'Credenciais Inválidas' };
         default:
-          return { error: 'Algo de errado não está certo! 🖖🏽' }
+          return { error: 'Algo de errado não está certo! 🖖🏽' };
       }
     }
-    throw error
+    throw error;
   }
-}
+};
