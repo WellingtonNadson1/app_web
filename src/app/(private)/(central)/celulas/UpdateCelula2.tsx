@@ -228,19 +228,17 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
   }, []);
 
   useEffect(() => {
-    if (supervisaoSelecionada) {
-      // Use the selected supervision ID to filter the list of users
-      console.log('supervisoes', supervisoes);
-      const selectedSupervisao = supervisoes?.find(
-        (supervisao) => supervisao.id === supervisaoSelecionada,
+    // Use the selected supervision ID to filter the list of users
+    console.log('supervisoes', supervisoes);
+    const selectedSupervisao = supervisoes?.find(
+      (supervisao) => supervisao.id === supervisaoSelecionada,
+    );
+    console.log('selectedSupervisao', selectedSupervisao);
+    if (selectedSupervisao) {
+      const lideresOrdenados = selectedSupervisao?.membros.sort((a, b) =>
+        (a.first_name ?? '').localeCompare(b.first_name ?? ''),
       );
-      console.log('selectedSupervisao', selectedSupervisao);
-      if (selectedSupervisao) {
-        const lideresOrdenados = selectedSupervisao.membros.sort((a, b) =>
-          (a.first_name ?? '').localeCompare(b.first_name ?? ''),
-        );
-        setUsersSupervisaoSelecionada(lideresOrdenados);
-      }
+      setUsersSupervisaoSelecionada(lideresOrdenados);
     }
   }, [supervisaoSelecionada, supervisoes]);
 
