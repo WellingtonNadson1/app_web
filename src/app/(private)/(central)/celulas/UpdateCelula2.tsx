@@ -228,17 +228,17 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
   }, []);
 
   useEffect(() => {
-    // Use the selected supervision ID to filter the list of users
-    console.log('supervisoes', supervisoes);
     const selectedSupervisao = supervisoes?.find(
       (supervisao) => supervisao.id === supervisaoSelecionada,
     );
-    console.log('selectedSupervisao', selectedSupervisao);
-    if (selectedSupervisao) {
-      const lideresOrdenados = selectedSupervisao?.membros.sort((a, b) =>
+
+    if (selectedSupervisao && Array.isArray(selectedSupervisao.membros)) {
+      const lideresOrdenados = selectedSupervisao.membros.sort((a, b) =>
         (a.first_name ?? '').localeCompare(b.first_name ?? ''),
       );
       setUsersSupervisaoSelecionada(lideresOrdenados);
+    } else {
+      setUsersSupervisaoSelecionada([]); // Limpa a lista se não houver supervisão ou membros
     }
   }, [supervisaoSelecionada, supervisoes]);
 
