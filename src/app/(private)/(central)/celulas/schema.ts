@@ -1,4 +1,4 @@
-import { z } from 'zod'
+import { z } from 'zod';
 
 const schemaMember = z.object({
   id: z.string(),
@@ -11,32 +11,32 @@ const schemaMember = z.object({
     id: z.string(),
     nome: z.string(),
   }),
-})
+});
 
-export type Member = z.infer<typeof schemaMember>
+export type Member = z.infer<typeof schemaMember>;
 
 const schemaLider = z.object({
   id: z.string(),
   first_name: z.string(),
-})
+});
 
-export type Lider = z.infer<typeof schemaLider>
+export type Lider = z.infer<typeof schemaLider>;
 
 const schemaSupervisao = z.object({
   id: z.string(),
   nome: z.string(),
-})
+});
 
-export type Supervisao = z.infer<typeof schemaSupervisao>
+export type Supervisao = z.infer<typeof schemaSupervisao>;
 
 const schemaReuniaoCelula = z.object({
   id: z.string(),
   data_reuniao: z.string(),
   status: z.string(),
   presencas_membros_reuniao_celula: z.any().array(), // You can replace 'any' with the appropriate type if needed
-})
+});
 
-export type ReuniaoCelula = z.infer<typeof schemaReuniaoCelula>
+export type ReuniaoCelula = z.infer<typeof schemaReuniaoCelula>;
 
 const DataCelula = z.object({
   id: z.string(),
@@ -46,18 +46,18 @@ const DataCelula = z.object({
   supervisao: schemaSupervisao,
   date_que_ocorre: z.string(),
   reunioes_celula: z.array(schemaReuniaoCelula),
-})
+});
 
 export const schemaFormCelula = z.object({
   id: z.string(),
   nome: z.string(),
   lider: z.object({
     id: z.string().uuid(),
-    first_name: z.string(),
+    // first_name: z.string(),
   }),
   supervisao: z.object({
     id: z.string().uuid(),
-    nome: z.string(),
+    // nome: z.string(),
   }),
   cep: z.string(),
   cidade: z.string(),
@@ -74,9 +74,9 @@ export const schemaFormCelula = z.object({
       first_name: z.string(),
     })
     .array(),
-})
+});
 
-export type FormCelula = z.infer<typeof schemaFormCelula>
+export type FormCelula = z.infer<typeof schemaFormCelula>;
 
 const schemaCelula = z.object({
   id: z.string(),
@@ -85,9 +85,9 @@ const schemaCelula = z.object({
     id: z.string(),
     first_name: z.string(),
   }),
-})
+});
 
-export type Celula = z.infer<typeof schemaCelula>
+export type Celula = z.infer<typeof schemaCelula>;
 
 const schemaUser = z.object({
   id: z.string(),
@@ -100,9 +100,9 @@ const schemaUser = z.object({
     id: z.string(),
     nome: z.string(),
   }),
-})
+});
 
-export type User = z.infer<typeof schemaUser>
+export type User = z.infer<typeof schemaUser>;
 
 const schemaUserCombobox = z.object({
   id: z.string(),
@@ -115,22 +115,22 @@ const schemaUserCombobox = z.object({
     id: z.string(),
     nome: z.string(),
   }),
-})
+});
 
-export type UserCombobox = z.infer<typeof schemaUserCombobox>
+export type UserCombobox = z.infer<typeof schemaUserCombobox>;
 
 const SchemaSupervisaoData = z.object({
   id: z.string(),
   nome: z.string(),
   membros: z.array(schemaUser),
   celulas: z.array(schemaCelula),
-})
+});
 
-export type SupervisaoData = z.infer<typeof SchemaSupervisaoData>
+export type SupervisaoData = z.infer<typeof SchemaSupervisaoData>;
 
 export const celulaSchemaTableDateUpdate = z.object({
   id: z.string().uuid(),
   date_que_ocorre: z.string(),
-})
+});
 
-export type celulaDtaUpdate = z.infer<typeof celulaSchemaTableDateUpdate>
+export type celulaDtaUpdate = z.infer<typeof celulaSchemaTableDateUpdate>;
