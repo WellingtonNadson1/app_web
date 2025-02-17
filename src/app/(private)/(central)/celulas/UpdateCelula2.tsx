@@ -229,7 +229,6 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
 
   useEffect(() => {
     if (supervisaoSelecionada) {
-      console.log('supervisaoSelecionada', supervisaoSelecionada);
       // Use the selected supervision ID to filter the list of users
       console.log('supervisoes', supervisoes);
       const selectedSupervisao = supervisoes?.find(
@@ -237,7 +236,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
       );
       console.log('selectedSupervisao', selectedSupervisao);
       if (selectedSupervisao) {
-        const lideresOrdenados = selectedSupervisao?.membros?.sort((a, b) =>
+        const lideresOrdenados = selectedSupervisao.membros.sort((a, b) =>
           (a.first_name ?? '').localeCompare(b.first_name ?? ''),
         );
         setUsersSupervisaoSelecionada(lideresOrdenados);
