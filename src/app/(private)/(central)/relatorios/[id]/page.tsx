@@ -1,4 +1,4 @@
-import StatsCardRelatoriosDiscipulados from '@/app/(relatorios)/relatorio-discipulados-supervisao/components/StatsCardRelatoriosDiscipulados'
+import StatsCardRelatoriosDiscipulados from '@/app/(private)/(relatorios)/relatorio-discipulados-supervisao/components/StatsCardRelatoriosDiscipulados';
 
 export default function RelatoriosDiscipulados() {
   return (
@@ -6,5 +6,5 @@ export default function RelatoriosDiscipulados() {
       <div className="w-full mx-auto"></div>
       <StatsCardRelatoriosDiscipulados />
     </div>
-  )
+  );
 }

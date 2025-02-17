@@ -1,22 +1,22 @@
-import React from 'react'
+import React from 'react';
 
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { useRouter } from 'next/navigation'
-import { ListCelulasProps } from './schema'
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
+import { useRouter } from 'next/navigation';
+import { ListCelulasProps } from './schema';
 
 export default function ListDisicipuladoCelulasSupervision({
   data,
 }: ListCelulasProps) {
-  const router = useRouter()
-  const contextParamsSupervisaoId = useSupervisaoContext()
-  const dataSort = data.sort((a, b) => a.nome?.localeCompare(b.nome))
+  const router = useRouter();
+  const contextParamsSupervisaoId = useSupervisaoContext();
+  const dataSort = data.sort((a, b) => a.nome?.localeCompare(b.nome));
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-    const idCelula = event.currentTarget.id
+    const idCelula = event.currentTarget.id;
     router.push(
       `/discipulados/${contextParamsSupervisaoId}/celulas/${idCelula}`,
-    )
-  }
+    );
+  };
   return (
     <div>
       <div className="relative w-full p-2 mx-auto mt-1">
@@ -79,5 +79,5 @@ export default function ListDisicipuladoCelulasSupervision({
         </div>
       </div>
     </div>
-  )
+  );
 }

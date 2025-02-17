@@ -1,54 +1,54 @@
-'use client'
-import { dataSchemaReturnCreateDiscipulado } from '@/app/(discipuladosregistersupervisor)/components/listMembersSupervisorDiscipulado/schema'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Toaster } from '@/components/ui/toaster'
-import { toast } from '@/components/ui/use-toast'
-import { cn } from '@/lib/utils'
-import { Disclosure } from '@headlessui/react'
-import { CheckFat, Warning } from '@phosphor-icons/react'
-import { Spinner } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import { ChevronUpIcon } from 'lucide-react'
-import { Fragment } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { dataCreateDiscipulado, MembroCell } from './schema'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { dataSchemaReturnCreateDiscipulado } from '@/app/(private)/(discipuladosregistersupervisor)/components/listMembersSupervisorDiscipulado/schema';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Toaster } from '@/components/ui/toaster';
+import { toast } from '@/components/ui/use-toast';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { cn } from '@/lib/utils';
+import { Disclosure } from '@headlessui/react';
+import { CheckFat, Warning } from '@phosphor-icons/react';
+import { Spinner } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { ChevronUpIcon } from 'lucide-react';
+import { useSession } from 'next-auth/react';
+import { Fragment } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { dataCreateDiscipulado, MembroCell } from './schema';
 
-dayjs.extend(utc)
-dayjs.extend(timezone)
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 interface PropsForm {
-  membro: MembroCell
+  membro: MembroCell;
 }
 export default function FormSecondDiscipulado({ membro }: PropsForm) {
-  const queryClient = useQueryClient()
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`
+  const queryClient = useQueryClient();
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const URLCreateNewDiscipulado = `${BASE_URL}/discipuladosibb`;
   const discipulador =
-    membro?.discipulador?.[0]?.user_discipulador?.first_name || 'Sem Registro'
-  const discipulador_id = membro?.discipulador?.[0]?.user_discipulador?.id
+    membro?.discipulador?.[0]?.user_discipulador?.first_name || 'Sem Registro';
+  const discipulador_id = membro?.discipulador?.[0]?.user_discipulador?.id;
   const quantidade_discipulado =
-    membro?.discipulador?.[0]?._count?.discipulado || 0
+    membro?.discipulador?.[0]?._count?.discipulado || 0;
 
   const isRegistered = Boolean(
     membro?.discipulador[0]?.discipulado[1]?.data_ocorreu,
-  ) // Checa se já foi registrado
+  ); // Checa se já foi registrado
 
   const dataOcorreu = dayjs(
     membro?.discipulador[0]?.discipulado[1]?.data_ocorreu,
   )
     .add(3, 'hour')
-    .toISOString()
+    .toISOString();
 
   const { register, handleSubmit, reset } = useForm<dataCreateDiscipulado>({
     defaultValues: {
@@ -56,7 +56,7 @@ export default function FormSecondDiscipulado({ membro }: PropsForm) {
         ? new Date(dataOcorreu)
         : undefined, // Se já existe uma data registrada, coloca como default
     },
-  })
+  });
 
   // Register New Discipulado
   const CreateDiscipuladoFunction = async (dataForm: dataCreateDiscipulado) => {
@@ -64,21 +64,21 @@ export default function FormSecondDiscipulado({ membro }: PropsForm) {
       const data: dataSchemaReturnCreateDiscipulado = await axiosAuth.post(
         URLCreateNewDiscipulado,
         dataForm,
-      )
+      );
       toast({
         title: 'Sucesso!!!',
         description: '2º Discipulado Registrado! 🥳',
-      })
-      reset()
-      return data
+      });
+      reset();
+      return data;
     } catch (error) {
       toast({
         title: 'Erro!!!',
         description: 'Error no registro do Discipulado! 😰',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   const {
     mutateAsync: createDiscipuladoFn,
@@ -92,22 +92,22 @@ export default function FormSecondDiscipulado({ membro }: PropsForm) {
       // errorCadastro('⛔ error no registro do Discipulado')
       queryClient.invalidateQueries({
         queryKey: ['dataRegisterAllDiscipuladoCell'],
-      })
+      });
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['dataRegisterAllDiscipuladoCell'],
-      })
+      });
     },
-  })
+  });
 
   const onSubmitFirstDiscipulado: SubmitHandler<dataCreateDiscipulado> = async (
     data,
   ) => {
-    const result = await createDiscipuladoFn(data)
-    return result
-  }
+    const result = await createDiscipuladoFn(data);
+    return result;
+  };
 
   return (
     <Fragment>
@@ -248,5 +248,5 @@ export default function FormSecondDiscipulado({ membro }: PropsForm) {
         )}
       </Disclosure>
     </Fragment>
-  )
+  );
 }

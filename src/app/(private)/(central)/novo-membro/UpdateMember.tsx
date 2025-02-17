@@ -1,8 +1,8 @@
-'use client'
-import { TimePicker } from '@/components/timer-picker-input/time-picker'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
-import { Checkbox } from '@/components/ui/checkbox'
+'use client';
+import { TimePicker } from '@/components/timer-picker-input/time-picker';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
+import { Checkbox } from '@/components/ui/checkbox';
 import {
   Command,
   CommandEmpty,
@@ -10,7 +10,7 @@ import {
   CommandInput,
   CommandItem,
   CommandList,
-} from '@/components/ui/command'
+} from '@/components/ui/command';
 import {
   Dialog,
   DialogContent,
@@ -18,8 +18,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
 import {
   Form,
   FormControl,
@@ -27,47 +27,47 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@/components/ui/popover';
 
-import { ScrollArea } from '@/components/ui/scroll-area'
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { Toaster } from '@/components/ui/toaster'
-import { toast } from '@/components/ui/use-toast'
-import { handleZipCode } from '@/functions/zipCodeUtils'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { cn } from '@/lib/utils'
-import { useData } from '@/providers/providers'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr'
-import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import dayjs from 'dayjs'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import React, { useRef, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { z } from 'zod'
-import type { TUser } from './table-users/schema'
-import { userSchemaTable } from './table-users/schema'
-import { handleCPFNumber, handlePhoneNumber } from './utils'
-import { BASE_URL } from '@/lib/axios'
-dayjs.extend(utc)
-dayjs.extend(timezone)
+} from '@/components/ui/select';
+import { Toaster } from '@/components/ui/toaster';
+import { toast } from '@/components/ui/use-toast';
+import { handleZipCode } from '@/functions/zipCodeUtils';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { cn } from '@/lib/utils';
+import { useData } from '@/providers/providers';
+import { CalendarIcon } from '@heroicons/react/24/outline';
+import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr';
+import { CaretSortIcon, CheckIcon } from '@radix-ui/react-icons';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import dayjs from 'dayjs';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import type { TUser } from './table-users/schema';
+import { userSchemaTable } from './table-users/schema';
+import { handleCPFNumber, handlePhoneNumber } from './utils';
+dayjs.extend(utc);
+dayjs.extend(timezone);
 
 const estadoCivil = [
   { label: 'Solteiro(a)', value: 'solteiro' },
@@ -75,29 +75,29 @@ const estadoCivil = [
   { label: 'Divorciado(a)', value: 'divorciado' },
   { label: 'Uniao Estável', value: 'uniao_estavel' },
   { label: 'Viúvo(a)', value: 'viuvo' },
-]
+];
 const trueFalse = [
   { label: 'Sim', value: 'true' },
   { label: 'Não', value: 'false' },
-]
+];
 
 function UpdateMember({ member }: { member: TUser }) {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const URLUsersId = `${BASE_URL}/users/${member.id}`
-  const URLUsers = `${BASE_URL}/users`
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
+  const URLUsersId = `${BASE_URL}/users/${member.id}`;
+  const URLUsers = `${BASE_URL}/users`;
 
   // Zustand Store
   // @ts-ignore
-  const { data: dataAllCtx } = useData()
-  console.log('dataAllCtx', dataAllCtx)
-  const supervisoes = dataAllCtx?.combinedData[0] || []
+  const { data: dataAllCtx } = useData();
+  console.log('dataAllCtx', dataAllCtx);
+  const supervisoes = dataAllCtx?.combinedData[0] || [];
 
-  const escolas = dataAllCtx?.combinedData[1] || []
-  const encontros = dataAllCtx?.combinedData[2]
-  const situacoesNoReino = dataAllCtx?.combinedData[3] || []
-  const cargoLideranca = dataAllCtx?.combinedData[4] || []
-  const masculinoFeminino = ['M', 'F']
+  const escolas = dataAllCtx?.combinedData[1] || [];
+  const encontros = dataAllCtx?.combinedData[2];
+  const situacoesNoReino = dataAllCtx?.combinedData[3] || [];
+  const cargoLideranca = dataAllCtx?.combinedData[4] || [];
+  const masculinoFeminino = ['M', 'F'];
   const escolaridade = [
     'Sem Escolaridade',
     'Fundamental Incompleto',
@@ -109,16 +109,16 @@ function UpdateMember({ member }: { member: TUser }) {
     'Pós Graduado',
     'Mestre',
     'Doutor',
-  ]
-  console.log('supervisoes', supervisoes)
+  ];
+  console.log('supervisoes', supervisoes);
   const [supervisaoSelecionadaUpDate, setSupervisaoSelecionadaUpDate] =
-    useState<string>()
-  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [open, setOpen] = useState(false)
+    useState<string>();
+  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false);
+  const [open, setOpen] = useState(false);
 
   // const { register, handleSubmit, setValue, reset } = useForm<TUser>({
   const form = useForm<TUser>({
-    defaultValues: { 
+    defaultValues: {
       id: member.id,
       role: member.role,
       email: member.email,
@@ -140,91 +140,93 @@ function UpdateMember({ member }: { member: TUser }) {
       cidade: member.cidade,
       estado: member.estado,
       estado_civil: member.estado,
-     },
-  })
+    },
+  });
 
-  const cancelButtonRef = useRef(null)
-  const router = useRouter()
+  const cancelButtonRef = useRef(null);
+  const router = useRouter();
 
   // Combobox Autocomplete
-  const [queryUpDate, setQueryUpDate] = useState('')
+  const [queryUpDate, setQueryUpDate] = useState('');
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, form.setValue)
-  }
+    handleZipCode(e, form.setValue);
+  };
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<z.infer<typeof userSchemaTable>> = async (
     data,
   ) => {
-    console.log('dataToSend', data)
+    console.log('dataToSend', data);
 
     try {
       const selectedEncontros = data?.encontros?.filter(
         (encontro) => encontro.id !== '',
-      )
+      );
       const selectedEscolas = data?.escolas?.filter(
         (escola) => escola.id !== '',
-      )
+      );
 
       // Verifica se não há encontros selecionados e define o valor como nulo
       const encontrosToSend =
         selectedEncontros && selectedEncontros.length === 0
           ? null
-          : selectedEncontros
+          : selectedEncontros;
 
       const escolasToSend =
-        selectedEscolas && selectedEscolas.length === 0 ? null : selectedEscolas
+        selectedEscolas && selectedEscolas.length === 0
+          ? null
+          : selectedEscolas;
 
       const dataToSend = {
         ...data,
         encontros: encontrosToSend,
         escolas: escolasToSend,
-      }
+      };
 
-      setIsLoadingSubmitUpDate(true)
+      setIsLoadingSubmitUpDate(true);
 
-      const response = await axiosAuth.put(URLUsersId, dataToSend)
-      const result = await response.data
+      const response = await axiosAuth.put(URLUsersId, dataToSend);
+      const result = await response.data;
       if (result) {
-        setIsLoadingSubmitUpDate(false)
+        setIsLoadingSubmitUpDate(false);
         toast({
           title: 'Sucesso!!!',
           description: 'Membro atualizado com Sucesso!!! 🥳',
-        })
-        form.reset()
-        router.refresh()
+        });
+        form.reset();
+        router.refresh();
       } else {
         toast({
           title: 'Erro!!!',
           description: 'Erro na Atualização do Membro. 😰',
           variant: 'destructive',
-        })
-        setIsLoadingSubmitUpDate(false)
+        });
+        setIsLoadingSubmitUpDate(false);
       }
     } catch (error) {
       toast({
         title: 'Erro!!!',
         description: 'Erro na Atualização do Membro. 😰',
         variant: 'destructive',
-      })
-      console.error(error)
-      setIsLoadingSubmitUpDate(false)
+      });
+      console.error(error);
+      setIsLoadingSubmitUpDate(false);
     }
-  }
+  };
 
   const AllMembers = async () => {
     try {
-      const { data } = await axiosAuth.get(URLUsers)
-      return data
+      const { data } = await axiosAuth.get(URLUsers);
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
     TUser[]
@@ -232,7 +234,7 @@ function UpdateMember({ member }: { member: TUser }) {
     queryKey: ['membersquery'],
     queryFn: AllMembers,
     retry: 3,
-  })
+  });
 
   const filteredPeople =
     queryUpDate === ''
@@ -242,17 +244,17 @@ function UpdateMember({ member }: { member: TUser }) {
             .toLowerCase()
             .replace(/\s+/g, '')
             .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
-        )
+        );
 
   const handleSupervisaoSelecionada = (supervisao: string) => {
-    setSupervisaoSelecionadaUpDate(supervisao)
-  }
+    setSupervisaoSelecionadaUpDate(supervisao);
+  };
 
   //@ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     (supervisao: { id: string | undefined }) =>
       supervisao.id === supervisaoSelecionadaUpDate,
-  )?.celulas
+  )?.celulas;
 
   return isLoadingQueryUpdate ? (
     <Spinner className="animate-spin" />
@@ -394,9 +396,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date()
-                                          today.setHours(0, 0, 0, 0)
-                                          return date > today
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
                                         }}
                                         initialFocus
                                       />
@@ -563,9 +565,7 @@ function UpdateMember({ member }: { member: TUser }) {
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                   <FormLabel>É Batizado?</FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                  >
+                                  <Select onValueChange={field.onChange}>
                                     <FormControl>
                                       <SelectTrigger>
                                         <SelectValue placeholder="Selecione um opção" />
@@ -630,9 +630,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date()
-                                          today.setHours(0, 0, 0, 0)
-                                          return date > today
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
                                         }}
                                         initialFocus
                                       />
@@ -658,9 +658,7 @@ function UpdateMember({ member }: { member: TUser }) {
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                   <FormLabel>É Discipulado?</FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                  >
+                                  <Select onValueChange={field.onChange}>
                                     <FormControl>
                                       <SelectTrigger>
                                         <SelectValue placeholder="Selecione um culto" />
@@ -734,7 +732,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                                         form.setValue(
                                                           'discipuladorId',
                                                           membro.id,
-                                                        )
+                                                        );
                                                       }}
                                                     >
                                                       {membro.first_name}
@@ -876,7 +874,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                       render={({ field }) => {
                                         const isChecked = field.value?.some(
                                           (value) => value.id === escola.id,
-                                        )
+                                        );
                                         return (
                                           <div
                                             key={escola.id + 1}
@@ -903,7 +901,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                                               value.id !==
                                                               escola.id,
                                                           ),
-                                                        )
+                                                        );
                                                   }}
                                                 />
                                               </FormControl>
@@ -912,7 +910,7 @@ function UpdateMember({ member }: { member: TUser }) {
                                               </FormLabel>
                                             </FormItem>
                                           </div>
-                                        )
+                                        );
                                       }}
                                     />
                                   ))}
@@ -1134,9 +1132,9 @@ function UpdateMember({ member }: { member: TUser }) {
                                         selected={field.value}
                                         onSelect={field.onChange}
                                         disabled={(date) => {
-                                          const today = new Date()
-                                          today.setHours(0, 0, 0, 0)
-                                          return date > today
+                                          const today = new Date();
+                                          today.setHours(0, 0, 0, 0);
+                                          return date > today;
                                         }}
                                         initialFocus
                                       />
@@ -1161,9 +1159,7 @@ function UpdateMember({ member }: { member: TUser }) {
                               render={({ field }) => (
                                 <FormItem className="flex flex-col">
                                   <FormLabel>Tem Filho(s)?</FormLabel>
-                                  <Select
-                                    onValueChange={field.onChange}
-                                  >
+                                  <Select onValueChange={field.onChange}>
                                     <FormControl>
                                       <SelectTrigger>
                                         <SelectValue placeholder="Selecione um opção" />
@@ -1381,7 +1377,7 @@ function UpdateMember({ member }: { member: TUser }) {
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }
 
-export default UpdateMember
+export default UpdateMember;

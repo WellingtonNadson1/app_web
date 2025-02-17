@@ -1,6 +1,6 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -8,23 +8,23 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Label } from '@/components/ui/label'
-import { Toaster } from '@/components/ui/toaster'
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal, UserCircle } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { z } from 'zod'
-import { SupervisorSchema } from '../../supervisores/table-discipulos-supervisores/schema'
-import UpdateDiscipuladoSupervisor2 from '../[supervisorId]/UpdateDiscipuladoSupervisor2'
+} from '@/components/ui/dropdown-menu';
+import { Label } from '@/components/ui/label';
+import { Toaster } from '@/components/ui/toaster';
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal, UserCircle } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import { SupervisorSchema } from '../../supervisores/table-discipulos-supervisores/schema';
+import UpdateDiscipuladoSupervisor2 from '../[supervisorId]/UpdateDiscipuladoSupervisor2';
 
 export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
   // NOME CELULA
   {
     accessorKey: 'first_name',
     header: ({ column }) => {
-      console.log('column', column)
+      console.log('column', column);
       return (
         <Button
           variant="ghost"
@@ -33,21 +33,21 @@ export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
           Discípulo
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('first_name')
-      const discipulo = row.original
-      console.log('discipulo tabela', discipulo)
+      row.getValue('first_name');
+      const discipulo = row.original;
+      console.log('discipulo tabela', discipulo);
 
       return (
         <div className="flex w-full items-center justify-start ">
           <div>
-            <UserCircle color='#dbdbdd' size={23} />
+            <UserCircle color="#dbdbdd" size={23} />
           </div>
           <p className="ml-3">{discipulo?.first_name}</p>
         </div>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -55,23 +55,18 @@ export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
   {
     id: 'actions',
     header: () => {
-      return (
-        <Label
-        >
-          Opções
-        </Label>
-      )
+      return <Label>Opções</Label>;
     },
     cell: ({ row }) => {
-      const discipuloOrignal = row.original
-      const router = useRouter()
-      const contextParamsSupervisaoId = useSupervisaoContext()
+      const discipuloOrignal = row.original;
+      const router = useRouter();
+      const contextParamsSupervisaoId = useSupervisaoContext();
       const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-        const idCelula = event.currentTarget.id
+        const idCelula = event.currentTarget.id;
         router.push(
           `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
-        )
-      }
+        );
+      };
 
       return (
         <>
@@ -106,12 +101,15 @@ export const columns: ColumnDef<z.infer<typeof SupervisorSchema>>[] = [
               </DropdownMenuItem> */}
               {/* UPDATE CELULA */}
               <DropdownMenuItem asChild>
-                <UpdateDiscipuladoSupervisor2 discipulo={discipuloOrignal} supervisor={discipuloOrignal} />
+                <UpdateDiscipuladoSupervisor2
+                  discipulo={discipuloOrignal}
+                  supervisor={discipuloOrignal}
+                />
               </DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-      )
+      );
     },
   },
-]
+];

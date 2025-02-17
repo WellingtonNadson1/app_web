@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   ColumnDef,
@@ -11,12 +11,12 @@ import {
   getPaginationRowModel,
   getSortedRowModel,
   useReactTable,
-} from '@tanstack/react-table'
+} from '@tanstack/react-table';
 
-import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils'
+import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 
-import { Badge } from '@/components/ui/badge'
-import { Input } from '@/components/ui/input'
+import { Badge } from '@/components/ui/badge';
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -24,50 +24,50 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { useState } from 'react'
-import { DataTablePagination } from './table-pagination'
+} from '@/components/ui/table';
+import { useState } from 'react';
+import { DataTablePagination } from './table-pagination';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
-  supervisor: string
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
+  supervisor: string;
 }
 
 declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>
+    fuzzy: FilterFn<unknown>;
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: RankingInfo;
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+  const itemRank = rankItem(row.getValue(columnId), value);
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  })
+  });
 
   // Return if the item should be filtered in/out
-  return itemRank.passed
-}
+  return itemRank.passed;
+};
 
 export function DataTableDiscipulosSUpervisor<TData, TValue>({
   columns,
   data,
   supervisor,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [globalFilter, setGlobalFilter] = useState('')
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
-  console.log('data', data)
+  console.log('data', data);
 
   const table = useReactTable({
     data,
@@ -88,7 +88,7 @@ export function DataTableDiscipulosSUpervisor<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  })
+  });
 
   return (
     <div className="px-6 py-4 rounded-xl bg-white">
@@ -99,9 +99,7 @@ export function DataTableDiscipulosSUpervisor<TData, TValue>({
               <h1 className="text-lg font-semibold text-gray-700">
                 Discípulos do(a) Supervisor(a):
               </h1>
-              <Badge>{
-                supervisor
-              }</Badge>
+              <Badge>{supervisor}</Badge>
             </div>
           </div>
         </div>
@@ -112,7 +110,7 @@ export function DataTableDiscipulosSUpervisor<TData, TValue>({
           placeholder="🔍 Filtrar pelo nome do Discípulo..."
           value={globalFilter ?? ''}
           onChange={(event) => {
-            setGlobalFilter(String(event.target.value))
+            setGlobalFilter(String(event.target.value));
           }}
           className="sm:max-w-sm"
         />
@@ -129,11 +127,11 @@ export function DataTableDiscipulosSUpervisor<TData, TValue>({
                       {header.isPlaceholder
                         ? null
                         : flexRender(
-                          header.column.columnDef.header,
-                          header.getContext(),
-                        )}
+                            header.column.columnDef.header,
+                            header.getContext(),
+                          )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -172,5 +170,5 @@ export function DataTableDiscipulosSUpervisor<TData, TValue>({
         <DataTablePagination table={table} />
       </div>
     </div>
-  )
+  );
 }

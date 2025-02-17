@@ -1,100 +1,100 @@
-'use client'
-import { Member } from '@/app/(central)/novo-membro/schema'
-import Modal from '@/components/modal'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { errorCadastro, success } from '@/functions/functions'
-import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
-import { Fragment, useRef, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { UpdateSupervisorProps, dataUpdateDiscipulador } from './schema'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { Member } from '@/app/(private)/(central)/novo-membro/schema';
+import Modal from '@/components/modal';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { errorCadastro, success } from '@/functions/functions';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { Fragment, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { UpdateSupervisorProps, dataUpdateDiscipulador } from './schema';
 
 function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
-  const URLUsers = `${BASE_URL}/users/alldiscipulados`
-  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
+  const URLUsers = `${BASE_URL}/users/alldiscipulados`;
+  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`;
 
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
-  const [nome, setNome] = useState(props.supervisor?.first_name)
-  const queryClient = useQueryClient()
+  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false);
+  const [nome, setNome] = useState(props.supervisor?.first_name);
+  const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
+  const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>();
 
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
 
   // Combobox Autocomplete
-  const [selectedMember, setSelectedMember] = useState<Member>()
-  const [queryUpDate, setQueryUpDate] = useState('')
+  const [selectedMember, setSelectedMember] = useState<Member>();
+  const [queryUpDate, setQueryUpDate] = useState('');
 
   const UpdateDiscipuladorFunction = async (
     dataForm: dataUpdateDiscipulador,
   ) => {
     try {
-      const { data } = await axiosAuth.put(URLUpdateDiscipulador, dataForm)
-      success('🙌🏻 Disicipulador Atualizado!')
-      return data
+      const { data } = await axiosAuth.put(URLUpdateDiscipulador, dataForm);
+      success('🙌🏻 Disicipulador Atualizado!');
+      return data;
     } catch (error) {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
     }
-  }
+  };
 
   const { mutateAsync: updateDiscipuladorFn } = useMutation({
     mutationKey: ['updateDiscipulador'],
     mutationFn: UpdateDiscipuladorFunction,
     onError: (error) => {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
     },
     onSuccess(data, variables) {
-      setNome(selectedMember?.first_name as string)
-      queryClient.invalidateQueries({ queryKey: ['celula'] })
-      queryClient.invalidateQueries({ queryKey: ['updateDiscipulador'] })
+      setNome(selectedMember?.first_name as string);
+      queryClient.invalidateQueries({ queryKey: ['celula'] });
+      queryClient.invalidateQueries({ queryKey: ['updateDiscipulador'] });
     },
-  })
+  });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<dataUpdateDiscipulador> = async (data) => {
-    data.id = props?.member?.user_discipulos?.id
-    selectedMember && (data.discipuladorId = selectedMember?.id)
-    setIsLoadingSubmitUpDate(true)
+    data.id = props?.member?.user_discipulos?.id;
+    selectedMember && (data.discipuladorId = selectedMember?.id);
+    setIsLoadingSubmitUpDate(true);
     try {
       await updateDiscipuladorFn({
         id: data.id,
         discipuladorId: data.discipuladorId,
-      })
-      setIsLoadingSubmitUpDate(false)
-      reset()
+      });
+      setIsLoadingSubmitUpDate(false);
+      reset();
     } catch (error) {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
-      setIsLoadingSubmitUpDate(false)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
+      setIsLoadingSubmitUpDate(false);
     }
-  }
+  };
 
   const AllMembers = async () => {
     try {
-      const { data } = await axiosAuth.get(URLUsers)
-      return data
+      const { data } = await axiosAuth.get(URLUsers);
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
     Member[]
@@ -102,21 +102,21 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
     queryKey: ['membersquery'],
     queryFn: AllMembers,
     retry: 3,
-  })
+  });
 
   const queryMembersSort = queryMembers?.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  )
+  );
 
   const filteredPeople =
     queryUpDate === ''
       ? queryMembersSort
       : queryMembersSort?.filter((person) =>
-        person.first_name
-          .toLowerCase()
-          .replace(/\s+/g, '')
-          .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
-      )
+          person.first_name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
+        );
 
   return isLoadingQueryUpdate ? (
     <SpinnerButton message="" />
@@ -230,7 +230,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                               >
                                 <Combobox.Options className="absolute w-full py-1 mt-1 overflow-auto text-base bg-white rounded-md shadow-lg max-h-60 ring-1 ring-black ring-opacity-5 focus:outline-none sm:text-sm">
                                   {filteredPeople?.length === 0 &&
-                                    queryUpDate !== '' ? (
+                                  queryUpDate !== '' ? (
                                     <div className="relative px-4 py-2 text-gray-700 cursor-default select-none">
                                       Nothing found.
                                     </div>
@@ -239,9 +239,10 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                                       <Combobox.Option
                                         key={person.id}
                                         className={({ active }) =>
-                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${active
-                                            ? 'bg-[#E5F3FF] text-black'
-                                            : 'text-gray-900'
+                                          `relative cursor-default select-none py-2 pl-10 pr-4 ${
+                                            active
+                                              ? 'bg-[#E5F3FF] text-black'
+                                              : 'text-gray-900'
                                           }`
                                         }
                                         value={person}
@@ -249,19 +250,21 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
                                         {({ selected, active }) => (
                                           <>
                                             <span
-                                              className={`block truncate ${selected
+                                              className={`block truncate ${
+                                                selected
                                                   ? 'font-medium'
                                                   : 'font-normal'
-                                                }`}
+                                              }`}
                                             >
                                               {person.first_name}
                                             </span>
                                             {selected ? (
                                               <span
-                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${active
+                                                className={`absolute inset-y-0 left-0 flex items-center pl-3 ${
+                                                  active
                                                     ? 'text-white'
                                                     : 'text-teal-600'
-                                                  }`}
+                                                }`}
                                               >
                                                 <CheckIcon
                                                   className="w-5 h-5"
@@ -337,7 +340,7 @@ function UpdateSupervisorDisicipulado(props: UpdateSupervisorProps) {
         </div>
       </Modal>
     </Fragment>
-  )
+  );
 }
 
-export default UpdateSupervisorDisicipulado
+export default UpdateSupervisorDisicipulado;

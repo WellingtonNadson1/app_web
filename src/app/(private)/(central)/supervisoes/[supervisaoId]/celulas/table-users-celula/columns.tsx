@@ -1,9 +1,8 @@
-'use client'
-
-import DeleteMember from '@/app/(central)/novo-membro/DeleteMember'
-import UpdateMember from '@/app/(central)/novo-membro/UpdateMember'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+'use client';
+import DeleteMember from '@/app/(private)/(central)/novo-membro/DeleteMember';
+import UpdateMember from '@/app/(private)/(central)/novo-membro/UpdateMember';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,12 +10,12 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { UserCircle } from '@phosphor-icons/react'
-import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-import { z } from 'zod'
-import { userSchemaTable } from './schema'
+} from '@/components/ui/dropdown-menu';
+import { UserCircle } from '@phosphor-icons/react';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { z } from 'zod';
+import { userSchemaTable } from './schema';
 
 export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   // NOME MEMBRO
@@ -31,11 +30,11 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
           Nome
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('first_name')
-      const { first_name } = row.original
+      row.getValue('first_name');
+      const { first_name } = row.original;
       return (
         <div className="flex w-full items-center justify-start ">
           <div>
@@ -43,7 +42,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
           </div>
           <p className="ml-3">{first_name}</p>
         </div>
-      )
+      );
     },
   },
   // STATUS
@@ -58,12 +57,12 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
           Status
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('situacao_no_reino.nome')
-      const { situacao_no_reino } = row.original
-      const process_status = situacao_no_reino?.nome?.toString()
+      row.getValue('situacao_no_reino.nome');
+      const { situacao_no_reino } = row.original;
+      const process_status = situacao_no_reino?.nome?.toString();
 
       return process_status === 'Ativo' ? (
         <Badge className="w-full sm:table-cell py-1 bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800">
@@ -81,7 +80,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
         <Badge className="w-full sm:table-cell py-1 bg-green-100 text-green-700 hover:bg-green-200 hover:text-green-8000">
           {situacao_no_reino?.nome}
         </Badge>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -98,16 +97,16 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
           Cargo
           <ArrowUpDown className="hidden sm:table-cell ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('cargo_de_lideranca.nome')
-      const { cargo_de_lideranca } = row.original
+      row.getValue('cargo_de_lideranca.nome');
+      const { cargo_de_lideranca } = row.original;
       return (
         <Badge className="w-full py-1 items-center hidden sm:table-cell text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100">
           {cargo_de_lideranca?.nome}
         </Badge>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -115,7 +114,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   {
     id: 'actions',
     cell: ({ row }) => {
-      const user = row.original
+      const user = row.original;
       return (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
@@ -135,7 +134,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      )
+      );
     },
   },
-]
+];

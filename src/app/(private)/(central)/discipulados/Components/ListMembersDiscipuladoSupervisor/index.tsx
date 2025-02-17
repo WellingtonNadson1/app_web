@@ -1,32 +1,32 @@
-'use client'
-import UpdateSupervisorDisicipulado from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]/UpdateSupervisorDiscipulado'
-import Pagination from '@/components/Pagination'
-import { Badge } from '@/components/ui/badge'
-import { User } from '@phosphor-icons/react'
-import { useState } from 'react'
-import { SupervisaoData } from './schema'
+'use client';
+import Pagination from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
+import { User } from '@phosphor-icons/react';
+import { useState } from 'react';
+import UpdateSupervisorDisicipulado from '../../[dicipuladosupervisaoId]/supervisor/[supervisorId]/UpdateSupervisorDiscipulado';
+import { SupervisaoData } from './schema';
 
 export default function ListMembersDiscipuladoSupervisor(
   SupervisaoData: SupervisaoData,
 ) {
-  const [shouldFetch, setShouldFetch] = useState<boolean>(false)
+  const [shouldFetch, setShouldFetch] = useState<boolean>(false);
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const membersSort = SupervisaoData?.supervisor?.discipulos?.sort((a, b) =>
     a?.user_discipulos?.first_name.localeCompare(
       b?.user_discipulos?.first_name,
     ),
-  )
+  );
 
-  const displayedMembers = membersSort?.slice(startIndex, endIndex)
+  const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
   return (
     <>
@@ -37,9 +37,7 @@ export default function ListMembersDiscipuladoSupervisor(
               <h2 className="text-lg font-semibold leading-6 text-gray-700">
                 Discipulados do(a) Supervisor(a):
               </h2>
-              <Badge>
-                {SupervisaoData?.supervisor?.first_name}
-              </Badge>
+              <Badge>{SupervisaoData?.supervisor?.first_name}</Badge>
             </div>
             <table className="w-full border-separate table-auto">
               <thead className="bg-[#F8FAFC]">
@@ -84,7 +82,6 @@ export default function ListMembersDiscipuladoSupervisor(
                     </tr>
                   </>
                 ))}
-
               </tbody>
             </table>
             {/* Use the Pagination component */}
@@ -97,5 +94,5 @@ export default function ListMembersDiscipuladoSupervisor(
         </div>
       </div>
     </>
-  )
+  );
 }

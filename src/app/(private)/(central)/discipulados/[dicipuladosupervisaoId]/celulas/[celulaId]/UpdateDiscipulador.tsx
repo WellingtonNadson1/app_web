@@ -1,61 +1,61 @@
-'use client'
-import { Member } from '@/app/(central)/novo-membro/schema'
-import Modal from '@/components/modal'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { errorCadastro, success } from '@/functions/functions'
-import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
-import { Fragment, useRef, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { Membro, dataUpdateDiscipulador } from './schema'
-import { BASE_URL } from '@/lib/axios'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+'use client';
+import { Member } from '@/app/(private)/(central)/novo-membro/schema';
+import Modal from '@/components/modal';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { errorCadastro, success } from '@/functions/functions';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { Fragment, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Membro, dataUpdateDiscipulador } from './schema';
 
 function UpdateDisicipulador({ member }: { member: Membro }) {
-  const URLUsers = `${BASE_URL}/users/alldiscipulados`
-  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  const URLUsers = `${BASE_URL}/users/alldiscipulados`;
+  const URLUpdateDiscipulador = `${BASE_URL}/users/discipulador`;
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false)
+  const [isLoadingSubmitUpDate, setIsLoadingSubmitUpDate] = useState(false);
   const [nome, setNome] = useState(
     member?.discipulador[0]?.user_discipulador?.first_name,
-  )
-  const queryClient = useQueryClient()
+  );
+  const queryClient = useQueryClient();
 
-  const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>()
+  const { register, handleSubmit, reset } = useForm<dataUpdateDiscipulador>();
 
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
 
   // Combobox Autocomplete
-  const [selectedMember, setSelectedMember] = useState<Member>()
-  const [queryUpDate, setQueryUpDate] = useState('')
+  const [selectedMember, setSelectedMember] = useState<Member>();
+  const [queryUpDate, setQueryUpDate] = useState('');
 
   const UpdateDiscipuladorFunction = async (
     dataForm: dataUpdateDiscipulador,
   ) => {
     try {
-      const { data } = await axiosAuth.put(URLUpdateDiscipulador, dataForm)
-      success('🙌🏻 Disicipulador Atualizado!')
-      return data
+      const { data } = await axiosAuth.put(URLUpdateDiscipulador, dataForm);
+      success('🙌🏻 Disicipulador Atualizado!');
+      return data;
     } catch (error) {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
     }
-  }
+  };
 
   const { mutateAsync: updateDiscipuladorFn } = useMutation({
     mutationKey: ['updateDiscipulador'],
     mutationFn: UpdateDiscipuladorFunction,
     onError: (error) => {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
     },
     onSuccess(data, variables) {
       // const cached = queryClient.getQueryData(["celula"])
@@ -75,43 +75,43 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
       //   };
       // });
 
-      setNome(selectedMember?.first_name as string)
-      queryClient.invalidateQueries({ queryKey: ['celula'] })
-      queryClient.invalidateQueries({ queryKey: ['updateDiscipulador'] })
+      setNome(selectedMember?.first_name as string);
+      queryClient.invalidateQueries({ queryKey: ['celula'] });
+      queryClient.invalidateQueries({ queryKey: ['updateDiscipulador'] });
     },
-  })
+  });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<dataUpdateDiscipulador> = async (data) => {
-    data.id = member.id
-    selectedMember && (data.discipuladorId = selectedMember?.id)
-    setIsLoadingSubmitUpDate(true)
+    data.id = member.id;
+    selectedMember && (data.discipuladorId = selectedMember?.id);
+    setIsLoadingSubmitUpDate(true);
     try {
       await updateDiscipuladorFn({
         id: data.id,
         discipuladorId: data.discipuladorId,
-      })
-      setIsLoadingSubmitUpDate(false)
-      reset()
+      });
+      setIsLoadingSubmitUpDate(false);
+      reset();
     } catch (error) {
-      errorCadastro('⛔ Error na Atualização!')
-      console.error('⛔ error na atualização do Discipulador', error)
-      setIsLoadingSubmitUpDate(false)
+      errorCadastro('⛔ Error na Atualização!');
+      console.error('⛔ error na atualização do Discipulador', error);
+      setIsLoadingSubmitUpDate(false);
     }
-  }
+  };
 
   const AllMembers = async () => {
     try {
-      const { data } = await axiosAuth.get(URLUsers)
-      return data
+      const { data } = await axiosAuth.get(URLUsers);
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
     Member[]
@@ -119,11 +119,11 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
     queryKey: ['membersquery'],
     queryFn: AllMembers,
     retry: 3,
-  })
+  });
 
   const queryMembersSort = queryMembers?.sort((a, b) =>
     a.first_name.localeCompare(b.first_name),
-  )
+  );
 
   const filteredPeople =
     queryUpDate === ''
@@ -133,7 +133,7 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
             .toLowerCase()
             .replace(/\s+/g, '')
             .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
-        )
+        );
 
   return isLoadingQueryUpdate ? (
     <SpinnerButton message="" />
@@ -357,7 +357,7 @@ function UpdateDisicipulador({ member }: { member: Membro }) {
         </div>
       </Modal>
     </Fragment>
-  )
+  );
 }
 
-export default UpdateDisicipulador
+export default UpdateDisicipulador;

@@ -1,78 +1,78 @@
 /* eslint-disable camelcase */
-'use client'
-import CalendarLoading from '@/app/(celula)/celula/loadingUi/CalendarLoading'
-import LicoesLoading from '@/app/(celula)/celula/loadingUi/LicoesLoading'
-import { Meeting } from '@/app/(celula)/celula/schema'
-import CalendarLiderCelula from '@/components/CalendarLiderCelula'
-import LicoesCelula from '@/components/LicoesCelula'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { Disclosure } from '@headlessui/react'
-import { ChevronUpIcon } from '@heroicons/react/24/outline'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { format, isSameDay, parseISO, startOfToday } from 'date-fns'
-import { pt } from 'date-fns/locale'
-import dayjs from 'dayjs'
-import { useSession } from 'next-auth/react'
-import ControlePresenceSupervisorFirst from './_components/ControlePresenceSupervisorFirst'
-import ControlePresenceSupervisorSecond from './_components/ControlePresenceSupervisorSecond'
-import HeaderSupervisao from './HeaderSupervisao'
-import HeaderSupervisorLoad from './loadingUi'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import CalendarLiderCelula from '@/components/CalendarLiderCelula';
+import LicoesCelula from '@/components/LicoesCelula';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { Disclosure } from '@headlessui/react';
+import { ChevronUpIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { format, isSameDay, parseISO, startOfToday } from 'date-fns';
+import { pt } from 'date-fns/locale';
+import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
+import CalendarLoading from '../../(celula)/celula/loadingUi/CalendarLoading';
+import LicoesLoading from '../../(celula)/celula/loadingUi/LicoesLoading';
+import { Meeting } from '../../(celula)/celula/schema';
+import ControlePresenceSupervisorFirst from './_components/ControlePresenceSupervisorFirst';
+import ControlePresenceSupervisorSecond from './_components/ControlePresenceSupervisorSecond';
+import HeaderSupervisao from './HeaderSupervisao';
+import HeaderSupervisorLoad from './loadingUi';
 
 export default function ControleSupervisor() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`
+  const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
 
-  const dataHoje = new Date()
+  const dataHoje = new Date();
   const firstDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth(),
     1,
-  )
+  );
   const lastDayOfMonth = new Date(
     dataHoje.getFullYear(),
     dataHoje.getMonth() + 1,
     0,
-  )
+  );
 
   const MeetingsData = async () => {
     try {
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
-      })
-      return data
+      });
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const { data, isLoading, isSuccess } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: MeetingsData,
     refetchOnWindowFocus: false,
-  })
+  });
 
   if (isLoading) {
-    return <HeaderSupervisorLoad />
+    return <HeaderSupervisorLoad />;
   }
 
-  const today = startOfToday()
+  const today = startOfToday();
 
   const selectedDayMeetings =
     isSuccess &&
     data?.filter((meeting) =>
       isSameDay(parseISO(meeting.data_inicio_culto), today),
-    )
+    );
 
   return (
     <>
@@ -285,5 +285,5 @@ export default function ControleSupervisor() {
         </div>
       )}
     </>
-  )
+  );
 }

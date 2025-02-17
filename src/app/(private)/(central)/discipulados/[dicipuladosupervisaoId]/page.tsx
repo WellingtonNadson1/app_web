@@ -1,53 +1,53 @@
-'use client'
-import { ICelula } from '@/components/ListCelulas'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { useCombinedStore } from '@/store/DataCombineted'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useParams } from 'next/navigation'
-import ListDisicipuladoCelulasSupervision from '../Components/ListDisicipuladoCelulasSupervision'
-import TableSkeletonDiscipulosSupervisor from './supervisor/[supervisorId]/table-skeleton'
-import { columns } from './supervisores/table-discipulos-supervisores/columns'
-import { DataTableDiscipulosSUpervisores } from './supervisores/table-discipulos-supervisores/data-table-discipulos-supervisores'
-import { TSupervisor } from './supervisores/table-discipulos-supervisores/schema'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { ICelula } from '@/components/ListCelulas';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { useCombinedStore } from '@/store/DataCombineted';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useParams } from 'next/navigation';
+import ListDisicipuladoCelulasSupervision from '../Components/ListDisicipuladoCelulasSupervision';
+import TableSkeletonDiscipulosSupervisor from './supervisor/[supervisorId]/table-skeleton';
+import { columns } from './supervisores/table-discipulos-supervisores/columns';
+import { DataTableDiscipulosSUpervisores } from './supervisores/table-discipulos-supervisores/data-table-discipulos-supervisores';
+import { TSupervisor } from './supervisores/table-discipulos-supervisores/schema';
 
 interface IUser {
-  id: string
-  first_name: string
+  id: string;
+  first_name: string;
 }
 
 interface ISupervisor {
-  id: string
-  first_name: string
+  id: string;
+  first_name: string;
 }
 
 export interface ISupervisaoData {
-  id: string
-  nome: string
-  cor: string
-  supervisor: ISupervisor
-  nivel: string
-  User: IUser[]
-  celulas: ICelula[]
+  id: string;
+  nome: string;
+  cor: string;
+  supervisor: ISupervisor;
+  nivel: string;
+  User: IUser[];
+  celulas: ICelula[];
 }
 
 export default function Supervisao({
   params: { supervisaoId },
 }: {
-  params: { supervisaoId: string }
+  params: { supervisaoId: string };
 }) {
-  const URLSupervisoresDiscipulos = `${BASE_URL}/users/alldiscipuladossupervisores`
-  const { dicipuladosupervisaoId } = useParams()
+  const URLSupervisoresDiscipulos = `${BASE_URL}/users/alldiscipuladossupervisores`;
+  const { dicipuladosupervisaoId } = useParams();
 
-  const { state } = useCombinedStore()
-  const supervisoesAll = state.supervisoes
+  const { state } = useCombinedStore();
+  const supervisoesAll = state.supervisoes;
 
   const supervisao = supervisoesAll?.filter(
     (supervisao) => supervisao.id === dicipuladosupervisaoId,
-  )
+  );
 
-  const cargoLideranca = state.cargoLideranca
+  const cargoLideranca = state.cargoLideranca;
   const cargoLiderancaSupervisores = cargoLideranca?.filter(
     (cargo) =>
       cargo.nome !== 'Pastor' &&
@@ -55,18 +55,18 @@ export default function Supervisao({
       cargo.nome !== 'Membro' &&
       cargo.nome !== 'Líder de Célula Supervisor' &&
       cargo.nome !== 'Líder Auxiliar',
-  )
+  );
 
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const getDiscipuloSupervisorBySupervisao = async () => {
     const { data } = await axiosAuth.post(URLSupervisoresDiscipulos, {
       dicipuladosupervisaoId,
-      cargoLiderancaSupervisores
-    })
-    return data
-  }
+      cargoLiderancaSupervisores,
+    });
+    return data;
+  };
 
   const {
     data: supervisores,
@@ -76,8 +76,7 @@ export default function Supervisao({
   } = useQuery<TSupervisor[]>({
     queryKey: ['discipulosSupervisores'],
     queryFn: getDiscipuloSupervisorBySupervisao,
-  })
-
+  });
 
   return (
     <div className="w-full px-2 py-2 mx-auto z-50">
@@ -89,18 +88,24 @@ export default function Supervisao({
         supervisor={supervisao[0]?.supervisor}
       /> */}
 
-      {isLoading ?
-        <TableSkeletonDiscipulosSupervisor /> :
+      {isLoading ? (
+        <TableSkeletonDiscipulosSupervisor />
+      ) : (
         <div>
-          {supervisores
-            && <DataTableDiscipulosSUpervisores columns={columns} supervisaoCor={supervisao[0]?.cor} supervisaoNome={supervisao[0]?.nome} data={supervisores as any} />
-          }
+          {supervisores && (
+            <DataTableDiscipulosSUpervisores
+              columns={columns}
+              supervisaoCor={supervisao[0]?.cor}
+              supervisaoNome={supervisao[0]?.nome}
+              data={supervisores as any}
+            />
+          )}
         </div>
-      }
+      )}
       {/* DISCIPULADOS POR CELULAS */}
       {supervisao && (
         <ListDisicipuladoCelulasSupervision data={supervisao[0]?.celulas} />
       )}
     </div>
-  )
+  );
 }

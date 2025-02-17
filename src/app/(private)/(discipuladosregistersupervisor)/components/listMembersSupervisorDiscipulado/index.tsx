@@ -1,45 +1,44 @@
-'use client'
-import Scheleton from '@/app/(discipuladosregisterliderelula)/components/listMembersCelulaDiscipulado/scheleton'
-import Pagination from '@/components/Pagination'
-import { Badge } from '@/components/ui/badge'
-import { Card } from '@/components/ui/card'
-import { useUserDataStore } from '@/store/UserDataStore'
-import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr'
-import { useQuery } from '@tanstack/react-query'
-import { useState } from 'react'
-import FormFirstDiscipuladoSupervisor from './FormFirstDiscipuladoSupervisor'
-import FormSecondDiscipuladoSupervisor from './FormSecondDiscipuladoSupervisor'
+'use client';
+import Scheleton from '@/app/(private)/(discipuladosregisterliderelula)/components/listMembersCelulaDiscipulado/scheleton';
+import Pagination from '@/components/Pagination';
+import { Badge } from '@/components/ui/badge';
+import { Card } from '@/components/ui/card';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useState } from 'react';
+import FormFirstDiscipuladoSupervisor from './FormFirstDiscipuladoSupervisor';
+import FormSecondDiscipuladoSupervisor from './FormSecondDiscipuladoSupervisor';
 import {
   Supervisor,
   dataSchemaGetDiscipuladoAllSupervisor,
   dataSchemaReturnExistDiscipuladoAllCell,
-} from './schema'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+} from './schema';
 
 export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
   // console.log('data', data)
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberssupervisor/existing-register`
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const URLDiscipuladosExist = `${BASE_URL}/discipuladosibb/allmemberssupervisor/existing-register`;
 
   const GetAllRegisterDiscipuladoCell = async (
     dataForm: dataSchemaGetDiscipuladoAllSupervisor,
   ) => {
     const result: dataSchemaReturnExistDiscipuladoAllCell =
-      await axiosAuth.post(URLDiscipuladosExist, dataForm)
-    return result
-  }
-  const supervisor_id = data.id
-  const data_ocorreu = new Date()
+      await axiosAuth.post(URLDiscipuladosExist, dataForm);
+    return result;
+  };
+  const supervisor_id = data.id;
+  const data_ocorreu = new Date();
 
   const {
     data: registerDiscipuladosSupervisor,
@@ -52,16 +51,16 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
         supervisor_id,
         data_ocorreu,
       }),
-  })
+  });
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
   const membersSort = registerDiscipuladosSupervisor?.data[0]?.discipulos.sort(
     (a, b) =>
       a.user_discipulos.first_name.localeCompare(b.user_discipulos.first_name),
-  )
+  );
   // console.log('membersSort', membersSort)
-  const displayedMembers = membersSort?.slice(startIndex, endIndex)
+  const displayedMembers = membersSort?.slice(startIndex, endIndex);
 
   return (
     <>
@@ -180,5 +179,5 @@ export default function ListMembersSupervisorDiscipulado({ data }: Supervisor) {
         </div>
       </Card>
     </>
-  )
+  );
 }

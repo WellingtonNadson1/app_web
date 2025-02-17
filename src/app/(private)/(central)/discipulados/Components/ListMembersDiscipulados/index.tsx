@@ -1,8 +1,8 @@
 'use client';
-import UpdateDisicipulador from '@/app/(central)/discipulados/[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador';
 import Pagination from '@/components/Pagination';
 import { User } from '@phosphor-icons/react';
 import { useState } from 'react';
+import UpdateDisicipulador from '../../[dicipuladosupervisaoId]/celulas/[celulaId]/UpdateDiscipulador';
 import { ListMembersCelulaProps } from './schema';
 
 export default function ListMembersDiscipulados({

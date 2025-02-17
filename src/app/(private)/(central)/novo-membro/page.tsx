@@ -1,35 +1,35 @@
-'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { UserFocus } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { useSession } from 'next-auth/react'
-import { Suspense } from 'react'
-import { z } from 'zod'
-import { columns } from './table-users/columns'
-import { DataTableUsers } from './table-users/data-table-users'
-import { userSchemaTable } from './table-users/schema'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserFocus } from '@phosphor-icons/react';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { Suspense } from 'react';
+import { z } from 'zod';
+import { columns } from './table-users/columns';
+import { DataTableUsers } from './table-users/data-table-users';
+import { userSchemaTable } from './table-users/schema';
 
 export default function NovoMembro() {
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const URL = `${BASE_URL}/users`
+  const URL = `${BASE_URL}/users`;
 
   const Members = async () => {
     try {
-      const { data } = await axiosAuth.get(URL)
-      return data
+      const { data } = await axiosAuth.get(URL);
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const {
     data: members,
@@ -39,7 +39,7 @@ export default function NovoMembro() {
   } = useQuery<z.infer<typeof userSchemaTable>>({
     queryKey: ['members'],
     queryFn: Members,
-  })
+  });
 
   if (error) {
     return (
@@ -50,7 +50,7 @@ export default function NovoMembro() {
           </div>
         </div>
       </div>
-    )
+    );
   }
 
   if (isLoading) {
@@ -139,7 +139,7 @@ export default function NovoMembro() {
           </div>
         </div>
       </>
-    )
+    );
   }
 
   return (
@@ -152,5 +152,5 @@ export default function NovoMembro() {
         )}
       </Suspense>
     </>
-  )
+  );
 }
