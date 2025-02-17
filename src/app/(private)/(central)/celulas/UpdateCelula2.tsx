@@ -126,6 +126,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
         // Retorne os dados esperados para os defaultValues
         return {
           ...response.data,
+          supervisao: response.data.supervisao.id,
           date_multipicar: response.data.date_multipicar
             ? new Date(response.data.date_multipicar)
             : null, // Define como null se não houver data
