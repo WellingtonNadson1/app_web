@@ -1,66 +1,66 @@
-'use client'
-import { ICelula } from '@/components/ListCelulas'
-import Modal from '@/components/modal'
-import { errorCadastro, success } from '@/functions/functions'
-import { handleZipCode } from '@/functions/zipCodeUtils'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useQuery } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import React, { useCallback, useEffect, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { FormCelula, Member, SupervisaoData, User } from './schema'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { useSession } from 'next-auth/react'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { ICelula } from '@/components/ListCelulas';
+import Modal from '@/components/modal';
+import { errorCadastro, success } from '@/functions/functions';
+import { handleZipCode } from '@/functions/zipCodeUtils';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
+import React, { useCallback, useEffect, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { FormCelula, Member, SupervisaoData, User } from './schema';
 
 export default function UpdateCelula({
   celulaId,
   shouldFetch,
 }: {
-  celulaId: string
-  shouldFetch: boolean
+  celulaId: string;
+  shouldFetch: boolean;
 }) {
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
-  const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`
-  const URLCelulas = `${BASE_URL}/celulas`
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
+  const URLCelulaId = `${BASE_URL}/celulas/${celulaId}`;
+  const URLCelulas = `${BASE_URL}/celulas`;
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [isLoading, setIsLoading] = useState(false)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>()
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<SupervisaoData[]>();
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     User[]
-  >([])
-  const [dataCelulas, setDataCelulas] = useState<ICelula[]>()
-  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>()
+  >([]);
+  const [dataCelulas, setDataCelulas] = useState<ICelula[]>();
+  const { register, handleSubmit, reset, setValue } = useForm<FormCelula>();
 
   const { data: dataCelula } = useQuery<FormCelula>({
     queryKey: ['celulas', celulaId],
     queryFn: async () => {
-      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula = response.data
-      return dataCelula
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`);
+      const dataCelula = response.data;
+      return dataCelula;
     },
-  })
+  });
 
   const { data: dataLider } = useQuery<Member>({
     queryKey: ['celulas', celulaId],
     queryFn: async () => {
-      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`)
-      const dataCelula = response.data
-      return dataCelula
+      const response = await axiosAuth.get(`${BASE_URL}/celulas/${celulaId}`);
+      const dataCelula = response.data;
+      return dataCelula;
     },
-  })
+  });
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, setValue)
-  }
+    handleZipCode(e, setValue);
+  };
 
   const onSubmit: SubmitHandler<FormCelula> = async ({
     nome,
@@ -78,13 +78,13 @@ export default function UpdateCelula({
     membros,
   }) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
-      console.log(dayjs(date_inicio).toISOString())
-      console.log(dayjs(date_multipicar).toISOString())
+      console.log(dayjs(date_inicio).toISOString());
+      console.log(dayjs(date_multipicar).toISOString());
 
-      date_inicio = new Date(dayjs(date_inicio).toISOString())
-      date_multipicar = new Date(dayjs(date_multipicar).toISOString())
+      date_inicio = new Date(dayjs(date_inicio).toISOString());
+      date_multipicar = new Date(dayjs(date_multipicar).toISOString());
 
       const response = await axiosAuth.put(URLCelulaId, {
         nome,
@@ -100,82 +100,82 @@ export default function UpdateCelula({
         date_multipicar,
         date_que_ocorre,
         membros,
-      })
-      const celulaRUpdated = response.data
+      });
+      const celulaRUpdated = response.data;
 
       if (celulaRUpdated) {
-        setIsLoadingSubmitForm(false)
-        setFormSuccess(true)
-        success('Célula Atualizada')
+        setIsLoadingSubmitForm(false);
+        setFormSuccess(true);
+        success('Célula Atualizada');
       } else {
-        errorCadastro('Erro ao Atualizar Célula')
+        errorCadastro('Erro ao Atualizar Célula');
       }
     } catch (error) {
-      console.log(error)
-      setIsLoadingSubmitForm(false)
-      errorCadastro('Erro ao Atualizar Célula')
+      console.log(error);
+      setIsLoadingSubmitForm(false);
+      errorCadastro('Erro ao Atualizar Célula');
     }
-    reset()
-  }
+    reset();
+  };
 
   useEffect(() => {
-    setIsLoading(true)
+    setIsLoading(true);
     axiosAuth
       .get(URLSupervisoes)
       .then((response) => {
-        setSupervisoes(response.data)
-        setIsLoading(false)
+        setSupervisoes(response.data);
+        setIsLoading(false);
       })
       .catch((error) => {
-        console.error('Erro na requisição:', error)
-        setIsLoading(false)
-      })
-  }, [])
+        console.error('Erro na requisição:', error);
+        setIsLoading(false);
+      });
+  }, []);
 
   const fetchCelulas = useCallback(async () => {
     try {
-      const response = await axiosAuth.get(URLCelulas)
-      const getCelulaRegister = response.data
+      const response = await axiosAuth.get(URLCelulas);
+      const getCelulaRegister = response.data;
       if (!getCelulaRegister) {
-        console.log('Failed to fetch get Celulas.')
+        console.log('Failed to fetch get Celulas.');
       }
-      setDataCelulas(getCelulaRegister)
+      setDataCelulas(getCelulaRegister);
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }, [token])
+  }, [token]);
 
   // UseEffect para buscar as células quando a página é carregada
   useEffect(() => {
-    fetchCelulas()
-  }, [fetchCelulas])
+    fetchCelulas();
+  }, [fetchCelulas]);
 
   // UseEffect para buscar as células após o envio do formulário
   useEffect(() => {
     if (formSuccess) {
-      fetchCelulas()
+      fetchCelulas();
     }
-  }, [formSuccess, fetchCelulas])
+  }, [formSuccess, fetchCelulas]);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   useEffect(() => {
     if (supervisaoSelecionada) {
       // Use the selected supervision ID to filter the list of users
       const selectedSupervisao = supervisoes?.find(
         (supervisao) => supervisao.id === supervisaoSelecionada,
-      )
+      );
       if (selectedSupervisao) {
-        setUsersSupervisaoSelecionada(selectedSupervisao.membros)
+        setUsersSupervisaoSelecionada(selectedSupervisao.membros);
       } else {
-        setUsersSupervisaoSelecionada([])
+        setUsersSupervisaoSelecionada([]);
       }
     }
-  }, [supervisaoSelecionada, supervisoes])
+  }, [supervisaoSelecionada, supervisoes]);
   return (
     <>
       <ToastContainer />
@@ -301,7 +301,7 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('supervisao')}
-                                  defaultValue={dataCelula?.supervisao.id}
+                                  defaultValue={dataCelula?.supervisao}
                                   id="supervisao"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                   onChange={handleSupervisaoSelecionada}
@@ -337,7 +337,7 @@ export default function UpdateCelula({
                               <div className="mt-3">
                                 <select
                                   {...register('lider')}
-                                  defaultValue={dataCelula?.lider.id}
+                                  defaultValue={dataCelula?.lider}
                                   id="lider"
                                   className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
                                 >
@@ -570,5 +570,5 @@ export default function UpdateCelula({
         </div>
       </div>
     </>
-  )
+  );
 }
