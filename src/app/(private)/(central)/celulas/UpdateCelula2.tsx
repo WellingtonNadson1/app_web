@@ -4,6 +4,14 @@ import { TimePicker } from '@/components/timer-picker-input/time-picker';
 import { Button } from '@/components/ui/button';
 import { Calendar } from '@/components/ui/calendar';
 import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from '@/components/ui/command';
+import {
   Dialog,
   DialogContent,
   DialogDescription,
@@ -30,6 +38,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
+import { ScrollArea } from '@/components/ui/scroll-area';
 import {
   Select,
   SelectContent,
@@ -45,15 +54,19 @@ import { cn } from '@/lib/utils';
 import { useCombinedStore } from '@/store/DataCombineted';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { PencilSimple, Spinner } from '@phosphor-icons/react/dist/ssr';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { CaretSortIcon } from '@radix-ui/react-icons';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
 import dayjs from 'dayjs';
 import timezone from 'dayjs/plugin/timezone';
 import utc from 'dayjs/plugin/utc';
+import { CheckIcon } from 'lucide-react';
 import { useSession } from 'next-auth/react';
 import React, { useEffect, useState } from 'react';
 import { SubmitHandler, useForm, UseFormSetValue } from 'react-hook-form';
 import 'react-toastify/dist/ReactToastify.css';
 import { z } from 'zod';
+import { TUser } from '../novo-membro/table-users/schema';
 import {
   FormCelula,
   schemaFormCelula,
@@ -98,12 +111,15 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
   const [usersSupervisaoSelecionada, setUsersSupervisaoSelecionada] = useState<
     UserCombobox[]
   >([]);
+  const [queryUpDate, setQueryUpDate] = useState('');
+
   const { data: session } = useSession();
   const token = session?.user?.token as string;
   const axiosAuth = useAxiosAuth(token);
 
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
   const URLSupervisoes = `${BASE_URL}/supervisoes`;
+  const URLUsers = `${BASE_URL}/users`;
 
   const daysWeek = [
     { label: 'Domingo', value: '0' },
@@ -200,6 +216,37 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
       });
     }
   };
+
+  const AllMembers = async () => {
+    try {
+      const { data } = await axiosAuth.get(URLUsers);
+      return data;
+    } catch (error) {
+      if (axios.isAxiosError(error) && error.response) {
+        console.error(error.response.data);
+      } else {
+        console.error(error);
+      }
+    }
+  };
+
+  const { data: queryMembers, isLoading: isLoadingQueryUpdate } = useQuery<
+    TUser[]
+  >({
+    queryKey: ['membersquery'],
+    queryFn: AllMembers,
+    retry: 3,
+  });
+
+  const filteredPeople =
+    queryUpDate === ''
+      ? queryMembers
+      : queryMembers?.filter((person) =>
+          person.first_name
+            .toLowerCase()
+            .replace(/\s+/g, '')
+            .includes(queryUpDate.toLowerCase().replace(/\s+/g, '')),
+        );
 
   const handleSupervisaoSelecionada = (value: string) => {
     setSupervisaoSelecionada(value);
@@ -486,6 +533,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                       field.onChange(value);
                                       handleSupervisaoSelecionada(value);
                                     }}
+                                    defaultValue={field.value.id}
                                   >
                                     <FormControl>
                                       <SelectTrigger>
@@ -511,6 +559,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                               )}
                             />
                           </div>
+
                           {/* Lider */}
                           <div className="sm:col-span-4">
                             <FormField
@@ -519,36 +568,76 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                               render={({ field }) => (
                                 <FormItem>
                                   <FormLabel>Líder</FormLabel>
-                                  <Select
-                                    onValueChange={(value) => {
-                                      field.onChange(value);
-                                    }}
-                                    defaultValue={form.getValues('lider')?.id}
-                                  >
-                                    <FormControl>
-                                      <SelectTrigger>
-                                        <SelectValue placeholder="Selecione um Líder" />
-                                      </SelectTrigger>
-                                    </FormControl>
-                                    <SelectContent>
-                                      {supervisaoSelecionada &&
-                                        usersSupervisaoSelecionada?.map(
-                                          (lider) => (
-                                            <SelectItem
-                                              key={lider.id}
-                                              value={lider.id}
-                                            >
-                                              {lider.first_name}
-                                            </SelectItem>
-                                          ),
-                                        )}
-                                    </SelectContent>
-                                  </Select>
+
+                                  <Popover modal>
+                                    <PopoverTrigger asChild>
+                                      <FormControl>
+                                        <Button
+                                          variant="outline"
+                                          role="combobox"
+                                          className={cn(
+                                            'w-full justify-between',
+                                            !field.value &&
+                                              'text-muted-foreground',
+                                          )}
+                                        >
+                                          {field.value
+                                            ? filteredPeople?.find(
+                                                (membro) =>
+                                                  membro.id === field.value.id,
+                                              )?.first_name
+                                            : 'Selecione discipulador'}
+                                          <CaretSortIcon className="ml-2 h-4 w-4 shrink-0 opacity-50" />
+                                        </Button>
+                                      </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-full p-0">
+                                      <Command>
+                                        <CommandInput
+                                          placeholder="Pesquise discipulador..."
+                                          className="h-9"
+                                        />
+                                        <CommandList>
+                                          <ScrollArea className="h-56 overflow-y-auto">
+                                            <CommandEmpty>
+                                              Discipulador não encontrado.
+                                            </CommandEmpty>
+                                            <CommandGroup>
+                                              {filteredPeople?.map((membro) => (
+                                                <CommandItem
+                                                  value={membro.first_name}
+                                                  key={membro.id}
+                                                  onSelect={() => {
+                                                    form.setValue(
+                                                      'lider.id',
+                                                      membro.id,
+                                                    );
+                                                  }}
+                                                >
+                                                  {membro.first_name}
+                                                  <CheckIcon
+                                                    className={cn(
+                                                      'ml-auto h-4 w-4',
+                                                      membro.id ===
+                                                        field.value.id
+                                                        ? 'opacity-100'
+                                                        : 'opacity-0',
+                                                    )}
+                                                  />
+                                                </CommandItem>
+                                              ))}
+                                            </CommandGroup>
+                                          </ScrollArea>
+                                        </CommandList>
+                                      </Command>
+                                    </PopoverContent>
+                                  </Popover>
                                   <FormMessage />
                                 </FormItem>
                               )}
                             />
                           </div>
+
                           {/* Selecao de Membros */}
                           <div className="sm:col-span-8">
                             <FormField
@@ -558,7 +647,8 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
                                 <FormItem className="flex flex-col space-y-2">
                                   <FormLabel>Membros</FormLabel>
                                   <ComboboxDemo
-                                    items={usersSupervisaoSelecionada}
+                                    //@ts-ignore
+                                    items={filteredPeople}
                                     //@ts-ignore
                                     selectedItems={field.value || []}
                                     setSelectedItems={(val) =>
