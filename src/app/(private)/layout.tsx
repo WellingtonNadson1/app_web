@@ -11,7 +11,7 @@ import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
 import React, { Suspense } from 'react';
-import { LoaderHeader } from './loading';
+import { LoaderHeader } from './(central)/loading';
 
 export const metadata = {
   title: 'App IBB',
@@ -87,7 +87,7 @@ export default async function RootLayout({
                   {/* Breand */}
                   <div
                     suppressHydrationWarning
-                    className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
+                    className="flex h-8 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12"
                   >
                     <div
                       suppressHydrationWarning
