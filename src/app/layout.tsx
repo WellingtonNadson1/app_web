@@ -1,6 +1,7 @@
 import '@/./app/globals.css';
 import { Providers } from '@/providers/providers';
 import React from 'react';
+import BreadcrumbsSlot from './@breadcrumbs/[...catchAll]/page';
 
 export const metadata = {
   title: 'App IBB',
@@ -20,7 +21,10 @@ export default async function LoginLayout({
   return (
     <html lang="pt" suppressHydrationWarning>
       <body suppressHydrationWarning>
-        <Providers>{children}</Providers>
+        <Providers>
+          <BreadcrumbsSlot />
+          {children}
+        </Providers>
       </body>
     </html>
   );
