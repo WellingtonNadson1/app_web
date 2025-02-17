@@ -238,7 +238,7 @@ export default function UpdateCelula2({ celulaId }: { celulaId: string }) {
       console.log('selectedSupervisao', selectedSupervisao);
       if (selectedSupervisao) {
         const lideresOrdenados = selectedSupervisao?.membros?.sort((a, b) =>
-          (a?.first_name ?? '').localeCompare(b?.first_name ?? ''),
+          (a.first_name ?? '').localeCompare(b.first_name ?? ''),
         );
         setUsersSupervisaoSelecionada(lideresOrdenados);
       }

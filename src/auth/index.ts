@@ -2,6 +2,7 @@ import axios from '@/lib/axios';
 import { loginSchema } from '@/types';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
+import { cookies } from 'next/headers';
 import { ZodError } from 'zod';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -15,7 +16,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         password: { label: 'Senha', type: 'password' },
       },
-      async authorize(credentials): Promise<any> {
+      authorize: async (credentials) => {
         try {
           const { email, password } = await loginSchema.parseAsync(credentials);
 
@@ -29,6 +30,25 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           if (!user || !user.token) {
             throw new Error('Invalid credentials.');
           }
+
+          const cookieStore = cookies();
+          const userRoles = user.user_roles;
+
+          // Armazena apenas o token no cookie
+          cookieStore.set('session_token', user.token, {
+            httpOnly: true,
+            secure: true,
+            path: '/',
+            maxAge: 60 * 60 * 24,
+          });
+
+          // Armazena o array como JSON stringificado
+          cookieStore.set('user_roles', JSON.stringify(userRoles), {
+            httpOnly: true,
+            secure: true,
+            path: '/',
+            maxAge: 60 * 60 * 24,
+          });
 
           if (user) {
             console.log(JSON.stringify(user));
