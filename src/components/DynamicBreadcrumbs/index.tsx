@@ -40,7 +40,7 @@ export default function DynamicBreadcrumbs() {
           const isLast = index === pathSegments.length - 1;
 
           return (
-            <div key={href} className="flex items-center">
+            <div key={href} className="flex items-center gap-2">
               <BreadcrumbSeparator className="hidden md:block" />
               <BreadcrumbItem>
                 {isLast ? (
