@@ -1,9 +1,9 @@
 import '@/./app/globals.css';
 import { Providers } from '@/providers/providers';
+import type { Metadata } from 'next';
 import React from 'react';
-import BreadcrumbsSlot from './@breadcrumbs/[...catchAll]/page';
 
-export const metadata = {
+export const metadata: Metadata = {
   title: 'App IBB',
   description: 'Criado para auxiliar no controle e desenvolvimento da IBB',
   icons: {
@@ -13,18 +13,15 @@ export const metadata = {
   },
 };
 
-export default async function LoginLayout({
+export default function RootLayout({
   children,
-}: {
+}: Readonly<{
   children: React.ReactNode;
-}) {
+}>) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <body suppressHydrationWarning>
-        <Providers>
-          <BreadcrumbsSlot />
-          {children}
-        </Providers>
+      <body suppressHydrationWarning className={`antialiased`}>
+        <Providers>{children}</Providers>
       </body>
     </html>
   );
