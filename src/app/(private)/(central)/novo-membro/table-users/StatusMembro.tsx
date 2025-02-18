@@ -37,7 +37,11 @@ const StatusMembro: React.FC<StatusMembroProps> = ({
   const axiosAuth = useAxiosAuth(token);
 
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(statusMembro);
+  const [valueMembro, setValueMembro] = useState<{
+    value: string;
+    label: string;
+  } | null>(null);
+
   const statuses = [
     { value: '0892b1ed-3e99-4e13-acf6-99f7a0e99358', label: 'Ativo' },
     { value: 'c1c9b848-a605-4213-9275-9c210dd094fa', label: 'Afastado' },
@@ -66,9 +70,12 @@ const StatusMembro: React.FC<StatusMembroProps> = ({
     },
   });
 
-  const handleSelectedStatus = async (status: string) => {
-    setValue(status);
-    const response = await updateStatusMembroFn(status);
+  const handleSelectedStatus = async (status: {
+    value: string;
+    label: string;
+  }) => {
+    setValueMembro(status);
+    const response = await updateStatusMembroFn(status.value);
     if (response) {
       toast({
         variant: 'default',
@@ -94,16 +101,16 @@ const StatusMembro: React.FC<StatusMembroProps> = ({
           aria-expanded={open}
           className={cn(
             'justify-between font-normal h-7 rounded-xl',
-            value === '0892b1ed-3e99-4e13-acf6-99f7a0e99358'
+            valueMembro?.label === 'Ativo'
               ? 'bg-blue-100 text-blue-700 hover:bg-blue-200 hover:text-blue-800'
-              : value === 'c1c9b848-a605-4213-9275-9c210dd094fa'
+              : valueMembro?.label === 'Afastado'
                 ? 'bg-red-100 text-red-700 hover:bg-red-200 hover:text-red-800'
-                : value === 'f4c1c9ee-5f5a-4681-af13-99c422c240e0'
-                  ? 'bg-orange-100 text-orange-700 hover:bg-orange-200 hover:text-orange-800'
-                  : 'bg-green-100 text-green-700 hover:bg-green-200 hover:text-green-8000',
+                : valueMembro?.label === 'Normal'
+                  ? 'bg-green-100 text-green-700 hover:bg-green-200 hover:text-green-800'
+                  : 'bg-orange-100 text-orange-700 hover:bg-orange-200 hover:text-orange-800',
           )}
         >
-          {value}
+          {valueMembro?.label}
           <ChevronDown className="ml-2 h-4 w-4 shrink-0 opacity-50" />
         </Button>
       </PopoverTrigger>
@@ -115,12 +122,14 @@ const StatusMembro: React.FC<StatusMembroProps> = ({
                 {statuses.map((status) => (
                   <CommandItem
                     key={status.label}
-                    onSelect={() => handleSelectedStatus(status.value)}
+                    onSelect={() => handleSelectedStatus(status)}
                   >
                     <Check
                       className={cn(
                         'mr-2 h-4 w-4',
-                        value === status.value ? 'opacity-100' : 'opacity-0',
+                        valueMembro?.value === status.value
+                          ? 'opacity-100'
+                          : 'opacity-0',
                       )}
                     />
                     {status.label}
