@@ -63,7 +63,7 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
       const data = row.original;
       return (
         <StatusMembro
-          statusMembro={data.situacao_no_reino.id}
+          statusMembro={data.situacao_no_reino}
           idMembro={data.id}
         />
       );
