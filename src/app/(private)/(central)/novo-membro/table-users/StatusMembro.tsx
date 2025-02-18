@@ -45,8 +45,8 @@ const StatusMembro: React.FC<StatusMembroProps> = ({
   const statuses = [
     { id: '0892b1ed-3e99-4e13-acf6-99f7a0e99358', nome: 'Ativo' },
     { id: 'c1c9b848-a605-4213-9275-9c210dd094fa', nome: 'Afastado' },
-    { id: 'f4c1c9ee-5f5a-4681-af13-99c422c240e0', nome: 'Frio' },
-    { id: 'fab25926-b19e-4a2b-bfad-cf33fa0ace86', nome: 'Normal' },
+    { id: 'f4c1c9ee-5f5a-4681-af13-99c422c240e0', nome: 'Normal' },
+    { id: 'fab25926-b19e-4a2b-bfad-cf33fa0ace86', nome: 'Frio' },
   ];
 
   const updateStatusMembroFunction = async (status: string) => {
