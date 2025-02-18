@@ -1,5 +1,6 @@
 'use client';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { Toaster } from '@/components/ui/toaster';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { UserFocus } from '@phosphor-icons/react';
@@ -56,6 +57,7 @@ export default function NovoMembro() {
   if (isLoading) {
     return (
       <>
+        <Toaster />
         <div className="bg-white relative w-full px-4 py-2 mx-auto mt-8 shadow-lg rounded-xl">
           <div className="w-full px-2 py-2 ">
             <div className="w-full px-1 py-2 rounded-md">

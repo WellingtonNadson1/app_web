@@ -9,7 +9,6 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/components/ui/use-toast';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
@@ -59,7 +58,6 @@ function DeleteMember({
 
   return (
     <>
-      <Toaster />
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
           <DropdownMenuItem

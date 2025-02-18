@@ -1,86 +1,88 @@
-'use client'
-import Modal from '@/components/modal'
-import { errorCadastro, success } from '@/functions/functions'
-import { handleZipCode } from '@/functions/zipCodeUtils'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { useData } from '@/providers/providers'
-import { Combobox, Transition } from '@headlessui/react'
-import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import { UserPlusIcon } from '@heroicons/react/24/outline'
-import { useQuery } from '@tanstack/react-query'
-import axios from 'axios'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import React, { Fragment, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { Member } from './schema'
-import { handleCPFNumber, handlePhoneNumber } from './utils'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import Modal from '@/components/modal';
+import { errorCadastro, success } from '@/functions/functions';
+import { handleZipCode } from '@/functions/zipCodeUtils';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { useData } from '@/providers/providers';
+import { Combobox, Transition } from '@headlessui/react';
+import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid';
+import { UserPlusIcon } from '@heroicons/react/24/outline';
+import { useQuery } from '@tanstack/react-query';
+import axios from 'axios';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import React, { Fragment, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ToastContainer } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+import { Member } from './schema';
+import { handleCPFNumber, handlePhoneNumber } from './utils';
 
 function AddNewMember() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const URLUsers = `${BASE_URL}/users`
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const URLUsers = `${BASE_URL}/users`;
   // Zustand Store
   // @ts-ignore
-  const { data: dataAllCtx } = useData()
-  const supervisoes = dataAllCtx?.combinedData[0]
-  const escolas = dataAllCtx?.combinedData[1]
-  const encontros = dataAllCtx?.combinedData[2]
-  const situacoesNoReino = dataAllCtx?.combinedData[3]
-  const cargoLideranca = dataAllCtx?.combinedData[4]
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const escolas = dataAllCtx?.combinedData[1];
+  const encontros = dataAllCtx?.combinedData[2];
+  const situacoesNoReino = dataAllCtx?.combinedData[3];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
 
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const { register, handleSubmit, setValue, reset } = useForm<Member>()
-  const router = useRouter()
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const { register, handleSubmit, setValue, reset } = useForm<Member>();
+  const router = useRouter();
 
   // Combobox Autocomplete
-  const [selected, setSelected] = useState<Member>()
-  const [query, setQuery] = useState('')
+  const [selected, setSelected] = useState<Member>();
+  const [query, setQuery] = useState('');
 
   const handleCahngeIsBatizado = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true'
-    setValue(`batizado`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`batizado`, value);
+  };
 
   const handleCahngeIsDiscipulado = (
     e: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    const value = e.target.value === 'true'
-    setValue(`is_discipulado`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`is_discipulado`, value);
+  };
 
   const handleCahngeHasFilho = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const value = e.target.value === 'true'
-    setValue(`has_filho`, value)
-  }
+    const value = e.target.value === 'true';
+    setValue(`has_filho`, value);
+  };
 
   const handleZipCodeChange = (e: React.FormEvent<HTMLInputElement>) => {
-    handleZipCode(e, setValue)
-  }
+    handleZipCode(e, setValue);
+  };
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<Member> = async (data) => {
     try {
-      const selectedIsDiscipulado = Boolean(data.is_discipulado)
-      const selectedHasFilho = Boolean(data.has_filho)
-      const selectedBatizado = Boolean(data.batizado)
-      const passwordDefault = 'JesusCristoReina'
-      const selectedEncontros = data?.encontros?.filter((id) => id !== '')
-      const selectedEscolas = data?.escolas?.filter((id) => id !== '')
+      const selectedIsDiscipulado = Boolean(data.is_discipulado);
+      const selectedHasFilho = Boolean(data.has_filho);
+      const selectedBatizado = Boolean(data.batizado);
+      const passwordDefault = 'JesusCristoReina';
+      const selectedEncontros = data?.encontros?.filter((id) => id !== '');
+      const selectedEscolas = data?.escolas?.filter((id) => id !== '');
 
       // Verifica se não há encontros selecionados e define o valor como nulo
       const encontrosToSend =
         selectedEncontros && selectedEncontros.length === 0
           ? null
-          : selectedEncontros
+          : selectedEncontros;
 
       const escolasToSend =
-        selectedEscolas && selectedEscolas.length === 0 ? null : selectedEscolas
+        selectedEscolas && selectedEscolas.length === 0
+          ? null
+          : selectedEscolas;
 
       const dataToSend = {
         ...data,
@@ -91,11 +93,11 @@ function AddNewMember() {
         has_filho: selectedHasFilho,
         batizado: selectedBatizado,
         password: passwordDefault,
-      }
+      };
 
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
-      console.log('Data Form2: ', dataToSend)
+      console.log('Data Form2: ', dataToSend);
 
       const response = await fetch(URLUsers, {
         method: 'POST',
@@ -104,39 +106,39 @@ function AddNewMember() {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(dataToSend),
-      })
+      });
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
-        success('👍🏻 Membro Cadastrado!')
-        reset()
-        router.refresh()
+        setIsLoadingSubmitForm(false);
+        success('👍🏻 Membro Cadastrado!');
+        reset();
+        router.refresh();
       } else {
-        errorCadastro('👎🏻 Erro no Cadastro!')
-        setIsLoadingSubmitForm(false)
+        errorCadastro('👎🏻 Erro no Cadastro!');
+        setIsLoadingSubmitForm(false);
       }
     } catch (error) {
-      errorCadastro('👎🏻 Erro no Cadastro!')
-      setIsLoadingSubmitForm(false)
+      errorCadastro('👎🏻 Erro no Cadastro!');
+      setIsLoadingSubmitForm(false);
     }
-  }
+  };
 
   const AllUsers = async () => {
     try {
-      const response = await axiosAuth.get(URLUsers)
-      return await response.data
+      const response = await axiosAuth.get(URLUsers);
+      return await response.data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
   const { data: queryMembers } = useQuery<Member[]>({
     queryKey: ['members'],
     queryFn: AllUsers,
-  })
+  });
 
   const filteredPeople =
     query === ''
@@ -146,19 +148,19 @@ function AddNewMember() {
             .toLowerCase()
             .replace(/\s+/g, '')
             .includes(query.toLowerCase().replace(/\s+/g, '')),
-        )
+        );
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   // @ts-ignore
   const celulasFiltradas = (supervisoes ?? []).find(
     // @ts-ignore
     (supervisao) => supervisao.id === supervisaoSelecionada,
-  )?.celulas
+  )?.celulas;
   return (
     <>
       <ToastContainer />
@@ -1030,7 +1032,7 @@ function AddNewMember() {
         </div>
       </Modal>
     </>
-  )
+  );
 }
 
-export default AddNewMember
+export default AddNewMember;

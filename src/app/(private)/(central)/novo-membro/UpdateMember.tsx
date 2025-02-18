@@ -43,7 +43,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Toaster } from '@/components/ui/toaster';
 import { toast } from '@/components/ui/use-toast';
 import { handleZipCode } from '@/functions/zipCodeUtils';
 import { BASE_URL } from '@/lib/axios';
@@ -260,7 +259,6 @@ function UpdateMember({ member }: { member: TUser }) {
     <Spinner className="animate-spin" />
   ) : (
     <>
-      <Toaster />
       {/* Vou preciar add scroll y para conseguir exibir todo o forms */}
       <Dialog open={open} onOpenChange={setOpen}>
         <DialogTrigger className="w-full">
