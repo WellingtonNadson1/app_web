@@ -20,7 +20,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt" suppressHydrationWarning>
-      <div className="z-0 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
+      <div className="-z-40 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
       <body suppressHydrationWarning className={`antialiased`}>
         <Providers>{children}</Providers>
       </body>
