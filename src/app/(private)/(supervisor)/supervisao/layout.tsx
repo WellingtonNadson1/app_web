@@ -1,4 +1,6 @@
 import '@/./app/globals.css';
+import MySidebar from '@/components/sidebar/MySidebar';
+import { SidebarProvider } from '@/components/ui/sidebar';
 import { Providers } from '@/providers/providers';
 import type { Metadata } from 'next';
 import React from 'react';
@@ -22,7 +24,10 @@ export default function RootLayout({
     <html lang="pt" suppressHydrationWarning>
       <div className="-z-40 absolute top-0 min-h-[18.75rem] w-full bg-[#1D70B6]/90"></div>
       <body suppressHydrationWarning className={`antialiased`}>
-        <Providers>{children}</Providers>
+        <SidebarProvider>
+          <MySidebar />
+          <Providers>{children}</Providers>
+        </SidebarProvider>
       </body>
     </html>
   );
