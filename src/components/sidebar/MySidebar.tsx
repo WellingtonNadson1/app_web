@@ -1,34 +1,35 @@
-'use client'
-import { cn } from '@/lib/utils'
-import { useUserDataStore } from '@/store/UserDataStore'
-import { SignOut, Spinner, X } from '@phosphor-icons/react'
-import { signOut, useSession } from 'next-auth/react'
-import { usePathname, useRouter } from 'next/navigation'
-import { useEffect, useState } from 'react'
-import ThemeImage from '../theme-image'
+'use client';
+import { cn } from '@/lib/utils';
+import { useUserDataStore } from '@/store/UserDataStore';
+import { SignOut, Spinner, X } from '@phosphor-icons/react';
+import { signOut, useSession } from 'next-auth/react';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useEffect, useState } from 'react';
+import ThemeImage from '../theme-image';
 import {
   sidebarCentral,
   sidebarLiderCelula,
   sidebarSupervisor,
   sidebarSupervisorLider,
-} from './LinksSidebar'
+} from './LinksSidebar';
 
 export default function MySidebar() {
-  const [open, setOpen] = useState(false)
-  const route = useRouter()
-  const pathName = usePathname().split('/')[1]
-  const pathAtual = usePathname()
-  const { data: session, status } = useSession()
-  const { user_roles } = useUserDataStore.getState()
-  const roles = session?.user?.user_roles
+  const [open, setOpen] = useState(false);
+  const route = useRouter();
+  const pathName = usePathname().split('/')[1];
+  const pathAtual = usePathname();
+  const { data: session, status } = useSession();
+  const { user_roles } = useUserDataStore.getState();
+  const roles = session?.user?.user_roles;
 
   const handleLogout = () => {
     // Clear the store from localStorage
-    localStorage.clear()
+    localStorage.clear();
 
     // Redirect the user (replace with your desired URL)
-    signOut()
-  }
+    signOut();
+  };
 
   useEffect(() => {
     if (user_roles?.length === 0) {
@@ -39,8 +40,9 @@ export default function MySidebar() {
   return (
     <div className="p-1 z-50">
       <aside
-        className={`flex flex-col rounded-lg border border-sidebar-border border-r border-l relative h-full shadow-md ${open ? 'w-44' : 'w-[4.4rem]'
-          } bg-white p-2 px-3 py-5 duration-500 mt-2`}
+        className={`flex flex-col rounded-lg border border-sidebar-border border-r border-l relative h-full shadow-md ${
+          open ? 'w-44' : 'w-[4.4rem]'
+        } bg-white p-2 px-3 py-5 duration-500 mt-2`}
       >
         <div
           className={cn(
@@ -60,13 +62,17 @@ export default function MySidebar() {
           />
         </div>
         <div
-          className={`absolute z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${open ? 'ml-[9.3rem] mt-[2.5rem]' : 'ml-[2.7rem] rotate-45 mt-[1.2rem]'
-            } `}
+          className={`absolute z-50 flex cursor-pointer justify-end rounded-full border-2 border-white bg-[#3e98e1] p-1.5 text-3xl text-white duration-500 hover:rounded-full hover:bg-slate-400/90 hover:fill-white ${
+            open
+              ? 'ml-[9.3rem] mt-[2.5rem]'
+              : 'ml-[2.7rem] rotate-45 mt-[1.2rem]'
+          } `}
           onClick={() => setOpen(!open)}
         >
           <X
-            className={`${!open ? 'mx-auto' : 'justify-end'
-              } transition-all duration-200`}
+            className={`${
+              !open ? 'mx-auto' : 'justify-end'
+            } transition-all duration-200`}
             size={14}
           />
         </div>
@@ -78,9 +84,9 @@ export default function MySidebar() {
             <ul className="relative flex flex-col pt-4 gap-y-2">
               {roles?.some((role) => role.rolenew.name === 'USERCENTRAL') ? (
                 sidebarCentral.map((item) => (
-                  <li
+                  <Link
                     key={item.name}
-                    onClick={() => route.push(item.href)}
+                    href={item.href}
                     className={cn(
                       `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
                       `/${pathName}` === item.href
@@ -94,29 +100,31 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
-                        }`}
+                      className={`whitespace-pre duration-150 ${
+                        !open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${open && 'hidden'
-                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${
+                        open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
-                  </li>
+                  </Link>
                 ))
               ) : user_roles?.every(
-                (role) => role.rolenew.name === 'USERLIDER',
-              ) &&
+                  (role) => role.rolenew.name === 'USERLIDER',
+                ) &&
                 !user_roles.every(
                   (role) => role.rolenew.name === 'USERSUPERVISOR',
                 ) ? (
                 sidebarLiderCelula.map((item) => (
-                  <li
+                  <Link
                     key={item.name}
-                    onClick={() => route.push(item.href)}
+                    href={item.href}
                     className={cn(
                       `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
                       `/${pathName}` === item.href
@@ -130,26 +138,28 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
-                        }`}
+                      className={`whitespace-pre duration-150 ${
+                        !open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${open && 'hidden'
-                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${
+                        open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
-                  </li>
+                  </Link>
                 ))
               ) : roles?.every(
-                (role) => role.rolenew.name === 'USERSUPERVISOR',
-              ) ? (
+                  (role) => role.rolenew.name === 'USERSUPERVISOR',
+                ) ? (
                 sidebarSupervisor.map((item) => (
-                  <li
+                  <Link
                     key={item.name}
-                    onClick={() => route.push(item.href)}
+                    href={item.href}
                     className={cn(
                       `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
                       `/${pathName}` === item.href
@@ -163,27 +173,29 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
-                        }`}
+                      className={`whitespace-pre duration-150 ${
+                        !open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${open && 'hidden'
-                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${
+                        open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
-                  </li>
+                  </Link>
                 ))
               ) : user_roles?.every((role) => [
-                'USERSUPERVISOR',
-                'USERLIDER',
-              ]) ? (
+                  'USERSUPERVISOR',
+                  'USERLIDER',
+                ]) ? (
                 sidebarSupervisorLider.map((item) => (
-                  <li
+                  <Link
                     key={item.name}
-                    onClick={() => route.push(item.href)}
+                    href={item.href}
                     className={cn(
                       `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
                       `/${pathName}` === item.href
@@ -197,18 +209,20 @@ export default function MySidebar() {
                       height={`${open ? 24 : 26}`}
                     />
                     <span
-                      className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
-                        }`}
+                      className={`whitespace-pre duration-150 ${
+                        !open && 'translate-x-28 overflow-hidden opacity-0'
+                      }`}
                     >
                       {item.name}
                     </span>
                     <span
-                      className={`${open && 'hidden'
-                        } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                      className={`${
+                        open && 'hidden'
+                      } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                     >
                       {item.name}
                     </span>
-                  </li>
+                  </Link>
                 ))
               ) : (
                 <div></div>
@@ -216,7 +230,7 @@ export default function MySidebar() {
             </ul>
           ) : (
             <div className="mt-7">
-              <Spinner className='animate-spin' />
+              <Spinner className="animate-spin" />
             </div>
           )}
         </div>
@@ -235,14 +249,16 @@ export default function MySidebar() {
                   size={`${open ? 24 : 26}`}
                 />
                 <span
-                  className={`whitespace-pre duration-150 ${!open && 'translate-x-28 overflow-hidden opacity-0'
-                    }`}
+                  className={`whitespace-pre duration-150 ${
+                    !open && 'translate-x-28 overflow-hidden opacity-0'
+                  }`}
                 >
                   Sair
                 </span>
                 <span
-                  className={`${open && 'hidden'
-                    } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
+                  className={`${
+                    open && 'hidden'
+                  } absolute left-12 m-2 w-auto min-w-max origin-left scale-0 rounded-md bg-white p-2 text-xs font-bold text-gray-700 shadow-md transition-all duration-100 group-hover:scale-100`}
                 >
                   Sair
                 </span>
@@ -257,7 +273,7 @@ export default function MySidebar() {
                   className="focus:outline-none` group z-50 flex transform cursor-pointer items-center justify-center gap-x-2 rounded-md bg-red-400/90 py-2 text-sm font-medium leading-5 text-white transition duration-150 ease-in-out hover:scale-105 hover:bg-red-400 hover:fill-current hover:text-white "
                   type="button"
                 >
-                  <Spinner className='animate-spin' />
+                  <Spinner className="animate-spin" />
                 </button>
               </ul>
             </div>
@@ -265,5 +281,5 @@ export default function MySidebar() {
         </div>
       </aside>
     </div>
-  )
+  );
 }
