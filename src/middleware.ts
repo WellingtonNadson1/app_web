@@ -1,6 +1,7 @@
 import {
   apiAuthPrefix,
   authRoutes,
+  DEFAULT_LOGIN,
   DEFAULT_LOGIN_REDIRECT,
   DEFAULT_LOGIN_REDIRECT_CELULA,
   DEFAULT_LOGIN_REDIRECT_SUPERVISOR,
@@ -79,13 +80,13 @@ export default async function middleware(req: NextRequest) {
 
     // Verificações de rotas privadas
     if (isPrivateRouteCentral && !hasRole('USERCENTRAL')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
+      return redirectIfNeeded(DEFAULT_LOGIN);
     }
     if (isPrivateRouteCelula && !hasRole('USERLIDER')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
+      return redirectIfNeeded(DEFAULT_LOGIN);
     }
     if (isPrivateRouteSupervisor && !hasRole('USERSUPERVISOR')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_CELULA);
+      return redirectIfNeeded(DEFAULT_LOGIN);
     }
 
     // Evitar redirecionamentos infinitos
@@ -108,7 +109,7 @@ export default async function middleware(req: NextRequest) {
       } else if (hasRole('USERCENTRAL')) {
         return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT);
       } else {
-        return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT);
+        return redirectIfNeeded(DEFAULT_LOGIN);
       }
     }
   }
