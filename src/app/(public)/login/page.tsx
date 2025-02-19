@@ -73,10 +73,11 @@ export default function Login() {
     async (data) => {
       setStatus({ error: '', success: '' });
       const response = await loginFunc(data);
+      console.log('response login:', response);
 
-      if (response?.sucesso) {
-        window.location.href = '/dashboard'; // Redireciona após sucesso
-      }
+      // if (response?.sucesso) {
+      //   window.location.href = '/dashboard'; // Redireciona após sucesso
+      // }
     },
     [loginFunc],
   );
