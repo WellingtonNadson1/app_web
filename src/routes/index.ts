@@ -17,6 +17,7 @@ export const publicRoutes: string[] = [
  * @type {string[]}
  */
 export const privateRoutesCentral: string[] = [
+  '/dashboard',
   '/celulas',
   '/cultos',
   '/disicipulados',
