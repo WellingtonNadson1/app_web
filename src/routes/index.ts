@@ -59,11 +59,7 @@ export const privateRoutesSupervisorLider: string[] = [
 /**
  * @type {string[]}
  */
-export const privateRoutes: string[] = [
-  '/notification',
-  '/auth',
-  // "/vistoriador",
-];
+export const privateRoutes: string[] = ['/notification', '/auth'];
 
 /**
  * @type {string[]}
