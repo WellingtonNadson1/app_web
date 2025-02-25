@@ -1,6 +1,5 @@
-import authConfig from '@/auth/auth.config';
+
 import axios, { AxiosError } from 'axios';
-import NextAuth from 'next-auth';
 import { toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 
@@ -59,11 +58,3 @@ export const errorCadastro = (message: string) =>
     progress: undefined,
     theme: 'light',
   });
-
-const { auth } = NextAuth(authConfig);
-
-export default auth((req) => {
-  // const { nextUrl } = req;
-  const isLoggedIn = !!req.auth;
-  return console.log('isLoggedIn', isLoggedIn);
-});
