@@ -1,3 +1,4 @@
+import api from '@/lib/axios';
 import { loginSchema } from '@/types';
 import axios from 'axios';
 import NextAuth from 'next-auth';
@@ -21,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           // Ajuste a URL para o endpoint correto da sua API
-          const result = await axios.post(
+          const result = await api.post(
             `/login`, // Use uma variável de ambiente para a URL base
             {
               email: email,
