@@ -1,3 +1,4 @@
+'use server';
 import axios from '@/lib/axios';
 import { loginSchema } from '@/types';
 import NextAuth from 'next-auth';
