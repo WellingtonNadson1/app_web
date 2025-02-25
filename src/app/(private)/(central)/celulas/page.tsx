@@ -8,7 +8,7 @@ import { DataTableCelulas } from './table-celulas/data-table-ucelulas'
 import { BASE_URL } from '@/lib/axios'
 
 export default function Celulas() {
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const axiosAuth = useAxiosAuth(session?.user?.token as string)
   const URLCelulas = `${BASE_URL}/celulas`
 
@@ -24,6 +24,7 @@ export default function Celulas() {
   } = useQuery({
     queryKey: ['allCelulasIbb'],
     queryFn: getCelulas,
+    enabled: status === 'authenticated',
     staleTime: 0
   })
 

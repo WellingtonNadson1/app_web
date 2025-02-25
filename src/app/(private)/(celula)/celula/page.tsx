@@ -4,8 +4,7 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula';
 import LicoesCelula from '@/components/LicoesCelula';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
 import { Card } from '@/components/ui/card';
-import { BASE_URL } from '@/lib/axios';
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import api, { BASE_URL } from '@/lib/axios';
 import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
@@ -30,16 +29,15 @@ export default function ControleCelulaSupervision() {
   const [presenceIsRegister, setPresenceIsRegister] = useState(false);
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] = useState(false);
   const { data: session, status } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const celulaId = session?.user.celulaId;
+  const celulaId = session?.user?.celulaId;
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
 
   const CelulaData = async () => {
     try {
-      const result = await axiosAuth.post(URLCelula, {
+      const result = await api.post(URLCelula, {
         idPrimeiroCulto,
         idSegundoCulto,
       });
@@ -63,7 +61,7 @@ export default function ControleCelulaSupervision() {
     const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
     const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
     try {
-      const { data } = await axiosAuth.post(URLCultosInd, {
+      const { data } = await api.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
       });

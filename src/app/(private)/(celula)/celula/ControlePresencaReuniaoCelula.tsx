@@ -4,8 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { errorCadastro } from '@/functions/functions';
-import { BASE_URL } from '@/lib/axios';
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import api, { BASE_URL } from '@/lib/axios';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { UserFocus } from '@phosphor-icons/react';
 import { Spinner } from '@phosphor-icons/react/dist/ssr';
@@ -22,8 +21,6 @@ import 'react-toastify/dist/ReactToastify.css';
 import { z } from 'zod';
 import {
   Celula,
-  CelulaProps,
-  CelulaSort,
   MembroCelula,
   attendanceReuniaCelulaSchema,
   attendanceReuniaoCelula,
@@ -78,7 +75,6 @@ export default function ControlePresencaReuniaoCelula({
   );
   const { data: session } = useSession();
   const token = session?.user?.token as string;
-  const axiosAuth = useAxiosAuth(token);
   const [successRegisterPresence, setSuccessRegisterPresence] = useState(false);
 
   const queryClient = useQueryClient();
@@ -115,7 +111,7 @@ export default function ControlePresencaReuniaoCelula({
   ) => {
     console.log('dataSend', dataSend);
     try {
-      const response = await axiosAuth.post(
+      const response = await api.post(
         `${BASE_URL}/reunioessemanaiscelulas`,
         dataSend,
       );
@@ -184,7 +180,7 @@ export default function ControlePresencaReuniaoCelula({
   ) => {
     console.log('data create presence', data);
     try {
-      const response = await axiosAuth.post(
+      const response = await api.post(
         `${BASE_URL}/presencareuniaocelulas/newroute`,
         data,
       );
@@ -217,7 +213,7 @@ export default function ControlePresencaReuniaoCelula({
 
   const getPresenceRegistered = async () => {
     try {
-      const response = await axiosAuth.get(URLPresencaReuniaoCelulaIsRegiter);
+      const response = await api.get(URLPresencaReuniaoCelulaIsRegiter);
       return response.data;
     } catch (error) {
       console.log('Error in GET Presenca Registrada', error);
