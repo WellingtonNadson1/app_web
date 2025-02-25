@@ -1,5 +1,5 @@
 import '@/app/globals.css';
-import { auth } from '@/app/auth';
+import { auth } from '@/auth';
 import DynamicBreadcrumbs from '@/components/DynamicBreadcrumbs';
 import Header from '@/components/Header';
 import MySidebar from '@/components/sidebar/MySidebar';

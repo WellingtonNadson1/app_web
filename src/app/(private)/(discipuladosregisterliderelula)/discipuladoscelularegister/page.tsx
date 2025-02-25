@@ -1,5 +1,5 @@
 /* eslint-disable camelcase */
-import { auth } from '@/app/auth';
+import { auth } from '@/auth';
 import axiosAuth from '@/lib/axios';
 import axios from 'axios';
 import ListMembersCelulaDiscipulado from '../components/listMembersCelulaDiscipulado';

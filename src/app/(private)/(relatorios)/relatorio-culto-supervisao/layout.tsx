@@ -1,7 +1,7 @@
 // import { getServerSession } from 'next-auth'
 // import { authOptions } from '@/app/api/auth/[...nextauth]/auth'
 import '@/./app/globals.css';
-import { auth } from '@/app/auth';
+import { auth } from '@/auth';
 import { Providers } from '@/providers/providers';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';

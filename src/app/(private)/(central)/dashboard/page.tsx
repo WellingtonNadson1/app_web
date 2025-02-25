@@ -1,4 +1,4 @@
-import { auth } from '@/app/auth';
+import { auth } from '@/auth';
 import axios from 'axios';
 import ClientDashboard from './ClientDashboard';
 

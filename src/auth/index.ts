@@ -2,7 +2,7 @@ import { loginSchema } from '@/types';
 import axios from 'axios';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { cookies } from 'next/headers';
+import { setCookie } from 'nookies'; // Substitui next/headers
 import { ZodError } from 'zod';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -16,14 +16,18 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         },
         password: { label: 'Senha', type: 'password' },
       },
-      authorize: async (credentials) => {
+      authorize: async (credentials, req) => {
         try {
           const { email, password } = await loginSchema.parseAsync(credentials);
 
-          const result = await axios.post('/login', {
-            email: email,
-            password: password,
-          });
+          // Ajuste a URL para o endpoint correto da sua API
+          const result = await axios.post(
+            `${process.env.NEXT_PUBLIC_API_URL}/login`, // Use uma variável de ambiente para a URL base
+            {
+              email: email,
+              password: password,
+            },
+          );
 
           const user = result.data;
 
@@ -31,33 +35,30 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             throw new Error('Invalid credentials.');
           }
 
-          const cookieStore = cookies();
           const userRoles = user.user_roles;
 
-          // Armazena apenas o token no cookie
-          cookieStore.set('session_token', user.token, {
+          // Armazena o token e os papéis no cookie usando nookies
+          setCookie({ res: req }, 'session_token', user.token, {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production', // Seguro apenas em produção
             path: '/',
-            maxAge: 60 * 60 * 24,
+            maxAge: 60 * 60 * 24, // 24 horas
           });
 
-          // Armazena o array como JSON stringificado
-          cookieStore.set('user_roles', JSON.stringify(userRoles), {
+          setCookie({ res: req }, 'user_roles', JSON.stringify(userRoles), {
             httpOnly: true,
-            secure: true,
+            secure: process.env.NODE_ENV === 'production',
             path: '/',
             maxAge: 60 * 60 * 24,
           });
 
           if (user) {
             console.log(JSON.stringify(user));
-            return user;
+            return user; // Retorna o usuário para o NextAuth
           }
         } catch (error) {
           if (error instanceof ZodError) {
-            // Return `null` to indicate that the credentials are invalid
-            return null;
+            return null; // Credenciais inválidas
           }
           throw new Error('Authorization failed');
         }
@@ -86,7 +87,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      session.user.token = token as any;
+      session.user.token = token as any; // Ajuste o tipo conforme necessário
       session.user.refreshToken = token.refreshToken as {
         id: string;
         expiresIn: number;

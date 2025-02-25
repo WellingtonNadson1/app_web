@@ -1,6 +1,6 @@
 'use server';
 
-import { auth } from '@/app/auth';
+import { auth } from '@/auth';
 import { BASE_URL } from '@/lib/axios';
 import axios from 'axios';
 import { revalidatePath } from 'next/cache';

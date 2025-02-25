@@ -1,6 +1,6 @@
 'use server';
 
-import { signIn } from '@/app/auth';
+import { signIn } from '@/auth';
 import { InputsFormAuth, InputsFormAuthSchema } from '@/types';
 import { AuthError } from 'next-auth';
 

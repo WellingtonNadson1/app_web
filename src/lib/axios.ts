@@ -22,7 +22,7 @@ api.interceptors.request.use(
       token = await refreshToken(); // Chama refreshToken, que verifica e renova se necessário
     } else {
       // Lado do servidor (exemplo com App Router e NextAuth v5)
-      const { auth } = await import('@/app/auth');
+      const { auth } = await import('@/auth');
       const session = await auth();
       token = session?.user.token; // Aqui você pode adicionar lógica de refresh no servidor, se aplicável
     }

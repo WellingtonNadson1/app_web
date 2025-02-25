@@ -13,7 +13,7 @@ import {
 } from '@/routes';
 import type { MiddlewareConfig, NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
-import { auth } from './app/auth';
+import { auth } from './auth';
 
 function matchRoute(url: string, routes: string[]): boolean {
   return routes.some((route) => {
