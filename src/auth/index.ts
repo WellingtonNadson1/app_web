@@ -1,6 +1,5 @@
-'use server';
-import axios from '@/lib/axios';
 import { loginSchema } from '@/types';
+import axios from 'axios';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { cookies } from 'next/headers';
@@ -88,7 +87,11 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
     async session({ session, token }) {
       session.user.token = token as any;
-      session.user.refreshToken = token.refreshToken as { id: string; expiresIn: number; userIdRefresh: string };
+      session.user.refreshToken = token.refreshToken as {
+        id: string;
+        expiresIn: number;
+        userIdRefresh: string;
+      };
       return session;
     },
   },

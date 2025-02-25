@@ -17,7 +17,7 @@ const useAxiosAuth = (token: string): AxiosInstance => {
         }
         return config;
       },
-      (error) => Promise.reject(error)
+      (error) => Promise.reject(error),
     );
 
     const responseIntercept = axios.interceptors.response.use(
@@ -37,7 +37,7 @@ const useAxiosAuth = (token: string): AxiosInstance => {
           }
         }
         return Promise.reject(error);
-      }
+      },
     );
 
     return () => {

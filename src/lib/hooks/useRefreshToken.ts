@@ -1,4 +1,3 @@
-
 import { decode } from 'jsonwebtoken';
 import dayjs from 'dayjs';
 import { getSession } from 'next-auth/react'; // Para o cliente
@@ -13,7 +12,12 @@ export const refreshToken = async () => {
   }
 
   const decoded = decode(session.user.token) as JwtPayload | string | null;
-  if (!decoded || typeof decoded !== 'object' || !('exp' in decoded) || typeof decoded.exp !== 'number') {
+  if (
+    !decoded ||
+    typeof decoded !== 'object' ||
+    !('exp' in decoded) ||
+    typeof decoded.exp !== 'number'
+  ) {
     throw new Error('Invalid token format or missing expiration');
   }
 
