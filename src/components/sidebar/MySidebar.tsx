@@ -56,12 +56,12 @@ export default function MySidebar() {
       return sidebarCentral;
     }
     if (
-      user_roles?.every((role) => role.rolenew.name === 'USERLIDER') &&
+      user_roles?.every((role) => ['USERLIDER', 'USER_FINANCEIRO'].includes(role.rolenew.name)) &&
       !user_roles.every((role) => role.rolenew.name === 'USERSUPERVISOR')
     ) {
       return sidebarLiderCelula;
     }
-    if (roles?.every((role) => role.rolenew.name === 'USERSUPERVISOR')) {
+    if (user_roles?.every((role) => ['USERSUPERVISOR', 'USER_FINANCEIRO'].includes(role.rolenew.name))) {
       return sidebarSupervisor;
     }
     if (user_roles?.every((role) => ['USERSUPERVISOR', 'USERLIDER'].includes(role.rolenew.name))) {
