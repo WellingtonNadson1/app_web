@@ -1,12 +1,10 @@
 'use client';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
 import { errorCadastro, success } from '@/functions/functions';
-import { BASE_URL } from '@/lib/axios';
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import api, { BASE_URL } from '@/lib/axios';
 import { User } from '@phosphor-icons/react';
 import ProgressBar from '@ramonak/react-progress-bar';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 import { ToastContainer } from 'react-toastify';
@@ -25,12 +23,10 @@ export default function ControlePresencaCelula({
   const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula.lider.id}`;
   const [progress, setProgress] = useState(0);
   const { handleSubmit, register } = useForm<attendance[]>();
-  const { data: session } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user?.token as string);
   const queryClient = useQueryClient();
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId);
+    const { data } = await api.get(URLPresencaCultoId);
     return data;
   };
 
@@ -60,7 +56,7 @@ export default function ControlePresencaCelula({
     // Use loop for ...of
     for (const currentData of dataArray) {
       try {
-        const response = await axiosAuth.post(URLControlePresenca, {
+        const response = await api.post(URLControlePresenca, {
           ...currentData,
           status: currentData.status === 'true',
         });

@@ -1,47 +1,45 @@
-'use client'
+'use client';
 
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { Menu, Transition } from '@headlessui/react'
-import { BellIcon } from '@heroicons/react/24/outline'
-import { UserCircle } from '@phosphor-icons/react'
-import { format } from 'date-fns'
-import { pt } from 'date-fns/locale'
-import { signOut, useSession } from 'next-auth/react'
-import Image from 'next/image'
-import { Fragment } from 'react'
-// import { signIn } from 'next-auth/react'
-// import Image from 'next/image'
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { Menu, Transition } from '@headlessui/react';
+import { BellIcon } from '@heroicons/react/24/outline';
+import { UserCircle } from '@phosphor-icons/react';
+import { format } from 'date-fns';
+import { pt } from 'date-fns/locale';
+import { signOut, useSession } from 'next-auth/react';
+import Image from 'next/image';
+import { Fragment } from 'react';
 
 const userNavigation = [
   { name: 'Meu Perfil', href: '#' },
   { name: 'Configurações', href: '#' },
-]
+];
 
 function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
+  return classes.filter(Boolean).join(' ');
 }
 
 interface HeaderCelulaProps {
-  headerCelula: string | undefined
+  headerCelula: string | undefined;
 }
 
 export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
 
-  const toDay = format(new Date(), 'PP', { locale: pt })
+  const toDay = format(new Date(), 'PP', { locale: pt });
 
   if (status === 'loading') {
-    return <SpinnerButton message={''} />
+    return <SpinnerButton message={''} />;
   }
 
-  const isAuthenticated = status === 'authenticated'
+  const isAuthenticated = status === 'authenticated';
 
   if (!isAuthenticated) {
     return (
       <nav className="relative flex items-center justify-between p-1 mx-1  mt-1 mb-6 bg-white rounded-full shadow-none">
         <h2>Deu não autenticado!</h2>
       </nav>
-    )
+    );
   }
 
   return (
@@ -167,5 +165,5 @@ export default function HeaderCelula({ headerCelula }: HeaderCelulaProps) {
         </div>
       </nav>
     </>
-  )
+  );
 }

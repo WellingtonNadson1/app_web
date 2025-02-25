@@ -4,8 +4,7 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula';
 import LicoesCelula from '@/components/LicoesCelula';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
 import { Card } from '@/components/ui/card';
-import { BASE_URL } from '@/lib/axios';
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import api, { BASE_URL } from '@/lib/axios';
 import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
@@ -28,24 +27,26 @@ export default function ControleCelulaSupervision() {
   const [idPrimeiroCulto, setIdPrimeiroCulto] = useState<string | null>(null);
   const [idSegundoCulto, setIdSegundoCulto] = useState<string | null>(null);
   const [presenceIsRegister, setPresenceIsRegister] = useState(false);
-  const [secondPresenceIsRegister, setSecondPresenceIsRegister] = useState(false);
+  const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
+    useState(false);
   const { data: session, status } = useSession();
-  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const celulaId = session?.user.celulaId;
+  const celulaId = session?.user?.celulaId;
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
 
   const CelulaData = async () => {
     try {
-      const result = await axiosAuth.post(URLCelula, {
+      const result = await api.post(URLCelula, {
         idPrimeiroCulto,
         idSegundoCulto,
       });
-      const existPresenceForCulto = result.data.membros[0].presencas_cultos.length > 0;
+      const existPresenceForCulto =
+        result.data.membros[0].presencas_cultos.length > 0;
       setPresenceIsRegister(existPresenceForCulto);
-      const existSecondPresenceForCulto = result.data.membros[0].presencas_cultos.length > 1;
+      const existSecondPresenceForCulto =
+        result.data.membros[0].presencas_cultos.length > 1;
       setSecondPresenceIsRegister(existSecondPresenceForCulto);
       return result.data;
     } catch (error) {
@@ -60,10 +61,18 @@ export default function ControleCelulaSupervision() {
 
   const MeetingsData = async () => {
     const dataHoje = new Date();
-    const firstDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth(), 1);
-    const lastDayOfMonth = new Date(dataHoje.getFullYear(), dataHoje.getMonth() + 1, 0);
+    const firstDayOfMonth = new Date(
+      dataHoje.getFullYear(),
+      dataHoje.getMonth(),
+      1,
+    );
+    const lastDayOfMonth = new Date(
+      dataHoje.getFullYear(),
+      dataHoje.getMonth() + 1,
+      0,
+    );
     try {
-      const { data } = await axiosAuth.post(URLCultosInd, {
+      const { data } = await api.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
       });
@@ -78,24 +87,28 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-  const { data: meetingsData, isLoading: isLoadingMeetings } = useQuery<Meeting>({
-    queryKey: ['meetingsData', celulaId],
-    queryFn: MeetingsData,
-    enabled: status === 'authenticated' && !!celulaId,
-    refetchOnWindowFocus: false,
-  });
+  const { data: meetingsData, isLoading: isLoadingMeetings } =
+    useQuery<Meeting>({
+      queryKey: ['meetingsData', celulaId],
+      queryFn: MeetingsData,
+      enabled: status === 'authenticated' && !!celulaId,
+      refetchOnWindowFocus: false,
+    });
 
   const { data: celula } = useQuery<Celula>({
     queryKey: ['celula', celulaId, idPrimeiroCulto, idSegundoCulto],
     queryFn: CelulaData,
-    enabled: status === 'authenticated' && !!celulaId && (!!idPrimeiroCulto || !!idSegundoCulto),
+    enabled:
+      status === 'authenticated' &&
+      !!celulaId &&
+      (!!idPrimeiroCulto || !!idSegundoCulto),
     refetchOnWindowFocus: false,
     retry: false,
   });
 
   const today = startOfToday();
   const selectedDayMeetings = meetingsData?.filter((meeting) =>
-    isSameDay(parseISO(meeting.data_inicio_culto), today)
+    isSameDay(parseISO(meeting.data_inicio_culto), today),
   );
 
   useEffect(() => {
@@ -150,11 +163,15 @@ export default function ControleCelulaSupervision() {
                               <span>
                                 Frequência de Culto -{' '}
                                 {format(
-                                  dayjs(new Date(selectedDayMeetings[0].data_inicio_culto))
+                                  dayjs(
+                                    new Date(
+                                      selectedDayMeetings[0].data_inicio_culto,
+                                    ),
+                                  )
                                     .add(3, 'hour')
                                     .toDate(),
                                   'Pp',
-                                  { locale: pt }
+                                  { locale: pt },
                                 )}
                               </span>
                               <ChevronUpIcon
@@ -234,11 +251,15 @@ export default function ControleCelulaSupervision() {
                               <span>
                                 Frequência de Culto -{' '}
                                 {format(
-                                  dayjs(new Date(selectedDayMeetings[1].data_inicio_culto))
+                                  dayjs(
+                                    new Date(
+                                      selectedDayMeetings[1].data_inicio_culto,
+                                    ),
+                                  )
                                     .add(3, 'hour')
                                     .toDate(),
                                   'Pp',
-                                  { locale: pt }
+                                  { locale: pt },
                                 )}
                               </span>
                               <ChevronUpIcon
@@ -283,7 +304,8 @@ export default function ControleCelulaSupervision() {
                         <>
                           <Disclosure.Button className="flex justify-between w-full px-4 py-2 text-sm font-medium text-left text-blue-900 rounded-lg ring-1 ring-blue-100 hover:bg-blue-50 focus:outline-none focus-visible:ring-1 focus-visible:ring-blue-200 focus-visible:ring-opacity-75">
                             <span>
-                              Frequência de Célula - {format(today, 'P', { locale: pt })}
+                              Frequência de Célula -{' '}
+                              {format(today, 'P', { locale: pt })}
                             </span>
                             <ChevronUpIcon
                               className={`${open ? 'rotate-180 transform' : ''} h-5 w-5 text-blue-500`}
