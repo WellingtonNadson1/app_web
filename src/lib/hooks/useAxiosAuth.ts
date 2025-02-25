@@ -3,11 +3,11 @@ import axios from '@/lib/axios';
 import { AxiosInstance } from 'axios';
 import { useSession } from 'next-auth/react';
 import { useEffect } from 'react';
-import { useRefreshToken } from './useRefreshToken';
+import { refreshToken as refreshTokenFn } from './useRefreshToken';
 
 const useAxiosAuth = (token: string): AxiosInstance => {
   const { data: session } = useSession();
-  const refreshToken = useRefreshToken();
+  const refreshToken = refreshTokenFn();
 
   useEffect(() => {
     const requestIntercept = axios.interceptors.request.use(
@@ -28,7 +28,7 @@ const useAxiosAuth = (token: string): AxiosInstance => {
           prevRequest.sent = true;
           try {
             // Obtenha um novo token de acesso usando refreshToken
-            const newToken = await refreshToken();
+            const newToken = await refreshTokenFn();
             prevRequest.headers['Authorization'] = `Bearer ${newToken}`;
             return axios(prevRequest);
           } catch (refreshError) {
