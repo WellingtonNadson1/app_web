@@ -22,7 +22,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           // Ajuste a URL para o endpoint correto da sua API
           const result = await axios.post(
-            `${process.env.NEXT_PUBLIC_API_URL}/login`, // Use uma variável de ambiente para a URL base
+            `/login`, // Use uma variável de ambiente para a URL base
             {
               email: email,
               password: password,
