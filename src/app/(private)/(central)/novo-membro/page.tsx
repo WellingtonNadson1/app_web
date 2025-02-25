@@ -14,7 +14,7 @@ import { DataTableUsers } from './table-users/data-table-users';
 import { userSchemaTable } from './table-users/schema';
 
 export default function NovoMembro() {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const URL = `${BASE_URL}/users`;
@@ -29,6 +29,7 @@ export default function NovoMembro() {
       } else {
         console.error(error);
       }
+      throw error; // Re-throw para o useQuery tratar o erro
     }
   };
 
@@ -40,29 +41,18 @@ export default function NovoMembro() {
   } = useQuery<z.infer<typeof userSchemaTable>>({
     queryKey: ['members'],
     queryFn: Members,
+    enabled: status === 'authenticated',
   });
 
-  if (error) {
-    return (
-      <div className="w-full px-2 py-2 mx-auto">
-        <div className="w-full mx-auto z-20">
-          <div>
-            Falha ao carregar, por favor, saia e entre no App novamente.
-          </div>
-        </div>
-      </div>
-    );
-  }
-
-  if (isLoading) {
-    return (
-      <>
-        <Toaster />
+  // JSX principal com lógica condicional após todos os hooks
+  return (
+    <>
+      <Toaster />
+      {status === 'loading' || isLoading ? (
         <div className="bg-white relative w-full px-4 py-2 mx-auto mt-8 shadow-lg rounded-xl">
-          <div className="w-full px-2 py-2 ">
+          <div className="w-full px-2 py-2">
             <div className="w-full px-1 py-2 rounded-md">
               <div className="flex items-center justify-between">
-                {/* ... Outros elementos do cabeçalho ... */}
                 <div className="flex items-center justify-between gap-3 sm:justify-start">
                   <h2 className="py-6 text-lg font-semibold leading-7 text-gray-800">
                     Lista de Membros IBB
@@ -90,7 +80,6 @@ export default function NovoMembro() {
               </div>
             </div>
             <table className="w-full border-separate table-auto">
-              {/* ... Cabeçalho da tabela ... */}
               <thead className="bg-[#F8FAFC]">
                 <tr>
                   <th className="px-2 py-3 font-medium text-[#6D8396] border-b-2 border-blue-300 text-start">
@@ -114,45 +103,52 @@ export default function NovoMembro() {
                 </tr>
               </thead>
               <tbody className="text-sm font-normal text-gray-700">
-                {isLoading ? ( // Verificando se está em estado de carregamento
-                  // Renderizar o esqueleto de carregamento
-                  Array.from({ length: 5 }).map(
-                    (
-                      _,
-                      index, // Suponhamos que você queira renderizar 5 linhas de esqueleto
-                    ) => (
-                      <tr key={index} className="py-8 border-b border-gray-200">
-                        <td>
-                          <div className="flex items-center gap-3">
-                            <UserFocus size={24} />
-                            <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
-                          </div>
-                        </td>
-                        {/* ... Outras células de esqueleto ... */}
-                      </tr>
-                    ),
-                  )
-                ) : (
-                  // Renderizar a lista de membros
-                  <SpinnerButton message={'Carregando'} />
-                )}
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <tr key={index} className="py-8 border-b border-gray-200">
+                    <td>
+                      <div className="flex items-center gap-3">
+                        <UserFocus size={24} />
+                        <div className="w-20 h-4 bg-gray-300 animate-pulse"></div>
+                      </div>
+                    </td>
+                    <td className="hidden sm:table-cell">
+                      <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                    </td>
+                    <td className="hidden sm:table-cell">
+                      <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                    </td>
+                    <td className="hidden sm:table-cell">
+                      <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                    </td>
+                    <td className="hidden sm:table-cell">
+                      <div className="w-16 h-4 bg-gray-300 animate-pulse"></div>
+                    </td>
+                    <td>
+                      <div className="w-16 h-4 mx-auto bg-gray-300 animate-pulse"></div>
+                    </td>
+                  </tr>
+                ))}
               </tbody>
             </table>
           </div>
         </div>
-      </>
-    );
-  }
-
-  return (
-    <>
-      <Suspense fallback="Carregando...">
-        {isSuccess && (
-          <div className="relative w-full px-2 rounded-xl mx-auto mt-4 mb-4">
-            <DataTableUsers columns={columns} data={members as any} />
+      ) : error ? (
+        <div className="w-full px-2 py-2 mx-auto">
+          <div className="w-full mx-auto z-20">
+            <div>
+              Falha ao carregar, por favor, saia e entre no App novamente.
+            </div>
           </div>
-        )}
-      </Suspense>
+        </div>
+      ) : (
+        <Suspense fallback={<SpinnerButton message="Carregando..." />}>
+          {isSuccess && members && (
+            <div className="relative w-full px-2 rounded-xl mx-auto mt-4 mb-4">
+              <DataTableUsers columns={columns} data={members as any} />
+            </div>
+          )}
+        </Suspense>
+      )}
     </>
   );
 }
