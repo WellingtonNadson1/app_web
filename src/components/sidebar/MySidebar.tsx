@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { useUserDataStore } from '@/store/UserDataStore';
 import { SignOut, Spinner, X } from '@phosphor-icons/react';
 import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ThemeImage from '../theme-image';
@@ -106,7 +105,7 @@ export default function MySidebar() {
           <ul className="relative flex flex-col pt-4 gap-y-2">
             {renderLinks().map((item) => (
               <li key={item.name}>
-                <Link
+                <a
                   href={item.href}
                   className={cn(
                     `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
@@ -132,7 +131,7 @@ export default function MySidebar() {
                   >
                     {item.name}
                   </span>
-                </Link>
+                </a>
               </li>
             ))}
           </ul>

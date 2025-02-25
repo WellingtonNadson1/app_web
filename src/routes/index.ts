@@ -18,33 +18,42 @@ export const publicRoutes: string[] = [
  */
 export const privateRoutesCentral: string[] = [
   '/dashboard',
-  '/celulas/:path*',
-  '/cultos/:path*',
-  '/disicipulados/:path*',
-  '/escolas/:path*',
-  '/financeiro/:path*',
-  '/novo-membro/:path*',
-  '/relatorio-culto-supervisao/:path*',
-  '/relatorio-culto-supervisor/:path*',
-  '/relatorio-discipulados-supervisao/:path*',
-  '/relatorio-discipulados-supervisor/:path*',
-  '/relatorio-presenca-celula-supervisao/:path*',
-  '/relatorios/:path*',
-  '/supervisoes/:path*',
+  '/celulas',
+  '/cultos',
+  '/disicipulados',
+  '/disicipulados/[dicipuladosupervisaoId]',
+  '/disicipulados/[dicipuladosupervisaoId]/celulas',
+  '/disicipulados/[dicipuladosupervisaoId]/celulas/[celulaId]',
+  '/disicipulados/[dicipuladosupervisaoId]/supervisor',
+  '/disicipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]',
+  '/escolas',
+  '/financeiro',
+  '/novo-membro',
+  '/relatorio-culto-supervisao/[id]',
+  '/relatorio-culto-supervisor/[id]',
+  '/relatorio-discipulados-supervisao',
+  '/relatorio-discipulados-supervisor',
+  '/relatorio-presenca-celula-supervisao/[id]',
+  '/relatorios',
+  '/relatorios/[id]',
+  '/supervisoes',
+  '/supervisoes/[supervisaoId]',
+  '/supervisoes/[supervisaoId]/celulas',
+  '/supervisoes/[supervisaoId]/celulas/[celulaId]',
 ];
 
 export const privateRoutesCelula: string[] = [
-  '/celula/:path*',
-  '/discipuladoscelularegister/:path*',
+  '/celula',
+  '/discipuladoscelularegister',
 ];
 
 export const privateRoutesSupervisor: string[] = [
-  '/discipuladosregistersupervisor/:path*',
+  '/discipuladosregistersupervisor',
 ];
 
 export const privateRoutesSupervisorLider: string[] = [
-  '/discipuladoscelularegister/:path*',
-  '/discipuladosregistersupervisor/:path*',
+  '/discipuladoscelularegister',
+  '/discipuladosregistersupervisor',
 ];
 
 /**
