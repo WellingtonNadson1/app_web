@@ -18,42 +18,33 @@ export const publicRoutes: string[] = [
  */
 export const privateRoutesCentral: string[] = [
   '/dashboard',
-  '/celulas',
-  '/cultos',
-  '/disicipulados',
-  '/disicipulados/[dicipuladosupervisaoId]',
-  '/disicipulados/[dicipuladosupervisaoId]/celulas',
-  '/disicipulados/[dicipuladosupervisaoId]/celulas/[celulaId]',
-  '/disicipulados/[dicipuladosupervisaoId]/supervisor',
-  '/disicipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]',
-  '/escolas',
-  '/financeiro',
-  '/novo-membro',
-  '/relatorio-culto-supervisao/[id]',
-  '/relatorio-culto-supervisor/[id]',
-  '/relatorio-discipulados-supervisao',
-  '/relatorio-discipulados-supervisor',
-  '/relatorio-presenca-celula-supervisao/[id]',
-  '/relatorios',
-  '/relatorios/[id]',
-  '/supervisoes',
-  '/supervisoes/[supervisaoId]',
-  '/supervisoes/[supervisaoId]/celulas',
-  '/supervisoes/[supervisaoId]/celulas/[celulaId]',
+  '/celulas/:path*',
+  '/cultos/:path*',
+  '/disicipulados/:path*',
+  '/escolas/:path*',
+  '/financeiro/:path*',
+  '/novo-membro/:path*',
+  '/relatorio-culto-supervisao/:path*',
+  '/relatorio-culto-supervisor/:path*',
+  '/relatorio-discipulados-supervisao/:path*',
+  '/relatorio-discipulados-supervisor/:path*',
+  '/relatorio-presenca-celula-supervisao/:path*',
+  '/relatorios/:path*',
+  '/supervisoes/:path*',
 ];
 
 export const privateRoutesCelula: string[] = [
-  '/celula',
-  '/discipuladoscelularegister',
+  '/celula/:path*',
+  '/discipuladoscelularegister/:path*',
 ];
 
 export const privateRoutesSupervisor: string[] = [
-  '/discipuladosregistersupervisor',
+  '/discipuladosregistersupervisor/:path*',
 ];
 
 export const privateRoutesSupervisorLider: string[] = [
-  '/discipuladoscelularegister',
-  '/discipuladosregistersupervisor',
+  '/discipuladoscelularegister/:path*',
+  '/discipuladosregistersupervisor/:path*',
 ];
 
 /**
