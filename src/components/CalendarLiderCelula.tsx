@@ -48,7 +48,7 @@ function classNames(...classes: string[]) {
 export default function CalendarLiderCelula() {
   const today = startOfToday();
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const token = session?.user?.token as string;
   const axiosAuth = useAxiosAuth(token);
 
@@ -73,6 +73,7 @@ export default function CalendarLiderCelula() {
 
   const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
+    enabled: status === 'authenticated',
     queryFn: async () => {
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
@@ -91,16 +92,6 @@ export default function CalendarLiderCelula() {
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
   });
-
-  // function previousMonth() {
-  //   const firstDayNextMonth = add(firstDayCurrentMonth, { months: -1 });
-  //   setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  // }
-
-  // function nextMonth() {
-  //   const firstDayNextMonth = add(firstDayCurrentMonth, { months: 1 });
-  //   setCurrentMonth(format(firstDayNextMonth, "MMM-yyyy"));
-  // }
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), selectedDay),

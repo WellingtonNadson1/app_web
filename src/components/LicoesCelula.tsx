@@ -12,6 +12,7 @@ import LicoesCelulaSkeleton from './Skeleton-Licoes-Celula'
 import { Card } from './ui/card'
 import { useSession } from 'next-auth/react'
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+import axios from 'axios'
 dayjs.extend(utc)
 dayjs.extend(timezone)
 dayjs.locale(ptBr)
@@ -41,7 +42,7 @@ export default function LicoesCelula() {
   const [id, setIdTema] = useState<string | null>(null) // Use null as initial value
   const URLLicoesCelula = `/api/licoes-celula/${id}`
   const URLTemaMonth = `/api/licoes-celula/tema-of-month`
-  const { data: session } = useSession()
+  const { data: session, status } = useSession()
   const axiosAuth = useAxiosAuth(session?.user?.token as string)
 
   const GetIdTema = async () => {
@@ -59,27 +60,38 @@ export default function LicoesCelula() {
 
   const { data: dataTema } = useQuery<TemaData[]>({
     queryKey: ['idTemaMonth'],
-    queryFn: GetIdTema
+    queryFn: GetIdTema,
+    enabled: status === 'authenticated',
   })
 
   // useEffect to update idTema when query is successful
   useEffect(() => {
     if (dataTema && !id) {
       setIdTema(dataTema[0]?.id || null) // Ensure there's a valid id
-      console.log('Updated idTema: ', dataTema[0]?.id)
-      console.log('dataTema: ', dataTema)
     }
   }, [dataTema, id])
 
-  const { data: licoesCelula, isLoading, isSuccess, error } = useQuery<LessonData[]>({
+  const { data: licoesCelula, isLoading, error } = useQuery<LessonData[]>({
     queryKey: ['licoesCelulasIbb', id],
     queryFn: getLicoesCelula,
-    enabled: !!id,
+    enabled: status === 'authenticated' && !!id,
     refetchOnWindowFocus: true,
   })
 
-  if (isSuccess) {
-    console.log('licoesCelula test', licoesCelula)
+  if (error) {
+    console.error('Erro ao buscar lições:', error);
+      if (axios.isAxiosError(error)) {
+        console.error('Status:', error.response?.status);
+        console.error('Dados do erro:', error.response?.data);
+      }
+  }
+
+  if (status === 'loading') {
+    return <div>Carregando sessão...</div>;
+  }
+
+  if (status === 'unauthenticated') {
+    return <div>Usuário não autenticado. Faça login.</div>;
   }
 
   const licoesCelulaOrdenadas = licoesCelula?.sort((a, b) => {
