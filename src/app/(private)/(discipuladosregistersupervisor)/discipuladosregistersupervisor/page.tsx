@@ -1,37 +1,37 @@
 /* eslint-disable camelcase */
-import { auth } from '@/auth'
-import axiosAuth from '@/lib/axios'
-import axios from 'axios'
-import ListMembersSupervisorDiscipulado from '../components/listMembersSupervisorDiscipulado'
-import HeaderDiscipuladosSupervisor from './HeaderDiscipuladosSupervisor'
+import { auth } from '@/app/auth';
+import axiosAuth from '@/lib/axios';
+import axios from 'axios';
+import ListMembersSupervisorDiscipulado from '../components/listMembersSupervisorDiscipulado';
+import HeaderDiscipuladosSupervisor from './HeaderDiscipuladosSupervisor';
 
 export default async function DiscipuladosSupervisor() {
-  const session = await auth()
-  const token = session?.user?.token
-  const id = session?.user?.id
+  const session = await auth();
+  const token = session?.user?.token;
+  const id = session?.user?.id;
 
   const config = {
     headers: {
       Authorization: `Bearer ${token}`,
     },
-  }
+  };
 
-  const URLUser = `https://back-ibb.vercel.app/users/cell/${id}`
+  const URLUser = `https://back-ibb.vercel.app/users/cell/${id}`;
 
   const UserData = async () => {
     try {
-      const { data } = await axiosAuth.get(URLUser, config)
-      return data
+      const { data } = await axiosAuth.get(URLUser, config);
+      return data;
     } catch (error) {
       if (axios.isAxiosError(error) && error.response) {
-        console.error(error.response.data)
+        console.error(error.response.data);
       } else {
-        console.error(error)
+        console.error(error);
       }
     }
-  }
+  };
 
-  const user = await UserData()
+  const user = await UserData();
 
   return (
     <>
@@ -46,5 +46,5 @@ export default async function DiscipuladosSupervisor() {
         </div>
       </div>
     </>
-  )
+  );
 }
