@@ -30,7 +30,7 @@ export default function ControleCelulaSupervision() {
   const [presenceIsRegister, setPresenceIsRegister] = useState(false);
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
     useState(false);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const celulaId = session?.user.celulaId;
@@ -100,10 +100,11 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-  const { data, isLoading, isSuccess } = useQuery<Meeting>({
+  const { data, isLoading } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: MeetingsData,
     refetchOnWindowFocus: false,
+    enabled: status === 'authenticated' && !!celulaId,
   });
 
   const today = startOfToday();
