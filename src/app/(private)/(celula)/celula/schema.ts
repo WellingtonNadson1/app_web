@@ -77,16 +77,6 @@ const PresencaCultoCelulaSchema = z.object({
 
 export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
 
-const ControlePresencaCelulaPropsSchema = z.object({
-  id: z.string(),
-  celula: CelulaSchema,
-  culto: z.string(),
-})
-
-export type ControlePresencaCelulaProps = z.infer<
-  typeof ControlePresencaCelulaPropsSchema
->
-
 const attendanceSchema = z.object({
   status: z.string(),
   membro: z.string(),
@@ -187,3 +177,78 @@ export const CelulaSortSchema = z.array(
 
 // Exemplo de uso
 export type CelulaSort = z.infer<typeof CelulaSortSchema>;
+
+
+// Schema para "id" e "nome"
+const idAndNameSchema = z.object({
+  id: z.string().uuid(), // IDs são UUIDs baseado no exemplo
+  nome: z.string(),
+});
+
+// Schema para "id" e "first_name"
+const idAndFirstNameSchema = z.object({
+  id: z.string().uuid(),
+  first_name: z.string(),
+});
+
+// Schema para "presencas_cultos"
+const presencaCultoSchema = z.object({
+  id: z.string().uuid(),
+  status: z.boolean(),
+  userId: z.string().uuid(),
+  cultoIndividualId: z.string().uuid(),
+  date_create: z.string().datetime(), // ISO 8601 string
+  date_update: z.string().datetime(), // ISO 8601 string
+});
+
+// Schema para "discipulos"
+const discipuloSchema = z.object({
+  user_discipulos: idAndFirstNameSchema,
+});
+
+// Schema para "membro"
+export const membroSchema = z.object({
+  id: z.string().uuid(),
+  first_name: z.string(),
+  presencas_cultos: z.array(presencaCultoSchema),
+  discipulador: z.array(z.any()), // Array vazio no exemplo, deixei flexível
+  discipulos: z.array(discipuloSchema),
+  cargo_de_lideranca: idAndNameSchema,
+  situacao_no_reino: idAndNameSchema,
+  user: z.null().or(idAndFirstNameSchema), // Pode ser null ou um objeto com id e first_name
+});
+
+export type MembroCelula = z.infer<typeof membroSchema>;
+
+
+// Schema principal
+export const celulaSchema = z.object({
+  id: z.string().uuid(),
+  nome: z.string(),
+  membros: z.array(membroSchema),
+  lider: idAndFirstNameSchema,
+  supervisao: idAndNameSchema,
+  cep: z.string(), // CEP como string (não validei formato específico)
+  cidade: z.string(),
+  estado: z.string().length(2), // Estado como UF (ex.: "MA")
+  bairro: z.string(),
+  endereco: z.string(),
+  numero_casa: z.string(), // Pode ser ajustado para z.number() se for sempre numérico
+  date_que_ocorre: z.string(), // Dia da semana como string (ex.: "2")
+  date_inicio: z.string().datetime(), // ISO 8601 string
+  date_multipicar: z.string().datetime(), // ISO 8601 string
+});
+
+// Tipo inferido do schema
+export type Celula = z.infer<typeof celulaSchema>;
+
+
+const ControlePresencaCelulaPropsSchema = z.object({
+  id: z.string(),
+  celula: celulaSchema,
+  culto: z.string(),
+})
+
+export type ControlePresencaCelulaProps = z.infer<
+  typeof ControlePresencaCelulaPropsSchema
+>

@@ -14,7 +14,7 @@ import { format, isSameDay, parseISO, startOfToday } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence';
 import { RegisterPresenceFormSecond } from './_components/ControlePresenceSecond/registerpresencesecond';
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula';
@@ -22,9 +22,11 @@ import HeaderCelula from './HeaderCelula';
 import CalendarLoading from './loadingUi/CalendarLoading';
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading';
 import LicoesLoading from './loadingUi/LicoesLoading';
-import { CelulaProps, Meeting } from './schema';
+import { Celula, CelulaProps, Meeting } from './schema';
 
 export default function ControleCelulaSupervision() {
+  const [idPrimeiroCulto, setIdPrimeiroCulto] = useState<string | null>();
+  const [idSegundoCulto, setIdSegundoCulto] = useState<string | null>();
   const [presenceIsRegister, setPresenceIsRegister] = useState(false);
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
     useState(false);
@@ -38,7 +40,10 @@ export default function ControleCelulaSupervision() {
 
   const CelulaData = async () => {
     try {
-      const result = await axiosAuth.get(URLCelula);
+      const result = await axiosAuth.post(URLCelula, {
+        idPrimeiroCulto,
+        idSegundoCulto
+      });
       console.log('result', result);
       const existPresenceForCulto =
         result.data.membros[0].presencas_cultos.length > 0;
@@ -58,10 +63,10 @@ export default function ControleCelulaSupervision() {
     }
   };
 
-  const { data: celula, isLoading: isLoadingCelula } = useQuery<CelulaProps>({
+  const { data: celula, isLoading: isLoadingCelula } = useQuery<Celula>({
     queryKey: ['celula', celulaId],
     queryFn: CelulaData,
-    enabled: !!celulaId,
+    enabled: !!celulaId && !!idPrimeiroCulto || !!idSegundoCulto,
     refetchOnWindowFocus: false,
     retry: false,
   });
@@ -101,15 +106,21 @@ export default function ControleCelulaSupervision() {
     refetchOnWindowFocus: false,
   });
 
-  // if (isSuccess) {
-  //   return;
-  // }
-
   const today = startOfToday();
 
   const selectedDayMeetings = data?.filter((meeting) =>
     isSameDay(parseISO(meeting.data_inicio_culto), today),
   );
+
+  useEffect(() => {
+    if (selectedDayMeetings && selectedDayMeetings.length > 0) {
+      setIdPrimeiroCulto(selectedDayMeetings[0].id);
+    }
+    if (selectedDayMeetings && selectedDayMeetings.length > 1) {
+      setIdSegundoCulto(selectedDayMeetings[1].id);
+    }
+  }, [selectedDayMeetings]);
+
 
   return (
     <>

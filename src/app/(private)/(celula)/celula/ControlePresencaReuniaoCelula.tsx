@@ -21,8 +21,10 @@ import { ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { z } from 'zod';
 import {
+  Celula,
   CelulaProps,
   CelulaSort,
+  MembroCelula,
   attendanceReuniaCelulaSchema,
   attendanceReuniaoCelula,
   reuniaoCelulaData2,
@@ -61,11 +63,11 @@ export default function ControlePresencaReuniaoCelula({
   dataCelula,
 }: {
   celulaId: string;
-  dataCelula: CelulaProps;
+  dataCelula: Celula;
 }) {
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState('');
   const URLPresencaReuniaoCelulaIsRegiter = `${BASE_URL}/presencareuniaocelulas/isregister/${reuniaoRegisteredId}`;
-  const [celulaSort, setCelulaSort] = useState<CelulaSort>([]);
+  const [celulaSort, setCelulaSort] = useState<MembroCelula[]>();
   const { handleSubmit, register, setValue } = useForm<attendanceReuniaoCelula>(
     {
       resolver: zodResolver(attendanceReuniaCelulaSchema),
@@ -409,7 +411,7 @@ export default function ControlePresencaReuniaoCelula({
                         </div>
                       </div>
                       <div className="text-sm font-normal text-gray-700">
-                        {celulaSort.map((user, index) => (
+                        {celulaSort?.map((user, index) => (
                           <form key={user.id} id={user.id}>
                             <div className="grid w-full grid-cols-3 gap-4 mt-3 mb-1 sm:grid-cols-4 md:grid-cols-5">
                               <Input
@@ -434,7 +436,7 @@ export default function ControlePresencaReuniaoCelula({
                                     />
                                   </div>
                                   <h2 className="ml-4 text-sm">
-                                    {user.first_name}
+                                    {user?.first_name}
                                   </h2>
                                 </div>
                               </div>
@@ -443,25 +445,25 @@ export default function ControlePresencaReuniaoCelula({
                               <div className="hidden sm:block">
                                 <span
                                   className={`hidden rounded-md px-2 py-1 text-center sm:block ${
-                                    user.situacao_no_reino?.nome === 'Ativo'
+                                    user?.situacao_no_reino?.nome === 'Ativo'
                                       ? 'border border-green-200 bg-green-100 ring-green-500'
-                                      : user.situacao_no_reino?.nome ===
+                                      : user?.situacao_no_reino?.nome ===
                                           'Normal'
                                         ? 'border border-blue-200 bg-blue-100 ring-blue-500'
-                                        : user.situacao_no_reino?.nome ===
+                                        : user?.situacao_no_reino?.nome ===
                                             'Frio'
                                           ? 'border border-orange-200 bg-orange-100 ring-orange-500'
                                           : 'border border-red-200 bg-red-100 ring-red-500'
                                   }`}
                                 >
-                                  {user.situacao_no_reino?.nome}
+                                  {user?.situacao_no_reino?.nome}
                                 </span>
                               </div>
 
                               {/* CARGO LIDERANÇA */}
                               <div className="hidden md:block">
                                 <span className="hidden w-full px-2 py-1 text-center truncate border border-gray-200 rounded-md bg-gray-50 ring-gray-500 md:block">
-                                  {user.cargo_de_lideranca?.nome}{' '}
+                                  {user?.cargo_de_lideranca?.nome}{' '}
                                 </span>
                               </div>
                               <Input
@@ -473,7 +475,7 @@ export default function ControlePresencaReuniaoCelula({
                                 )}
                                 value="true"
                                 type="radio"
-                                id={user.id}
+                                id={user?.id}
                                 className="w-4 h-4 mx-auto text-green-600 border-green-300 cursor-pointer focus:ring-green-600"
                               />
                               <Input
@@ -485,7 +487,7 @@ export default function ControlePresencaReuniaoCelula({
                                 )}
                                 value="false"
                                 type="radio"
-                                id={user.first_name}
+                                id={user?.first_name}
                                 className="w-4 h-4 mx-auto text-red-600 border-red-300 cursor-pointer focus:ring-red-600"
                               />
                             </div>
