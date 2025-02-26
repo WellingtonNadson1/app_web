@@ -98,7 +98,7 @@ export default function ControleCelulaSupervision() {
     });
 
   const { data: celula } = useQuery<Celula>({
-    queryKey: ['celula', celulaId, idPrimeiroCulto, idSegundoCulto],
+    queryKey: ['celula', celulaId],
     queryFn: CelulaData,
     enabled: status === 'authenticated',
   });
