@@ -99,11 +99,13 @@ export default async function middleware(req: NextRequest) {
     }
 
     // Evitar redirecionamentos infinitos
-    if (
-      (routesCelula && hasRole('USERLIDER')) ||
-      (isPrivateRouteSupervisor && hasRole('USERSUPERVISOR')) ||
-      (isPrivateRouteCentral && hasRole('USERCENTRAL'))
-    ) {
+    if (routesCelula && hasRole('USERLIDER')) {
+      return NextResponse.next();
+    }
+    if (isPrivateRouteSupervisor && hasRole('USERSUPERVISOR')) {
+      return NextResponse.next();
+    }
+    if (isPrivateRouteCentral && hasRole('USERCENTRAL')) {
       return NextResponse.next();
     }
     // if (
