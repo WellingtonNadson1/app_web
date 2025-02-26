@@ -1,6 +1,5 @@
 import '@/app/globals.css';
 import { auth } from '@/auth';
-import Header from '@/components/Header';
 import MySidebar from '@/components/sidebar/MySidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
 import { Providers } from '@/providers/providers';
@@ -8,8 +7,7 @@ import { InitializerUserStore } from '@/store/InitializerUserStore';
 import { RedirectType } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 import NextTopLoader from 'nextjs-toploader';
-import React, { Suspense } from 'react';
-import { LoaderHeader } from '../../(central)/loading';
+import React from 'react';
 
 export const metadata = {
   title: 'App IBB',

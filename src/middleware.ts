@@ -1,8 +1,9 @@
 import {
   apiAuthPrefix,
   authRoutes,
-  DEFAULT_LOGIN_REDIRECT,
+  DEFAULT_LOGIN_,
   DEFAULT_LOGIN_REDIRECT_CELULA,
+  DEFAULT_LOGIN_REDIRECT_CENTRAL,
   DEFAULT_LOGIN_REDIRECT_SUPERVISOR,
   privateRoutesCelula,
   privateRoutesCentral,
@@ -79,24 +80,46 @@ export default async function middleware(req: NextRequest) {
 
     // Verificações de rotas privadas
     if (isPrivateRouteCentral && !hasRole('USERCENTRAL')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
+      return new NextResponse(
+        'Acesso negado: você não tem permissão para acessar esta página.',
+        {
+          status: 403,
+        },
+      );
     }
     if (isPrivateRouteCelula && !hasRole('USERLIDER')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
+      return new NextResponse(
+        'Acesso negado: você não tem permissão para acessar esta página.',
+        {
+          status: 403,
+        },
+      );
     }
     if (isPrivateRouteSupervisor && !hasRole('USERSUPERVISOR')) {
-      return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_CELULA);
+      return new NextResponse(
+        'Acesso negado: você não tem permissão para acessar esta página.',
+        {
+          status: 403,
+        },
+      );
     }
 
     // Evitar redirecionamentos infinitos
     if (
-      (pathname === DEFAULT_LOGIN_REDIRECT_CELULA && hasRole('USERLIDER')) ||
-      (pathname === DEFAULT_LOGIN_REDIRECT_SUPERVISOR &&
-        hasRole('USERSUPERVISOR')) ||
-      (pathname === DEFAULT_LOGIN_REDIRECT && hasRole('USERCENTRAL'))
+      (isPrivateRouteCelula && hasRole('USERLIDER')) ||
+      (isPrivateRouteSupervisor && hasRole('USERSUPERVISOR')) ||
+      (isPrivateRouteCentral && hasRole('USERCENTRAL'))
     ) {
       return NextResponse.next();
     }
+    // if (
+    //   (pathname === DEFAULT_LOGIN_REDIRECT_CELULA && hasRole('USERLIDER')) ||
+    //   (pathname === DEFAULT_LOGIN_REDIRECT_SUPERVISOR &&
+    //     hasRole('USERSUPERVISOR')) ||
+    //   (pathname === DEFAULT_LOGIN_REDIRECT && hasRole('USERCENTRAL'))
+    // ) {
+    //   return NextResponse.next();
+    // }
 
     // Redirecionar após login com base no papel
     if (isAuthRoute || isPublicRoute) {
@@ -106,9 +129,9 @@ export default async function middleware(req: NextRequest) {
       } else if (hasRole('USERSUPERVISOR')) {
         return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
       } else if (hasRole('USERCENTRAL')) {
-        return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT);
+        return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_CENTRAL);
       } else {
-        return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT);
+        return redirectIfNeeded(DEFAULT_LOGIN_);
       }
     }
   }
