@@ -1,9 +1,8 @@
-import api from '@/lib/axios';
 import { loginSchema } from '@/types';
 import axios from 'axios';
+import { setCookie } from 'nookies';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
-import { setCookie } from 'nookies'; // Substitui next/headers
 import { ZodError } from 'zod';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
@@ -22,7 +21,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           // Ajuste a URL para o endpoint correto da sua API
-          const result = await api.post(
+          const result = await axios.post(
             `/login`, // Use uma variável de ambiente para a URL base
             {
               email: email,
