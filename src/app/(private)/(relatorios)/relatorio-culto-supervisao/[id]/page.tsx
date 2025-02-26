@@ -46,6 +46,7 @@ import {
 } from './schema';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
+
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -72,12 +73,6 @@ export default function StatsCardRelatorios() {
   const [numberOfRowsCell, setNumberOfRowsCell] = useState<
     number[] | undefined
   >();
-  const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
-    resolver: zodResolver(FormRelatorioDataSchema),
-  });
-
-  const today = new Date();
-  const yearCalendar = addYears(today, 5).getFullYear();
   const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
   const [totalCultos, setTotalCultos] = useState<number>(0);
   const [totalCultosPrimicias, setTotalCultosPrimicias] = useState<number>(0);
@@ -88,6 +83,13 @@ export default function StatsCardRelatorios() {
     useState<number>(0);
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
     useState<number>(0);
+
+  const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
+    resolver: zodResolver(FormRelatorioDataSchema),
+  });
+
+  const today = new Date();
+  const yearCalendar = addYears(today, 5).getFullYear();
 
   // @ts-ignore
   const { data: dataAllCtx } = useData();
@@ -101,75 +103,33 @@ export default function StatsCardRelatorios() {
     try {
       setIsLoadingSubmitForm(true);
 
-      // Adicionando um dia ao endDate
       const adjustedEndDate = dayjs(endDate).add(1, 'day').toISOString();
 
-      // Executando as chamadas de API em paralelo com Promise.all
-      // const [presencaGeralResponse, relatorioResponse] = await Promise.all([
-      //   axiosAuth.post(URLPresencaGeralCultos, {
-      //     startDate,
-      //     endDate: adjustedEndDate,
-      //     superVisionId,
-      //   }),
-      //   axiosAuth.post(URLRelatorioPresenceCulto, {
-      //     superVisionId,
-      //     startDate,
-      //     endDate: adjustedEndDate,
-      //   }),
-      // ]);
+      const [presencaGeralResponse, relatorioResponse] = await Promise.all([
+        axiosAuth.post(URLPresencaGeralCultos, {
+          startDate,
+          endDate: adjustedEndDate,
+          superVisionId,
+        }),
+        axiosAuth.post(URLRelatorioPresenceCulto, {
+          superVisionId,
+          startDate,
+          endDate: adjustedEndDate,
+        }),
+      ]);
 
-      const [presencaGeral, setPresencaGeral] = useState<any>();
-      const [relatorioPromise, setRelatorio] = useState<any>();
-      const [loading, setLoading] = useState(false);
-
-      useEffect(() => {
-        if (!token) return; // Se não houver token, não executa a função
-
-        const fetchData = async () => {
-          setLoading(true);
-          try {
-            const [presencaGeralResponse, relatorioResponse] =
-              await Promise.all([
-                axiosAuth.post(URLPresencaGeralCultos, {
-                  startDate,
-                  endDate: adjustedEndDate,
-                  superVisionId,
-                }),
-                axiosAuth.post(URLRelatorioPresenceCulto, {
-                  superVisionId,
-                  startDate,
-                  endDate: adjustedEndDate,
-                }),
-              ]);
-
-            setPresencaGeral(presencaGeralResponse.data);
-            setRelatorio(relatorioResponse.data);
-          } catch (error) {
-            console.error('Erro ao buscar dados:', error);
-          } finally {
-            setLoading(false);
-          }
-        };
-
-        fetchData();
-      }, [token]); // O efeito roda apenas quando o token estiver disponível
-
-      const presencaGeralCultos = presencaGeral?.data as Pessoa[];
-      const relatorioData = relatorioPromise?.data;
+      const presencaGeralCultos = presencaGeralResponse.data as Pessoa[];
+      const relatorioData = relatorioResponse.data;
 
       if (presencaGeralCultos) {
-        // Pegando as datas unicas para o THeader
         const datasUnicas = new Set<string>();
-
         presencaGeralCultos.forEach((membro) => {
           membro.presencasFiltradas.forEach((presenca) => {
             datasUnicas.add(presenca.presenca_culto.data_inicio_culto);
           });
         });
-
         const datasArray: string[] = Array.from(datasUnicas).sort();
         setDatasUnic(datasArray);
-        // Fim do get for datas unicas para o THeader
 
         const dataGroupedForCell = groupDataByCell(presencaGeralCultos);
         setGroupedForCell(dataGroupedForCell);
@@ -215,18 +175,17 @@ export default function StatsCardRelatorios() {
             return (
               new Date(dataInicioA).getTime() - new Date(dataInicioB).getTime()
             );
-          } else {
-            return 0;
           }
+          return 0;
         });
         setIdCultos(sortedIds);
-        idCultos && console.log('IDS: ', idCultos);
       }
 
       const relatorio: PresencaForDate[] = Object.values(relatorioData);
 
-      if (!relatorio) {
-        console.log('Erro na resposta da API:', relatorioData.statusText);
+      if (!relatorio || relatorio.length === 0) {
+        console.log('Nenhum dado retornado pela API');
+        setIsLoadingSubmitForm(false);
         return;
       }
 
@@ -236,45 +195,31 @@ export default function StatsCardRelatorios() {
       setCorSupervisao(
         relatorio[0].presencas_culto[0].membro.supervisao_pertence.nome,
       );
-      console.log('relatorio', relatorio);
 
-      const Cultos = relatorio.pop();
-      setTotalCultos(Cultos as unknown as number);
-
-      const CultoDomingoTarde = relatorio.pop();
-      setTotalCultosDomingoTarde(CultoDomingoTarde as unknown as number);
-
-      const CultoDomingoManha = relatorio.pop();
-      setTotalCultosDomingoManha(CultoDomingoManha as unknown as number);
-
-      const CultoSabado = relatorio.pop();
-      setTotalCultosSabado(CultoSabado as unknown as number);
-
-      const cultoDomingoSacrificio = relatorio.pop();
-      setTotalCultosSacrificio(cultoDomingoSacrificio as unknown as number);
-
-      const cultoPrimicia = relatorio.pop();
-      setTotalCultosPrimicias(cultoPrimicia as unknown as number);
-
-      const CultoQuarta = relatorio.pop();
-      setTotalCultosQuarta(CultoQuarta as unknown as number);
+      setTotalCultos(relatorio.pop() as unknown as number);
+      setTotalCultosDomingoTarde(relatorio.pop() as unknown as number);
+      setTotalCultosDomingoManha(relatorio.pop() as unknown as number);
+      setTotalCultosSabado(relatorio.pop() as unknown as number);
+      setTotalCultosSacrificio(relatorio.pop() as unknown as number);
+      setTotalCultosPrimicias(relatorio.pop() as unknown as number);
+      setTotalCultosQuarta(relatorio.pop() as unknown as number);
 
       setDateCultoData(dataGroupedForDateCulto);
-
       setIsLoadingSubmitForm(false);
     } catch (error) {
       setIsLoadingSubmitForm(false);
-      console.log('Erro ao buscar o relatório:', error);
+      console.error('Erro ao buscar o relatório:', error);
+      alert('Erro ao gerar o relatório. Verifique os dados e tente novamente.');
     }
   };
 
   const handleFunctions = (data: z.infer<typeof FormRelatorioDataSchema>) => {
+    console.log('Formulário submetido com dados:', data);
     handleRelatorio(data);
   };
 
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
     const groupedDataForDateCulto: GroupedForCulto = {};
-
     relatorio.forEach((entry) => {
       const dateCultoId = entry.data_inicio_culto;
       if (dateCultoId) {
@@ -289,10 +234,8 @@ export default function StatsCardRelatorios() {
 
   const groupDataByCell = (relatorio: Pessoa[]): Record<string, Pessoa[]> => {
     const grupos: Record<string, Pessoa[]> = {};
-
     relatorio.forEach((person) => {
       const cellName = person.celula?.nome;
-
       if (cellName) {
         if (!grupos[cellName]) {
           grupos[cellName] = [];
@@ -304,23 +247,20 @@ export default function StatsCardRelatorios() {
   };
 
   const newCorSupervisao = CorSupervision(corSupervisao);
-  console.log('newCorSupervisao', newCorSupervisao);
   const Supervisor = ListSupervisores(corSupervisao);
 
   useEffect(() => {
     const rowsCellName = new Set<number>();
     const rowsNameCell: number[] =
-      (groupedForCell &&
-        idCultos &&
-        Object.keys(groupedForCell)?.map((cellName, cellIndex) => {
-          const length = groupedForCell[cellName].length;
-          rowsCellName.add(length);
-          return length; // Return the length to populate the array
-        })) ||
-      [];
-
+      groupedForCell && idCultos
+        ? Object.keys(groupedForCell).map((cellName) => {
+            const length = groupedForCell[cellName].length;
+            rowsCellName.add(length);
+            return length;
+          })
+        : [];
     setNumberOfRowsCell(rowsNameCell);
-  }, [groupedForCell, idCultos]); // Add dependencies to useEffect
+  }, [groupedForCell, idCultos]);
 
   return (
     <Fragment>
@@ -366,13 +306,12 @@ export default function StatsCardRelatorios() {
                                   <Button
                                     variant={'outline'}
                                     className={cn(
-                                      ' pl-3 text-left font-normal',
+                                      'pl-3 text-left font-normal',
                                       !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
                                       dayjs(field.value)
-                                        // .subtract(3, "hours")
                                         .utc()
                                         .local()
                                         .locale('pt-br')
@@ -396,10 +335,6 @@ export default function StatsCardRelatorios() {
                                   onSelect={field.onChange}
                                   fromYear={2023}
                                   toYear={yearCalendar}
-                                  // disabled={(date) =>
-                                  //   date > new Date() ||
-                                  //   date < new Date("1900-01-01")
-                                  // }
                                   initialFocus
                                 />
                                 <div className="p-3 border-t border-border">
@@ -430,13 +365,12 @@ export default function StatsCardRelatorios() {
                                   <Button
                                     variant={'outline'}
                                     className={cn(
-                                      ' pl-3 text-left font-normal',
+                                      'pl-3 text-left font-normal',
                                       !field.value && 'text-muted-foreground',
                                     )}
                                   >
                                     {field.value ? (
                                       dayjs(field.value)
-                                        // .subtract(3, "hours")
                                         .utc()
                                         .local()
                                         .locale('pt-br')
@@ -514,86 +448,15 @@ export default function StatsCardRelatorios() {
                         )}
                       />
                     </div>
-                    {/* <div className="sm:col-span-2">
-                      <Label
-                        htmlFor="startDate"
-                        className="block text-sm font-medium leading-6 text-slate-700"
-                      >
-                        Dt. Início
-                      </Label>
-                      <div className="mt-3">
-                        <Input
-                          {...register("startDate", { required: true })}
-                          type="datetime-local"
-                          name="startDate"
-                          id="startDate"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div> */}
 
-                    {/* <div className="sm:col-span-2">
-                      <Label
-                        htmlFor="endDate"
-                        className="block text-sm font-medium leading-6 text-slate-700"
-                      >
-                        Dt. Final
-                      </Label>
-                      <div className="mt-3">
-                        <Input
-                          {...register("endDate", { required: true })}
-                          type="datetime-local"
-                          name="endDate"
-                          id="endDate"
-                          className="block w-full rounded-md border-0 py-1.5 text-slate-700 ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-blue-600 sm:text-sm sm:leading-6"
-                        />
-                      </div>
-                    </div> */}
-
-                    {/* INFORMAÇÕES DO REINO */}
-                    {/* <div className="sm:col-span-2">
-                      <Label
-                        htmlFor="superVisionId"
-                        className="block text-sm font-medium leading-6 text-slate-700"
-                      >
-                        Supervisão
-                      </Label>
-                      <div className="mt-3">
-                        <Select
-                          {...register("superVisionId", { required: true })}
-                          // onChange={handleSupervisaoSelecionada}
-                        >
-                          <SelectContent>
-                            <SelectGroup>
-                              {!supervisoes ? (
-                                <SelectItem value="q">
-                                  Carregando supervisões...
-                                </SelectItem>
-                              ) : (
-                                <SelectItem value="w">Selecione</SelectItem>
-                              )}
-                              {supervisoes &&
-                                supervisoes?.map((supervisao) => (
-                                  <SelectItem
-                                    key={supervisao.id}
-                                    value={supervisao.id}
-                                  >
-                                    {supervisao.nome}
-                                  </SelectItem>
-                                ))}
-                            </SelectGroup>
-                          </SelectContent>
-                        </Select>
-                      </div>
-                    </div> */}
                     {/* Botões para submeter Forms */}
                     <div className="flex flex-col w-full sm:justify-center sm:items-center sm:col-span-2">
                       <div className="sm:mt-6 w-full">
                         {isLoadingSubmitForm ? (
-                          <button
+                          <Button
                             type="submit"
-                            // disabled={isLoadingSubmitForm}
-                            className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
+                            disabled
+                            className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm"
                           >
                             <svg
                               className="w-5 h-5 mr-3 text-white animate-spin"
@@ -608,22 +471,22 @@ export default function StatsCardRelatorios() {
                                 r="10"
                                 stroke="currentColor"
                                 strokeWidth="4"
-                              ></circle>
+                              />
                               <path
                                 className="opacity-75"
                                 fill="currentColor"
                                 d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              ></path>
+                              />
                             </svg>
                             <span>Gerando...</span>
-                          </button>
+                          </Button>
                         ) : (
-                          <button
+                          <Button
                             type="submit"
                             className="px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm hover:bg-blue-600 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-700"
                           >
                             <span>Relatório</span>
-                          </button>
+                          </Button>
                         )}
                       </div>
                     </div>
@@ -633,357 +496,389 @@ export default function StatsCardRelatorios() {
             </div>
           </Fragment>
         </div>
-        {/* Inicio Relatorio */}
-        <div
-          className={cn(
-            `bg-yellow-400 w-full text-center text-white`,
-            `${newCorSupervisao}`,
-          )}
-        >
-          <div className="pt-2 pb-0">
-            <h1 className="py-1 font-bold uppercase">
-              RELATÓRIO - SUPERVISÃO - {corSupervisao}
-            </h1>
-          </div>
-          {totalCultos ? (
-            <div className="pb-2 pl-2">
-              <p className="p-2 text-base font-medium uppercase text-start">
-                SUPERVISOR(ES):{' '}
-                <span className="font-normal">{Supervisor}</span>
-              </p>
+
+        {/* Início Relatório */}
+        {groupedForCell ? (
+          <div
+            className={cn(
+              `bg-yellow-400 w-full text-center text-white`,
+              `${newCorSupervisao}`,
+            )}
+          >
+            <div className="pt-2 pb-0">
+              <h1 className="py-1 font-bold uppercase">
+                RELATÓRIO - SUPERVISÃO - {corSupervisao}
+              </h1>
             </div>
-          ) : (
-            <div className="pb-2 pl-2">
-              <p className="p-2 text-base font-medium uppercase text-start">
-                SUPERVISOR(ES): <span className="font-normal ">Sem Dados</span>
-              </p>
-            </div>
-          )}
-          <div className="flex items-center justify-between gap-2 pb-2 pl-2 text-zinc-700 bg-slate-50">
             {totalCultos ? (
-              <div>
+              <div className="pb-2 pl-2">
                 <p className="p-2 text-base font-medium uppercase text-start">
-                  TOTAL DE CULTOS:{' '}
-                  <span className="font-normal ">{totalCultos}</span>
+                  SUPERVISOR(ES):{' '}
+                  <span className="font-normal">{Supervisor}</span>
                 </p>
               </div>
             ) : (
-              <div>
+              <div className="pb-2 pl-2">
                 <p className="p-2 text-base font-medium uppercase text-start">
-                  TOTAL DE CULTOS:{' '}
-                  <span className="font-normal ">Sem Registro</span>
+                  SUPERVISOR(ES): <span className="font-normal">Sem Dados</span>
                 </p>
               </div>
             )}
-            {totalCultosPrimicias ? (
+            <div className="flex items-center justify-between gap-2 pb-2 pl-2 text-zinc-700 bg-slate-50">
+              {totalCultos ? (
+                <div>
+                  <p className="p-2 text-base font-medium uppercase text-start">
+                    TOTAL DE CULTOS:{' '}
+                    <span className="font-normal">{totalCultos}</span>
+                  </p>
+                </div>
+              ) : (
+                <div>
+                  <p className="p-2 text-base font-medium uppercase text-start">
+                    TOTAL DE CULTOS:{' '}
+                    <span className="font-normal">Sem Registro</span>
+                  </p>
+                </div>
+              )}
+              {totalCultosPrimicias ? (
+                <div>
+                  <p className="p-2 font-medium uppercase text-start">
+                    CULTOS DE PRIMÍCIAS:{' '}
+                    <span className="font-normal">{totalCultosPrimicias}</span>
+                  </p>
+                </div>
+              ) : (
+                <div className="hidden" />
+              )}
+              {totalCultosSacrificio ? (
+                <div>
+                  <p className="p-2 font-medium uppercase text-start">
+                    DOMINGO DE SACRIFÍCIO:{' '}
+                    <span className="font-normal">{totalCultosSacrificio}</span>
+                  </p>
+                </div>
+              ) : (
+                <div className="hidden" />
+              )}
               <div>
-                <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE PRIMÍCIAS:{' '}
-                  <span className="font-normal">{totalCultosPrimicias}</span>
-                </p>
+                {totalCultosDomingoManha ? (
+                  <p className="p-2 font-medium uppercase text-start">
+                    DOMINGO MANHÃ:{' '}
+                    <span className="font-normal">
+                      {totalCultosDomingoManha}
+                    </span>
+                  </p>
+                ) : (
+                  <p className="p-2 font-medium uppercase text-start">
+                    DOMINGO MANHÃ:{' '}
+                    <span className="font-normal">Sem Registro</span>
+                  </p>
+                )}
               </div>
-            ) : (
-              <div className="hidden"></div>
-            )}
-            {totalCultosSacrificio ? (
               <div>
-                <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO DE SACRIFÍCIO:{' '}
-                  <span className="font-normal">{totalCultosSacrificio}</span>
-                </p>
-              </div>
-            ) : (
-              <div className="hidden">
-                <p className="p-2 uppercase text-start">
-                  DOMINGO DE SACRIFÍCIO: Sem Registro
-                </p>
-              </div>
-            )}
-            <div>
-              {totalCultosDomingoManha ? (
-                <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO MANHÃ:{' '}
-                  <span className="font-normal">{totalCultosDomingoManha}</span>
-                </p>
-              ) : (
-                <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO MANHÃ:{' '}
-                  <span className="font-normal">Sem Registro</span>
-                </p>
-              )}
-            </div>
-            <div>
-              {totalCultosDomingoTarde ? (
-                <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO TARDE:{' '}
-                  <span className="font-normal">{totalCultosDomingoTarde}</span>
-                </p>
-              ) : (
-                <p className="p-2 font-medium uppercase text-start">
-                  DOMINGO TARDE:{' '}
-                  <span className="font-normal">Sem Registro</span>
-                </p>
-              )}
-            </div>
-            <div>
-              {totalCultosSabado ? (
-                <p className="p-2 font-medium uppercase text-start">
-                  SÁBADO (CPD):{' '}
-                  <span className="font-normal">{totalCultosSabado}</span>
-                </p>
-              ) : (
-                <p className="p-2 font-medium uppercase text-start">
-                  SÁBADO (CPD):{' '}
-                  <span className="font-normal">Sem Registro</span>
-                </p>
-              )}
-            </div>
-            <div>
-              {totalCultosQuarta ? (
-                <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE QUARTA:{' '}
-                  <span className="font-normal">{totalCultosQuarta}</span>
-                </p>
-              ) : (
-                <p className="p-2 font-medium uppercase text-start">
-                  CULTOS DE QUARTA:{' '}
-                  <span className="font-normal">Sem Registro</span>
-                </p>
-              )}
-            </div>
-          </div>
-        </div>
-        <table className="text-sm text-left text-gray-500 auto-table dark:text-gray-400">
-          {/* Cabeçalho da tabela */}
-          <thead className={cn(`p-2 text-center`, `${newCorSupervisao}`)}>
-            <Fragment>
-              <tr className={`mx-4 p-2`}>
-                <th>
-                  <h1 className="p-2 font-bold text-center text-white uppercase">
-                    CÉLULAS
-                  </h1>
-                </th>
-                <th>
-                  <h1 className="p-2 font-bold text-center text-white uppercase">
-                    MEMBROS
-                  </h1>
-                </th>
-                <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                  <div>
-                    <h1 className="font-bold text-center uppercase">
-                      % PRES. TOTAL
-                    </h1>
-                  </div>
-                </th>
-                {totalCultosPrimicias ? (
-                  <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                    <div>
-                      <h1 className="font-bold text-center uppercase">%</h1>
-                      <h1 className="font-bold text-center uppercase">
-                        PRIMI.
-                      </h1>
-                    </div>
-                  </th>
+                {totalCultosDomingoTarde ? (
+                  <p className="p-2 font-medium uppercase text-start">
+                    DOMINGO TARDE:{' '}
+                    <span className="font-normal">
+                      {totalCultosDomingoTarde}
+                    </span>
+                  </p>
                 ) : (
-                  <th className="hidden"></th>
+                  <p className="p-2 font-medium uppercase text-start">
+                    DOMINGO TARDE:{' '}
+                    <span className="font-normal">Sem Registro</span>
+                  </p>
                 )}
-                {totalCultosSacrificio ? (
-                  <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                    <div>
-                      <h1 className="font-bold text-center uppercase">%</h1>
-                      <h1 className="font-bold text-center uppercase">
-                        SACRIFI.
-                      </h1>
-                    </div>
-                  </th>
+              </div>
+              <div>
+                {totalCultosSabado ? (
+                  <p className="p-2 font-medium uppercase text-start">
+                    SÁBADO (CPD):{' '}
+                    <span className="font-normal">{totalCultosSabado}</span>
+                  </p>
                 ) : (
-                  <th className="hidden"></th>
+                  <p className="p-2 font-medium uppercase text-start">
+                    SÁBADO (CPD):{' '}
+                    <span className="font-normal">Sem Registro</span>
+                  </p>
                 )}
-                <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                  <div className="text-center">
-                    <h1 className="font-bold text-center uppercase">%</h1>
-                    <h1 className="font-bold text-center uppercase">DOM M.</h1>
-                  </div>
-                </th>
-                <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                  <div className="text-center">
-                    <h1 className="font-bold text-center uppercase">%</h1>
-                    <h1 className="font-bold text-center uppercase">DOM T.</h1>
-                  </div>
-                </th>
-                <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                  <div className="text-center">
-                    <h1 className="font-bold text-center uppercase">%</h1>
-                    <h1 className="font-bold text-center uppercase">CPD</h1>
-                  </div>
-                </th>
-                <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
-                  <div className="text-center">
-                    <h1 className="font-bold text-center uppercase">%</h1>
-                    <h1 className="font-bold text-center uppercase">QUARTA</h1>
-                  </div>
-                </th>
-                {groupedForCell &&
-                  datasUnic &&
-                  datasUnic.map((dataCulto, dataCultoIndex) => (
-                    <th
-                      className="flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white"
-                      key={dataCultoIndex}
-                    >
-                      <div className="">
-                        <p>{`${dayjs(dataCulto)
-                          .format('ddd')
-                          .toUpperCase()}`}</p>
-                        <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
+              </div>
+              <div>
+                {totalCultosQuarta ? (
+                  <p className="p-2 font-medium uppercase text-start">
+                    CULTOS DE QUARTA:{' '}
+                    <span className="font-normal">{totalCultosQuarta}</span>
+                  </p>
+                ) : (
+                  <p className="p-2 font-medium uppercase text-start">
+                    CULTOS DE QUARTA:{' '}
+                    <span className="font-normal">Sem Registro</span>
+                  </p>
+                )}
+              </div>
+            </div>
+
+            <table className="text-sm text-left text-gray-500 auto-table dark:text-gray-400">
+              <thead className={cn(`p-2 text-center`, `${newCorSupervisao}`)}>
+                <Fragment>
+                  <tr className="mx-4 p-2">
+                    <th>
+                      <h1 className="p-2 font-bold text-center text-white uppercase">
+                        CÉLULAS
+                      </h1>
+                    </th>
+                    <th>
+                      <h1 className="p-2 font-bold text-center text-white uppercase">
+                        MEMBROS
+                      </h1>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div>
+                        <h1 className="font-bold text-center uppercase">
+                          % PRES. TOTAL
+                        </h1>
                       </div>
                     </th>
-                  ))}
-              </tr>
-            </Fragment>
-          </thead>
-          <tbody>
-            {groupedForCell &&
-              idCultos &&
-              Object.keys(groupedForCell).map((cellName, cellIndex) => (
-                <tr
-                  className={`border-b border-slate-600`}
-                  key={cellName + cellIndex}
-                >
-                  {/* Coluna fixa */}
-                  <td className="px-4 bg-gray-50">
-                    <p className="text-base font-medium text-black">
-                      {cellName}
-                    </p>
-                    <p className="text-sm font-medium text-slate-600">
-                      Líder:{' '}
-                      <span className="font-normal">
-                        {groupedForCell[cellName][0].celula.lider.first_name}
-                      </span>
-                    </p>
-                    <p className="text-sm text-slate-600">
-                      Membros: <span>{groupedForCell[cellName].length}</span>
-                    </p>
-                  </td>
-                  {/* Coluna para membros */}
-                  <td className="px-4">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="w-20 h-20 py-4" key={member.id}>
-                        <div className="flex flex-col justify-center h-20">
-                          {member.first_name}
+                    {totalCultosPrimicias ? (
+                      <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                        <div>
+                          <h1 className="font-bold text-center uppercase">%</h1>
+                          <h1 className="font-bold text-center uppercase">
+                            PRIMI.
+                          </h1>
                         </div>
-                      </tr>
-                    ))}
-                  </td>
-                  <td className="border">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="" key={member.id}>
-                        <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                          {member.cultos.porcentagemPresencaTotal} %
+                      </th>
+                    ) : (
+                      <th className="hidden" />
+                    )}
+                    {totalCultosSacrificio ? (
+                      <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                        <div>
+                          <h1 className="font-bold text-center uppercase">%</h1>
+                          <h1 className="font-bold text-center uppercase">
+                            SACRIFI.
+                          </h1>
                         </div>
-                      </tr>
-                    ))}
-                  </td>
-                  {totalCultosPrimicias ? (
-                    <td className="border">
-                      {groupedForCell[cellName].map((member) => (
-                        <tr className="" key={member.id}>
-                          <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                            {member.cultos.porcentagemPresencaPrimicia} %
+                      </th>
+                    ) : (
+                      <th className="hidden" />
+                    )}
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">%</h1>
+                        <h1 className="font-bold text-center uppercase">
+                          DOM M.
+                        </h1>
+                      </div>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">%</h1>
+                        <h1 className="font-bold text-center uppercase">
+                          DOM T.
+                        </h1>
+                      </div>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">%</h1>
+                        <h1 className="font-bold text-center uppercase">CPD</h1>
+                      </div>
+                    </th>
+                    <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
+                      <div className="text-center">
+                        <h1 className="font-bold text-center uppercase">%</h1>
+                        <h1 className="font-bold text-center uppercase">
+                          QUARTA
+                        </h1>
+                      </div>
+                    </th>
+                    {datasUnic &&
+                      datasUnic.map((dataCulto, dataCultoIndex) => (
+                        <th
+                          className="flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white"
+                          key={dataCultoIndex}
+                        >
+                          <div>
+                            <p>
+                              {`${dayjs(dataCulto)
+                                .format('ddd')
+                                .toUpperCase()}`}
+                            </p>
+                            <p>{`${dayjs(dataCulto).format('DD/MM')}`}</p>
                           </div>
-                        </tr>
+                        </th>
                       ))}
-                    </td>
-                  ) : (
-                    <div className="hidden"></div>
-                  )}
-                  {totalCultosSacrificio ? (
-                    <td className="border">
-                      {groupedForCell[cellName].map((member) => (
-                        <tr className="" key={member.id}>
-                          <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                            {member.cultos.porcentagemPresencaDomingoSacrificio}{' '}
-                            %
-                          </div>
-                        </tr>
-                      ))}
-                    </td>
-                  ) : (
-                    <div className="hidden"></div>
-                  )}
-                  <td className="border">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="" key={member.id}>
-                        <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                          {member.cultos.porcentagemPresencaTotalDomingoManha} %
-                        </div>
-                      </tr>
-                    ))}
-                  </td>
-                  <td className="border">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="" key={member.id}>
-                        <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                          {member.cultos.porcentagemPresencaTotalDomingoTarde} %
-                        </div>
-                      </tr>
-                    ))}
-                  </td>
-                  <td className="border">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="" key={member.id}>
-                        <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                          {member.cultos.porcentagemPresencaSabado} %
-                        </div>
-                      </tr>
-                    ))}
-                  </td>
-                  <td className="border">
-                    {groupedForCell[cellName].map((member) => (
-                      <tr className="" key={member.id}>
-                        <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                          {member.cultos.porcentagemPresencaQuarta} %
-                        </div>
-                      </tr>
-                    ))}
-                  </td>
-                  {/* Colunas dinâmicas para presenças */}
-                  {idCultos.map((cultoId, indexCulto) => (
-                    <td
-                      className="mx-4 mb-4 text-center border border-zinc-200"
-                      key={cultoId + indexCulto}
+                  </tr>
+                </Fragment>
+              </thead>
+              <tbody>
+                {groupedForCell &&
+                  idCultos &&
+                  Object.keys(groupedForCell).map((cellName, cellIndex) => (
+                    <tr
+                      className="border-b border-slate-600"
+                      key={cellName + cellIndex}
                     >
-                      {groupedForCell[cellName].map((member, indexMember) => {
-                        const presenceCulto = member.presencas_cultos.find(
-                          (p) => p.cultoIndividualId === cultoId,
-                        );
-                        return (
-                          <div
-                            className="flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200"
-                            key={cultoId + indexMember}
-                          >
-                            {presenceCulto ? (
-                              <Fragment>
-                                {presenceCulto.status === true && (
-                                  <p className="text-green-600">P</p>
-                                )}
-                                {presenceCulto.status === false && (
-                                  <p className="text-red-600">F</p>
-                                )}
-                              </Fragment>
-                            ) : (
-                              <p key={indexMember}>
-                                <p className="font-normal text-slate-600">-</p>
-                              </p>
-                            )}
-                          </div>
-                        );
-                      })}
-                    </td>
+                      <td className="px-4 bg-gray-50">
+                        <p className="text-base font-medium text-black">
+                          {cellName}
+                        </p>
+                        <p className="text-sm font-medium text-slate-600">
+                          Líder:{' '}
+                          <span className="font-normal">
+                            {
+                              groupedForCell[cellName][0].celula.lider
+                                .first_name
+                            }
+                          </span>
+                        </p>
+                        <p className="text-sm text-slate-600">
+                          Membros:{' '}
+                          <span>{groupedForCell[cellName].length}</span>
+                        </p>
+                      </td>
+                      <td className="px-4">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="w-20 h-20 py-4" key={member.id}>
+                            <div className="flex flex-col justify-center h-20">
+                              {member.first_name}
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      <td className="border">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                              {member.cultos.porcentagemPresencaTotal} %
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      {totalCultosPrimicias ? (
+                        <td className="border">
+                          {groupedForCell[cellName].map((member) => (
+                            <tr className="" key={member.id}>
+                              <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                                {member.cultos.porcentagemPresencaPrimicia} %
+                              </div>
+                            </tr>
+                          ))}
+                        </td>
+                      ) : (
+                        <div className="hidden" />
+                      )}
+                      {totalCultosSacrificio ? (
+                        <td className="border">
+                          {groupedForCell[cellName].map((member) => (
+                            <tr className="" key={member.id}>
+                              <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                                {
+                                  member.cultos
+                                    .porcentagemPresencaDomingoSacrificio
+                                }{' '}
+                                %
+                              </div>
+                            </tr>
+                          ))}
+                        </td>
+                      ) : (
+                        <div className="hidden" />
+                      )}
+                      <td className="border">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                              {
+                                member.cultos
+                                  .porcentagemPresencaTotalDomingoManha
+                              }{' '}
+                              %
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      <td className="border">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                              {
+                                member.cultos
+                                  .porcentagemPresencaTotalDomingoTarde
+                              }{' '}
+                              %
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      <td className="border">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                              {member.cultos.porcentagemPresencaSabado} %
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      <td className="border">
+                        {groupedForCell[cellName].map((member) => (
+                          <tr className="" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                              {member.cultos.porcentagemPresencaQuarta} %
+                            </div>
+                          </tr>
+                        ))}
+                      </td>
+                      {idCultos.map((cultoId, indexCulto) => (
+                        <td
+                          className="mx-4 mb-4 text-center border border-zinc-200"
+                          key={cultoId + indexCulto}
+                        >
+                          {groupedForCell[cellName].map(
+                            (member, indexMember) => {
+                              const presenceCulto =
+                                member.presencas_cultos.find(
+                                  (p) => p.cultoIndividualId === cultoId,
+                                );
+                              return (
+                                <div
+                                  className="flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200"
+                                  key={cultoId + indexMember}
+                                >
+                                  {presenceCulto ? (
+                                    <Fragment>
+                                      {presenceCulto.status === true && (
+                                        <p className="text-green-600">P</p>
+                                      )}
+                                      {presenceCulto.status === false && (
+                                        <p className="text-red-600">F</p>
+                                      )}
+                                    </Fragment>
+                                  ) : (
+                                    <p className="font-normal text-slate-600">
+                                      -
+                                    </p>
+                                  )}
+                                </div>
+                              );
+                            },
+                          )}
+                        </td>
+                      ))}
+                    </tr>
                   ))}
-                </tr>
-              ))}
-          </tbody>
-        </table>
+              </tbody>
+            </table>
+          </div>
+        ) : (
+          <div className="text-center p-4">
+            <p>
+              Nenhum dado disponível. Preencha o formulário para gerar o
+              relatório.
+            </p>
+          </div>
+        )}
       </div>
     </Fragment>
   );
