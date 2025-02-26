@@ -46,6 +46,7 @@ import {
 } from './schema';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
+import Cookies from 'js-cookie';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -54,9 +55,8 @@ dayjs.locale(ptBr);
 dayjs.tz.setDefault('America/Sao_Paulo');
 
 export default function StatsCardRelatorios() {
-  const { data: session } = useSession();
-  const token = session?.user?.token as string;
-  const axiosAuth = useAxiosAuth(token);
+  const token_session = Cookies.get('session_token');
+  const axiosAuth = useAxiosAuth(token_session || '');
 
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
