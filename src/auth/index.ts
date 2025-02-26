@@ -1,9 +1,9 @@
 import { loginSchema } from '@/types';
 import axios from 'axios';
-import { setCookie } from 'nookies';
 import NextAuth from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import { ZodError } from 'zod';
+import { cookies } from 'next/headers';
 
 export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
@@ -37,21 +37,24 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
 
           const userRoles = user.user_roles;
 
-          // Armazena o token e os papéis no cookie usando nookies
-          setCookie({ res: req }, 'session_token', user.token, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production', // Seguro apenas em produção
-            path: '/',
-            maxAge: 60 * 60 * 24, // 24 horas
-          });
+          const cookieStore = cookies();
 
-          setCookie({ res: req }, 'user_roles', JSON.stringify(userRoles), {
+          // Armazena o token e os papéis no cookie usando nookies
+          // Armazena apenas o token no cookie
+          cookieStore.set('session_token', user.token, {
             httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
+            secure: true,
             path: '/',
             maxAge: 60 * 60 * 24,
           });
 
+          // Armazena o array como JSON stringificado
+          cookieStore.set('user_roles', JSON.stringify(userRoles), {
+            httpOnly: true,
+            secure: true,
+            path: '/',
+            maxAge: 60 * 60 * 24,
+          });
           if (user) {
             console.log(JSON.stringify(user));
             return user; // Retorna o usuário para o NextAuth
