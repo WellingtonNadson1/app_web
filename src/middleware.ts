@@ -36,6 +36,7 @@ export default async function middleware(req: NextRequest) {
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = matchRoute(pathname, publicRoutes);
   const isAuthRoute = matchRoute(pathname, authRoutes);
+  const routeCelula = matchRoute(pathname, privateRoutesCelula);
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -106,7 +107,7 @@ export default async function middleware(req: NextRequest) {
 
     // Evitar redirecionamentos infinitos
     if (
-      (isPrivateRouteCelula && hasRole('USERLIDER')) ||
+      (routeCelula && hasRole('USERLIDER')) ||
       (isPrivateRouteSupervisor && hasRole('USERSUPERVISOR')) ||
       (isPrivateRouteCentral && hasRole('USERCENTRAL'))
     ) {
