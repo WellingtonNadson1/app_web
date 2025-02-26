@@ -3,7 +3,6 @@ import { cn } from '@/lib/utils';
 import { useUserDataStore } from '@/store/UserDataStore';
 import { SignOut, Spinner, X } from '@phosphor-icons/react';
 import { signOut, useSession } from 'next-auth/react';
-import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ThemeImage from '../theme-image';
@@ -60,12 +59,18 @@ export default function MySidebar() {
       return sidebarCentral;
     }
     if (
-      user_roles?.every((role) => role.rolenew.name === 'USERLIDER') &&
+      user_roles?.every((role) =>
+        ['USERLIDER', 'USER_FINANCEIRO'].includes(role.rolenew.name),
+      ) &&
       !user_roles.every((role) => role.rolenew.name === 'USERSUPERVISOR')
     ) {
       return sidebarLiderCelula;
     }
-    if (roles?.every((role) => role.rolenew.name === 'USERSUPERVISOR')) {
+    if (
+      user_roles?.every((role) =>
+        ['USERSUPERVISOR', 'USER_FINANCEIRO'].includes(role.rolenew.name),
+      )
+    ) {
       return sidebarSupervisor;
     }
     if (
