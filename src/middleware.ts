@@ -29,8 +29,10 @@ function matchRoute(url: string, routes: string[]): boolean {
 export default async function middleware(req: NextRequest) {
   const { pathname } = req.nextUrl;
   const session = await auth();
+
   const isLoggedIn = !!session;
-  const roleUser = session?.user?.user_roles;
+  const roleUser = session?.user?.user_roles; // roleUser agora é um array de objetos com rolenew.name
+
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = matchRoute(pathname, publicRoutes);
   const isAuthRoute = matchRoute(pathname, authRoutes);
