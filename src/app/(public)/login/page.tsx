@@ -76,7 +76,8 @@ export default function Login() {
       console.log('response login:', response);
 
       if (response?.sucesso) {
-        window.location.href = '/dashboard'; // Redireciona após sucesso
+        // Não redireciona diretamente, deixa o middleware decidir
+        window.location.reload(); // Recarrega a página para o middleware processar a sessão
       } else {
         setStatus({ error: response?.error || 'Erro ao fazer login' });
       }

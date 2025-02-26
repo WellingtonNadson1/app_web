@@ -84,12 +84,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     },
 
     async session({ session, token }) {
-      session.user.token = token as any; // Ajuste o tipo conforme necessário
-      session.user.refreshToken = token.refreshToken as {
-        id: string;
-        expiresIn: number;
-        userIdRefresh: string;
-      };
+      session.user.token = token as any;
       return session;
     },
   },
