@@ -1,7 +1,6 @@
 import {
   apiAuthPrefix,
-  authRoutes,
-  DEFAULT_LOGIN_,
+  DEFAULT_LOGIN,
   DEFAULT_LOGIN_REDIRECT_CELULA,
   DEFAULT_LOGIN_REDIRECT_CENTRAL,
   DEFAULT_LOGIN_REDIRECT_SUPERVISOR,
@@ -35,8 +34,7 @@ export default async function middleware(req: NextRequest) {
 
   const isApiAuthRoute = pathname.startsWith(apiAuthPrefix);
   const isPublicRoute = matchRoute(pathname, publicRoutes);
-  const isAuthRoute = matchRoute(pathname, authRoutes);
-  const routeCelula = matchRoute(pathname, privateRoutesCelula);
+  const routesCelula = matchRoute(pathname, privateRoutesCelula);
 
   if (isApiAuthRoute) {
     return NextResponse.next();
@@ -81,12 +79,7 @@ export default async function middleware(req: NextRequest) {
 
     // Verificações de rotas privadas
     if (isPrivateRouteCentral && !hasRole('USERCENTRAL')) {
-      return new NextResponse(
-        'Acesso negado: você não tem permissão para acessar esta página.',
-        {
-          status: 403,
-        },
-      );
+      return redirectIfNeeded(DEFAULT_LOGIN);
     }
     if (isPrivateRouteCelula && !hasRole('USERLIDER')) {
       return new NextResponse(
@@ -107,7 +100,7 @@ export default async function middleware(req: NextRequest) {
 
     // Evitar redirecionamentos infinitos
     if (
-      (routeCelula && hasRole('USERLIDER')) ||
+      (routesCelula && hasRole('USERLIDER')) ||
       (isPrivateRouteSupervisor && hasRole('USERSUPERVISOR')) ||
       (isPrivateRouteCentral && hasRole('USERCENTRAL'))
     ) {
@@ -123,16 +116,15 @@ export default async function middleware(req: NextRequest) {
     // }
 
     // Redirecionar após login com base no papel
-    if (isAuthRoute || isPublicRoute) {
-      // Verificações individuais de cada papel
-      if (hasRole('USERLIDER')) {
+    if (isPublicRoute) {
+      if (hasRole('USERLIDER') && !isPrivateRouteCelula) {
         return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_CELULA);
-      } else if (hasRole('USERSUPERVISOR')) {
+      } else if (hasRole('USERSUPERVISOR') && !isPrivateRouteSupervisor) {
         return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_SUPERVISOR);
-      } else if (hasRole('USERCENTRAL')) {
+      } else if (hasRole('USERCENTRAL') && !isPrivateRouteCentral) {
         return redirectIfNeeded(DEFAULT_LOGIN_REDIRECT_CENTRAL);
       } else {
-        return redirectIfNeeded(DEFAULT_LOGIN_);
+        return redirectIfNeeded(DEFAULT_LOGIN);
       }
     }
   }

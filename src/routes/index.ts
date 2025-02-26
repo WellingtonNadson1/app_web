@@ -66,11 +66,6 @@ export const privateRoutes: string[] = [
 ];
 
 /**
- * @type {string[]}
- */
-export const authRoutes: string[] = ['/auth/new-verification', '/'];
-
-/**
  * @type {string}
  */
 export const apiAuthPrefix: string = '/api/auth';
@@ -78,7 +73,7 @@ export const apiAuthPrefix: string = '/api/auth';
 /**
  * @type {string}
  */
-export const DEFAULT_LOGIN_: string = '/login';
+export const DEFAULT_LOGIN: string = '/login';
 export const DEFAULT_LOGIN_REDIRECT_CENTRAL: string = '/dashboard';
 export const DEFAULT_LOGIN_REDIRECT_CELULA: string = '/celula';
 export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR: string = '/supervisao';

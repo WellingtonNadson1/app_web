@@ -27,7 +27,7 @@ export default function ListMembersCelulaDiscipulado({
   // Pagination
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const token = session?.user?.token as string;
   const axiosAuth = useAxiosAuth(token);
 
@@ -45,6 +45,7 @@ export default function ListMembersCelulaDiscipulado({
 
   const { data: registerDiscipuladosCell, isLoading } = useQuery({
     queryKey: ['dataRegisterAllDiscipuladoCell', cell_id],
+    enabled: status === 'authenticated',
     queryFn: async () =>
       GetAllRegisterDiscipuladoCell({
         cell_id,
