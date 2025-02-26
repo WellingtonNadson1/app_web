@@ -77,6 +77,8 @@ export default function Login() {
 
       if (response?.sucesso) {
         window.location.href = '/dashboard'; // Redireciona após sucesso
+      } else {
+        setStatus({ error: response?.error || 'Erro ao fazer login' });
       }
     },
     [loginFunc],

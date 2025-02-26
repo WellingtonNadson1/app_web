@@ -21,10 +21,13 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           // Ajuste a URL para o endpoint correto da sua API
-          const result = await axios.post(`/login`, {
-            email: email,
-            password: password,
-          });
+          const result = await axios.post(
+            `${process.env.NEXT_PUBLIC_HOSTNAME_URL}/login`,
+            {
+              email: email,
+              password: password,
+            },
+          );
 
           const user = result.data;
 
@@ -54,6 +57,7 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
             return user; // Retorna o usuário para o NextAuth
           }
         } catch (error) {
+          console.error('Erro na requisição ao /login:', error);
           if (error instanceof ZodError) {
             return null; // Credenciais inválidas
           }
