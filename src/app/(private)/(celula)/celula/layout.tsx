@@ -79,9 +79,6 @@ export default async function RootLayout({
                   suppressHydrationWarning
                   className="z-30 w-full px-2 py-2 mx-auto"
                 >
-                  <Suspense fallback={<LoaderHeader />}>
-                    <Header />
-                  </Suspense>
                   {children}
                 </div>
               </Providers>
