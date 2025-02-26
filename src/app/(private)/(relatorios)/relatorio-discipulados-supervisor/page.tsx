@@ -1,49 +1,49 @@
-'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import { cn } from '@/lib/utils'
-import { useData } from '@/providers/providers'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import ptBr from 'dayjs/locale/pt-br'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import Link from 'next/link'
-import React, { Fragment, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
+'use client';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores';
+import { cn } from '@/lib/utils';
+import { useData } from '@/providers/providers';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import ptBr from 'dayjs/locale/pt-br';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import React, { Fragment, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import {
   FormRelatorioSchema,
   MemberDataDiscipulado,
   MembersDataDiscipulado,
-} from './schema'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.locale(ptBr)
-dayjs.tz.setDefault('America/Sao_Paulo')
+} from './schema';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { BASE_URL } from '@/lib/axios';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(ptBr);
+dayjs.tz.setDefault('America/Sao_Paulo');
 
 export default function DiscipuladosRelatoriosSupervisor() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const URLDiscipuladosSupervisor = `${BASE_URL}/discipuladosibb/supervisor/relatorio`;
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
-    useState<Record<string, MemberDataDiscipulado[]>>()
-  const [corSupervisao, setCorSupervisao] = useState('')
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+    useState<Record<string, MemberDataDiscipulado[]>>();
+  const [corSupervisao, setCorSupervisao] = useState('');
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
-  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
-  const queryClient = useQueryClient()
+  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
+  const queryClient = useQueryClient();
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData()
-  const supervisoes = dataAllCtx?.combinedData[0]
-  const cargoLideranca = dataAllCtx?.combinedData[4]
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
+  const cargoLideranca = dataAllCtx?.combinedData[4];
   //@ts-ignore
   const cargoLiderancaFilter = cargoLideranca?.filter(
     // @ts-ignore
@@ -52,7 +52,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
       cargo.nome !== 'Líder de Célula' &&
       cargo.nome !== 'Membro' &&
       cargo.nome !== 'Líder Auxiliar',
-  )
+  );
 
   const DiscipuladosSupervisor = async ({
     startDate,
@@ -60,24 +60,24 @@ export default function DiscipuladosRelatoriosSupervisor() {
     superVisionId,
     cargoLiderancaId,
   }: {
-    startDate: string
-    endDate: string
-    superVisionId: string
-    cargoLiderancaId: string[]
+    startDate: string;
+    endDate: string;
+    superVisionId: string;
+    cargoLiderancaId: string[];
   }): Promise<MembersDataDiscipulado[]> => {
-    setIsLoadingSubmitForm(true)
+    setIsLoadingSubmitForm(true);
 
     const { data } = await axiosAuth.post(URLDiscipuladosSupervisor, {
       startDate,
       endDate,
       superVisionId,
       cargoLiderancaId,
-    })
+    });
 
-    data && setIsLoadingSubmitForm(false)
-    console.log('data', data)
-    return data as MembersDataDiscipulado[]
-  }
+    data && setIsLoadingSubmitForm(false);
+    console.log('data', data);
+    return data as MembersDataDiscipulado[];
+  };
 
   const {
     data: DiscipuladosSupervisorData,
@@ -90,27 +90,27 @@ export default function DiscipuladosRelatoriosSupervisor() {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: ['getDiscipuladosSupervisor'],
-      })
+      });
     },
-  })
+  });
 
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(
     relatorio: MembersDataDiscipulado,
   ): Promise<Record<string, MemberDataDiscipulado[]>> {
-    const celula: Record<string, MemberDataDiscipulado[]> = {}
+    const celula: Record<string, MemberDataDiscipulado[]> = {};
 
     relatorio.membros.forEach((membro) => {
-      const cellName = membro?.first_name
+      const cellName = membro?.first_name;
 
       if (cellName) {
         if (!celula[cellName]) {
-          celula[cellName] = []
+          celula[cellName] = [];
         }
-        celula[cellName].push(membro)
+        celula[cellName].push(membro);
       }
-    })
-    return Promise.resolve(celula)
+    });
+    return Promise.resolve(celula);
   }
 
   const handleRelatorio: SubmitHandler<FormRelatorioSchema> = async ({
@@ -119,43 +119,43 @@ export default function DiscipuladosRelatoriosSupervisor() {
     superVisionId,
     cargoLiderancaId,
   }) => {
-    setIsLoadingSubmitForm(true)
+    setIsLoadingSubmitForm(true);
 
     DiscipuladosSupervisoesFn({
       startDate,
       endDate,
       superVisionId,
       cargoLiderancaId,
-    })
+    });
 
     if (!isPending && DiscipuladosSupervisorData) {
       const dataGroupedForCell = await groupDiscipuladoByCell(
         DiscipuladosSupervisorData[0],
-      )
-      console.log('dataGroupedForCell', dataGroupedForCell)
-      setDiscipuladoForCellForCell(dataGroupedForCell)
+      );
+      console.log('dataGroupedForCell', dataGroupedForCell);
+      setDiscipuladoForCellForCell(dataGroupedForCell);
       setCorSupervisao(
         DiscipuladosSupervisorData[0]?.membros[0]?.supervisao_pertence?.nome,
-      )
+      );
     }
-  }
+  };
 
-  const newCorSupervisao = CorSupervision(corSupervisao)
-  const Supervisor = ListSupervisores(corSupervisao)
+  const newCorSupervisao = CorSupervision(corSupervisao);
+  const Supervisor = ListSupervisores(corSupervisao);
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   if (discipuladoForCell) {
     const view = Object.keys(discipuladoForCell).map((cellName, cellIndex) =>
       discipuladoForCell[cellName].map((member) =>
         console.log('member', member),
       ),
-    )
-    view
+    );
+    view;
   }
 
   return (
@@ -166,7 +166,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
             <form onSubmit={handleSubmit(handleRelatorio)}>
               <div className="flex flex-col gap-4 p-3">
                 <div className="flex items-center justify-start gap-4">
-                  <Link href={'/dashboard'}>
+                  <a href={'/dashboard'}>
                     <Image
                       className="cursor-pointer"
                       src="/images/logo-ibb-1.svg"
@@ -174,7 +174,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                       height={64}
                       alt="Logo IBB"
                     />
-                  </Link>
+                  </a>
                   <div>
                     <h1 className="text-base leading-normal text-gray-600 uppercase">
                       Igreja Batista Betânia - Lugar do derramar de Deus
@@ -494,7 +494,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexMember) => {
                               const totalDiscipulado =
-                                discipulado?.discipulado.length
+                                discipulado?.discipulado.length;
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -529,7 +529,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     )}
                                   </div>
                                 </tr>
-                              )
+                              );
                             },
                           )
                         ) : (
@@ -553,7 +553,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
-                                discipulado?.discipulado[0]?.data_ocorreu
+                                discipulado?.discipulado[0]?.data_ocorreu;
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -580,7 +580,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     )}
                                   </div>
                                 </tr>
-                              )
+                              );
                             },
                           )
                         ) : (
@@ -610,7 +610,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                           discipuladoForCell[cellName][0].discipulos.map(
                             (discipulado, indexDiscipulado) => {
                               const discipulado1 =
-                                discipulado?.discipulado[1]?.data_ocorreu
+                                discipulado?.discipulado[1]?.data_ocorreu;
                               return (
                                 <tr
                                   className="border border-zinc-200"
@@ -637,7 +637,7 @@ export default function DiscipuladosRelatoriosSupervisor() {
                                     )}
                                   </div>
                                 </tr>
-                              )
+                              );
                             },
                           )
                         ) : (
@@ -670,5 +670,5 @@ export default function DiscipuladosRelatoriosSupervisor() {
         )}
       </div>
     </Fragment>
-  )
+  );
 }

@@ -1,7 +1,7 @@
-'use client'
-import { TimePicker } from '@/components/timer-picker-input/time-picker'
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+'use client';
+import { TimePicker } from '@/components/timer-picker-input/time-picker';
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -9,82 +9,82 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
+} from '@/components/ui/form';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
+} from '@/components/ui/popover';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select'
-import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores'
-import { cn } from '@/lib/utils'
-import { useData } from '@/providers/providers'
-import { CalendarIcon } from '@heroicons/react/24/outline'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Spinner } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import dayjs from 'dayjs'
-import ptBr from 'dayjs/locale/pt-br'
-import timezone from 'dayjs/plugin/timezone'
-import utc from 'dayjs/plugin/utc'
-import { useSession } from 'next-auth/react'
-import Image from 'next/image'
-import Link from 'next/link'
-import { Fragment, useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { z } from 'zod'
+} from '@/components/ui/select';
+import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores';
+import { cn } from '@/lib/utils';
+import { useData } from '@/providers/providers';
+import { CalendarIcon } from '@heroicons/react/24/outline';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Spinner } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import dayjs from 'dayjs';
+import ptBr from 'dayjs/locale/pt-br';
+import timezone from 'dayjs/plugin/timezone';
+import utc from 'dayjs/plugin/utc';
+import { useSession } from 'next-auth/react';
+import Image from 'next/image';
+import Link from 'next/link';
+import { Fragment, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { z } from 'zod';
 import {
   FormRelatorioDataSchema,
   MemberDataDiscipulado,
   MembersDataDiscipulado,
-} from './schema'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
-dayjs.extend(utc)
-dayjs.extend(timezone)
-dayjs.locale(ptBr)
-dayjs.tz.setDefault('America/Sao_Paulo')
+} from './schema';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { BASE_URL } from '@/lib/axios';
+dayjs.extend(utc);
+dayjs.extend(timezone);
+dayjs.locale(ptBr);
+dayjs.tz.setDefault('America/Sao_Paulo');
 
 export default function DiscipuladosRelatoriosSupervisoes() {
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
-  const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
+  const URLDiscipuladosSupervisoes = `${BASE_URL}/discipuladosibb/supervisao/relatorio`;
 
   const [discipuladoForCell, setDiscipuladoForCellForCell] =
-    useState<Record<string, MemberDataDiscipulado[]>>()
-  const [corSupervisao, setCorSupervisao] = useState('')
+    useState<Record<string, MemberDataDiscipulado[]>>();
+  const [corSupervisao, setCorSupervisao] = useState('');
   const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
     resolver: zodResolver(FormRelatorioDataSchema),
-  })
-  const queryClient = useQueryClient()
+  });
+  const queryClient = useQueryClient();
 
   // @ts-ignore
-  const { data: dataAllCtx } = useData()
-  const supervisoes = dataAllCtx?.combinedData[0]
+  const { data: dataAllCtx } = useData();
+  const supervisoes = dataAllCtx?.combinedData[0];
 
   const DiscipuladosSupervisoes = async ({
     startDate,
     endDate,
     superVisionId,
   }: {
-    startDate: Date
-    endDate: Date
-    superVisionId: string
+    startDate: Date;
+    endDate: Date;
+    superVisionId: string;
   }): Promise<MembersDataDiscipulado[]> => {
     const { data } = await axiosAuth.post(URLDiscipuladosSupervisoes, {
       startDate,
       endDate,
       superVisionId,
-    })
-    return data as MembersDataDiscipulado[]
-  }
+    });
+    return data as MembersDataDiscipulado[];
+  };
 
   const {
     data: DiscipuladosSupervisao,
@@ -97,30 +97,30 @@ export default function DiscipuladosRelatoriosSupervisoes() {
     onSuccess: async (data) => {
       queryClient.invalidateQueries({
         queryKey: ['getDiscipuladosSupervisao'],
-      })
-      const dataGroupedForCell = await groupDiscipuladoByCell(data[0])
-      setDiscipuladoForCellForCell(dataGroupedForCell)
-      setCorSupervisao(data[0]?.membros[0]?.supervisao_pertence?.nome)
+      });
+      const dataGroupedForCell = await groupDiscipuladoByCell(data[0]);
+      setDiscipuladoForCellForCell(dataGroupedForCell);
+      setCorSupervisao(data[0]?.membros[0]?.supervisao_pertence?.nome);
     },
-  })
+  });
 
   // Função para agrupar os discipulados por célula
   async function groupDiscipuladoByCell(
     relatorio: MembersDataDiscipulado,
   ): Promise<Record<string, MemberDataDiscipulado[]>> {
-    const celula: Record<string, MemberDataDiscipulado[]> = {}
+    const celula: Record<string, MemberDataDiscipulado[]> = {};
 
     relatorio.membros.forEach((membro) => {
-      const cellName = membro?.celula?.nome
+      const cellName = membro?.celula?.nome;
 
       if (cellName) {
         if (!celula[cellName]) {
-          celula[cellName] = []
+          celula[cellName] = [];
         }
-        celula[cellName].push(membro)
+        celula[cellName].push(membro);
       }
-    })
-    return Promise.resolve(celula)
+    });
+    return Promise.resolve(celula);
   }
 
   const handleRelatorio: SubmitHandler<
@@ -130,11 +130,11 @@ export default function DiscipuladosRelatoriosSupervisoes() {
       startDate,
       endDate,
       superVisionId,
-    })
-  }
+    });
+  };
 
-  const newCorSupervisao = CorSupervision(corSupervisao)
-  const Supervisor = ListSupervisores(corSupervisao)
+  const newCorSupervisao = CorSupervision(corSupervisao);
+  const Supervisor = ListSupervisores(corSupervisao);
 
   return (
     <Fragment>
@@ -143,7 +143,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
           <Fragment>
             <div className="flex flex-col gap-4 p-3">
               <div className="flex items-center justify-start gap-4">
-                <Link href={'/dashboard'}>
+                <a href={'/dashboard'}>
                   <Image
                     className="cursor-pointer"
                     src="/images/logo-ibb-1.svg"
@@ -151,7 +151,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                     height={64}
                     alt="Logo IBB"
                   />
-                </Link>
+                </a>
                 <div>
                   <h1 className="text-base leading-normal text-gray-600 uppercase">
                     Igreja Batista Betânia - Lugar do derramar de Deus
@@ -505,7 +505,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                         {discipuladoForCell[cellName].map(
                           (member, indexMember) => {
                             const totalDiscipulado =
-                              member?.discipulador[0]?.discipulado.length
+                              member?.discipulador[0]?.discipulado.length;
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -535,7 +535,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   )}
                                 </div>
                               </tr>
-                            )
+                            );
                           },
                         )}
                       </td>
@@ -545,7 +545,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           (member, indexMember) => {
                             const discipulado1 =
                               member?.discipulador[0]?.discipulado[0]
-                                ?.data_ocorreu
+                                ?.data_ocorreu;
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -569,7 +569,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   )}
                                 </div>
                               </tr>
-                            )
+                            );
                           },
                         )}
                       </td>
@@ -579,7 +579,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                           (member, indexMember) => {
                             const discipulado2 =
                               member?.discipulador[0]?.discipulado[1]
-                                ?.data_ocorreu
+                                ?.data_ocorreu;
                             return (
                               <tr
                                 className="border border-zinc-200"
@@ -603,7 +603,7 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                                   )}
                                 </div>
                               </tr>
-                            )
+                            );
                           },
                         )}
                       </td>
@@ -617,5 +617,5 @@ export default function DiscipuladosRelatoriosSupervisoes() {
         )}
       </div>
     </Fragment>
-  )
+  );
 }
