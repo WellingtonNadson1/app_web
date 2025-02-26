@@ -21,13 +21,10 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
           const { email, password } = await loginSchema.parseAsync(credentials);
 
           // Ajuste a URL para o endpoint correto da sua API
-          const result = await axios.post(
-            `/login`, // Use uma variável de ambiente para a URL base
-            {
-              email: email,
-              password: password,
-            },
-          );
+          const result = await axios.post(`/login`, {
+            email: email,
+            password: password,
+          });
 
           const user = result.data;
 
@@ -75,13 +72,9 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
     signOut: '/login',
   },
   callbacks: {
-    async jwt({ token, trigger, user, session, account }) {
+    async jwt({ token, trigger, user, session }) {
       if (trigger === 'update' && session) {
         return { ...token, ...session?.user };
-      }
-      if (account) {
-        token.accessToken = account.access_token;
-        token.refreshToken = account.refresh_token;
       }
       return { ...token, ...user };
     },
