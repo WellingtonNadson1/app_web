@@ -33,7 +33,7 @@ export default function ControleCelulaSupervision() {
   const { data: session, status } = useSession();
   const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const celulaId = session?.user.celulaId;
+  const celulaId = session?.user?.celulaId;
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
@@ -101,8 +101,6 @@ export default function ControleCelulaSupervision() {
     queryKey: ['celula', celulaId, idPrimeiroCulto, idSegundoCulto],
     queryFn: CelulaData,
     enabled: status === 'authenticated',
-    refetchOnWindowFocus: false,
-    retry: false,
   });
 
   const today = startOfToday();
