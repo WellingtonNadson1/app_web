@@ -1,21 +1,14 @@
-import { auth } from '@/auth';
+'use client';
 import axios from 'axios';
 import ClientDashboard from './ClientDashboard';
+import { useSession } from 'next-auth/react';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 
 // Função que roda no servidor para obter os dados
 async function fetchServerData() {
-  const session = await auth();
-  const token = session?.user?.token as string;
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
   const DataCombinetedt = async () => {
-    const axiosAuth = axios.create({
-      baseURL: 'https://back-ibb.vercel.app',
-      headers: {
-        Authorization: `Bearer ${token}`,
-        'Content-Type': 'application/json',
-        Accept: 'application/json',
-      },
-    });
-
     try {
       const { data } = await axiosAuth.get('/users/all');
       return data;
