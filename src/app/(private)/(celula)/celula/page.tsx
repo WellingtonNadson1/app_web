@@ -4,7 +4,8 @@ import CalendarLiderCelula from '@/components/CalendarLiderCelula';
 import LicoesCelula from '@/components/LicoesCelula';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
 import { Card } from '@/components/ui/card';
-import api, { BASE_URL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Disclosure } from '@headlessui/react';
 import { ChevronUpIcon } from '@heroicons/react/24/outline';
 import { useQuery } from '@tanstack/react-query';
@@ -14,7 +15,6 @@ import { pt } from 'date-fns/locale';
 import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
 import { useEffect, useState } from 'react';
-import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence';
 import { RegisterPresenceFormSecond } from './_components/ControlePresenceSecond/registerpresencesecond';
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula';
 import HeaderCelula from './HeaderCelula';
@@ -22,6 +22,7 @@ import CalendarLoading from './loadingUi/CalendarLoading';
 import HeaderCelulaLoad from './loadingUi/HeaderCelulaLoading';
 import LicoesLoading from './loadingUi/LicoesLoading';
 import { Celula, Meeting } from './schema';
+import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence';
 
 export default function ControleCelulaSupervision() {
   const [idPrimeiroCulto, setIdPrimeiroCulto] = useState<string | null>(null);
@@ -30,15 +31,16 @@ export default function ControleCelulaSupervision() {
   const [secondPresenceIsRegister, setSecondPresenceIsRegister] =
     useState(false);
   const { data: session, status } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
-  const celulaId = session?.user?.celulaId;
+  const celulaId = session?.user.celulaId;
 
   const URLCultosInd = `${BASE_URL}/cultosindividuais/perperiodo`;
   const URLCelula = `${BASE_URL}/celulas/${celulaId}`;
 
   const CelulaData = async () => {
     try {
-      const result = await api.post(URLCelula, {
+      const result = await axiosAuth.post(URLCelula, {
         idPrimeiroCulto,
         idSegundoCulto,
       });
@@ -72,7 +74,7 @@ export default function ControleCelulaSupervision() {
       0,
     );
     try {
-      const { data } = await api.post(URLCultosInd, {
+      const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
       });

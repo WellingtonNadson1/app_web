@@ -1,64 +1,72 @@
-import { decode } from 'jsonwebtoken';
+'use client';
+
+import axios from '@/lib/axios';
 import dayjs from 'dayjs';
-import { getSession } from 'next-auth/react'; // Para o cliente
-import { JwtPayload } from 'jsonwebtoken'; // Tipo explícito para decode
-import api from '../axios';
+import { decode } from 'jsonwebtoken';
+import { useSession } from 'next-auth/react';
 
-export const refreshToken = async () => {
-  const session = await getSession();
+export const useRefreshToken = () => {
+  const { data: session, update } = useSession();
 
-  if (!session?.user?.token || !session?.user?.refreshToken) {
-    throw new Error('No token or refresh token available');
-  }
+  const refreshToken = async () => {
+    if (session?.user.token && session?.user.refreshToken) {
+      // Verificar se o token de acesso expirou
+      const decoded = decode(session?.user.token);
+      console.log('decoded: ', decoded);
+      if (typeof decoded === 'object' && decoded !== null && 'exp' in decoded) {
+        if (decoded.exp !== undefined) {
+          const isTokenExpired = dayjs().isAfter(dayjs.unix(decoded.exp));
 
-  const decoded = decode(session.user.token) as JwtPayload | string | null;
-  if (
-    !decoded ||
-    typeof decoded !== 'object' ||
-    !('exp' in decoded) ||
-    typeof decoded.exp !== 'number'
-  ) {
-    throw new Error('Invalid token format or missing expiration');
-  }
+          console.log('Is token expired', isTokenExpired);
 
-  const isTokenExpired = dayjs().isAfter(dayjs.unix(decoded.exp));
-  if (!isTokenExpired) {
-    return session.user.token; // Token ainda válido, retorna o atual
-  }
+          if (isTokenExpired) {
+            const response = await axios.post('/refresh-token', {
+              refresh_token: session?.user.refreshToken.id,
+            });
+            const newToken = response.data;
+            console.log('New Token Function Refresh', newToken);
+            console.log('New Token vaslue', newToken.token);
 
-  // Token expirado, faz a renovação
-  const response = await api.post('/refresh-token', {
-    refresh_token: session.user.refreshToken.id,
-  });
-  const newToken = response.data;
+            // Processo para realizar autalização da session
+            if (newToken.token && newToken.newRefreshToken) {
+              const handleUpdateUser = async () => {
+                const newSession = {
+                  ...session,
+                  user: {
+                    ...session?.user,
+                    token: newToken.token as string,
+                    refreshToken: {
+                      id: newToken.newRefreshToken.id,
+                      expiresIn: newToken.newRefreshToken.expiresIn,
+                      userIdRefresh: newToken.newRefreshToken.userIdRefresh,
+                    },
+                  },
+                };
+                // Atualize a sessão
+                await update(newSession);
+              };
+              handleUpdateUser();
+            }
 
-  if (!newToken.token) {
-    throw new Error('Failed to refresh token');
-  }
-
-  // Atualiza a sessão no lado do cliente
-  const updatedSession = {
-    ...session,
-    user: {
-      ...session.user,
-      token: newToken.token,
-      ...(newToken.newRefreshToken && {
-        refreshToken: {
-          id: newToken.newRefreshToken.id,
-          expiresIn: newToken.newRefreshToken.expiresIn,
-          userIdRefresh: newToken.newRefreshToken.userIdRefresh,
-        },
-      }),
-    },
+            // Processo para realizar autalização da session
+            if (newToken.token) {
+              const handleUpdateUser = async () => {
+                const newSession = {
+                  ...session,
+                  user: {
+                    ...session?.user,
+                    token: newToken.token as string,
+                  },
+                };
+                // Atualize a sessão
+                await update(newSession);
+              };
+              handleUpdateUser();
+            }
+          }
+        }
+      }
+    }
   };
-
-  // Como `update` não está disponível, confiamos no backend para sincronizar a sessão
-  // Alternativamente, podemos disparar um evento para recarregar a sessão manualmente
-  await fetch('/api/auth/session', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(updatedSession),
-  });
-
-  return newToken.token;
+  return refreshToken;
 };

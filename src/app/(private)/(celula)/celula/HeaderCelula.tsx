@@ -9,6 +9,8 @@ import { pt } from 'date-fns/locale';
 import { signOut, useSession } from 'next-auth/react';
 import Image from 'next/image';
 import { Fragment } from 'react';
+// import { signIn } from 'next-auth/react'
+// import Image from 'next/image'
 
 const userNavigation = [
   { name: 'Meu Perfil', href: '#' },

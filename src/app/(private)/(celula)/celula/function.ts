@@ -1,8 +1,10 @@
 'use client';
-import api from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
-import { useState } from 'react';
+import dayjs from 'dayjs';
+import { useSession } from 'next-auth/react';
+import { useMemo, useState } from 'react';
 import { z } from 'zod';
 
 const reuniaoCelulaDataSchema2 = z.object({
@@ -15,11 +17,31 @@ const reuniaoCelulaDataSchema2 = z.object({
 type reuniaoCelulaData2 = z.infer<typeof reuniaoCelulaDataSchema2>;
 
 export const createReuniao = (celulaId: string) => {
+  const { data: session } = useSession();
+
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
   const [reuniaoRegisteredId, setReuniaRegisteredId] = useState<string>();
   const hostname = 'back-ibb.vercel.app';
   const URLReuniaoCelula = `https://${hostname}/reunioessemanaiscelulas`;
 
   const queryClient = useQueryClient();
+
+  const memoizedDataHoje = useMemo(() => dayjs(), []);
+  const memoizedDataHojeString = memoizedDataHoje
+    .tz('America/Sao_Paulo')
+    .format('YYYY-MM-DDTHH:mm:ss.SSS[Z]');
+
+  const status = 'Marcado';
+  const celula = celulaId;
+  const data_reuniao = memoizedDataHojeString;
+  const presencas_membros_reuniao_celula = null;
+
+  const dataSend = {
+    status,
+    celula,
+    data_reuniao,
+    presencas_membros_reuniao_celula,
+  };
 
   const createReuniaoCelula = async (
     dataSend: reuniaoCelulaData2,
@@ -32,7 +54,7 @@ export const createReuniao = (celulaId: string) => {
       id?: string | undefined;
     }[]
   > => {
-    const response = await api.post(URLReuniaoCelula, dataSend);
+    const response = await axiosAuth.post(URLReuniaoCelula, dataSend);
     console.log(response);
     return response.data;
   };

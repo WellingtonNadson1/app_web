@@ -18,7 +18,8 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
 import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/components/ui/use-toast';
-import api, { BASE_URL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Spinner, User } from '@phosphor-icons/react/dist/ssr';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { AxiosError } from 'axios';
@@ -42,6 +43,7 @@ export function RegisterPresenceFormSecond({
   celula,
 }: ControlePresencaCelulaProps) {
   const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
   const [progress, setProgress] = useState<number>(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
@@ -50,7 +52,7 @@ export function RegisterPresenceFormSecond({
   const getSecondPresenceRegistered = async () => {
     const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${celula?.lider?.id}`;
 
-    const { data } = await api.get(URLPresencaCultoId);
+    const { data } = await axiosAuth.get(URLPresencaCultoId);
     return data;
   };
 
@@ -76,7 +78,7 @@ export function RegisterPresenceFormSecond({
       status: member.status === 'true',
     }));
 
-    const response = await api.post(
+    const response = await axiosAuth.post(
       URLControlePresenca,
       {
         presence_culto,
