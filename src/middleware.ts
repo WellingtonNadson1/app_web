@@ -82,19 +82,13 @@ export default async function middleware(req: NextRequest) {
       return redirectIfNeeded(DEFAULT_LOGIN);
     }
     if (isPrivateRouteCelula && !hasRole('USERLIDER')) {
-      return new NextResponse(
+      return alert(
         'Acesso negado: você não tem permissão para acessar esta página.',
-        {
-          status: 403,
-        },
       );
     }
     if (isPrivateRouteSupervisor && !hasRole('USERSUPERVISOR')) {
-      return new NextResponse(
+      return alert(
         'Acesso negado: você não tem permissão para acessar esta página.',
-        {
-          status: 403,
-        },
       );
     }
 
