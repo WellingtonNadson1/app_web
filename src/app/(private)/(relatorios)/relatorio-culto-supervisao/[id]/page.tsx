@@ -58,14 +58,7 @@ dayjs.tz.setDefault('America/Sao_Paulo');
 export default function StatsCardRelatorios() {
   const token_session = Cookies.get('session_token');
   const { data: session, status } = useSession();
-  if (status === 'loading') {
-    return (
-      <div className="flex items-center justify-center h-96 gap-4">
-        <Spinner className="animate-spin h-10 w-10" color="blue" />
-        <p>Carregando...</p>
-      </div>
-    ); // Ou um spinner de carregamento
-  }
+
   const axiosAuth = useAxiosAuth(
     (token_session || session?.user?.token) as string,
   );
