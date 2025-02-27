@@ -47,6 +47,7 @@ import {
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
 import Cookies from 'js-cookie';
+import { Spinner } from '@phosphor-icons/react';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -56,7 +57,10 @@ dayjs.tz.setDefault('America/Sao_Paulo');
 
 export default function StatsCardRelatorios() {
   const token_session = Cookies.get('session_token');
-  const axiosAuth = useAxiosAuth(token_session || '');
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(
+    (token_session || session?.user?.token) as string,
+  );
 
   const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
   const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
@@ -458,26 +462,10 @@ export default function StatsCardRelatorios() {
                             disabled
                             className="flex items-center justify-between px-3 py-2 text-sm font-semibold text-white bg-blue-700 rounded-md shadow-sm"
                           >
-                            <svg
-                              className="w-5 h-5 mr-3 text-white animate-spin"
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                            >
-                              <circle
-                                className="opacity-25"
-                                cx="12"
-                                cy="12"
-                                r="10"
-                                stroke="currentColor"
-                                strokeWidth="4"
-                              />
-                              <path
-                                className="opacity-75"
-                                fill="currentColor"
-                                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                              />
-                            </svg>
+                            <Spinner
+                              className="animate-spin h-5 w-5"
+                              color="white"
+                            />
                             <span>Gerando...</span>
                           </Button>
                         ) : (
@@ -724,7 +712,7 @@ export default function StatsCardRelatorios() {
                         <p className="text-base font-medium text-black">
                           {cellName}
                         </p>
-                        <p className="text-sm font-medium text-slate-600">
+                        <p className="text-sm font-medium text-white">
                           Líder:{' '}
                           <span className="font-normal">
                             {
@@ -843,7 +831,15 @@ export default function StatsCardRelatorios() {
                                 );
                               return (
                                 <div
-                                  className="flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200"
+                                  className={cn(
+                                    'flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200',
+                                    presenceCulto?.status === true
+                                      ? 'bg-green-100'
+                                      : '',
+                                    presenceCulto?.status === false
+                                      ? 'bg-red-100'
+                                      : '',
+                                  )}
                                   key={cultoId + indexMember}
                                 >
                                   {presenceCulto ? (
