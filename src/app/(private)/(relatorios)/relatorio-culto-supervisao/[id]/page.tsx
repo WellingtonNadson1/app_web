@@ -57,7 +57,15 @@ dayjs.tz.setDefault('America/Sao_Paulo');
 
 export default function StatsCardRelatorios() {
   const token_session = Cookies.get('session_token');
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
+  if (status === 'loading') {
+    return (
+      <div className="flex items-center justify-center h-96 gap-4">
+        <Spinner className="animate-spin h-10 w-10" color="blue" />
+        <p>Carregando...</p>
+      </div>
+    ); // Ou um spinner de carregamento
+  }
   const axiosAuth = useAxiosAuth(
     (token_session || session?.user?.token) as string,
   );
@@ -218,6 +226,11 @@ export default function StatsCardRelatorios() {
   };
 
   const handleFunctions = (data: z.infer<typeof FormRelatorioDataSchema>) => {
+    const token = token_session || session?.user?.token;
+    if (!token) {
+      alert('Token não disponível. Tente novamente.');
+      return;
+    }
     console.log('Formulário submetido com dados:', data);
     handleRelatorio(data);
   };
@@ -712,7 +725,7 @@ export default function StatsCardRelatorios() {
                         <p className="text-base font-medium text-black">
                           {cellName}
                         </p>
-                        <p className="text-sm font-medium text-white">
+                        <p className="text-sm font-medium text-slate-600">
                           Líder:{' '}
                           <span className="font-normal">
                             {
@@ -729,7 +742,7 @@ export default function StatsCardRelatorios() {
                       <td className="px-4">
                         {groupedForCell[cellName].map((member) => (
                           <tr className="w-20 h-20 py-4" key={member.id}>
-                            <div className="flex flex-col justify-center h-20">
+                            <div className="flex flex-col justify-center h-20 text-white">
                               {member.first_name}
                             </div>
                           </tr>
@@ -835,10 +848,10 @@ export default function StatsCardRelatorios() {
                                     'flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200',
                                     presenceCulto?.status === true
                                       ? 'bg-green-100'
-                                      : '',
+                                      : 'bg-zinc-100',
                                     presenceCulto?.status === false
                                       ? 'bg-red-100'
-                                      : '',
+                                      : 'bg-zinc-100',
                                   )}
                                   key={cultoId + indexMember}
                                 >
