@@ -226,11 +226,6 @@ export default function StatsCardRelatorios() {
   };
 
   const handleFunctions = (data: z.infer<typeof FormRelatorioDataSchema>) => {
-    const token = token_session || session?.user?.token;
-    if (!token) {
-      alert('Token não disponível. Tente novamente.');
-      return;
-    }
     console.log('Formulário submetido com dados:', data);
     handleRelatorio(data);
   };
