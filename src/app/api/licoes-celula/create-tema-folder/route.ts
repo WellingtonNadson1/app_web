@@ -132,6 +132,8 @@ export async function GET(request: Request) {
     });
     await disconnectPrisma();
 
+    console.log('allTema', allTema);
+
     return new NextResponse(JSON.stringify(allTema), {
       status: 200,
       headers: { 'Cache-Control': 'no-store' }, // Evita cache

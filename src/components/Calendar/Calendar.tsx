@@ -21,7 +21,7 @@ import {
 import { ptBR } from 'date-fns/locale/pt-BR';
 import { useEffect, useRef, useState } from 'react';
 
-import FormUpdateCulto from '@/app/(private)/(central)/cultos/form-update-culto';
+import FormUpdateCulto from '@/app/(private)/(central)/central/cultos/form-update-culto';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Church } from '@phosphor-icons/react/dist/ssr';

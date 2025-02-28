@@ -12,12 +12,15 @@ import {
   sidebarSupervisor,
   sidebarSupervisorLider,
 } from './LinksSidebar';
+import Link from 'next/link';
 
 export default function MySidebar() {
   const [open, setOpen] = useState(false);
   const router = useRouter();
   const pathName = usePathname().split('/')[1];
   const pathAtual = usePathname();
+  console.log('pathName', pathName);
+  console.log('pathAtual', pathAtual);
   const { data: session, status } = useSession();
   const { user_roles } = useUserDataStore.getState();
 
@@ -127,11 +130,11 @@ export default function MySidebar() {
           <ul className="relative flex flex-col pt-4 gap-y-2">
             {renderLinks().map((item) => (
               <li key={item.name}>
-                <a
+                <Link
                   href={item.href}
                   className={cn(
                     `group z-50 flex transform cursor-pointer items-center gap-x-2 rounded-md py-2 pl-2 text-sm font-medium leading-5 text-gray-500 transition duration-150 ease-in-out hover:scale-105 hover:bg-[#1D70B6] hover:fill-current hover:text-gray-200 focus:outline-none`,
-                    `/${pathName}` === item.href
+                    `${pathAtual}` === item.href
                       ? 'bg-[#1D70B6] text-gray-200'
                       : 'text-zinc-400',
                   )}
@@ -155,7 +158,7 @@ export default function MySidebar() {
                   >
                     {item.name}
                   </span>
-                </a>
+                </Link>
               </li>
             ))}
           </ul>

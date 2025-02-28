@@ -75,7 +75,7 @@ export default function Login() {
       const response = await loginFunc(data);
 
       if (response?.sucesso) {
-        window.location.href = '/dashboard'; // Redireciona após sucesso
+        window.location.href = '/central/dashboard'; // Redireciona após sucesso
       }
     },
     [loginFunc],

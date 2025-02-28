@@ -1,29 +1,29 @@
-'use client'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { errorCadastro, success } from '@/functions/functions'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import React, { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { FormRelatorioSchema, ISupervisoes } from './schema'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import React, { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { FormRelatorioSchema, ISupervisoes } from './schema';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { BASE_URL } from '@/lib/axios';
+import { toast } from 'sonner';
 
 function FormRelatorio() {
-  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`
-  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`
-  const URLSupervisoes = `${BASE_URL}/supervisoes`
+  const URLPresencaGeralCultos = `${BASE_URL}/relatorio/presencacultos`;
+  const URLRelatorioPresenceCulto = `${BASE_URL}/cultosindividuais/fordate`;
+  const URLSupervisoes = `${BASE_URL}/supervisoes`;
 
-  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>()
-  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>()
-  const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
+  const { register, handleSubmit, reset } = useForm<FormRelatorioSchema>();
+  const [supervisaoSelecionada, setSupervisaoSelecionada] = useState<string>();
+  const [supervisoes, setSupervisoes] = useState<ISupervisoes[]>();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
 
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const { data: session } = useSession();
+  const token = session?.user?.token as string;
+  const axiosAuth = useAxiosAuth(token);
 
   const onSubmit: SubmitHandler<FormRelatorioSchema> = async ({
     superVisionId,
@@ -31,53 +31,53 @@ function FormRelatorio() {
     endDate,
   }) => {
     try {
-      setIsLoadingSubmitForm(true)
+      setIsLoadingSubmitForm(true);
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
       const response = await axiosAuth.post(URLRelatorioPresenceCulto, {
         superVisionId,
         startDate,
         endDate,
-      })
-      const relatorioPresenceCulto = response.data
+      });
+      const relatorioPresenceCulto = response.data;
 
       if (relatorioPresenceCulto) {
-        setIsLoadingSubmitForm(false)
-        success('Célula Cadastrada')
+        setIsLoadingSubmitForm(false);
+        toast('Célula Cadastrada');
       } else {
-        errorCadastro('Erro ao Cadastrar Célula')
+        toast('Erro ao Cadastrar Célula');
       }
     } catch (error) {
-      console.log(error)
-      setIsLoadingSubmitForm(false)
-      errorCadastro('Erro ao Cadastrar Célula')
+      console.log(error);
+      setIsLoadingSubmitForm(false);
+      toast('Erro ao Cadastrar Célula');
     }
-    reset()
-  }
+    reset();
+  };
 
   const { data: dataSupervisoes, isLoading } = useQuery<ISupervisoes[]>({
     queryKey: ['supervisoes'],
     queryFn: async () => {
-      const response = await axiosAuth.get(URLSupervisoes)
-      const dataSupervisoes = response.data
-      return dataSupervisoes
+      const response = await axiosAuth.get(URLSupervisoes);
+      const dataSupervisoes = response.data;
+      return dataSupervisoes;
     },
     retry: false,
-  })
+  });
 
   if (!isLoading) {
-    return dataSupervisoes && setSupervisoes(dataSupervisoes)
+    return dataSupervisoes && setSupervisoes(dataSupervisoes);
   }
 
   const handleSupervisaoSelecionada = (
     event: React.ChangeEvent<HTMLSelectElement>,
   ) => {
-    setSupervisaoSelecionada(event.target.value)
-  }
+    setSupervisaoSelecionada(event.target.value);
+  };
 
   return (
     <div className="relative w-full px-4 py-2 mx-auto mt-4 ">
@@ -223,7 +223,7 @@ function FormRelatorio() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
-export default FormRelatorio
+export default FormRelatorio;

@@ -1,45 +1,47 @@
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { useRouter } from 'next/navigation'
-import React, { useState } from 'react'
-import Pagination from './Pagination'
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import Pagination from './Pagination';
 
 export interface ICelula {
-  id: string
-  nome: string
+  id: string;
+  nome: string;
   lider: {
-    id: string
-    first_name: string
-  }
+    id: string;
+    first_name: string;
+  };
 }
 
 interface ListCelulasProps {
-  data: ICelula[]
+  data: ICelula[];
 }
 
 export default function ListTemaLicoesCelula({ data }: ListCelulasProps) {
-  const router = useRouter()
-  const contextParamsSupervisaoId = useSupervisaoContext()
+  const router = useRouter();
+  const contextParamsSupervisaoId = useSupervisaoContext();
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-    const idCelula = event.currentTarget.id
-    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
-  }
+    const idCelula = event.currentTarget.id;
+    router.push(
+      `/central/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
+    );
+  };
 
   const handlePageChange = (newPage: number) => {
-    setCurrentPage(newPage)
-  }
+    setCurrentPage(newPage);
+  };
 
   // Pagination
-  const itemsPerPage = 10
-  const [currentPage, setCurrentPage] = useState(1)
+  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
 
-  const startIndex = (currentPage - 1) * itemsPerPage
-  const endIndex = startIndex + itemsPerPage
-  const displayedCelulas = data?.slice(startIndex, endIndex)
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const displayedCelulas = data?.slice(startIndex, endIndex);
 
   const calculateCellNumber = (pageIndex: number, index: number) => {
-    return (pageIndex - 1) * itemsPerPage + index + 1
-  }
+    return (pageIndex - 1) * itemsPerPage + index + 1;
+  };
 
   return (
     <div className="relative  mx-auto w-full p-2">
@@ -112,5 +114,5 @@ export default function ListTemaLicoesCelula({ data }: ListCelulasProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

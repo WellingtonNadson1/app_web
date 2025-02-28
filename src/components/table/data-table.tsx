@@ -16,7 +16,7 @@ import {
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import { RankingInfo, rankItem } from '@tanstack/match-sorter-utils';
 
-import { DataTablePagination } from '@/app/(private)/(central)/novo-membro/table-users/table-pagination';
+import { DataTablePagination } from '@/app/(private)/(central)/central/novo-membro/table-users/table-pagination';
 import { Input } from '@/components/ui/input';
 import {
   Table,

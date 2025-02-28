@@ -1,7 +1,7 @@
 import {
   AddressProps,
   Member,
-} from '@/app/(private)/(central)/novo-membro/schema';
+} from '@/app/(private)/(central)/central/novo-membro/schema';
 import { UseFormSetValue } from 'react-hook-form';
 
 type FlexibleSetValue = UseFormSetValue<Member>;

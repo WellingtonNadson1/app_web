@@ -12,7 +12,7 @@ import { format, isSameDay, parseISO, startOfToday } from 'date-fns';
 import { pt } from 'date-fns/locale';
 import dayjs from 'dayjs';
 import { useSession } from 'next-auth/react';
-import { useState } from 'react';
+import { Suspense, useState } from 'react';
 import { RegisterPresenceFormFirst } from './_components/ControlePresenceFirst/registerpresence';
 import { RegisterPresenceFormSecond } from './_components/ControlePresenceSecond/registerpresencesecond';
 import ControlePresencaReuniaoCelula from './ControlePresencaReuniaoCelula';
@@ -23,6 +23,8 @@ import LicoesLoading from './loadingUi/LicoesLoading';
 import { CelulaProps, Meeting } from './schema';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { LoaderHeader } from '../../(central)/central/loading';
+import Header from '@/components/Header';
 
 export default function ControleCelulaSupervision() {
   const [presenceIsRegister, setPresenceIsRegister] = useState(false);
@@ -116,7 +118,9 @@ export default function ControleCelulaSupervision() {
       {isLoadingCelula ? (
         <>
           <div className="relative w-full px-2 py-2 mx-auto">
-            <HeaderCelulaLoad />
+            <Suspense fallback={<LoaderHeader />}>
+              <Header />
+            </Suspense>
             <div className="relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
               <CalendarLoading />
             </div>

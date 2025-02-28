@@ -2,6 +2,7 @@ import '@/app/globals.css';
 import { auth } from '@/auth';
 import MySidebar from '@/components/sidebar/MySidebar';
 import { SidebarProvider } from '@/components/ui/sidebar';
+import { Toaster } from '@/components/ui/sonner';
 import { Providers } from '@/providers/providers';
 import { InitializerUserStore } from '@/store/InitializerUserStore';
 import { RedirectType } from 'next/dist/client/components/redirect';
@@ -25,7 +26,6 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const session = await auth();
-  console.log('session', session);
 
   if (!session) {
     // Signed in
@@ -42,7 +42,7 @@ export default async function RootLayout({
   const refreshToken = session?.user?.refreshToken;
 
   return (
-    <html lang="pt">
+    <html lang="en">
       <body suppressHydrationWarning>
         <InitializerUserStore
           id={id ?? ''}
@@ -73,12 +73,13 @@ export default async function RootLayout({
             <SidebarProvider>
               <Providers>
                 <MySidebar />
-                <div
+                <main
                   suppressHydrationWarning
                   className="z-30 w-full px-2 py-2 mx-auto"
                 >
                   {children}
-                </div>
+                  <Toaster />
+                </main>
               </Providers>
             </SidebarProvider>
           </div>

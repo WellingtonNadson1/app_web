@@ -1,6 +1,5 @@
 'use client';
 import SpinnerButton from '@/components/spinners/SpinnerButton';
-import { errorCadastro, success } from '@/functions/functions';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { User } from '@phosphor-icons/react';
@@ -9,9 +8,8 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { ControlePresencaCelulaProps, attendance } from '../../schema';
+import { toast } from 'sonner';
 
 export default function ControlePresenceFirst({
   id,
@@ -78,7 +76,7 @@ export default function ControlePresenceFirst({
         // Lide com o erro conforme necessário
       }
     }
-    success('😉 Presenças Registradas!');
+    toast('😉 Presenças Registradas!');
   };
 
   const {
@@ -103,7 +101,7 @@ export default function ControlePresenceFirst({
     try {
       await createPresencaCultoFn(data);
     } catch (error) {
-      errorCadastro('Já existem presenças registradas!');
+      toast('Já existem presenças registradas!');
     }
   };
 
@@ -121,7 +119,6 @@ export default function ControlePresenceFirst({
             </p>
           ) : (
             <>
-              <ToastContainer />
               <div
                 id={id}
                 className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl"

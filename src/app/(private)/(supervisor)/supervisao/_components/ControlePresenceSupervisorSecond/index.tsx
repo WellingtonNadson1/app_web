@@ -1,33 +1,31 @@
-'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { Badge } from '@/components/ui/badge'
-import { errorCadastro, success } from '@/functions/functions'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { UserFocus } from '@phosphor-icons/react'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import { ControlePresencaSupervisorProps, attendance } from '../../schema'
-import { BASE_URL } from '@/lib/axios'
+'use client';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { Badge } from '@/components/ui/badge';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserFocus } from '@phosphor-icons/react';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { ControlePresencaSupervisorProps, attendance } from '../../schema';
+import { BASE_URL } from '@/lib/axios';
+import { toast } from 'sonner';
 
 export default function ControlePresenceSupervisorSecond({
   id,
   culto,
   supervisorId,
 }: ControlePresencaSupervisorProps) {
-  const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
-  const { handleSubmit, register } = useForm<attendance>()
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const queryClient = useQueryClient()
+  const URLControlePresenca = `${BASE_URL}/presencacultos`;
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`;
+  const { handleSubmit, register } = useForm<attendance>();
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
+  const queryClient = useQueryClient();
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLPresencaCultoId);
+    return data;
+  };
 
   const {
     data: PresenceExistRegisteredSupervisorSecond,
@@ -37,31 +35,31 @@ export default function ControlePresenceSupervisorSecond({
   } = useQuery({
     queryKey: ['presenceExistRegisteredSupervisorSecond'],
     queryFn: getPresenceRegistered,
-  })
+  });
 
   if (isSuccessGetPresence) {
     console.log(
       'PresenceExistRegisteredSupervisorSecond',
       PresenceExistRegisteredSupervisorSecond,
-    )
+    );
   }
 
   const createPresencaCultoSupervisorFunction = async (data: attendance) => {
     try {
-      const status = data.status === 'true'
+      const status = data.status === 'true';
       const response = await axiosAuth.post(URLControlePresenca, {
         ...data,
         status,
-      })
-      const presenceRegister = response.data
+      });
+      const presenceRegister = response.data;
       if (!presenceRegister) {
-        throw new Error('Failed to submit dados de presenca')
+        throw new Error('Failed to submit dados de presenca');
       }
-      success('😉 Presenças Registradas!')
+      toast('😉 Presenças Registradas!');
     } catch (error) {
-      console.error('error: ', error)
+      console.error('error: ', error);
     }
-  }
+  };
 
   const {
     mutateAsync: createPresencaCultoSupervisorFn,
@@ -72,26 +70,26 @@ export default function ControlePresenceSupervisorSecond({
     onError: (err, newMember, context) => {
       queryClient.invalidateQueries({
         queryKey: ['presenceExistRegisteredSupervisorSecond'],
-      })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
+      });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['presenceExistRegisteredSupervisorSecond'],
-      })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
+      });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
     },
-  })
+  });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance> = async (data) => {
     try {
-      await createPresencaCultoSupervisorFn(data)
+      await createPresencaCultoSupervisorFn(data);
     } catch (error) {
-      errorCadastro('Já existem presenças registradas!')
+      toast('Já existem presenças registradas!');
     }
-  }
+  };
 
   return (
     <>
@@ -107,7 +105,6 @@ export default function ControlePresenceSupervisorSecond({
             </p>
           ) : (
             <>
-              <ToastContainer />
               <div
                 id={id}
                 className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl"
@@ -321,5 +318,5 @@ export default function ControlePresenceSupervisorSecond({
         </>
       )}
     </>
-  )
+  );
 }

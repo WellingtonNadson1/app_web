@@ -1,9 +1,9 @@
-import UpdateCelula from '@/app/(private)/(central)/celulas/UpdateCelula';
-import UpdateCelula2 from '@/app/(private)/(central)/celulas/UpdateCelula2';
 import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
 import { useRouter } from 'next/navigation';
 import React, { useState } from 'react';
 import Pagination from './Pagination';
+import UpdateCelula2 from '@/app/(private)/(central)/central/celulas/UpdateCelula2';
+import UpdateCelula from '@/app/(private)/(central)/central/celulas/UpdateCelula';
 
 export interface ICelula {
   id: string;
@@ -26,7 +26,7 @@ export default function ListCelulas({ data }: ListCelulasProps) {
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
     const idCelula = event.currentTarget.id;
     router.push(
-      `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
+      `/central/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
     );
   };
 

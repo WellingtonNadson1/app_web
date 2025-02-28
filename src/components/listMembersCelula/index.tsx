@@ -1,8 +1,8 @@
 'use client';
-import AddNewMember from '@/app/(private)/(central)/novo-membro/AddNewMember';
-import DeleteMember from '@/app/(private)/(central)/novo-membro/DeleteMember';
-import { ReturnMembers } from '@/app/(private)/(central)/novo-membro/schema';
-import UpdateMember from '@/app/(private)/(central)/novo-membro/UpdateMember';
+import AddNewMember from '@/app/(private)/(central)/central/novo-membro/AddNewMember';
+import DeleteMember from '@/app/(private)/(central)/central/novo-membro/DeleteMember';
+import { ReturnMembers } from '@/app/(private)/(central)/central/novo-membro/schema';
+import UpdateMember from '@/app/(private)/(central)/central/novo-membro/UpdateMember';
 import { UserFocus } from '@phosphor-icons/react';
 import { useState } from 'react';
 import Pagination from '../Pagination';

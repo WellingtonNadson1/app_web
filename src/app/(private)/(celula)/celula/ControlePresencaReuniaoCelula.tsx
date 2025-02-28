@@ -3,7 +3,6 @@
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
-import { errorCadastro } from '@/functions/functions';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -17,8 +16,6 @@ import utc from 'dayjs/plugin/utc';
 import { useSession } from 'next-auth/react';
 import { useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { ToastContainer } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 import { z } from 'zod';
 import {
   CelulaProps,
@@ -29,6 +26,7 @@ import {
   reuniaoCelulaUpdate,
   reuniaoCelulaUpdateSchema,
 } from './schema';
+import { toast } from 'sonner';
 
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -276,7 +274,7 @@ export default function ControlePresencaReuniaoCelula({
       //@ts-ignore
       await createPresencaReuniaoCelulaFn(normalizedData);
     } catch (error) {
-      errorCadastro('Já existem presenças registradas!');
+      toast('Já existem presenças registradas!');
     }
   };
 
@@ -332,7 +330,6 @@ export default function ControlePresencaReuniaoCelula({
             </p>
           ) : (
             <>
-              <ToastContainer />
               <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
                 <div className="w-full px-2 py-2 ">
                   <div className="w-full px-1 py-2 rounded-md">

@@ -1,36 +1,34 @@
-'use client'
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+'use client';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormMessage,
-} from '@/components/ui/form'
-import { Progress } from '@/components/ui/progress'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
-import { Separator } from '@/components/ui/separator'
-import { Toaster } from '@/components/ui/toaster'
-import { useToast } from '@/components/ui/use-toast'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { Spinner, User } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AxiosError } from 'axios'
-import { useSession } from 'next-auth/react'
-import { useEffect, useRef, useState } from 'react'
-import { useForm } from 'react-hook-form'
-import 'react-toastify/dist/ReactToastify.css'
+} from '@/components/ui/form';
+import { Progress } from '@/components/ui/progress';
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
+import { Separator } from '@/components/ui/separator';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { Spinner, User } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { AxiosError } from 'axios';
+import { useSession } from 'next-auth/react';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import {
   ControlePresencaSupervisorProps,
   attendance,
   attendanceSchema,
-} from '../../schema'
-import { BASE_URL } from '@/lib/axios'
+} from '../../schema';
+import { BASE_URL } from '@/lib/axios';
+import { toast } from 'sonner';
 
 function isError(error: unknown): error is Error {
-  return error instanceof Error
+  return error instanceof Error;
 }
 
 export default function ControlePresenceSupervisorFirst({
@@ -38,20 +36,19 @@ export default function ControlePresenceSupervisorFirst({
   culto,
   supervisorId,
 }: ControlePresencaSupervisorProps) {
-  const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
-  const queryClient = useQueryClient()
-  const [progress, setProgress] = useState<number>(0)
-  const [isCompleted, setIsCompleted] = useState(false)
-  const timerRef = useRef<NodeJS.Timeout | null>(null)
-  const { toast } = useToast()
+  const URLControlePresenca = `${BASE_URL}/presencacultos`;
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`;
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
+  const queryClient = useQueryClient();
+  const [progress, setProgress] = useState<number>(0);
+  const [isCompleted, setIsCompleted] = useState(false);
+  const timerRef = useRef<NodeJS.Timeout | null>(null);
 
   const getPresenceRegistered = async () => {
-    const { data } = await axiosAuth.get(URLPresencaCultoId)
-    return data
-  }
+    const { data } = await axiosAuth.get(URLPresencaCultoId);
+    return data;
+  };
 
   const {
     data: PresenceExistRegisteredSupervisorFirst,
@@ -61,65 +58,53 @@ export default function ControlePresenceSupervisorFirst({
     queryKey: ['presenceExistRegisteredSupervisorFirst'],
     queryFn: getPresenceRegistered,
     refetchOnMount: true,
-  })
+  });
 
   const createPresencaCultoSupervisorFunction = async (data: attendance) => {
     try {
       const dataPresence = {
         ...data,
         status: data.status === 'true',
-      }
+      };
       // CHECANDO SE O ID DO SUPERVISOR ESTÁ NA REQUISICAO
       if (!dataPresence.membro) {
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: 'Faltando dados para registro de Presença!',
-        })
-        throw new Error('Faltando dados para registro de Presença!')
+        toast('Faltando dados para registro de Presença!');
+        throw new Error('Faltando dados para registro de Presença!');
       }
       const response = await axiosAuth.post(URLControlePresenca, dataPresence, {
         onUploadProgress: (progressEvent) => {
           // Introduz um atraso antes de atualizar o estado de progresso
           setTimeout(() => {
-            setProgress(10)
-          }, 600)
+            setProgress(10);
+          }, 600);
 
           setTimeout(() => {
-            setProgress(30)
-          }, 1200) // 150 + 150
+            setProgress(30);
+          }, 1200); // 150 + 150
 
           setTimeout(() => {
-            setProgress(50)
-          }, 1800) // 300 + 100
+            setProgress(50);
+          }, 1800); // 300 + 100
 
           setTimeout(() => {
-            setProgress(70)
-          }, 2400) // 400 + 100
+            setProgress(70);
+          }, 2400); // 400 + 100
 
           setTimeout(() => {
-            setProgress(90)
-          }, 3000) // 500 + 50
+            setProgress(90);
+          }, 3000); // 500 + 50
         },
-      })
-      const presenceRegister = response.data
+      });
+      const presenceRegister = response.data;
       if (!presenceRegister) {
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: 'Erro no registro de Presença!',
-        })
-        throw new Error('Failed to submit dados de presenca')
+        toast('Erro no registro de Presença!');
+        throw new Error('Failed to submit dados de presenca');
       }
-      toast({
-        variant: 'default',
-        title: 'Successo',
-        description: '😉 Presença registrada com sucesso.',
-      })
+      toast('😉 Presença registrada com sucesso.');
     } catch (error) {
-      console.error('error: ', error)
+      console.error('error: ', error);
     }
-  }
+  };
 
   const {
     mutateAsync: createPresencaCultoSupervisorFn,
@@ -131,73 +116,53 @@ export default function ControlePresenceSupervisorFirst({
     onError: (err, newMember, context) => {
       queryClient.invalidateQueries({
         queryKey: ['presenceExistRegisteredSupervisorFirst'],
-      })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
+      });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
     },
     // Always refetch after error or success:
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: ['presenceExistRegisteredSupervisorFirst'],
-      })
-      queryClient.invalidateQueries({ queryKey: ['meetingsData'] })
-      toast({
-        variant: 'default',
-        title: 'Successo',
-        description: 'Presença registrada com sucesso.',
-      })
-      setIsCompleted(true)
+      });
+      queryClient.invalidateQueries({ queryKey: ['meetingsData'] });
+      toast('Presença registrada com sucesso.');
+      setIsCompleted(true);
     },
-  })
+  });
 
   useEffect(() => {
     if (!isPending && createdPresence) {
-      setProgress(100)
+      setProgress(100);
     }
     return () => {
       if (timerRef.current) {
-        clearTimeout(timerRef.current)
+        clearTimeout(timerRef.current);
       }
-    }
-  }, [progress])
+    };
+  }, [progress]);
 
   const form = useForm<attendance>({
     resolver: zodResolver(attendanceSchema),
-  })
+  });
 
   useEffect(() => {
-    form.setValue('presenca_culto', culto)
-    form.setValue('membro', supervisorId)
-  }, [culto, form])
+    form.setValue('presenca_culto', culto);
+    form.setValue('membro', supervisorId);
+  }, [culto, form]);
 
   // Funcao para submeter os dados do Formulario Preenchido
   async function onSubmit(data: attendance) {
-    setIsCompleted(false)
+    setIsCompleted(false);
     try {
-      await createPresencaCultoSupervisorFn(data)
-      toast({
-        variant: 'default',
-        title: 'Successo',
-        description: 'Presença registrada com sucesso.',
-      })
+      await createPresencaCultoSupervisorFn(data);
+      toast('Presença registrada com sucesso.');
     } catch (error) {
-      const axiosError = error as AxiosError
+      const axiosError = error as AxiosError;
       if (isError(axiosError)) {
-        console.log(axiosError)
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: `${
-            axiosError.response?.status === 409
-              ? 'Presença de Culto já Registrada para hoje!'
-              : axiosError.message
-          }`,
-        })
+        console.log(axiosError);
+        toast('Ocorreu um Erro');
       } else {
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: `Um erro desconhecido ocorreu.`,
-        })
+        toast(`Um erro desconhecido ocorreu.`);
       }
     }
   }
@@ -222,7 +187,6 @@ export default function ControlePresenceSupervisorFirst({
             </p>
           ) : (
             <>
-              <Toaster />
               <div
                 id={id}
                 className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl"
@@ -449,5 +413,5 @@ export default function ControlePresenceSupervisorFirst({
         </>
       )}
     </>
-  )
+  );
 }

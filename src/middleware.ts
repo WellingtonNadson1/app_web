@@ -102,11 +102,12 @@ export default async function middleware(req: NextRequest) {
     if (isPrivateRouteCentral && hasRole('USERCENTRAL')) {
       return NextResponse.next();
     }
+
     // if (
     //   (pathname === DEFAULT_LOGIN_REDIRECT_CELULA && hasRole('USERLIDER')) ||
     //   (pathname === DEFAULT_LOGIN_REDIRECT_SUPERVISOR &&
     //     hasRole('USERSUPERVISOR')) ||
-    //   (pathname === DEFAULT_LOGIN_REDIRECT && hasRole('USERCENTRAL'))
+    //   (pathname === DEFAULT_LOGIN_REDIRECT_CENTRAL && hasRole('USERCENTRAL'))
     // ) {
     //   return NextResponse.next();
     // }

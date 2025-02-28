@@ -15,55 +15,51 @@ export const publicRoutes: string[] = [
  * @type {string[]}
  */
 export const privateRoutesCentral: string[] = [
-  '/dashboard',
-  '/celulas',
-  '/cultos',
-  '/disicipulados',
-  '/disicipulados/[dicipuladosupervisaoId]',
-  '/disicipulados/[dicipuladosupervisaoId]/celulas',
-  '/disicipulados/[dicipuladosupervisaoId]/celulas/[celulaId]',
-  '/disicipulados/[dicipuladosupervisaoId]/supervisor',
-  '/disicipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]',
-  '/escolas',
-  '/financeiro',
-  '/novo-membro',
-  '/relatorio-culto-supervisao/[id]',
-  '/relatorio-culto-supervisor/[id]',
-  '/relatorio-discipulados-supervisao',
-  '/relatorio-discipulados-supervisor',
-  '/relatorio-presenca-celula-supervisao/[id]',
-  '/relatorios',
-  '/relatorios/[id]',
-  '/supervisoes',
-  '/supervisoes/[supervisaoId]',
-  '/supervisoes/[supervisaoId]/celulas',
-  '/supervisoes/[supervisaoId]/celulas/[celulaId]',
+  '/central/dashboard',
+  '/central/celulas',
+  '/central/cultos',
+  '/central/disicipulados',
+  '/central/disicipulados/[dicipuladosupervisaoId]',
+  '/central/disicipulados/[dicipuladosupervisaoId]/celulas',
+  '/central/disicipulados/[dicipuladosupervisaoId]/celulas/[celulaId]',
+  '/central/disicipulados/[dicipuladosupervisaoId]/supervisor',
+  '/central/disicipulados/[dicipuladosupervisaoId]/supervisor/[supervisorId]',
+  '/central/escolas',
+  '/central/financeiro',
+  '/central/novo-membro',
+  '/central/relatorio-culto-supervisao/[id]',
+  '/central/relatorio-culto-supervisor/[id]',
+  '/central/relatorio-discipulados-supervisao',
+  '/central/relatorio-discipulados-supervisor',
+  '/central/relatorio-presenca-celula-supervisao/[id]',
+  '/central/relatorios',
+  '/central/relatorios/[id]',
+  '/central/supervisoes',
+  '/central/supervisoes/[supervisaoId]',
+  '/central/supervisoes/[supervisaoId]/celulas',
+  '/central/supervisoes/[supervisaoId]/celulas/[celulaId]',
 ];
 
 export const privateRoutesCelula: string[] = [
   '/celula',
-  '/discipuladoscelularegister',
+  '/celula/discipuladoscelularegister',
 ];
 
 export const privateRoutesSupervisor: string[] = [
   '/supervisao',
-  '/discipuladosregistersupervisor',
+  '/supervisao/discipuladosregistersupervisor',
 ];
 
 export const privateRoutesSupervisorLider: string[] = [
   '/supervisao',
-  '/discipuladoscelularegister',
-  '/discipuladosregistersupervisor',
+  '/celula/discipuladoscelularegister',
+  '/supervisao/discipuladosregistersupervisor',
 ];
 
 /**
  * @type {string[]}
  */
-export const privateRoutes: string[] = [
-  '/notification',
-  '/auth',
-  // "/vistoriador",
-];
+export const privateRoutes: string[] = ['/notification', '/auth'];
 
 /**
  * @type {string}
@@ -74,7 +70,7 @@ export const apiAuthPrefix: string = '/api/auth';
  * @type {string}
  */
 export const DEFAULT_LOGIN: string = '/login';
-export const DEFAULT_LOGIN_REDIRECT_CENTRAL: string = '/dashboard';
+export const DEFAULT_LOGIN_REDIRECT_CENTRAL: string = '/central/dashboard';
 export const DEFAULT_LOGIN_REDIRECT_CELULA: string = '/celula';
 export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR: string = '/supervisao';
 export const DEFAULT_LOGIN_REDIRECT_SUPERVISOR_LIDER: string = '/celula';

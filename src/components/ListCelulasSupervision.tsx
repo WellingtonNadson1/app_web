@@ -1,29 +1,30 @@
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { useRouter } from 'next/navigation'
-import React from 'react'
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
 export interface ICelula {
-  id: string
-  nome: string
+  id: string;
+  nome: string;
   lider: {
-    id: string
-    first_name: string
-  }
+    id: string;
+    first_name: string;
+  };
 }
 
 interface ListCelulasProps {
-  data: ICelula[]
+  data: ICelula[];
 }
 
 export default function ListCelulasSupervision({ data }: ListCelulasProps) {
-  const router = useRouter()
-  const contextParamsSupervisaoId = useSupervisaoContext()
-  const dataSort = data.sort((a, b) => a.nome.localeCompare(b.nome))
+  const router = useRouter();
+  const contextParamsSupervisaoId = 'idsupervisao';
+  const dataSort = data?.sort((a, b) => a.nome.localeCompare(b.nome));
 
   const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-    const idCelula = event.currentTarget.id
-    router.push(`/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`)
-  }
+    const idCelula = event.currentTarget.id;
+    router.push(
+      `/central/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
+    );
+  };
   return (
     <div>
       <div className="relative w-full p-2 mx-auto mt-1">
@@ -86,5 +87,5 @@ export default function ListCelulasSupervision({ data }: ListCelulasProps) {
         </div>
       </div>
     </div>
-  )
+  );
 }

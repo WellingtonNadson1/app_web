@@ -1,8 +1,6 @@
 import authConfig from '@/auth/auth.config';
 import axios, { AxiosError } from 'axios';
 import NextAuth from 'next-auth';
-import { toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
 
 export interface FetchError extends AxiosError {}
 
@@ -34,31 +32,6 @@ export async function fetchWithToken(
     }
   }
 }
-
-// Notification success or error Submit Forms
-export const success = (message: string) =>
-  toast.success(`${message}`, {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: 'light',
-  });
-
-export const errorCadastro = (message: string) =>
-  toast.error(`${message}`, {
-    position: 'top-right',
-    autoClose: 5000,
-    hideProgressBar: false,
-    closeOnClick: true,
-    pauseOnHover: false,
-    draggable: true,
-    progress: undefined,
-    theme: 'light',
-  });
 
 const { auth } = NextAuth(authConfig);
 

@@ -108,3 +108,14 @@
 .bnt-ibb {
   @apply bg-btnIbb text-white font-semibold py-2 px-4 rounded-md;
 }
+
+
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}

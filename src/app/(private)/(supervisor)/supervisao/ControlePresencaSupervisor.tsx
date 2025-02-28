@@ -1,16 +1,14 @@
-'use client'
-import SpinnerButton from '@/components/spinners/SpinnerButton'
-import { success } from '@/functions/functions'
-import { BASE_URL } from '@/lib/axios'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { UserFocus } from '@phosphor-icons/react'
-import { useQuery } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useRouter } from 'next/navigation'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import { ToastContainer } from 'react-toastify'
-import 'react-toastify/dist/ReactToastify.css'
-import * as z from 'zod'
+'use client';
+import SpinnerButton from '@/components/spinners/SpinnerButton';
+import { BASE_URL } from '@/lib/axios';
+import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
+import { UserFocus } from '@phosphor-icons/react';
+import { useQuery } from '@tanstack/react-query';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/navigation';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
 
 const ReuniaoCelulaSchema = z.object({
   id: z.string(),
@@ -18,7 +16,7 @@ const ReuniaoCelulaSchema = z.object({
   celula: z.string(),
   data_reuniao: z.string(),
   presencas_reuniao_celula: z.object({}).array(),
-})
+});
 
 const UserSchema = z.object({
   id: z.string(),
@@ -29,7 +27,7 @@ const UserSchema = z.object({
   cargoDeLiderancaId: z.object({
     nome: z.string(),
   }),
-})
+});
 
 const CelulaSchema = z.object({
   id: z.string(),
@@ -52,79 +50,79 @@ const CelulaSchema = z.object({
   membros: z.array(UserSchema),
   reunioes_celula: z.array(ReuniaoCelulaSchema),
   userId: z.string(),
-})
+});
 
 const PresencaCultoCelulaSchema = z.object({
   id: z.string(),
   status: z.boolean(),
   membro: z.string(),
   presenca_culto: z.string(),
-})
+});
 
 const ControlePresencaSupervisorPropsSchema = z.object({
   supervisorId: z.string(),
   culto: z.string(),
-})
+});
 
 const attendanceSchema = z.object({
   status: z.string(),
   membro: z.string(),
   presenca_culto: z.string(),
-})
+});
 
-export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>
+export type PresencaCultoProps = z.infer<typeof PresencaCultoCelulaSchema>;
 export type ControlePresencaSupervisorProps = z.infer<
   typeof ControlePresencaSupervisorPropsSchema
->
-type attendance = z.infer<typeof attendanceSchema>
+>;
+type attendance = z.infer<typeof attendanceSchema>;
 
 export default function ControlePresencaSupervisor({
   culto,
   supervisorId,
 }: ControlePresencaSupervisorProps) {
-  const URLControlePresenca = `${BASE_URL}/presencacultos`
-  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`
-  const router = useRouter()
+  const URLControlePresenca = `${BASE_URL}/presencacultos`;
+  const URLPresencaCultoId = `${BASE_URL}/presencacultosbycelula/${culto}/${supervisorId}`;
+  const router = useRouter();
   const {
     handleSubmit,
     register,
     reset,
     formState: { errors },
-  } = useForm<attendance>()
-  const { data: session } = useSession()
-  const axiosAuth = useAxiosAuth(session?.user?.token as string)
+  } = useForm<attendance>();
+  const { data: session } = useSession();
+  const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const getPresenceRegistered = async () => {
-    const response = await axiosAuth.get(URLPresencaCultoId)
-    const PresenceExistRegistered = await response.data
-    return PresenceExistRegistered
-  }
+    const response = await axiosAuth.get(URLPresencaCultoId);
+    const PresenceExistRegistered = await response.data;
+    return PresenceExistRegistered;
+  };
 
   const { data: PresenceExistRegister, isLoading } = useQuery({
     queryKey: ['presenceBySupervisor'],
     queryFn: getPresenceRegistered,
     retry: false,
-  })
+  });
 
   // Funcao para submeter os dados do Formulario Preenchido
   const onSubmit: SubmitHandler<attendance> = async (data) => {
     try {
-      const status = data.status === 'true'
+      const status = data.status === 'true';
       const response = await axiosAuth.post(URLControlePresenca, {
         ...data,
         status,
-      })
-      const presenceRedister = response.data
+      });
+      const presenceRedister = response.data;
       if (!presenceRedister) {
-        throw new Error('Failed to submit dados de presenca')
+        throw new Error('Failed to submit dados de presenca');
       }
-      success('😉 Presenças Registradas!')
-      reset()
-      router.refresh()
+      toast('😉 Presenças Registradas!');
+      reset();
+      router.refresh();
     } catch (error) {
-      console.error('error: ', error)
+      console.error('error: ', error);
     }
-  }
+  };
 
   return (
     <>
@@ -138,7 +136,6 @@ export default function ControlePresencaSupervisor({
             </p>
           ) : (
             <>
-              <ToastContainer />
               <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
                 <div className="w-full px-2 py-2 ">
                   <div className="w-full px-1 py-2 rounded-md">
@@ -307,5 +304,5 @@ export default function ControlePresencaSupervisor({
         </>
       )}
     </>
-  )
+  );
 }

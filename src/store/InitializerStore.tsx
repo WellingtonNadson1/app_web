@@ -6,7 +6,7 @@ import {
   Escolas,
   SituacoesNoReino,
   SupervisaoData,
-} from '@/app/(private)/(central)/novo-membro/schema';
+} from '@/app/(private)/(central)/central/novo-membro/schema';
 import { useRef } from 'react';
 import { useCombinedStore } from './DataCombineted';
 

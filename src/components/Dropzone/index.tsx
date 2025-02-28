@@ -1,43 +1,43 @@
-'use client'
+'use client';
 
-import { errorCadastro, success } from '@/functions/functions'
-import { UploadSimple } from '@phosphor-icons/react'
-import { useSession } from 'next-auth/react'
-import { useCallback, useState } from 'react'
-import { useDropzone } from 'react-dropzone'
-import { SubmitHandler, useForm } from 'react-hook-form'
+import { UploadSimple } from '@phosphor-icons/react';
+import { useSession } from 'next-auth/react';
+import { useCallback, useState } from 'react';
+import { useDropzone } from 'react-dropzone';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 interface ILicaoCelula {
-  title: string
-  versiculoChave: string
-  data_inicio: string
-  data_termino: string
+  title: string;
+  versiculoChave: string;
+  data_inicio: string;
+  data_termino: string;
 }
 
 function DropzoneUpload() {
   // Logica Submit Data to BackEnd
   // const hostname = 'app-ibb.onrender.com'
   // const URLSupervisoes = `https://${hostname}/supervisoes`
-  const hostname = 'back-ibb.vercel.app'
-  const URLCelulas = `https://${hostname}/celulas`
+  const hostname = 'back-ibb.vercel.app';
+  const URLCelulas = `https://${hostname}/celulas`;
 
-  const { data: session } = useSession()
-  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false)
-  const [formSuccess, setFormSuccess] = useState(false)
-  const { register, handleSubmit, reset } = useForm<ILicaoCelula>()
+  const { data: session } = useSession();
+  const [isLoadingSubmitForm, setIsLoadingSubmitForm] = useState(false);
+  const [formSuccess, setFormSuccess] = useState(false);
+  const { register, handleSubmit, reset } = useForm<ILicaoCelula>();
 
   const onSubmit: SubmitHandler<ILicaoCelula> = async (data) => {
     try {
-      console.log('Celula: ', data)
-      setIsLoadingSubmitForm(true)
+      console.log('Celula: ', data);
+      setIsLoadingSubmitForm(true);
 
       const formatDatatoISO8601 = (dataString: string) => {
-        const dataObj = new Date(dataString)
-        return dataObj.toISOString()
-      }
+        const dataObj = new Date(dataString);
+        return dataObj.toISOString();
+      };
 
-      data.data_inicio = formatDatatoISO8601(data.data_inicio)
-      data.data_termino = formatDatatoISO8601(data.data_termino)
+      data.data_inicio = formatDatatoISO8601(data.data_inicio);
+      data.data_termino = formatDatatoISO8601(data.data_termino);
 
       const response = await fetch(URLCelulas, {
         method: 'POST',
@@ -46,36 +46,36 @@ function DropzoneUpload() {
           Authorization: `Bearer ${session?.user?.token}`,
         },
         body: JSON.stringify(data),
-      })
+      });
 
       if (response.ok) {
-        setIsLoadingSubmitForm(false)
-        setFormSuccess(true)
-        success('Lição Cadastrada')
+        setIsLoadingSubmitForm(false);
+        setFormSuccess(true);
+        toast('Lição Cadastrada');
       } else {
-        errorCadastro('Erro ao Cadastrar Lição')
+        toast('Erro ao Cadastrar Lição');
       }
     } catch (error) {
-      console.log(error)
-      errorCadastro('Erro ao Cadastrar Lição')
+      console.log(error);
+      toast('Erro ao Cadastrar Lição');
     }
-    reset()
-  }
+    reset();
+  };
 
   // Logica Drop
-  const [uploadFiles, setUploadFiles] = useState<File | null>(null)
+  const [uploadFiles, setUploadFiles] = useState<File | null>(null);
 
   const onDrop = useCallback((files: File[]) => {
-    setUploadFiles(files[0])
-  }, [])
+    setUploadFiles(files[0]);
+  }, []);
 
-  if (uploadFiles) return null
+  if (uploadFiles) return null;
 
   const { getRootProps, getInputProps, isDragActive, isDragReject } =
     useDropzone({
       accept: { 'application/pdf': ['.pdf'] },
       onDrop,
-    })
+    });
   return (
     <>
       <div className="sm:max-w-lg w-full p-10 bg-white rounded-xl z-10">
@@ -294,7 +294,7 @@ function DropzoneUpload() {
         </div>
       </div>
     </>
-  )
+  );
 }
 
-export default DropzoneUpload
+export default DropzoneUpload;

@@ -15,12 +15,12 @@ export default function DynamicBreadcrumbs() {
   const pathSegments = pathname.split('/').filter(Boolean); // Remove strings vazias
 
   // Se estiver na página /dashboard, exibe apenas o nome dela
-  if (pathname === '/dashboard') {
+  if (pathname === '/central') {
     return (
       <Breadcrumb>
         <BreadcrumbList>
           <BreadcrumbItem>
-            <BreadcrumbPage>Dashboard</BreadcrumbPage>
+            <BreadcrumbPage>Central</BreadcrumbPage>
           </BreadcrumbItem>
         </BreadcrumbList>
       </Breadcrumb>
@@ -32,7 +32,7 @@ export default function DynamicBreadcrumbs() {
       <BreadcrumbList>
         {/* Adiciona Home apenas se não estiver na página inicial */}
         <BreadcrumbItem>
-          <BreadcrumbLink href="/dashboard">Home</BreadcrumbLink>
+          <BreadcrumbLink href="/central">Home</BreadcrumbLink>
         </BreadcrumbItem>
 
         {pathSegments.map((segment, index) => {

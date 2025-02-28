@@ -4,7 +4,7 @@ import {
   Escolas,
   SituacoesNoReino,
   SupervisaoData,
-} from '@/app/(private)/(central)/novo-membro/schema';
+} from '@/app/(private)/(central)/central/novo-membro/schema';
 import { create } from 'zustand';
 import { createJSONStorage, persist } from 'zustand/middleware';
 

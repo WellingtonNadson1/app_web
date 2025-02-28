@@ -16,8 +16,6 @@ import {
 import { Progress } from '@/components/ui/progress';
 import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group';
 import { Separator } from '@/components/ui/separator';
-import { Toaster } from '@/components/ui/toaster';
-import { useToast } from '@/components/ui/use-toast';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Spinner, User } from '@phosphor-icons/react/dist/ssr';
@@ -27,6 +25,7 @@ import { useSession } from 'next-auth/react';
 import { useEffect, useRef, useState } from 'react';
 import { ControlePresencaCelulaProps } from '../../schema';
 import { FormSchema, dataForms } from './shcema-controle-first-presence';
+import { toast } from 'sonner';
 
 function isError(error: unknown): error is Error {
   return error instanceof Error;
@@ -45,7 +44,6 @@ export function RegisterPresenceFormFirst({
   const [progress, setProgress] = useState<number>(0);
   const [isCompleted, setIsCompleted] = useState(false);
   const timerRef = useRef<NodeJS.Timeout | null>(null);
-  const { toast } = useToast();
 
   const getPresenceRegistered = async () => {
     const { data } = await axiosAuth.get(URLPresencaCultoId);
@@ -122,11 +120,7 @@ export function RegisterPresenceFormFirst({
       // Invalidando queries para refetch
 
       queryClient.invalidateQueries({ queryKey: ['NewPresenceRegistered'] });
-      toast({
-        variant: 'default',
-        title: 'Successo',
-        description: 'Presença registrada com sucesso.',
-      });
+      toast('Presença registrada com sucesso.');
       setIsCompleted(true);
     },
   });
@@ -157,31 +151,15 @@ export function RegisterPresenceFormFirst({
     setIsCompleted(false);
     try {
       await createPresencaCultoFn(data);
-      toast({
-        variant: 'default',
-        title: 'Successo',
-        description: 'Presença registrada com sucesso.',
-      });
+      toast('Presença registrada com sucesso.');
     } catch (error) {
       const axiosError = error as AxiosError;
 
       if (isError(axiosError)) {
         console.log(axiosError);
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: `${
-            axiosError.response?.status === 409
-              ? 'Presença de Culto já Registrada para hoje!'
-              : axiosError.message
-          }`,
-        });
+        toast('Ocorreu um Erro');
       } else {
-        toast({
-          variant: 'destructive',
-          title: 'Ocorreu um Erro',
-          description: `Um erro desconhecido ocorreu.`,
-        });
+        toast(`Um erro desconhecido ocorreu.`);
       }
     }
   }
@@ -205,7 +183,6 @@ export function RegisterPresenceFormFirst({
             </p>
           ) : (
             <>
-              <Toaster />
               <div id={id}>
                 <div className="relative w-full px-4 py-2 mx-auto bg-white shadow-lg rounded-xl">
                   <div className="w-full px-2 py-2">
