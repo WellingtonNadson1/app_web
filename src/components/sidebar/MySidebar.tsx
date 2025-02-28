@@ -103,8 +103,8 @@ export default function MySidebar() {
         >
           <ThemeImage
             alt="Logo IBB"
-            srcLight="images/logo-ibb-1.svg"
-            srcDark="images/logo-mini-dark.svg"
+            srcLight="/apple-touch-icon.png"
+            srcDark="/apple-touch-icon.png"
             onClick={() => router.push(pathAtual)}
             width={54}
             height={54}

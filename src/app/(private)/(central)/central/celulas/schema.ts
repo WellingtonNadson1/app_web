@@ -72,6 +72,26 @@ export const schemaFormCelula = z.object({
 
 export type FormCelula = z.infer<typeof schemaFormCelula>;
 
+// Schema para o payload enviado ao backend (compatível com o Prisma)
+export const schemaPayloadCelula = z.object({
+  id: z.string().optional(),
+  nome: z.string().optional(),
+  lider: z.object({ id: z.string() }).optional(),
+  supervisao: z.object({ id: z.string() }).optional(),
+  cep: z.string().optional(),
+  cidade: z.string().optional(),
+  estado: z.string().optional(),
+  bairro: z.string().optional(),
+  endereco: z.string().optional(),
+  numero_casa: z.string().optional(),
+  date_inicio: z.date().optional(),
+  date_multipicar: z.date().optional(),
+  date_que_ocorre: z.string().optional(),
+  membros: z.string().array().optional(), // Array de IDs para o backend
+});
+
+export type PayloadCelula = z.infer<typeof schemaPayloadCelula>;
+
 const schemaCelula = z.object({
   id: z.string(),
   nome: z.string(),

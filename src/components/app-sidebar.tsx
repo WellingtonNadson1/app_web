@@ -1,4 +1,4 @@
-'use client'
+'use client';
 import {
   Sidebar,
   SidebarContent,
@@ -14,13 +14,13 @@ import {
   SidebarSeparator,
   SidebarTrigger,
   useSidebar,
-} from '@/components/ui/sidebar'
-import { cn } from '@/lib/utils'
-import { HandHeart, House, Plus, SignOut, Users } from '@phosphor-icons/react'
-import { usePathname, useRouter } from 'next/navigation'
-import { useState } from 'react'
-import ThemeImage from './theme-image'
-import { Button } from './ui/button'
+} from '@/components/ui/sidebar';
+import { cn } from '@/lib/utils';
+import { HandHeart, House, Plus, SignOut, Users } from '@phosphor-icons/react';
+import { usePathname, useRouter } from 'next/navigation';
+import { useState } from 'react';
+import ThemeImage from './theme-image';
+import { Button } from './ui/button';
 
 // Menu items.
 const items = [
@@ -39,13 +39,13 @@ const items = [
     url: '#',
     icon: HandHeart,
   },
-]
+];
 
 export function AppSidebar() {
-  const [isCollapsed, setIsCollapsed] = useState(false)
-  const { open, isMobile } = useSidebar()
-  const route = useRouter()
-  const pathAtual = usePathname()
+  const [isCollapsed, setIsCollapsed] = useState(false);
+  const { open, isMobile } = useSidebar();
+  const route = useRouter();
+  const pathAtual = usePathname();
   return (
     <div className="flex">
       <Sidebar
@@ -68,8 +68,8 @@ export function AppSidebar() {
           >
             <ThemeImage
               alt="Logo IBB"
-              srcLight="images/logo-ibb-1.svg"
-              srcDark="images/logo-mini-dark.svg"
+              srcLight="/apple-touch-icon.png"
+              srcDark="/apple-touch-icon.png"
               onClick={() => route.push(pathAtual)}
               width={isCollapsed ? 32 : 54}
               height={isCollapsed ? 32 : 54}
@@ -134,5 +134,5 @@ export function AppSidebar() {
         className={cn('z-50 mt-6 p-2', isCollapsed ? 'ml-2' : 'ml-4')}
       />
     </div>
-  )
+  );
 }

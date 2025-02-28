@@ -26,8 +26,8 @@ const MobileLogoHeader = memo(function MobileLogoHeader() {
     <div className="flex items-center justify-center md:hidden py-2">
       <ThemeImage
         alt="Logo IBB"
-        srcLight="images/logo-ibb-1.svg"
-        srcDark="images/logo-mini-dark.svg"
+        srcLight="/apple-touch-icon.png"
+        srcDark="/apple-touch-icon.png"
         width={54}
         height={54}
       />
