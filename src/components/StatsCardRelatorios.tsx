@@ -1,12 +1,12 @@
-'use client'
-import { cn } from '@/lib/utils'
+'use client';
+import { cn } from '@/lib/utils';
 import {
   GraduationCap,
   HandHeart,
   Users,
   UsersFour,
-} from '@phosphor-icons/react'
-import Link from 'next/link'
+} from '@phosphor-icons/react';
+import Link from 'next/link';
 
 export default function StatsCardRelatorios() {
   const escolasIbb = [
@@ -36,9 +36,9 @@ export default function StatsCardRelatorios() {
       supervisor: 'Discipulados Realizados',
       icon: HandHeart,
       color: 'bg-sky-800',
-      href: '/relatorios/register',
+      href: '/central/relatorios/register',
     },
-  ]
+  ];
   return (
     <div className="relative z-10 w-full py-2 mx-auto">
       <div className="relative z-10 grid flex-wrap items-center justify-between w-full grid-cols-1 gap-4 p-2 mx-auto mt-3 sm:grid-cols-2 md:flex-nowrap">
@@ -68,5 +68,5 @@ export default function StatsCardRelatorios() {
         ))}
       </div>
     </div>
-  )
+  );
 }
