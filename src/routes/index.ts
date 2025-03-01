@@ -3,6 +3,7 @@
  */
 
 export const publicRoutes: string[] = [
+  '/',
   '/login',
   '/auth/new-verification',
   '/portfolio',
@@ -59,7 +60,11 @@ export const privateRoutesSupervisorLider: string[] = [
 /**
  * @type {string[]}
  */
-export const privateRoutes: string[] = ['/notification', '/auth'];
+export const privateRoutes: string[] = [
+  '/notification',
+  '/auth',
+  '/access-denied',
+];
 
 /**
  * @type {string}
@@ -69,6 +74,7 @@ export const apiAuthPrefix: string = '/api/auth';
 /**
  * @type {string}
  */
+export const ACCESS_DENIED: string = '/access-denied';
 export const DEFAULT_LOGIN: string = '/login';
 export const DEFAULT_LOGIN_REDIRECT_CENTRAL: string = '/central/dashboard';
 export const DEFAULT_LOGIN_REDIRECT_CELULA: string = '/celula';

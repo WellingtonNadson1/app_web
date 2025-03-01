@@ -1,4 +1,5 @@
 import {
+  ACCESS_DENIED,
   apiAuthPrefix,
   DEFAULT_LOGIN,
   DEFAULT_LOGIN_REDIRECT_CELULA,
@@ -82,13 +83,19 @@ export default async function middleware(req: NextRequest) {
       return redirectIfNeeded(DEFAULT_LOGIN);
     }
     if (isPrivateRouteCelula && !hasRole('USERLIDER')) {
-      return alert(
-        'Acesso negado: você não tem permissão para acessar esta página.',
+      return NextResponse.redirect(
+        new URL(
+          `${ACCESS_DENIED}?error=Acesso negado: você não tem permissão para acessar esta página.`,
+          req.url,
+        ),
       );
     }
     if (isPrivateRouteSupervisor && !hasRole('USERSUPERVISOR')) {
-      return alert(
-        'Acesso negado: você não tem permissão para acessar esta página.',
+      return NextResponse.redirect(
+        new URL(
+          `${ACCESS_DENIED}?error=Acesso negado: você não tem permissão para acessar esta página.`,
+          req.url,
+        ),
       );
     }
 
