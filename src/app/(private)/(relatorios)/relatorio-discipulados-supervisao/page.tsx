@@ -46,6 +46,7 @@ import {
 } from './schema';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
+import BackButton from '@/components/back-button';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
@@ -162,10 +163,14 @@ export default function DiscipuladosRelatoriosSupervisoes() {
                 </div>
               </div>
 
+              <div className="flex items-center justify-start gap-4">
+                <BackButton label="Voltar" className="my-6" />
+              </div>
+
               {/* FORMS */}
               <Form {...form}>
                 <form onSubmit={form.handleSubmit(handleRelatorio)}>
-                  <div className="grid grid-cols-1 items-center justify-center mt-10 gap-2 gap-y-6 sm:grid-cols-12">
+                  <div className="grid grid-cols-1 items-center justify-center gap-2 gap-y-6 sm:grid-cols-12">
                     <div className="sm:col-span-2">
                       <FormField
                         control={form.control}

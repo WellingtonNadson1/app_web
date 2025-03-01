@@ -47,7 +47,10 @@ import {
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
 import Cookies from 'js-cookie';
-import { Spinner } from '@phosphor-icons/react';
+import { ArrowUUpLeft, Spinner } from '@phosphor-icons/react';
+import { useRouter } from 'next/navigation';
+import Link from 'next/link';
+import BackButton from '@/components/back-button';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -267,6 +270,8 @@ export default function StatsCardRelatorios() {
     setNumberOfRowsCell(rowsNameCell);
   }, [groupedForCell, idCultos]);
 
+  const router = useRouter();
+
   return (
     <Fragment>
       <div className="relative z-40 p-2 bg-white rounded-sm">
@@ -293,6 +298,8 @@ export default function StatsCardRelatorios() {
                   </h2>
                 </div>
               </div>
+
+              <BackButton label="Voltar" className="my-6" />
 
               {/* FORMS */}
               <Form {...form}>
@@ -608,15 +615,15 @@ export default function StatsCardRelatorios() {
             </div>
 
             <table className="text-sm text-left text-gray-500 auto-table dark:text-gray-400">
-              <thead className={cn(`p-2 text-center`, `${newCorSupervisao}`)}>
+              <thead className={cn(`p-2 text-center `, `${newCorSupervisao}`)}>
                 <Fragment>
-                  <tr className="mx-4 p-2">
-                    <th>
+                  <tr className="mx-4 p-2 ">
+                    <th className="border border-zinc-100">
                       <h1 className="p-2 font-bold text-center text-white uppercase">
                         CÉLULAS
                       </h1>
                     </th>
-                    <th>
+                    <th className="border border-zinc-100">
                       <h1 className="p-2 font-bold text-center text-white uppercase">
                         MEMBROS
                       </h1>
@@ -624,7 +631,7 @@ export default function StatsCardRelatorios() {
                     <th className="flex-col items-center justify-center w-20 h-20 p-2 bg-white border text-zinc-700">
                       <div>
                         <h1 className="font-bold text-center uppercase">
-                          % PRES. TOTAL
+                          TOTAL PRES.
                         </h1>
                       </div>
                     </th>
@@ -685,7 +692,7 @@ export default function StatsCardRelatorios() {
                     {datasUnic &&
                       datasUnic.map((dataCulto, dataCultoIndex) => (
                         <th
-                          className="flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white"
+                          className="border border-zinc-100 flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white"
                           key={dataCultoIndex}
                         >
                           <div>
@@ -727,23 +734,43 @@ export default function StatsCardRelatorios() {
                           <span>{groupedForCell[cellName].length}</span>
                         </p>
                       </td>
-                      <td className="px-4">
+                      <td>
                         {groupedForCell[cellName].map((member) => (
-                          <tr className="w-20 h-20 py-4" key={member.id}>
-                            <div className="flex flex-col justify-center h-20 text-white">
+                          <tr className="h-20" key={member.id}>
+                            <div className="px-4 py-4 border-b border-zinc-100 flex flex-col justify-center h-20 text-white">
                               {member.first_name}
                             </div>
                           </tr>
                         ))}
                       </td>
                       <td className="border">
-                        {groupedForCell[cellName].map((member) => (
-                          <tr className="" key={member.id}>
-                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
-                              {member.cultos.porcentagemPresencaTotal} %
-                            </div>
-                          </tr>
-                        ))}
+                        {groupedForCell[cellName].map((member) => {
+                          // Calcula o total de presenças verdadeiras
+                          const presencas = member.presencas_cultos.filter(
+                            (status) => status.status === true,
+                          ).length;
+                          // Calcula a porcentagem
+                          const porcentagem = (presencas / totalCultos) * 100;
+                          // Define a classe de cor com base na porcentagem
+                          const corClasse =
+                            porcentagem < 50
+                              ? 'text-red-600'
+                              : 'text-green-600';
+
+                          return (
+                            <tr className="" key={member.id}>
+                              <div className="flex gap-1 items-center justify-center w-20 h-20 border-b bg-slate-50">
+                                <span className="text-slate-600 font-bold">
+                                  {totalCultos}
+                                </span>{' '}
+                                /{' '}
+                                <span className={`${corClasse} font-bold`}>
+                                  {presencas}
+                                </span>
+                              </div>
+                            </tr>
+                          );
+                        })}
                       </td>
                       {totalCultosPrimicias ? (
                         <td className="border">
@@ -835,11 +862,10 @@ export default function StatsCardRelatorios() {
                                   className={cn(
                                     'flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200',
                                     presenceCulto?.status === true
-                                      ? 'bg-green-100'
-                                      : 'bg-zinc-100',
-                                    presenceCulto?.status === false
-                                      ? 'bg-red-100'
-                                      : 'bg-zinc-100',
+                                      ? 'bg-green-50'
+                                      : presenceCulto?.status === false
+                                        ? 'bg-red-50'
+                                        : 'bg-zinc-50',
                                   )}
                                   key={cultoId + indexMember}
                                 >

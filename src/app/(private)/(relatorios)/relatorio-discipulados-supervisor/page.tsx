@@ -20,6 +20,7 @@ import {
 } from './schema';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
+import BackButton from '@/components/back-button';
 dayjs.extend(utc);
 dayjs.extend(timezone);
 dayjs.locale(ptBr);
@@ -185,7 +186,11 @@ export default function DiscipuladosRelatoriosSupervisor() {
                   </div>
                 </div>
 
-                <div className="flex items-center mt-4 gap-x-4">
+                <div className="flex items-center justify-start gap-4">
+                  <BackButton label="Voltar" className="my-6" />
+                </div>
+
+                <div className="flex items-center gap-x-4">
                   <div className="p-3">
                     <div className="flex items-center gap-x-5">
                       <div>
