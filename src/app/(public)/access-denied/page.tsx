@@ -11,16 +11,8 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ShieldWarning } from '@phosphor-icons/react';
-import { useSearchParams } from 'next/navigation';
-import { toast } from 'sonner';
 
 export default function AccessDenied() {
-  const searchParams = useSearchParams();
-  const error = searchParams.get('error');
-
-  if (error) {
-    toast.error(error);
-  }
   return (
     <div className="flex min-h-screen items-center justify-center bg-background p-4">
       <Card className="mx-auto max-w-md text-center">
