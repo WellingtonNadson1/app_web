@@ -40,12 +40,16 @@ export default function Supervisao({
   const URLSupervisoresDiscipulos = `${BASE_URL}/users/alldiscipuladossupervisores`;
   const { dicipuladosupervisaoId } = useParams();
 
+  console.log('dicipuladosupervisaoId', dicipuladosupervisaoId);
+
   const { state } = useCombinedStore();
   const supervisoesAll = state.supervisoes;
 
   const supervisao = supervisoesAll?.filter(
     (supervisao) => supervisao.id === dicipuladosupervisaoId,
   );
+
+  console.log('supervisao', supervisao);
 
   const cargoLideranca = state.cargoLideranca;
   const cargoLiderancaSupervisores = cargoLideranca?.filter(
