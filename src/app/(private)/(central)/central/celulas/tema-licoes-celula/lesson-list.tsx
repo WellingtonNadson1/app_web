@@ -1,37 +1,37 @@
-import { Button } from '@/components/ui/button'
+import { Button } from '@/components/ui/button';
 import {
   Card,
   CardContent,
   CardFooter,
   CardHeader,
   CardTitle,
-} from '@/components/ui/card'
+} from '@/components/ui/card';
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { useState } from 'react'
-import { LessonRegistrationForm } from './lesson-registration-form'
+} from '@/components/ui/dialog';
+import { useState } from 'react';
+import { LessonRegistrationForm } from './lesson-registration-form';
 
 type Lesson = {
-  id: string
-  themeId: string
-  title: string
-  keyVerse: string
-  date: Date
-}
+  id: string;
+  themeId: string;
+  title: string;
+  keyVerse: string;
+  date: Date;
+};
 
 type LessonListProps = {
-  lessons: Lesson[]
-  onEdit: (lesson: Lesson) => void
-  onDelete: (lessonId: string) => void
-}
+  lessons: Lesson[];
+  onEdit: (lesson: Lesson) => void;
+  onDelete: (lessonId: string) => void;
+};
 
 export function LessonList({ lessons, onEdit, onDelete }: LessonListProps) {
-  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null)
+  const [editingLesson, setEditingLesson] = useState<Lesson | null>(null);
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
@@ -66,8 +66,8 @@ export function LessonList({ lessons, onEdit, onDelete }: LessonListProps) {
                   <LessonRegistrationForm
                     themeId={editingLesson.themeId}
                     onSubmit={(updatedLesson) => {
-                      onEdit(updatedLesson)
-                      setEditingLesson(null)
+                      onEdit(updatedLesson);
+                      setEditingLesson(null);
                     }}
                   />
                 )}
@@ -80,5 +80,5 @@ export function LessonList({ lessons, onEdit, onDelete }: LessonListProps) {
         </Card>
       ))}
     </div>
-  )
+  );
 }

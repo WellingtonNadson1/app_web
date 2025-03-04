@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,19 +9,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Toaster } from '@/components/ui/toaster'
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { Notepad } from '@phosphor-icons/react/dist/ssr'
-import { ColumnDef } from '@tanstack/react-table'
-import dayjs from 'dayjs'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-import Link from 'next/link'
-import { useRouter } from 'next/navigation'
-import { z } from 'zod'
-import DeleteLIcaoCelula from '../../DeleteLicaoCelula'
-import UpdateLicoesCelula from '../../UpdateLicoesCelula'
-import { allLicaoReturnSchemaTable } from './schema-licoes'
+} from '@/components/ui/dropdown-menu';
+import { Toaster } from '@/components/ui/toaster';
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
+import { Notepad } from '@phosphor-icons/react/dist/ssr';
+import { ColumnDef } from '@tanstack/react-table';
+import dayjs from 'dayjs';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import DeleteLIcaoCelula from '../../DeleteLicaoCelula';
+import UpdateLicoesCelula from '../../UpdateLicoesCelula';
+import { allLicaoReturnSchemaTable } from './schema-licoes';
 
 export const columnsLicoes: ColumnDef<
   z.infer<typeof allLicaoReturnSchemaTable>
@@ -38,10 +38,10 @@ export const columnsLicoes: ColumnDef<
           L. Redes
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const data = row.original
+      const data = row.original;
       return (
         <div className="flex w-full items-center justify-start mx-auto">
           {data.licao_lancando_redes ? (
@@ -53,7 +53,7 @@ export const columnsLicoes: ColumnDef<
             <Badge className={`bg-sky-400 hover:bg-sky-300`}> normal </Badge>
           )}
         </div>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -69,10 +69,10 @@ export const columnsLicoes: ColumnDef<
           Titulo
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const data = row.original
+      const data = row.original;
       return (
         <div className="flex w-full items-center justify-start ">
           <div>
@@ -86,7 +86,7 @@ export const columnsLicoes: ColumnDef<
             <p className="ml-3">{data.titulo}</p> // Renderiza o título mesmo sem o link
           )}
         </div>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -103,11 +103,11 @@ export const columnsLicoes: ColumnDef<
           Data Iníc.
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const data = row.original
-      const dataInicio = dayjs(data.data_inicio).format('DD/MM/YYYY')
+      const data = row.original;
+      const dataInicio = dayjs(data.data_inicio).format('DD/MM/YYYY');
       return (
         <div className="flex w-full items-center justify-start ">
           {/* <div>
@@ -115,7 +115,7 @@ export const columnsLicoes: ColumnDef<
           </div> */}
           <p className="ml-3">{dataInicio}</p>
         </div>
-      )
+      );
     },
     filterFn: 'fuzzy',
   },
@@ -131,11 +131,11 @@ export const columnsLicoes: ColumnDef<
           Data Fim
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      const data = row.original
-      const dataTermino = dayjs(data.data_termino).format('DD/MM/YYYY')
+      const data = row.original;
+      const dataTermino = dayjs(data.data_termino).format('DD/MM/YYYY');
       return (
         <div className="flex w-full items-center justify-start ">
           {/* <div>
@@ -143,7 +143,7 @@ export const columnsLicoes: ColumnDef<
           </div> */}
           <p className="ml-3">{dataTermino}</p>
         </div>
-      )
+      );
     },
     filterFn: 'fuzzy',
   },
@@ -151,15 +151,15 @@ export const columnsLicoes: ColumnDef<
   {
     id: 'actions',
     cell: ({ row }) => {
-      const celula = row.original
-      const router = useRouter()
-      const contextParamsSupervisaoId = useSupervisaoContext()
+      const celula = row.original;
+      const router = useRouter();
+      const contextParamsSupervisaoId = useSupervisaoContext();
       const handleClickLicaoCelula = (event: React.MouseEvent<HTMLElement>) => {
-        const idCelula = event.currentTarget.id
+        const idCelula = event.currentTarget.id;
         router.push(
           `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
-        )
-      }
+        );
+      };
 
       return (
         <>
@@ -188,7 +188,7 @@ export const columnsLicoes: ColumnDef<
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-      )
+      );
     },
   },
-]
+];

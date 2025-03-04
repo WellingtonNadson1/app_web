@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -10,27 +10,25 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { cn } from '@/lib/utils'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import axios from 'axios'
-import { format } from 'date-fns'
-import dayjs from 'dayjs'
-import { CalendarIcon, Loader2 } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+} from '@/components/ui/popover';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { CalendarIcon, Loader2 } from 'lucide-react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
-const DATE_REQUIRED_ERROR = 'Date is required.'
+const DATE_REQUIRED_ERROR = 'Date is required.';
 
 const formSchema = z.object({
   tema: z.string(),
@@ -47,27 +45,27 @@ const formSchema = z.object({
       { required_error: DATE_REQUIRED_ERROR },
     )
     .refine((date) => {
-      return !!date.from
+      return !!date.from;
     }, DATE_REQUIRED_ERROR),
   comment: z.string().min(1, { message: 'A comment is required.' }),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 type Theme = {
-  folderName: string
-}
+  folderName: string;
+};
 
 type ThemeRegistrationFormProps = {
-  onSubmitForm: (folderName: Theme) => void
-}
+  onSubmitForm: (folderName: Theme) => void;
+};
 
 export function ThemeRegistrationForm({
   onSubmitForm,
 }: ThemeRegistrationFormProps) {
-  const queryClient = useQueryClient()
-  const URLApi = '/api/licoes-celula/create-tema-folder'
-  const { toast } = useToast()
+  const queryClient = useQueryClient();
+  const URLApi = '/api/licoes-celula/create-tema-folder';
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     // resolver: zodResolver(formSchema),
@@ -80,18 +78,12 @@ export function ThemeRegistrationForm({
       },
       comment: '',
     },
-  })
+  });
 
   const CreateNewCelulaFunction = async (
     values: z.infer<typeof formSchema>,
   ) => {
-    const { data: session } = useSession()
-    const token = session?.user?.token as string
-    const axiosAuth = useAxiosAuth(token)
-
-    console.log('values', values)
-
-    const response = await axiosAuth.post(
+    const response = await axios.post(
       URLApi,
       {
         folderName: values.folderName,
@@ -104,58 +96,56 @@ export function ThemeRegistrationForm({
       },
       {
         headers: {
-          // 'Content-Type': 'application/json',
           'Content-Type': 'multipart/form-data',
         },
       },
-    )
-
-    form.reset()
-    return response.data
-  }
+    );
+    form.reset();
+    return response.data;
+  };
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
-      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] });
+      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] });
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     values,
   ) => {
-    const { folderName } = values
-    const { date } = values
-    const startDate = dayjs(date.from).format('DD-MMM-YY')
-    const endDate = dayjs(date.to).format('DD-MMM-YY')
+    const { folderName } = values;
+    const { date } = values;
+    const startDate = dayjs(date.from).format('DD-MMM-YY');
+    const endDate = dayjs(date.to).format('DD-MMM-YY');
 
     const formattedFolderName =
-      `${folderName.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase()
+      `${folderName.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
 
     const valuesFormated = {
       ...values,
       tema: folderName,
       folderName: formattedFolderName,
-    }
+    };
 
-    const response = await createNewCelulaFn(valuesFormated)
-    console.log('responseFolder: ', response)
+    const response = await createNewCelulaFn(valuesFormated);
+    console.log('responseFolder: ', response);
     if (response) {
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'TEMA Registrado com Sucesso. 😇',
-      })
-      form.reset()
+      });
+      form.reset();
     } else {
       toast({
         title: 'Erro!!!',
         description: 'Erro no Cadastro do TEMA. 😰',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
@@ -268,5 +258,5 @@ export function ThemeRegistrationForm({
         </form>
       </Form>
     </>
-  )
+  );
 }

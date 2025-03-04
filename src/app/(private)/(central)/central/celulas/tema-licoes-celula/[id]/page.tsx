@@ -1,40 +1,33 @@
-'use client'
-import { Toaster } from '@/components/ui/toaster'
-import { Spinner } from '@phosphor-icons/react/dist/ssr'
-import { useQuery } from '@tanstack/react-query'
-import { useSearchParams } from 'next/navigation'
-import { columnsLicoes } from './licoes-celula/table-licoes-celula/columns-licoes'
-import { DataTableLicoesCelulas } from './licoes-celula/table-licoes-celula/data-table-licoes-celulas'
-import { useSession } from 'next-auth/react'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
+'use client';
+import { Toaster } from '@/components/ui/toaster';
+import { Spinner } from '@phosphor-icons/react/dist/ssr';
+import { useQuery } from '@tanstack/react-query';
+import { useSearchParams } from 'next/navigation';
+import { columnsLicoes } from './licoes-celula/table-licoes-celula/columns-licoes';
+import { DataTableLicoesCelulas } from './licoes-celula/table-licoes-celula/data-table-licoes-celulas';
+import axios from 'axios';
 
 export default function Licao() {
-  const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`
-  const { data: session } = useSession()
-  const token = session?.user?.token as string
-  const axiosAuth = useAxiosAuth(token)
+  const URLLicoesCelula = `/api/licoes-celula/create-lesson-celula`;
 
-  const searchParams = useSearchParams()
+  const searchParams = useSearchParams();
 
-  const id = searchParams.get('id')
+  const id = searchParams.get('id');
 
   const getLicoesCelula = async () => {
-    const { data } = await axiosAuth.get(URLLicoesCelula, {
+    const { data } = await axios.get(URLLicoesCelula, {
       params: { id },
-    })
-    console.log('data lesson get: ', data)
-    return data
-  }
+    });
+    console.log('data lesson get: ', data);
+    return data;
+  };
 
-  const {
-    data: licoesCelula,
-    isLoading,
-  } = useQuery({
+  const { data: licoesCelula, isLoading } = useQuery({
     queryKey: ['licoesCelulasIbb'],
     queryFn: getLicoesCelula,
-  })
+  });
 
-  const licoesCelulaNotReturn: never[] = []
+  const licoesCelulaNotReturn: never[] = [];
 
   return (
     <>
@@ -57,5 +50,5 @@ export default function Licao() {
         )}
       </div>
     </>
-  )
+  );
 }

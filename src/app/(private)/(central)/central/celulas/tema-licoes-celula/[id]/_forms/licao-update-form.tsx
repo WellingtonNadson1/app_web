@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -10,27 +10,26 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { Switch } from '@/components/ui/switch'
-import { Textarea } from '@/components/ui/textarea'
-import { useToast } from '@/components/ui/use-toast'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { cn } from '@/lib/utils'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { format } from 'date-fns'
-import dayjs from 'dayjs'
-import { CalendarIcon, Loader2, Upload } from 'lucide-react'
-import { useSession } from 'next-auth/react'
-import { useState } from 'react'
-import { SubmitHandler, useForm } from 'react-hook-form'
-import * as z from 'zod'
+} from '@/components/ui/popover';
+import { Switch } from '@/components/ui/switch';
+import { Textarea } from '@/components/ui/textarea';
+import { useToast } from '@/components/ui/use-toast';
+import { cn } from '@/lib/utils';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { format } from 'date-fns';
+import dayjs from 'dayjs';
+import { CalendarIcon, Loader2, Upload } from 'lucide-react';
+import { useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
+import * as z from 'zod';
 
 const formSchema = z.object({
   titulo: z.string(),
@@ -53,31 +52,31 @@ const formSchema = z.object({
       { required_error: 'A data é obrigatória.' },
     )
     .refine((date) => {
-      return !!date.from
+      return !!date.from;
     }, 'A data inicial é obrigatória.'),
-})
+});
 
-type FormData = z.infer<typeof formSchema>
+type FormData = z.infer<typeof formSchema>;
 
 type Licao = {
-  licao_lancando_redes: boolean | undefined
-  id: string
-  titulo: string
-  versiculo_chave: string
-  data_inicio: string
-  data_termino: string
-  link_objeto_aws: string
-}
+  licao_lancando_redes: boolean | undefined;
+  id: string;
+  titulo: string;
+  versiculo_chave: string;
+  data_inicio: string;
+  data_termino: string;
+  link_objeto_aws: string;
+};
 
 type LicaoUpdateFormProps = {
-  licaoData: Licao
-}
+  licaoData: Licao;
+};
 
 export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
-  const [pdfName, setPdfName] = useState<string | null>(null)
-  const queryClient = useQueryClient()
-  const URLApi = '/api/licoes-celula/create-lesson-celula'
-  const { toast } = useToast()
+  const [pdfName, setPdfName] = useState<string | null>(null);
+  const queryClient = useQueryClient();
+  const URLApi = '/api/licoes-celula/create-lesson-celula';
+  const { toast } = useToast();
 
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
@@ -91,17 +90,12 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
         to: new Date(licaoData.data_termino),
       },
     },
-  })
+  });
 
   const CreateNewCelulaFunction = async (
     values: z.infer<typeof formSchema>,
   ) => {
-    const { data: session } = useSession()
-    const token = session?.user?.token as string
-    const axiosAuth = useAxiosAuth(token)
-
-    console.log('values', values)
-    const response = await axiosAuth.put(
+    const response = await axios.put(
       URLApi,
       {
         ...values,
@@ -112,32 +106,32 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
           'Content-Type': 'multipart/form-data',
         },
       },
-    )
-    form.reset()
-    return response.data
-  }
+    );
+    form.reset();
+    return response.data;
+  };
 
   const { mutateAsync: createNewCelulaFn, isPending } = useMutation({
     mutationFn: CreateNewCelulaFunction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
-      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] });
+      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] });
     },
-  })
+  });
 
   const onSubmit: SubmitHandler<z.infer<typeof formSchema>> = async (
     values,
   ) => {
-    const { titulo } = values
-    const { date } = values
-    const startDate = dayjs(date.from).format('DD-MMM-YY')
-    const endDate = dayjs(date.to).format('DD-MMM-YY')
+    const { titulo } = values;
+    const { date } = values;
+    const startDate = dayjs(date.from).format('DD-MMM-YY');
+    const endDate = dayjs(date.to).format('DD-MMM-YY');
 
     const formattedTituloName =
-      `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase()
+      `${titulo.trim().replace(/\s+/g, '-')}-${startDate}-${endDate}`.toLowerCase();
 
-    console.log('formattedTituloName', formattedTituloName)
-    console.log('values', values)
+    console.log('formattedTituloName', formattedTituloName);
+    console.log('values', values);
 
     const valuesFormated = {
       ...values,
@@ -145,32 +139,32 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
       id: licaoData.id,
       temaLicaoCelulaId: licaoData.id,
       folderName: formattedTituloName,
-    }
+    };
 
-    const response = await createNewCelulaFn(valuesFormated)
-    console.log('responseFolder: ', response)
+    const response = await createNewCelulaFn(valuesFormated);
+    console.log('responseFolder: ', response);
     if (response) {
       toast({
         variant: 'default',
         title: 'Successo',
         description: 'LIÇÀO Atualizado com Sucesso. 😇',
-      })
-      form.reset()
+      });
+      form.reset();
     } else {
       toast({
         title: 'Erro!!!',
         description: 'Erro na Atualização do LIÇÀO. 😰',
         variant: 'destructive',
-      })
+      });
     }
-  }
+  };
 
   return (
     <>
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit, (errors) => {
-            console.log('Validation errors:', errors)
+            console.log('Validation errors:', errors);
           })}
           className="space-y-8"
         >
@@ -278,10 +272,10 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
                       type="file"
                       accept=".pdf"
                       onChange={(e) => {
-                        const files = e.target.files
+                        const files = e.target.files;
                         if (files && files.length > 0) {
-                          onChange(files)
-                          setPdfName(files[0].name)
+                          onChange(files);
+                          setPdfName(files[0].name);
                         }
                       }}
                       {...field}
@@ -346,5 +340,5 @@ export function LicaoUpdateForm({ licaoData }: LicaoUpdateFormProps) {
         </form>
       </Form>
     </>
-  )
+  );
 }

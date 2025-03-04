@@ -47,7 +47,7 @@ import {
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
 import Cookies from 'js-cookie';
-import { ArrowUUpLeft, Spinner } from '@phosphor-icons/react';
+import { Spinner, WarningCircle } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import BackButton from '@/components/back-button';
@@ -692,7 +692,7 @@ export default function StatsCardRelatorios() {
                     {datasUnic &&
                       datasUnic.map((dataCulto, dataCultoIndex) => (
                         <th
-                          className="border border-zinc-100 flex-col items-center justify-center w-20 h-20 p-2 mb-2 text-white"
+                          className="border border-zinc-100 flex-col items-center justify-center w-20 h-20 p-2 text-white"
                           key={dataCultoIndex}
                         >
                           <div>
@@ -713,14 +713,14 @@ export default function StatsCardRelatorios() {
                   idCultos &&
                   Object.keys(groupedForCell).map((cellName, cellIndex) => (
                     <tr
-                      className="border-b border-slate-600"
+                      className="border-b bg-slate-50"
                       key={cellName + cellIndex}
                     >
                       <td className="px-4 bg-gray-50">
                         <p className="text-base font-medium text-black">
                           {cellName}
                         </p>
-                        <p className="text-sm font-medium text-slate-600">
+                        <p className="text-sm font-medium text-slate-600 w-36">
                           Líder:{' '}
                           <span className="font-normal">
                             {
@@ -734,16 +734,46 @@ export default function StatsCardRelatorios() {
                           <span>{groupedForCell[cellName].length}</span>
                         </p>
                       </td>
-                      <td>
-                        {groupedForCell[cellName].map((member) => (
-                          <tr className="h-20" key={member.id}>
-                            <div className="px-4 py-4 border-b border-zinc-100 flex flex-col justify-center h-20 text-white">
-                              {member.first_name}
-                            </div>
-                          </tr>
-                        ))}
+                      {/* LINK PARA ACESSAR DETALHE DO MEMBRO */}
+                      <td className="bg-slate-100 border border-zinc-200">
+                        {groupedForCell[cellName].map((member) => {
+                          // Calcula o total de presenças verdadeiras
+                          const presencas = member.presencas_cultos.filter(
+                            (status) => status.status === true,
+                          ).length;
+                          // Calcula a porcentagem
+                          const porcentagem = (presencas / totalCultos) * 100;
+                          const isMenor = porcentagem < 50;
+                          // Define a classe de cor com base na porcentagem
+                          const corClasse = isMenor
+                            ? 'bg-red-400 text-white'
+                            : 'bg-transparent';
+
+                          return (
+                            <tr
+                              className="h-20 w-full border-b border-zinc-200"
+                              key={member.id}
+                            >
+                              <Link
+                                href={`/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd/memberIdDetalhe?memberIdDetalhe=${member.id}`}
+                                className="block w-full" // Garante que o Link ocupe toda a largura
+                              >
+                                <div
+                                  className={`relative px-4 py-4 flex flex-col justify-center h-20 text-slate-600 w-36 ${corClasse}`}
+                                >
+                                  {member.first_name}
+                                  {isMenor ? (
+                                    <div className="absolute right-1 top-1 p-0 rounded-[50%] bg-white animate-pulse">
+                                      <WarningCircle color="red" size={24} />
+                                    </div>
+                                  ) : null}
+                                </div>
+                              </Link>
+                            </tr>
+                          );
+                        })}
                       </td>
-                      <td className="border">
+                      <td className="bg-slate-100 border border-zinc-200">
                         {groupedForCell[cellName].map((member) => {
                           // Calcula o total de presenças verdadeiras
                           const presencas = member.presencas_cultos.filter(
@@ -758,8 +788,11 @@ export default function StatsCardRelatorios() {
                               : 'text-green-600';
 
                           return (
-                            <tr className="" key={member.id}>
-                              <div className="flex gap-1 items-center justify-center w-20 h-20 border-b bg-slate-50">
+                            <tr
+                              className="border-b bg-slate-50"
+                              key={member.id}
+                            >
+                              <div className="flex gap-1 items-center justify-center w-20 h-20">
                                 <span className="text-slate-600 font-bold">
                                   {totalCultos}
                                 </span>{' '}
@@ -773,10 +806,13 @@ export default function StatsCardRelatorios() {
                         })}
                       </td>
                       {totalCultosPrimicias ? (
-                        <td className="border">
+                        <td className="bg-slate-100 border border-zinc-200">
                           {groupedForCell[cellName].map((member) => (
-                            <tr className="" key={member.id}>
-                              <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                            <tr
+                              className="border-b bg-slate-50"
+                              key={member.id}
+                            >
+                              <div className="flex flex-col items-center justify-center w-20 h-20">
                                 {member.cultos.porcentagemPresencaPrimicia} %
                               </div>
                             </tr>
@@ -786,10 +822,13 @@ export default function StatsCardRelatorios() {
                         <div className="hidden" />
                       )}
                       {totalCultosSacrificio ? (
-                        <td className="border">
+                        <td className="bg-slate-100 border border-zinc-200">
                           {groupedForCell[cellName].map((member) => (
-                            <tr className="" key={member.id}>
-                              <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                            <tr
+                              className="border-b bg-slate-50"
+                              key={member.id}
+                            >
+                              <div className="flex flex-col items-center justify-center w-20 h-20">
                                 {
                                   member.cultos
                                     .porcentagemPresencaDomingoSacrificio
@@ -802,10 +841,10 @@ export default function StatsCardRelatorios() {
                       ) : (
                         <div className="hidden" />
                       )}
-                      <td className="border">
+                      <td className="bg-slate-100 border border-zinc-200">
                         {groupedForCell[cellName].map((member) => (
-                          <tr className="" key={member.id}>
-                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                          <tr className="border-b bg-slate-50" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20">
                               {
                                 member.cultos
                                   .porcentagemPresencaTotalDomingoManha
@@ -815,10 +854,10 @@ export default function StatsCardRelatorios() {
                           </tr>
                         ))}
                       </td>
-                      <td className="border">
+                      <td className="bg-slate-100 border border-zinc-200">
                         {groupedForCell[cellName].map((member) => (
-                          <tr className="" key={member.id}>
-                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                          <tr className="border-b bg-slate-50" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20">
                               {
                                 member.cultos
                                   .porcentagemPresencaTotalDomingoTarde
@@ -828,19 +867,19 @@ export default function StatsCardRelatorios() {
                           </tr>
                         ))}
                       </td>
-                      <td className="border">
+                      <td className="bg-slate-100 border border-zinc-200">
                         {groupedForCell[cellName].map((member) => (
-                          <tr className="" key={member.id}>
-                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                          <tr className="border-b bg-slate-50" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20">
                               {member.cultos.porcentagemPresencaSabado} %
                             </div>
                           </tr>
                         ))}
                       </td>
-                      <td className="border">
+                      <td className="bg-slate-100 border border-zinc-200">
                         {groupedForCell[cellName].map((member) => (
-                          <tr className="" key={member.id}>
-                            <div className="flex flex-col items-center justify-center w-20 h-20 border-b bg-slate-50">
+                          <tr className="border-b bg-slate-50" key={member.id}>
+                            <div className="flex flex-col items-center justify-center w-20 h-20">
                               {member.cultos.porcentagemPresencaQuarta} %
                             </div>
                           </tr>
@@ -848,7 +887,7 @@ export default function StatsCardRelatorios() {
                       </td>
                       {idCultos.map((cultoId, indexCulto) => (
                         <td
-                          className="mx-4 mb-4 text-center border border-zinc-200"
+                          className="mx-4 text-center"
                           key={cultoId + indexCulto}
                         >
                           {groupedForCell[cellName].map(
@@ -858,32 +897,34 @@ export default function StatsCardRelatorios() {
                                   (p) => p.cultoIndividualId === cultoId,
                                 );
                               return (
-                                <div
-                                  className={cn(
-                                    'flex flex-col justify-center w-20 h-20 font-bold border-b border-zinc-200',
-                                    presenceCulto?.status === true
-                                      ? 'bg-green-50'
-                                      : presenceCulto?.status === false
-                                        ? 'bg-red-50'
-                                        : 'bg-zinc-50',
-                                  )}
-                                  key={cultoId + indexMember}
-                                >
-                                  {presenceCulto ? (
-                                    <Fragment>
-                                      {presenceCulto.status === true && (
-                                        <p className="text-green-600">P</p>
-                                      )}
-                                      {presenceCulto.status === false && (
-                                        <p className="text-red-600">F</p>
-                                      )}
-                                    </Fragment>
-                                  ) : (
-                                    <p className="font-normal text-slate-600">
-                                      -
-                                    </p>
-                                  )}
-                                </div>
+                                <tr className="border-b bg-slate-50">
+                                  <div
+                                    className={cn(
+                                      'flex flex-col justify-center w-20 h-20 font-bold',
+                                      presenceCulto?.status === true
+                                        ? 'bg-green-50'
+                                        : presenceCulto?.status === false
+                                          ? 'bg-red-50'
+                                          : 'bg-zinc-50',
+                                    )}
+                                    key={cultoId + indexMember}
+                                  >
+                                    {presenceCulto ? (
+                                      <Fragment>
+                                        {presenceCulto.status === true && (
+                                          <p className="text-green-600">P</p>
+                                        )}
+                                        {presenceCulto.status === false && (
+                                          <p className="text-red-600">F</p>
+                                        )}
+                                      </Fragment>
+                                    ) : (
+                                      <p className="font-normal text-slate-600">
+                                        -
+                                      </p>
+                                    )}
+                                  </div>
+                                </tr>
                               );
                             },
                           )}

@@ -38,10 +38,6 @@ export interface SupervisaoData {
   membros: User[];
 }
 
-type Theme = {
-  folderName: string;
-};
-
 export default function AddNewLicaoCelula() {
   const [open, setOpen] = useState(false);
 

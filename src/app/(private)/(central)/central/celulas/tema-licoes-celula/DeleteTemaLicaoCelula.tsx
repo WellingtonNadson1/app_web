@@ -1,5 +1,5 @@
-'use client'
-import { Button } from '@/components/ui/button'
+'use client';
+import { Button } from '@/components/ui/button';
 import {
   Dialog,
   DialogContent,
@@ -7,56 +7,52 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from '@/components/ui/dialog'
-import { DropdownMenuItem } from '@/components/ui/dropdown-menu'
-import { toast } from '@/components/ui/use-toast'
-import useAxiosAuth from '@/lib/hooks/useAxiosAuth'
-import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr'
-import { useMutation, useQueryClient } from '@tanstack/react-query'
-import { useSession } from 'next-auth/react'
-import { useState } from 'react'
+} from '@/components/ui/dialog';
+import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
+import { toast } from '@/components/ui/use-toast';
+import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { useState } from 'react';
 
 export default function DeleteTemaLIcaoCelula({
   temaLicaoCelulaId,
   TemaLicaoName,
 }: {
-  temaLicaoCelulaId: string
-  TemaLicaoName: string
+  temaLicaoCelulaId: string;
+  TemaLicaoName: string;
 }) {
-  const queryClient = useQueryClient()
+  const queryClient = useQueryClient();
 
   const deleteMemberFunction = async (temaLicaoCelulaId: string) => {
-    const URLTemasLicoesCelula = `/api/licoes-celula/create-tema-folder/?temaLicaoCelulaId=${temaLicaoCelulaId}`
-    const { data: session } = useSession()
-    const token = session?.user?.token as string
-    const axiosAuth = useAxiosAuth(token)
+    const URLTemasLicoesCelula = `/api/licoes-celula/create-tema-folder/?temaLicaoCelulaId=${temaLicaoCelulaId}`;
 
     try {
-      const response = await axiosAuth.delete(URLTemasLicoesCelula)
+      const response = await axios.delete(URLTemasLicoesCelula);
       toast({
         title: 'Sucesso!!!',
         description: 'Tema de Lição DELETADO com Sucesso!!! 🧨',
-      })
-      return response.data
+      });
+      return response.data;
     } catch (error) {
-      console.error(error)
+      console.error(error);
     }
-  }
+  };
 
   const { mutateAsync: deleteCelulaFn, isPending } = useMutation({
     mutationFn: deleteMemberFunction,
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] })
-      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] })
+      queryClient.invalidateQueries({ queryKey: ['temasCelulasIbb'] });
+      queryClient.invalidateQueries({ queryKey: ['licoesCelulasIbb'] });
     },
-  })
+  });
 
   const handleDeleteCelula = async (temaLicaoCelulaId: string) => {
-    await deleteCelulaFn(temaLicaoCelulaId)
-    setOpen(false)
-  }
+    await deleteCelulaFn(temaLicaoCelulaId);
+    setOpen(false);
+  };
 
-  const [open, setOpen] = useState(false)
+  const [open, setOpen] = useState(false);
 
   return (
     <>
@@ -102,5 +98,5 @@ export default function DeleteTemaLIcaoCelula({
         </DialogContent>
       </Dialog>
     </>
-  )
+  );
 }

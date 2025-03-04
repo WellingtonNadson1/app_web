@@ -1,5 +1,5 @@
-import { Button } from '@/components/ui/button'
-import { Calendar } from '@/components/ui/calendar'
+import { Button } from '@/components/ui/button';
+import { Calendar } from '@/components/ui/calendar';
 import {
   Form,
   FormControl,
@@ -7,28 +7,28 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '@/components/ui/popover'
-import { cn } from '@/lib/utils'
-import { format } from 'date-fns'
-import { CalendarIcon } from 'lucide-react'
-import { useForm } from 'react-hook-form'
+} from '@/components/ui/popover';
+import { cn } from '@/lib/utils';
+import { format } from 'date-fns';
+import { CalendarIcon } from 'lucide-react';
+import { useForm } from 'react-hook-form';
 
 type LessonFormData = {
-  title: string
-  keyVerse: string
-  date: Date
-}
+  title: string;
+  keyVerse: string;
+  date: Date;
+};
 
 type LessonRegistrationFormProps = {
-  themeId: string
-  onSubmit: (data: LessonFormData & { id: string; themeId: string }) => void
-}
+  themeId: string;
+  onSubmit: (data: LessonFormData & { id: string; themeId: string }) => void;
+};
 
 export function LessonRegistrationForm({
   themeId,
@@ -40,12 +40,12 @@ export function LessonRegistrationForm({
       keyVerse: '',
       date: new Date(),
     },
-  })
+  });
 
   const handleSubmit = (data: LessonFormData) => {
-    onSubmit({ ...data, id: Date.now().toString(), themeId })
-    form.reset()
-  }
+    onSubmit({ ...data, id: Date.now().toString(), themeId });
+    form.reset();
+  };
 
   return (
     <Form {...form}>
@@ -120,5 +120,5 @@ export function LessonRegistrationForm({
         <Button type="submit">Add Lesson</Button>
       </form>
     </Form>
-  )
+  );
 }
