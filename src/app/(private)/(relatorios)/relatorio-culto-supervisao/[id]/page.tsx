@@ -51,6 +51,7 @@ import { Spinner, WarningCircle } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import BackButton from '@/components/back-button';
+import MemberDetailsDialog from '@/components/member-details-dialog';
 
 dayjs.extend(localizedFormat);
 dayjs.extend(utc);
@@ -751,24 +752,24 @@ export default function StatsCardRelatorios() {
 
                           return (
                             <tr
-                              className="h-20 w-full border-b border-zinc-200"
+                              className="h-20 w-full border-b border-zinc-200 cursor-pointer"
                               key={member.id}
                             >
-                              <Link
-                                href={`/relatorio-culto-supervisao/5e392d1b-f425-4865-a730-5191bc0821cd/memberIdDetalhe?memberIdDetalhe=${member.id}`}
-                                className="block w-full" // Garante que o Link ocupe toda a largura
-                              >
-                                <div
-                                  className={`relative px-4 py-4 flex flex-col justify-center h-20 text-slate-600 w-36 ${corClasse}`}
-                                >
-                                  {member.first_name}
-                                  {isMenor ? (
-                                    <div className="absolute right-1 top-1 p-0 rounded-[50%] bg-white animate-pulse">
-                                      <WarningCircle color="red" size={24} />
-                                    </div>
-                                  ) : null}
-                                </div>
-                              </Link>
+                              <MemberDetailsDialog
+                                memberId={member.id}
+                                trigger={
+                                  <div
+                                    className={`relative px-4 py-4 flex flex-col justify-center h-20 text-slate-600 w-36 ${corClasse}`}
+                                  >
+                                    {member.first_name}
+                                    {isMenor ? (
+                                      <div className="absolute right-1 top-1 p-0 rounded-[50%] bg-white animate-pulse">
+                                        <WarningCircle color="red" size={24} />
+                                      </div>
+                                    ) : null}
+                                  </div>
+                                }
+                              />
                             </tr>
                           );
                         })}

@@ -4,9 +4,13 @@ import { HandsPraying, Confetti, ChartLineUp } from '@phosphor-icons/react';
 import { useStatsData } from '@/hooks/use-stats-data';
 import { StatCard } from '@/components/stat-card';
 import { SkeletonCard } from '@/components/skeleton-card';
+import { useAttendanceData } from '@/hooks/use-attendance-data';
+import { AttendanceCard } from '../attendance-card';
 
 export default function StatsCard() {
   const { data, isLoading, calculateGrowthPercentage } = useStatsData();
+  const { data: attendanceData, isLoading: isLoadingAttendance } =
+    useAttendanceData();
 
   // Renderizar esqueletos durante o carregamento
   if (isLoading) {
@@ -37,11 +41,11 @@ export default function StatsCard() {
   const anoTrend = anoGrowth >= 100 ? 'up' : 'down';
 
   return (
-    <div className="grid w-full grid-cols-1 gap-4 p-2 md:grid-cols-3">
+    <div className="grid w-full grid-cols-1 gap-4 p-2 md:grid-cols-2">
       {data && (
         <>
           <StatCard
-            title="Conversões nas Células"
+            title="Conversões Células/Mês"
             value={`${data.almasGanhasNoMes} almas`}
             previousValue={`${data.almasGanhasNoMesPassado} almas`}
             previousLabel="mês passado:"
@@ -62,15 +66,19 @@ export default function StatsCard() {
             percentage={anoGrowth}
           />
 
-          <StatCard
-            title="Frequência"
-            value="Em breve"
-            previousLabel="último culto:"
-            previousValue="--"
-            icon={ChartLineUp}
-            iconColor="bg-emerald-500"
-            trend="neutral"
-          />
+          {attendanceData ? (
+            <AttendanceCard cultos={attendanceData} />
+          ) : (
+            <StatCard
+              title="Frequência"
+              value="Sem dados"
+              previousLabel="último culto:"
+              previousValue="--"
+              icon={ChartLineUp}
+              iconColor="bg-emerald-500"
+              trend="neutral"
+            />
+          )}
         </>
       )}
     </div>

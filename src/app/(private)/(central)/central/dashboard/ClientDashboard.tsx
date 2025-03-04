@@ -146,7 +146,7 @@ export default function ClientDashboard({
       />
 
       <MainSide />
-      <ChartConversions />
+      {/* <ChartConversions /> */}
     </div>
   );
 }
