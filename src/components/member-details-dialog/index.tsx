@@ -5,18 +5,7 @@ import type React from 'react';
 import { useState } from 'react';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
-import {
-  Mail,
-  Phone,
-  School,
-  Users,
-  BookOpen,
-  Award,
-  Heart,
-  Home,
-  UserCheck,
-  Info,
-} from 'lucide-react';
+import { School, Heart, Info } from 'lucide-react';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -36,6 +25,17 @@ import { Member } from './schema';
 import { useSession } from 'next-auth/react';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { useQuery } from '@tanstack/react-query';
+import {
+  BookOpen,
+  HouseLine,
+  Users,
+  MedalMilitary,
+  OfficeChair,
+  UserCheck,
+  Mailbox,
+  Phone,
+  EnvelopeSimple,
+} from '@phosphor-icons/react';
 
 // Skeleton component for the dialog content
 function MemberDetailsDialogSkeleton() {
@@ -131,11 +131,11 @@ function MemberDetailsContent({ member }: { member: Member }) {
       {/* Quick contact info */}
       <div className="flex justify-center gap-4 flex-wrap">
         <div className="flex items-center gap-2">
-          <Mail className="h-4 w-4 text-muted-foreground" />
+          <EnvelopeSimple size={18} className="text-muted-foreground" />
           <span className="text-sm">{member.email}</span>
         </div>
         <div className="flex items-center gap-2">
-          <Phone className="h-4 w-4 text-muted-foreground" />
+          <Phone size={18} className="text-muted-foreground" />
           <span className="text-sm">{member.telefone}</span>
         </div>
       </div>
@@ -330,7 +330,9 @@ function MemberDetailsContent({ member }: { member: Member }) {
                   <p className="text-sm font-medium text-muted-foreground">
                     Situação no Reino
                   </p>
-                  <p>{member.situacao_no_reino?.nome || 'Não informado'}</p>
+                  <Badge variant={'secondary'}>
+                    {member.situacao_no_reino?.nome || 'Não informado'}
+                  </Badge>
                 </div>
               </div>
 
@@ -348,8 +350,8 @@ function MemberDetailsContent({ member }: { member: Member }) {
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {member.escolas && member.escolas.length > 0 ? (
-                        member.escolas.map((escola, index) => (
-                          <Badge key={index} variant="secondary">
+                        member.escolas.map((escola) => (
+                          <Badge key={escola.id} variant="secondary">
                             {escola.nome}
                           </Badge>
                         ))
@@ -368,8 +370,8 @@ function MemberDetailsContent({ member }: { member: Member }) {
                     </p>
                     <div className="flex flex-wrap gap-2 mt-2">
                       {member.encontros && member.encontros.length > 0 ? (
-                        member.encontros.map((encontro, index) => (
-                          <Badge key={index} variant="secondary">
+                        member.encontros.map((encontro) => (
+                          <Badge key={encontro.id} variant="secondary">
                             {encontro.nome}
                           </Badge>
                         ))
@@ -397,13 +399,16 @@ function MemberDetailsContent({ member }: { member: Member }) {
             <CardContent className="space-y-4">
               <div>
                 <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <UserCheck className="h-4 w-4 text-muted-foreground" />
+                  <UserCheck size={18} className="text-muted-foreground" />
                   Discipulador
                 </h4>
                 <div className="pl-6">
                   {discipulador.length > 0 ? (
                     discipulador.map((nome, index) => (
-                      <div key={index} className="flex items-center gap-2 mb-2">
+                      <div
+                        key={nome + index}
+                        className="flex items-center gap-2 mb-2"
+                      >
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="text-xs">
                             {nome.charAt(0)}
@@ -424,14 +429,17 @@ function MemberDetailsContent({ member }: { member: Member }) {
 
               <div>
                 <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                  <Users className="h-4 w-4 text-muted-foreground" />
+                  <Users size={18} className="text-muted-foreground" />
                   Discípulos:{' '}
                   <Badge>{discipulos ? discipulos.length : '0'}</Badge>
                 </h4>
                 <div className="pl-6">
                   {discipulos.length > 0 ? (
                     discipulos.map((nome, index) => (
-                      <div key={index} className="flex items-center gap-2 mb-2">
+                      <div
+                        key={nome + index}
+                        className="flex items-center gap-2 mb-2"
+                      >
                         <Avatar className="h-8 w-8">
                           <AvatarFallback className="text-xs">
                             {nome.charAt(0)}
@@ -470,30 +478,32 @@ function MemberDetailsContent({ member }: { member: Member }) {
             </CardHeader>
             <CardContent className="space-y-4">
               <div className="space-y-1">
-                <p className="text-sm font-medium text-muted-foreground">
+                <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <OfficeChair size={18} className="text-muted-foreground" />
                   Cargo de Liderança
-                </p>
+                </h4>
                 <p>
                   {member.cargo_de_lideranca?.nome ||
                     'Não possui cargo de liderança'}
                 </p>
               </div>
-
-              {member?.celula_lidera && (
-                <div>
-                  <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
-                    <Home className="h-4 w-4 text-muted-foreground" />
-                    Célula que Lidera
-                  </h4>
+              <div>
+                <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
+                  <HouseLine size={18} className=" text-muted-foreground" />
+                  Célula que Lidera
+                </h4>
+                {member.celula_lidera && member.celula_lidera.length > 0 ? (
                   <div className="pl-6">
-                    <Badge variant="secondary">
-                      {member?.celula_lidera.nome
-                        ? member?.celula_lidera.nome
-                        : 'Não lidera célula'}
-                    </Badge>
+                    {member?.celula_lidera?.map((celula) => (
+                      <Badge key={celula.id} variant="secondary">
+                        {celula.nome}
+                      </Badge>
+                    ))}
                   </div>
-                </div>
-              )}
+                ) : (
+                  'Não lidera célula'
+                )}
+              </div>
 
               {member.escola_lidera && member.escola_lidera.length > 0 && (
                 <div>
@@ -503,7 +513,7 @@ function MemberDetailsContent({ member }: { member: Member }) {
                   </h4>
                   <div className="pl-6 flex flex-wrap gap-2">
                     {member.escola_lidera.map((escola, index) => (
-                      <Badge key={index} variant="secondary">
+                      <Badge key={escola + index} variant="secondary">
                         {escola}
                       </Badge>
                     ))}
@@ -520,7 +530,7 @@ function MemberDetailsContent({ member }: { member: Member }) {
                     </h4>
                     <div className="pl-6 flex flex-wrap gap-2">
                       {member.supervisoes_lidera.map((supervisao, index) => (
-                        <Badge key={index} variant="secondary">
+                        <Badge key={supervisao + index} variant="secondary">
                           {supervisao}
                         </Badge>
                       ))}
@@ -535,7 +545,7 @@ function MemberDetailsContent({ member }: { member: Member }) {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <Award className="h-4 w-4" />
+                      <MedalMilitary size={18} />
                       Presenças em Cultos
                     </p>
                     <p className="text-sm">
@@ -547,7 +557,7 @@ function MemberDetailsContent({ member }: { member: Member }) {
                   </div>
                   <div className="space-y-1">
                     <p className="text-sm font-medium text-muted-foreground flex items-center gap-2">
-                      <BookOpen className="h-4 w-4" />
+                      <BookOpen size={18} />
                       Presenças em Aulas
                     </p>
                     <p className="text-sm">

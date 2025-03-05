@@ -93,6 +93,7 @@ export const MemberSchema = z.object({
       id: z.string(),
       nome: z.string(),
     })
+    .array()
     .optional(),
   escola_lidera: z.string().array().optional(),
   supervisoes_lidera: z.string().array().optional(),
