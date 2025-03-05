@@ -47,7 +47,7 @@ import {
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { BASE_URL } from '@/lib/axios';
 import Cookies from 'js-cookie';
-import { Spinner, WarningCircle } from '@phosphor-icons/react';
+import { HandsClapping, Spinner, WarningCircle } from '@phosphor-icons/react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 import BackButton from '@/components/back-button';
@@ -748,7 +748,7 @@ export default function StatsCardRelatorios() {
                           // Define a classe de cor com base na porcentagem
                           const corClasse = isMenor
                             ? 'bg-red-400 text-white'
-                            : 'bg-transparent';
+                            : 'bg-emerald-50';
 
                           return (
                             <tr
@@ -763,10 +763,17 @@ export default function StatsCardRelatorios() {
                                   >
                                     {member.first_name}
                                     {isMenor ? (
-                                      <div className="absolute right-1 top-1 p-0 rounded-[50%] bg-white animate-pulse">
+                                      <div className="absolute right-1 top-1 p-0 rounded-full bg-white animate-pulse">
                                         <WarningCircle color="red" size={24} />
                                       </div>
-                                    ) : null}
+                                    ) : (
+                                      <div className="absolute right-1 top-1 p-0 rounded-full bg-white animate-pulse">
+                                        <HandsClapping
+                                          color="green"
+                                          size={24}
+                                        />
+                                      </div>
+                                    )}
                                   </div>
                                 }
                               />

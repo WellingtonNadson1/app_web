@@ -330,7 +330,18 @@ function MemberDetailsContent({ member }: { member: Member }) {
                   <p className="text-sm font-medium text-muted-foreground">
                     Situação no Reino
                   </p>
-                  <Badge variant={'secondary'}>
+                  <Badge
+                    className={`${
+                      member.situacao_no_reino?.nome === 'Ativo'
+                        ? 'border border-green-200 bg-green-100 ring-green-500'
+                        : member.situacao_no_reino?.nome === 'Normal'
+                          ? 'border border-blue-200 bg-blue-100 ring-blue-500'
+                          : member.situacao_no_reino?.nome === 'Frio'
+                            ? 'border border-orange-200 bg-orange-100 ring-orange-500'
+                            : 'border border-red-200 bg-red-100 ring-red-500'
+                    }`}
+                    variant={'secondary'}
+                  >
                     {member.situacao_no_reino?.nome || 'Não informado'}
                   </Badge>
                 </div>
@@ -482,10 +493,10 @@ function MemberDetailsContent({ member }: { member: Member }) {
                   <OfficeChair size={18} className="text-muted-foreground" />
                   Cargo de Liderança
                 </h4>
-                <p>
+                <Badge className="mb-4" variant={'secondary'}>
                   {member.cargo_de_lideranca?.nome ||
                     'Não possui cargo de liderança'}
-                </p>
+                </Badge>
               </div>
               <div>
                 <h4 className="text-sm font-medium mb-2 flex items-center gap-2">
@@ -501,7 +512,7 @@ function MemberDetailsContent({ member }: { member: Member }) {
                     ))}
                   </div>
                 ) : (
-                  'Não lidera célula'
+                  <Badge variant="secondary">Não lidera célula</Badge>
                 )}
               </div>
 
