@@ -49,6 +49,7 @@ export const privateRoutesCelula: string[] = [
 export const privateRoutesSupervisor: string[] = [
   '/supervisao',
   '/supervisao/discipuladosregistersupervisor',
+  '/relatorio-culto-supervisao-supervisor',
 ];
 
 export const privateRoutesSupervisorLider: string[] = [

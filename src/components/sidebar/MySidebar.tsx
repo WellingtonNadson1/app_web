@@ -6,13 +6,13 @@ import { signOut, useSession } from 'next-auth/react';
 import { usePathname, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import ThemeImage from '../theme-image';
+import Link from 'next/link';
 import {
   sidebarCentral,
   sidebarLiderCelula,
   sidebarSupervisor,
   sidebarSupervisorLider,
 } from './LinksSidebar';
-import Link from 'next/link';
 
 export default function MySidebar() {
   const [open, setOpen] = useState(false);
@@ -128,7 +128,7 @@ export default function MySidebar() {
 
         <div className="flex flex-col gap-2">
           <ul className="relative flex flex-col pt-4 gap-y-2">
-            {renderLinks().map((item) => (
+            {renderLinks()?.map((item) => (
               <li key={item.name}>
                 <Link
                   href={item.href}

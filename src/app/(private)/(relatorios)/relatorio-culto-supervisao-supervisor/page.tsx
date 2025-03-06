@@ -15,16 +15,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@/components/ui/popover';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select';
 import { CorSupervision, ListSupervisores } from '@/contexts/ListSupervisores';
 import { cn } from '@/lib/utils';
-import { useData } from '@/providers/providers';
 import { CalendarIcon } from '@heroicons/react/24/outline';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addYears } from 'date-fns';
@@ -39,7 +31,7 @@ import { Fragment, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 import {
-  FormRelatorioDataSchema,
+  FormRelatorioSupervisaoDataSchema,
   GroupedForCulto,
   Pessoa,
   PresencaForDate,
@@ -57,9 +49,17 @@ dayjs.extend(timezone);
 dayjs.locale(ptBr);
 dayjs.tz.setDefault('America/Sao_Paulo');
 
-export default function StatsCardRelatorios() {
+export default function StatsCardRelatoriosSupervisao() {
   const token_session = Cookies.get('session_token');
   const { data: session, status } = useSession();
+
+  if (status === 'loading') {
+    <p>carregando...</p>;
+  }
+
+  const idSupervision = session?.user?.supervisao_pertence?.id;
+
+  console.log('idSupervision: ', idSupervision);
 
   const axiosAuth = useAxiosAuth(
     (token_session || session?.user?.token) as string,
@@ -91,22 +91,33 @@ export default function StatsCardRelatorios() {
   const [totalCultosDomingoTarde, setTotalCultosDomingoTarde] =
     useState<number>(0);
 
-  const form = useForm<z.infer<typeof FormRelatorioDataSchema>>({
-    resolver: zodResolver(FormRelatorioDataSchema),
+  const form = useForm<z.infer<typeof FormRelatorioSupervisaoDataSchema>>({
+    resolver: zodResolver(FormRelatorioSupervisaoDataSchema),
+    defaultValues: {
+      superVisionId: idSupervision || '', // Define o valor inicial, vazio se a sessão não estiver pronta
+    },
   });
 
   const today = new Date();
   const yearCalendar = addYears(today, 5).getFullYear();
 
-  // @ts-ignore
-  const { data: dataAllCtx } = useData();
-  const supervisoes = dataAllCtx?.combinedData[0];
+  // Atualiza o superVisionId no formulário quando a sessão estiver disponível
+  useEffect(() => {
+    if (status === 'authenticated' && idSupervision) {
+      form.setValue('superVisionId', idSupervision);
+    }
+  }, [status, idSupervision, form]);
+
+  useEffect(() => {
+    console.log('groupedForCell:', groupedForCell);
+    console.log('idCultos:', idCultos);
+  }, [groupedForCell, idCultos]);
 
   const handleRelatorio = async ({
     startDate,
     endDate,
     superVisionId,
-  }: z.infer<typeof FormRelatorioDataSchema>) => {
+  }: z.infer<typeof FormRelatorioSupervisaoDataSchema>) => {
     try {
       setIsLoadingSubmitForm(true);
 
@@ -217,12 +228,16 @@ export default function StatsCardRelatorios() {
       setIsLoadingSubmitForm(false);
       console.error('Erro ao buscar o relatório:', error);
       alert('Erro ao gerar o relatório. Verifique os dados e tente novamente.');
+    } finally {
+      setIsLoadingSubmitForm(false);
     }
   };
 
-  const handleFunctions = (data: z.infer<typeof FormRelatorioDataSchema>) => {
+  const handleFunctions = (
+    data: z.infer<typeof FormRelatorioSupervisaoDataSchema>,
+  ) => {
     console.log('Formulário submetido com dados:', data);
-    handleRelatorio(data);
+    handleRelatorio(data); // Apenas chama handleRelatorio, sem sobrescrever superVisionId
   };
 
   const groupDataByDateCulto = (relatorio: PresencaForDate[]) => {
@@ -268,6 +283,11 @@ export default function StatsCardRelatorios() {
         : [];
     setNumberOfRowsCell(rowsNameCell);
   }, [groupedForCell, idCultos]);
+
+  // Renderiza apenas se a sessão estiver carregada
+  if (status === 'loading') {
+    return <div>Carregando...</div>;
+  }
 
   return (
     <div className="relative z-40 p-2 bg-white rounded-sm">
@@ -415,42 +435,6 @@ export default function StatsCardRelatorios() {
                               </div>
                             </PopoverContent>
                           </Popover>
-                          <FormMessage />
-                        </FormItem>
-                      )}
-                    />
-                  </div>
-
-                  {/* SELECAO SUPERVISAO */}
-                  <div className="sm:col-span-2">
-                    <FormField
-                      control={form.control}
-                      name="superVisionId"
-                      render={({ field }) => (
-                        <FormItem className="flex flex-col">
-                          <FormLabel>Supervisão</FormLabel>
-                          <Select
-                            onValueChange={field.onChange}
-                            defaultValue={field.value}
-                          >
-                            <FormControl>
-                              <SelectTrigger>
-                                <SelectValue placeholder="Selecione uma supervisão" />
-                              </SelectTrigger>
-                            </FormControl>
-                            <SelectContent>
-                              {supervisoes &&
-                                // @ts-ignore
-                                supervisoes?.map((supervisao) => (
-                                  <SelectItem
-                                    key={supervisao.id}
-                                    value={supervisao.id}
-                                  >
-                                    {supervisao.nome}
-                                  </SelectItem>
-                                ))}
-                            </SelectContent>
-                          </Select>
                           <FormMessage />
                         </FormItem>
                       )}

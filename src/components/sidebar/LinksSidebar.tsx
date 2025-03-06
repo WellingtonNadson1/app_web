@@ -1,3 +1,4 @@
+import { auth } from '@/auth';
 import {
   Baby,
   Calendar,
@@ -43,6 +44,11 @@ export const sidebarSupervisor = [
     name: 'Discipulados',
     icon: HandHeart,
     href: '/supervisao/discipuladosregistersupervisor',
+  },
+  {
+    name: 'Relatórios',
+    icon: ChartBar,
+    href: `/relatorio-culto-supervisao-supervisor`,
   },
 ];
 export const sidebarSupervisorLider = [

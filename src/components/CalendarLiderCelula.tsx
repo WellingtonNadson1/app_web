@@ -55,10 +55,6 @@ export default function CalendarLiderCelula() {
   const [selectedDay, setSelectedDay] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM-yyyy'));
 
-  if (!token) {
-    return <SpinnerButton message={''} />;
-  }
-
   const dataHoje = new Date();
   const firstDayOfMonth = new Date(
     dataHoje.getFullYear(),
@@ -71,22 +67,28 @@ export default function CalendarLiderCelula() {
     0,
   );
 
+  // Move useQuery to the top and handle token absence gracefully
   const { data, isLoading } = useQuery<Meeting>({
-    queryKey: ['meetingsData'],
+    queryKey: ['meetingsData', token], // Include token in queryKey to refetch when token changes
     queryFn: async () => {
+      if (!token) {
+        return []; // Return an empty array if no token is available
+      }
       const { data } = await axiosAuth.post(URLCultosInd, {
         firstDayOfMonth,
         lastDayOfMonth,
       });
-      return data;
+      return data || []; // Ensure a defined value is returned (e.g., fallback to empty array)
     },
+    enabled: !!token, // Only run the query if token exists
   });
 
-  if (isLoading) {
+  // Early return for loading state
+  if (!token || isLoading) {
     return <SpinnerButton message={''} />;
   }
-  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
 
+  const firstDayCurrentMonth = parse(currentMonth, 'MMM-yyyy', new Date());
   const days = eachDayOfInterval({
     start: firstDayCurrentMonth,
     end: endOfMonth(firstDayCurrentMonth),
@@ -97,7 +99,7 @@ export default function CalendarLiderCelula() {
   );
 
   return (
-    <Card className=" bg-white relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
+    <Card className="bg-white relative flex flex-col w-full gap-3 px-2 mx-auto mt-3 mb-4">
       <div className="pt-4">
         <div className="px-2 py-4 bg-white rounded-lg">
           <div className="max-w-md px-4 mx-auto sm:px-4 md:max-w-4xl md:px-6">
@@ -163,7 +165,6 @@ export default function CalendarLiderCelula() {
                           {format(day, 'd')}
                         </time>
                       </button>
-                      {/* Pontos de Eventos */}
                       <div className="flex items-center justify-center gap-1 mx-auto">
                         {data &&
                           data.some((meeting) =>
@@ -193,7 +194,6 @@ export default function CalendarLiderCelula() {
                   ))}
                 </div>
               </div>
-              {/* Section for the Events Day */}
               <section className="mt-12 md:mt-0 md:pl-14">
                 <h2 className="font-semibold text-gray-900">
                   Agenda para{' '}
@@ -307,6 +307,7 @@ function MeetingComponent({ meeting }: { meeting: meetingsch }) {
   );
 }
 
+// Rest of your code (MeetingComponent and colStartClasses) remains unchanged
 const colStartClasses = [
   '',
   'col-start-2',
