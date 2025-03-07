@@ -45,11 +45,11 @@ export const sidebarSupervisor = [
     icon: HandHeart,
     href: '/supervisao/discipuladosregistersupervisor',
   },
-  {
-    name: 'Relatórios',
-    icon: ChartBar,
-    href: `/relatorio-culto-supervisao-supervisor`,
-  },
+  // {
+  //   name: 'Relatórios',
+  //   icon: ChartBar,
+  //   href: `/relatorio-culto-supervisao-supervisor`,
+  // },
 ];
 export const sidebarSupervisorLider = [
   { name: 'Célula', icon: Users, href: '/celula' },

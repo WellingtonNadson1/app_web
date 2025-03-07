@@ -18,6 +18,7 @@ import DeleteMember from '../DeleteMember';
 import UpdateMember from '../UpdateMember';
 import { userSchemaTable } from './schema';
 import StatusMembro from './StatusMembro';
+import { cn } from '@/lib/utils';
 
 export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   // NOME MEMBRO
@@ -99,14 +100,51 @@ export const columns: ColumnDef<z.infer<typeof userSchemaTable>>[] = [
   // SUPERVISÃO
   {
     accessorKey: 'supervisao_pertence.nome',
-    header: () => <div className="hidden sm:block">Supervisão</div>,
-    cell: ({ row }) => {
-      row.getValue('supervisao_pertence.nome');
-      const { supervisao_pertence } = row.original;
+    header: ({ column }) => {
       return (
-        <Badge className="w-full py-1 items-center hidden sm:table-cell text-xs font-medium text-gray-700 bg-gray-50 hover:bg-gray-100">
-          {supervisao_pertence?.nome}
-        </Badge>
+        <Button
+          className="sm:flex items-center justify-between hidden"
+          variant="ghost"
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+        >
+          Supervisão
+          <ArrowUpDown className="hidden sm:table-cell ml-2 h-4 w-4" />
+        </Button>
+      );
+    },
+    cell: ({ row }) => {
+      row.getValue('supervisao.nome');
+      const membro = row.original;
+
+      const supervisaoNome = membro?.supervisao_pertence?.nome as
+        | 'vermelha'
+        | 'azul'
+        | 'laranja'
+        | 'amarela'
+        | 'verde';
+
+      // Mapeamento das cores com base no nome da supervisão
+      const corBadge: {
+        [key in 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde']: string;
+      } = {
+        vermelha: 'bg-red-100 text-red-700 hover:bg-red-200',
+        azul: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
+        laranja: 'bg-orange-100 text-orange-700 hover:bg-orange-200',
+        amarela: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
+        verde: 'bg-green-100 text-green-700 hover:bg-green-200',
+      };
+
+      return (
+        <div className="sm:block hidden w-full items-center justify-start ">
+          <Badge
+            className={cn(
+              corBadge[supervisaoNome] ||
+                'bg-gray-100 text-gray-700 hover:bg-gray-200',
+            )}
+          >
+            {supervisaoNome}
+          </Badge>
+        </div>
       );
     },
     filterFn: 'includesString',

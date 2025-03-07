@@ -1,7 +1,7 @@
-'use client'
+'use client';
 
-import { Badge } from '@/components/ui/badge'
-import { Button } from '@/components/ui/button'
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,19 +9,19 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import { Toaster } from '@/components/ui/toaster'
-import { useSupervisaoContext } from '@/contexts/supervisao/supervisao'
-import { cn } from '@/lib/utils'
-import { HouseLine, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr'
-import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { z } from 'zod'
-import DeleteCelula from '../DeleteCelula'
-import UpdateCelula2 from '../UpdateCelula2'
-import UpdateDataOcorreCelula from '../UpdateDataOcorreCelula'
-import { celulaSchemaTable } from './schema'
+} from '@/components/ui/dropdown-menu';
+import { Toaster } from '@/components/ui/toaster';
+import { useSupervisaoContext } from '@/contexts/supervisao/supervisao';
+import { cn } from '@/lib/utils';
+import { HouseLine, MagnifyingGlass } from '@phosphor-icons/react/dist/ssr';
+import { ColumnDef } from '@tanstack/react-table';
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import { z } from 'zod';
+import DeleteCelula from '../DeleteCelula';
+import UpdateCelula2 from '../UpdateCelula2';
+import UpdateDataOcorreCelula from '../UpdateDataOcorreCelula';
+import { celulaSchemaTable } from './schema';
 
 export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
   // NOME CELULA
@@ -36,11 +36,11 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
           Célula
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('first_name')
-      const celula = row.original
+      row.getValue('first_name');
+      const celula = row.original;
       return (
         <div className="flex w-full items-center justify-start ">
           <div>
@@ -48,7 +48,7 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
           </div>
           <p className="ml-3">{celula?.nome}</p>
         </div>
-      )
+      );
     },
     filterFn: 'includesString',
   },
@@ -56,7 +56,7 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
   {
     accessorKey: 'lider.first_name',
     header: ({ column }) => {
-      console.log('columnLider', column)
+      console.log('columnLider', column);
       return (
         <Button
           variant="ghost"
@@ -65,12 +65,12 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
           Líder
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('lider.first_name')
-      const celula = row.original
-      console.log('celula lider', celula)
+      row.getValue('lider.first_name');
+      const celula = row.original;
+      console.log('celula lider', celula);
 
       return (
         <div className="flex w-full items-center justify-start ">
@@ -81,7 +81,7 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
             {celula?.lider?.first_name}
           </p>
         </div>
-      )
+      );
     },
     filterFn: 'fuzzy',
   },
@@ -98,29 +98,29 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
           Supervisão
           <ArrowUpDown className="ml-2 h-4 w-4" />
         </Button>
-      )
+      );
     },
     cell: ({ row }) => {
-      row.getValue('supervisao.nome')
-      const celula = row.original
+      row.getValue('supervisao.nome');
+      const celula = row.original;
 
       const supervisaoNome = celula?.supervisao?.nome as
         | 'vermelha'
         | 'azul'
         | 'laranja'
         | 'amarela'
-        | 'verde'
+        | 'verde';
 
       // Mapeamento das cores com base no nome da supervisão
       const corBadge: {
-        [key in 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde']: string
+        [key in 'vermelha' | 'azul' | 'laranja' | 'amarela' | 'verde']: string;
       } = {
         vermelha: 'bg-red-100 text-red-700 hover:bg-red-200',
         azul: 'bg-blue-100 text-blue-700 hover:bg-blue-200',
         laranja: 'bg-orange-100 text-orange-700 hover:bg-orange-200',
         amarela: 'bg-yellow-100 text-yellow-700 hover:bg-yellow-200',
         verde: 'bg-green-100 text-green-700 hover:bg-green-200',
-      }
+      };
 
       return (
         <div className="sm:block hidden w-full items-center justify-start ">
@@ -133,22 +133,21 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
             {supervisaoNome}
           </Badge>
         </div>
-      )
+      );
     },
   },
   // OPÇÕES
   {
     id: 'actions',
     cell: ({ row }) => {
-      const celula = row.original
-      const router = useRouter()
-      const contextParamsSupervisaoId = useSupervisaoContext()
+      const celula = row.original;
+      const router = useRouter();
       const handleClickCelula = (event: React.MouseEvent<HTMLElement>) => {
-        const idCelula = event.currentTarget.id
+        const idCelula = event.currentTarget.id;
         router.push(
-          `/supervisoes/${contextParamsSupervisaoId}/celulas/${idCelula}`,
-        )
-      }
+          `/central/supervisoes/${celula?.supervisao?.id}/celulas/${idCelula}`,
+        );
+      };
 
       return (
         <>
@@ -204,7 +203,7 @@ export const columns: ColumnDef<z.infer<typeof celulaSchemaTable>>[] = [
             </DropdownMenuContent>
           </DropdownMenu>
         </>
-      )
+      );
     },
   },
-]
+];
