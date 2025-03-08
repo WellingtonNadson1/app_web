@@ -1,5 +1,4 @@
 'use client';
-import { CelulaData } from '@/components/listMembersCelula';
 import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { useQuery } from '@tanstack/react-query';
@@ -7,6 +6,22 @@ import axios from 'axios';
 import { useSession } from 'next-auth/react';
 import { columns } from '../table-users-celula/columns';
 import { DataTableUsersCelula } from '../table-users-celula/data-table-users-celula';
+import { ReturnMembers } from '../../../../novo-membro/schema';
+
+export interface CelulaData {
+  id: string;
+  nome: string;
+  membros: ReturnMembers[];
+  lider: {
+    id: string;
+    first_name: string;
+  };
+  supervisao: {
+    id: string;
+    nome: string;
+  };
+  date_que_ocorre: boolean;
+}
 
 export default function ControleCelulaSupervision({
   params: { celulaId },
