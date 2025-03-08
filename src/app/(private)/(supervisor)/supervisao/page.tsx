@@ -59,6 +59,7 @@ export default function ControleSupervisor() {
   const { data, isLoading, isSuccess } = useQuery<Meeting>({
     queryKey: ['meetingsData'],
     queryFn: MeetingsData,
+    enabled: !!token,
     refetchOnWindowFocus: false,
   });
 
