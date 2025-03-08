@@ -1,5 +1,5 @@
 'use client';
-import { BASE_URL, BASE_URL_LOCAL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { useQuery } from '@tanstack/react-query';
 import axios from 'axios';
@@ -16,7 +16,7 @@ export default function NovoMembro() {
   const token = session?.user.token as string;
   const axiosAuth = useAxiosAuth(token);
 
-  const URL = `${BASE_URL_LOCAL}/users`;
+  const URL = `${BASE_URL}/users`;
 
   const Members = async () => {
     try {

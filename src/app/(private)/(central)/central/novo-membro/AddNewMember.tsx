@@ -33,7 +33,7 @@ import {
   CommandList,
 } from '@/components/ui/command';
 import { Separator } from '@/components/ui/separator';
-import { BASE_URL, BASE_URL_LOCAL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { cn } from '@/lib/utils';
 import { useData } from '@/providers/providers';
@@ -171,7 +171,7 @@ function AddNewMember() {
 
   // Busca de todos os membros para o campo discipulador
   const fetchMembers = async () => {
-    const { data } = await axiosAuth.get(`${BASE_URL_LOCAL}/users`);
+    const { data } = await axiosAuth.get(`${BASE_URL}/users`);
     return data;
   };
 
@@ -221,7 +221,7 @@ function AddNewMember() {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: AddUserForm) =>
-      axiosAuth.post(`${BASE_URL_LOCAL}/users`, {
+      axiosAuth.post(`${BASE_URL}/users`, {
         ...data,
         password: 'JesusCristoReina',
       }),

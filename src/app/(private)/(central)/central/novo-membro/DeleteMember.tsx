@@ -9,7 +9,7 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { BASE_URL, BASE_URL_LOCAL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
@@ -30,7 +30,7 @@ function DeleteMember({
   const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const deleteMemberFunction = async (MemberId: string) => {
-    const URLMember = `${BASE_URL_LOCAL}/users/${memberId}`;
+    const URLMember = `${BASE_URL}/users/${memberId}`;
     try {
       const response = await axiosAuth.delete(URLMember);
       toast.success('Membro DELETADO com Sucesso!!! 🥳');

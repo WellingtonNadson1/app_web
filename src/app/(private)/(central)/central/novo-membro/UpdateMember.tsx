@@ -24,7 +24,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { BASE_URL_LOCAL } from '@/lib/axios';
+import { BASE_URL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { cn } from '@/lib/utils';
 import { useData } from '@/providers/providers';
@@ -225,7 +225,7 @@ function UpdateMember({ member }: { member: TUser }) {
 
   // Busca de todos os membros para o campo discipulador
   const fetchMembers = async () => {
-    const { data } = await axiosAuth.get(`${BASE_URL_LOCAL}/users`);
+    const { data } = await axiosAuth.get(`${BASE_URL}/users`);
     return data;
   };
 
@@ -241,7 +241,7 @@ function UpdateMember({ member }: { member: TUser }) {
 
   const { mutate, isPending } = useMutation({
     mutationFn: (data: UpdateUserForm) =>
-      axiosAuth.put(`${BASE_URL_LOCAL}/users/${member.id}`, data),
+      axiosAuth.put(`${BASE_URL}/users/${member.id}`, data),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['members', 'allMembers'] });
       toast.success('Membro atualizado com sucesso!');
