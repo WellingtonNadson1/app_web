@@ -8,7 +8,6 @@ import { UserCircleDashed } from '@phosphor-icons/react/dist/ssr';
 import { useQuery } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
-import { CelulaData } from '@/components/listMembersCelula';
 import {
   dataSchemaGetDiscipuladoAllCell,
   dataSchemaReturnExistDiscipuladoAllCell,
@@ -17,6 +16,22 @@ import Scheleton from '../components/listMembersCelulaDiscipulado/scheleton';
 import FormFirstDiscipulado from '../components/listMembersCelulaDiscipulado/FormFirstDiscipulado';
 import FormSecondDiscipulado from '../components/listMembersCelulaDiscipulado/FormSecondDiscipulado';
 import HeaderCelulaDiscipulados from './HeaderCelulaDiscipulados';
+import { ReturnMembers } from '@/app/(private)/(central)/central/novo-membro/schema';
+
+export interface CelulaData {
+  id: string;
+  nome: string;
+  membros: ReturnMembers[];
+  lider: {
+    id: string;
+    first_name: string;
+  };
+  supervisao: {
+    id: string;
+    nome: string;
+  };
+  date_que_ocorre: boolean;
+}
 
 export default function ListMembersCelulaDiscipulado() {
   const handlePageChange = (newPage: number) => {
