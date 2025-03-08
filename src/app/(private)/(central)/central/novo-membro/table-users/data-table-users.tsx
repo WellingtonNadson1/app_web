@@ -1,4 +1,4 @@
-'use client'
+'use client';
 
 import {
   ColumnDef,
@@ -13,16 +13,16 @@ import {
   getSortedRowModel,
   sortingFns,
   useReactTable,
-} from '@tanstack/react-table'
+} from '@tanstack/react-table';
 
 // A TanStack fork of Kent C. Dodds' match-sorter library that provides ranking information
 import {
   RankingInfo,
   compareItems,
   rankItem,
-} from '@tanstack/match-sorter-utils'
+} from '@tanstack/match-sorter-utils';
 
-import { Input } from '@/components/ui/input'
+import { Input } from '@/components/ui/input';
 import {
   Table,
   TableBody,
@@ -30,63 +30,63 @@ import {
   TableHead,
   TableHeader,
   TableRow,
-} from '@/components/ui/table'
-import { useState } from 'react'
-import AddNewMember from '../AddNewMember'
-import { DataTablePagination } from './table-pagination'
+} from '@/components/ui/table';
+import { useState } from 'react';
+import AddNewMember from '../AddNewMember';
+import { DataTablePagination } from './table-pagination';
 
 interface DataTableProps<TData, TValue> {
-  columns: ColumnDef<TData, TValue>[]
-  data: TData[]
+  columns: ColumnDef<TData, TValue>[];
+  data: TData[];
 }
 
 declare module '@tanstack/react-table' {
   //add fuzzy filter to the filterFns
   interface FilterFns {
-    fuzzy: FilterFn<unknown>
+    fuzzy: FilterFn<unknown>;
   }
   interface FilterMeta {
-    itemRank: RankingInfo
+    itemRank: RankingInfo;
   }
 }
 
 // Define a custom fuzzy filter function that will apply ranking info to rows (using match-sorter utils)
 const fuzzyFilter: FilterFn<any> = (row, columnId, value, addMeta) => {
   // Rank the item
-  const itemRank = rankItem(row.getValue(columnId), value)
+  const itemRank = rankItem(row.getValue(columnId), value);
 
   // Store the itemRank info
   addMeta({
     itemRank,
-  })
+  });
 
   // Return if the item should be filtered in/out
-  return itemRank.passed
-}
+  return itemRank.passed;
+};
 
 // Define a custom fuzzy sort function that will sort by rank if the row has ranking information
 const fuzzySort: SortingFn<any> = (rowA, rowB, columnId) => {
-  let dir = 0
+  let dir = 0;
 
   // Only sort by rank if the column has ranking information
   if (rowA.columnFiltersMeta[columnId]) {
     dir = compareItems(
       rowA.columnFiltersMeta[columnId]?.itemRank!,
       rowB.columnFiltersMeta[columnId]?.itemRank!,
-    )
+    );
   }
 
   // Provide an alphanumeric fallback for when the item ranks are equal
-  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir
-}
+  return dir === 0 ? sortingFns.alphanumeric(rowA, rowB, columnId) : dir;
+};
 
 export function DataTableUsers<TData, TValue>({
   columns,
   data,
 }: DataTableProps<TData, TValue>) {
-  const [sorting, setSorting] = useState<SortingState>([])
-  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
-  const [globalFilter, setGlobalFilter] = useState('')
+  const [sorting, setSorting] = useState<SortingState>([]);
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
+  const [globalFilter, setGlobalFilter] = useState('');
 
   const table = useReactTable({
     data,
@@ -107,16 +107,16 @@ export function DataTableUsers<TData, TValue>({
     getFilteredRowModel: getFilteredRowModel(),
     onSortingChange: setSorting,
     getSortedRowModel: getSortedRowModel(),
-  })
+  });
 
   const situationNormal = data?.filter(
     // @ts-ignore
     (situatio) => situatio?.situacao_no_reino?.nome === 'Normal',
-  )
+  );
   const situationAtivo = data?.filter(
     // @ts-ignore
     (situatio) => situatio?.situacao_no_reino?.nome === 'Ativo',
-  )
+  );
 
   return (
     <div className="px-4 py-4 rounded-xl bg-white">
@@ -166,7 +166,7 @@ export function DataTableUsers<TData, TValue>({
           value={globalFilter ?? ''}
           onChange={(event) => {
             // table.getColumn("empresa_vistoriada.cnpj")?.setFilterValue(event.target.value)
-            setGlobalFilter(String(event.target.value))
+            setGlobalFilter(String(event.target.value));
           }}
           className="sm:max-w-sm"
         />
@@ -187,7 +187,7 @@ export function DataTableUsers<TData, TValue>({
                             header.getContext(),
                           )}
                     </TableHead>
-                  )
+                  );
                 })}
               </TableRow>
             ))}
@@ -222,28 +222,9 @@ export function DataTableUsers<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      {/* Pagination Control */}
-      {/* <div className="flex items-center justify-end space-x-2 py-4">
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-        >
-          Anterior
-        </Button>
-        <Button
-          variant="outline"
-          size="sm"
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-        >
-          Próxima
-        </Button>
-      </div> */}
       <div className="space-x-2 py-4">
         <DataTablePagination table={table} />
       </div>
     </div>
-  )
+  );
 }

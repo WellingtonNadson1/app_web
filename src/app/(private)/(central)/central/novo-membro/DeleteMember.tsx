@@ -9,13 +9,13 @@ import {
   DialogTrigger,
 } from '@/components/ui/dialog';
 import { DropdownMenuItem } from '@/components/ui/dropdown-menu';
-import { toast } from '@/components/ui/use-toast';
-import { BASE_URL } from '@/lib/axios';
+import { BASE_URL, BASE_URL_LOCAL } from '@/lib/axios';
 import useAxiosAuth from '@/lib/hooks/useAxiosAuth';
 import { Spinner, Trash } from '@phosphor-icons/react/dist/ssr';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useSession } from 'next-auth/react';
 import { useState } from 'react';
+import { toast } from 'sonner';
 
 function DeleteMember({
   memberId,
@@ -30,24 +30,25 @@ function DeleteMember({
   const axiosAuth = useAxiosAuth(session?.user?.token as string);
 
   const deleteMemberFunction = async (MemberId: string) => {
-    const URLMember = `${BASE_URL}/users/${memberId}`;
+    const URLMember = `${BASE_URL_LOCAL}/users/${memberId}`;
     try {
       const response = await axiosAuth.delete(URLMember);
-      toast({
-        title: 'Sucesso!!!',
-        description: 'Membro DELETADO com Sucesso!!! 🥳',
-      });
+      toast.success('Membro DELETADO com Sucesso!!! 🥳');
       return response.data;
     } catch (error) {
+      toast.error('Erro ao DELETAR membro!!! 🥵');
       console.error(error);
     }
   };
 
   const { mutateAsync: deleteMemberFn, isPending } = useMutation({
     mutationFn: deleteMemberFunction,
-    // onSettled: () => {
-    //   queryClient.invalidateQueries({ queryKey: ["cultosMarcados"] });
-    // },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
+    onError: () => {
+      queryClient.invalidateQueries({ queryKey: ['members'] });
+    },
   });
 
   const handleDelete = async (MemberId: string) => {
